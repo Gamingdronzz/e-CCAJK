@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ccajk.SplashActivity">
+    tools:context="com.ccajk.Activity.SplashActivity">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:id="@+id/logo"
+        android:layout_centerInParent="true"
         android:padding="@dimen/padding_large"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/designedBy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
         android:drawableBottom="@mipmap/gdlogo"
         android:fontFamily="cursive"
         android:text="Designed and Developed by"
-        android:textColor="@color/colorPrimaryDark"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:textColor="@color/colorPrimaryDark" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

@@ -3,36 +3,87 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
-
-    <item android:title="Communicate">
+    <item android:title="Functions">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/navmenu_pension"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="Pension" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/navmenu_gpf"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="GPF" />
+            <item
+                android:id="@+id/navmenu_rti"
+                android:icon="@drawable/ic_menu_send"
+                android:title="RTI" />
+
+            <item
+                android:id="@+id/navmenu_payment_status"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Payment Status" />
+
+            <item
+                android:id="@+id/navmenu_aadhaar"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Upload AADHAAR" />
+
+            <item
+                android:id="@+id/navmenu_pan"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Upload PAN" />
         </menu>
     </item>
+
+    <item android:title="Tracking">
+        <menu>
+            <item
+                android:id="@+id/navmenu_tracking"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Track Grievance" />
+            <item
+                android:id="@+id/navmenu_forgot_tracking_id"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Forgot Tracking ID" />
+        </menu>
+    </item>
+
+    <item android:title="Tenders and Notices">
+        <menu>
+            <item
+                android:id="@+id/navmenu_tenders"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Tenders" />
+            <item
+                android:id="@+id/navmenu_notices"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Notices" />
+
+        </menu>
+    </item>
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/navmenu_om_circulars"
+                android:icon="@drawable/ic_menu_send"
+                android:title="OM &amp; Circulars" />
+
+            <item
+                android:id="@+id/navmenu_photo_gallery"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Photo Gallery" />
+
+            <item
+                android:id="@+id/navmenu_contact_us"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Contact Us" />
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/navmenu_hotspot_locator"
+        android:icon="@drawable/ic_menu_send"
+        android:title="WIFI Hotspot Locator" />
 
 </menu>
