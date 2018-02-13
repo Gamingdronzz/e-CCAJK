@@ -85,8 +85,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         final String name = (String) slider.getBundle().get("extra");
         if (Prefrences.getLeaveApp(getContext()) == false) {
             final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                    .setTitle("Leaving CCA JK")
-                    .setMessage("The app requires you to open browser")
+                    .setTitle("CCA JK")
+                    .setMessage("You are about to leave the application and open the link in external browser")
                     .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
 
                         @Override
