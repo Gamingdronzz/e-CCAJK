@@ -2,40 +2,25 @@ package com.ccajk.Activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.R;
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
-
-import java.util.HashMap;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SliderLayout mDemoSlider;
-    private TextView welcomeText;
+
 //    WebView webView;
 //    final String removeLogo = "document.getElementsByClassName('logo')[0].style.display=\"none\"; ";
 //    final String removeHead = "document.getElementsByClassName('head-r')[0].style.display=\"none\"; ";
@@ -58,7 +43,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+       /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,30 +51,20 @@ public class HomeActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
+*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        SpannableString str1= new SpannableString(getText(R.string.welcome_short));
-        builder.append(str1);
-
-        SpannableString str2= new SpannableString(Html.fromHtml("<b>Read More</b>"));
-        str2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, str2.length(), 0);
-        builder.append(str2);
-        welcomeText = findViewById(R.id.textview_welcome_short);
-        welcomeText.setText( builder, TextView.BufferType.SPANNABLE);
-
-
-        NavigationView navigationView =  findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Fragment fragment = new HomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
 
-setupSlider();
     }
 
 
@@ -99,7 +74,6 @@ setupSlider();
 
         // To prevent a memory leak on rotation, make sure to call stopAutoCycle() on the slider before activity or fragment is destroyed
 
-        mDemoSlider.stopAutoCycle();
 
         super.onStop();
 
@@ -107,50 +81,6 @@ setupSlider();
 
 
 
-    @Override
-    public void onSliderClick(BaseSliderView slider) {
-
-        Toast.makeText(this,slider.getBundle().get("extra") + "",Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void setupSlider()
-    {
-        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
-        HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
-
-        file_maps.put("Deptt. of Telecomminication",R.drawable.communication);
-
-        file_maps.put("Swachh Bharat Abhiyan",R.drawable.swachhbharat);
-
-        file_maps.put("Digital India",R.drawable.digitalindia);
-
-        file_maps.put("Controller of Communication Accounts", R.drawable.cca);
-
-        for(String name : file_maps.keySet()){
-
-            TextSliderView textSliderView = new TextSliderView(this);
-            // initialize a SliderLayout
-            textSliderView
-                    .description(name)
-                    .image(file_maps.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.FitCenterCrop)
-                    .setOnSliderClickListener(this);
-
-            //add your extra information
-            textSliderView.bundle(new Bundle());
-            textSliderView.getBundle()
-                    .putString("extra",name);
-            mDemoSlider.addSlider(textSliderView);
-
-        }
-
-
-
-
-
-
-    }
 
   /*  private void setupWebview() {
         webView.getSettings().setJavaScriptEnabled(true);
@@ -230,11 +160,7 @@ setupSlider();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -249,7 +175,15 @@ setupSlider();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        switch (id) {
+            case R.id.navmenu_home:
+                getSupportActionBar().setTitle("Home");
+                Fragment fragment;
+                fragment = new HomeFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
 
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -280,21 +214,4 @@ setupSlider();
         alertDialog.show();
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-
-    public void onPageSelected(int position) {
-
-        Log.d("Slider", "Page Changed: " + position);
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 }

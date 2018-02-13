@@ -61,8 +61,10 @@
 
         </menu>
     </item>
+
     <item android:title="Others">
         <menu>
+
             <item
                 android:id="@+id/navmenu_om_circulars"
                 android:icon="@drawable/ic_menu_send"
@@ -72,7 +74,10 @@
                 android:id="@+id/navmenu_photo_gallery"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Photo Gallery" />
-
+            <item
+                android:id="@+id/navmenu_home"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Home" />
             <item
                 android:id="@+id/navmenu_contact_us"
                 android:icon="@drawable/ic_menu_send"
