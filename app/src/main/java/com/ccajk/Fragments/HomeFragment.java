@@ -1,6 +1,8 @@
 package com.ccajk.Fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ccajk.Activity.HomeActivity;
+import com.ccajk.Prefrences;
 import com.ccajk.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -41,7 +44,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
 
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -57,7 +60,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         welcomeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity)getActivity()).getSupportActionBar().setTitle("About Us");
+                ((HomeActivity) getActivity()).getSupportActionBar().setTitle("About Us");
                 Fragment fragment;
                 fragment = new AboutUsFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
@@ -79,12 +82,37 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public void onSliderClick(BaseSliderView slider) {
 
-        //Toast.makeText(this,slider.getBundle().get("extra") + "",Toast.LENGTH_SHORT).show();
-        String name = (String) slider.getBundle().get("extra");
+        final String name = (String) slider.getBundle().get("extra");
+        if (Prefrences.getLeaveApp(getContext()) == false) {
+            final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                    .setTitle("Leaving CCA JK")
+                    .setMessage("The app requires you to open browser")
+                    .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Prefrences.setLeaveApp(getContext(), true);
+                            loadWebSite(name);
+                        }
+                    })
+                    .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            alertDialog.show();
+        } else {
+            loadWebSite(name);
+        }
+    }
+
+    private void loadWebSite(String name) {
         Intent intent;
         switch (name) {
             case "Digital India":
-                intent= new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.digitalindia.gov.in/"));
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.digitalindia.gov.in/"));
                 startActivity(intent);
                 break;
             case "Swachh Bharat Abhiyan":
@@ -94,7 +122,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             case "Controller of Communication Accounts":
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://ccajk.gov.in/"));
                 startActivity(intent);
-                break;
         }
     }
 

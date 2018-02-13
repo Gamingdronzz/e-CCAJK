@@ -65,6 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="true"
+                    android:textSize="@dimen/text_small"
                     android:text="@string/welcome_short" />
 
                 <android.support.v4.widget.Space
@@ -96,7 +97,7 @@
 
                 <TextView
                     android:id="@+id/textview_cca_desk"
-
+                    android:textSize="@dimen/text_small"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/from_cca_desk" />
