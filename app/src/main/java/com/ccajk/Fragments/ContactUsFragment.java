@@ -10,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ccajk.Adapter.RecyclerViewAdapterContacts;
-import com.ccajk.Models.Contacts;
+import com.ccajk.Models.Contact;
+import com.ccajk.Models.ContactBuilder;
 import com.ccajk.R;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ContactUsFragment extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
-    ArrayList<Contacts> contactsArrayList = new ArrayList<>();
+    ArrayList<Contact> contactArrayList = new ArrayList<>();
 
     public ContactUsFragment() {
         // Required empty public constructor
@@ -36,15 +37,15 @@ public class ContactUsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview_contacts);
 
         getContactsList();
-        adapterContacts = new RecyclerViewAdapterContacts(contactsArrayList);
+        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList);
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
 
     private void getContactsList() {
-        contactsArrayList.add(new Contacts("Sh. Rajnish Kumar Jenaw ", "CCA\nccajk@nic.in", "2477280", "9419120080"));
-        contactsArrayList.add(new Contacts("Sh Amanullah Tak", "JT.CCA\naman.tak@gov.in", "2477281", "9419120986"));
+        contactArrayList.add(new ContactBuilder().setName("Sh. Rajnish Kumar Jenaw ").setDesignation("CCA\nccajk@nic.in").setOfficeContact("2477280").setMobileContact("9419120080").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
     }
 
 }

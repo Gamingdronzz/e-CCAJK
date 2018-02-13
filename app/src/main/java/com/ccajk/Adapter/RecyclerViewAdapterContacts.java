@@ -1,12 +1,17 @@
 package com.ccajk.Adapter;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.ccajk.Models.Contacts;
+import com.ccajk.Models.Contact;
 import com.ccajk.R;
 
 import java.util.ArrayList;
@@ -17,10 +22,10 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerViewAdapterContacts.ContactsViewHolder> {
 
-    ArrayList<Contacts> contactsArrayList;
+    ArrayList<Contact> contactArrayList;
 
-    public RecyclerViewAdapterContacts(ArrayList<Contacts> contactsArrayList) {
-        this.contactsArrayList = contactsArrayList;
+    public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList) {
+        this.contactArrayList = contactArrayList;
     }
 
     @Override
@@ -31,16 +36,16 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(ContactsViewHolder holder, int position) {
-        Contacts contact = contactsArrayList.get(position);
+        Contact contact = contactArrayList.get(position);
         holder.name.setText("Name: " + contact.getName());
         holder.designation.setText("Designation: " + contact.getDesignation());
-        holder.office.setText("Office: " + contact.getOffice());
-        holder.mobile.setText("Mobile: " + contact.getMobile());
+        holder.office.setText("Office: " + contact.getOfficeContact());
+        holder.mobile.setText(contact.getMobileContact());
     }
 
     @Override
     public int getItemCount() {
-        return contactsArrayList.size();
+        return contactArrayList.size();
     }
 
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
@@ -55,6 +60,21 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             designation = itemView.findViewById(R.id.textview_designation);
             office = itemView.findViewById(R.id.textview_office);
             mobile = itemView.findViewById(R.id.textview_mobile);
+
+            mobile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String number = mobile.getText().toString();
+                    Log.v("Adapter","Contact = " + number);
+                    if (number == null || number.equals("")) {
+                        Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + number));
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
     }
 }

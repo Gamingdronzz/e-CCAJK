@@ -148,6 +148,7 @@ public class HomeActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            doExit();
             super.onBackPressed();
         }
     }
@@ -196,14 +197,7 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            doExit();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     private void doExit() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
