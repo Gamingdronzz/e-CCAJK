@@ -2,14 +2,25 @@
     <string name="app_name">CCA JK</string>
 
     <string name="welcome_short">Telecommunications, a vital infrastructure for development of the country was taken as a priority sector by the Government. The telecom sector which was earlier a Government monopoly was .. </string>
+
     <string name="welcome_full">Telecommunications, a vital infrastructure for development of the country was taken as a priority sector by the Government. The telecom sector which was earlier a Government monopoly was restructured and opened up for private participation. National Telecom Policy 1994 and then New Telecom Policy 1999 were framed with laudable objectives of providing world class widest permissible range of telecom services for all, telephone on demand as early as possible and to achieve universal service covering all villages at affordable and reasonable prices. There was a huge resources gap estimated for these objectives. Private investment and association of the private sector was envisaged in a big way to bridge this resource gap. Private initiative was sought to be used to augment the Government efforts to raise additional resources for achieving the desired objectives.
 \n\n\tWith effect from 1st October, 2000, the incumbent government operator Department of Telecom Services and Department of Telecom Operations were constituted as a company under the Indian Companies Act, 1956 christened Bharat Sanchar Nigam Limited (BSNL) covering operations in the entire country except in Mumbai and Delhi Service Areas where the telecom operations were already transferred to a company, the Mahanagar Telephone Nigam Limited in 1986.
 \n\n\tBorn out of this vortex of change this niche organisation, the offices of the Controller of Communication Accounts (erstwhile DoT Cells) were created as a vital link between the Government, which after formation of BSNL had shrunk as a Department of Telecom at the Ministry level only, and its various field units and stakeholders. With a humble beginning performing residuary functions and staff policy of BSNL of the government at field level, the offices of Controller of Communication Accounts have over the two decades emerged as a focused organizational set up translating the various government assurances in to a definitive action.
 \n\n\tThe office of the Controller of Communication Accounts (CCA), Jammu and Kashmir is one of such units functioning as a critical professional interface between Department of Telecommunications (DOT) Head Quarters and its various stakeholders at the ground level on various policy issues such as management of license fee, spectrum charges, USO Fund, claims of BSNL staff e.g. GPF, Pensions to name a few. Within a short span of time, the CCA offices have carved out a niche for themselves by serving the different stakeholders of DOT – telecom service providers and in particular BSNL employees – and bringing them closer to DOT with their lean structure and professional working.</string>
 
+    <string name="contact_info"><b>Govt. of India
+\nMinistry of Communication &amp; IT Department of Telecom
+\nController of Communication Accounts, J&amp;K
+\nHUDCO Bhawan, Rail Head Complex
+\nJammu (J&amp;K)-180012
+\n\nToll Free No. 18001807036
+\nFAX - 0191-2477296, 2475251
+\nSTD CODE -0191</b></string>
+
+
     <string name="from_cca_desk">It gives me immense pleasure to welcome you to the Official Android Application of O/O CCA J &amp; K, Jammu.
 \n\nThe CCA offices had initially been assigned work of settlement of retirement benefits of employees absorbed in BSNL, the maintenance of GPF Accounts of all BSNL employees, the work handled by this office has expanded over the years and now it provides a critical interface between the organization and various stakeholders at ground level on various policy issues such as management of license fees, spectrum Charges, Universal Subsidy Fund, claims of BSNL Staff.\n\nMobile and broad band are instruments of socio-economic empowerment of citizens.\n\nBroad band opens future possibilities leading to widespread impact on education, health, financial inclusion, skill training.\n\nCCA offices contribute in the mission of monitoring broad band connections and National Optical Fiber Network (NOFN) by releasing subsidies to quickly bring financial inclusion and digitally empowering citizens in social inclusion schemes.\nThis application offers the visitors easy and ready access to the information relating to all the stakeholders.\n\nIt will be our effort to update the information and status of work regularly to keep visitors abreast of all latest developments .\n\nI hope all visitors have a happy &amp; satisfying experience while browsing our website.</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Home</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

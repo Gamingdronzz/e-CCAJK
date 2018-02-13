@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.R;
 
@@ -174,15 +175,20 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Fragment fragment;
         switch (id) {
             case R.id.navmenu_home:
                 getSupportActionBar().setTitle("Home");
-                Fragment fragment;
+
                 fragment = new HomeFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
 
+            case R.id.navmenu_contact_us:
+                getSupportActionBar().setTitle("Contact Us");
+                fragment = new ContactUsFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
