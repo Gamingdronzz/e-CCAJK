@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
+import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.R;
 
 public class HomeActivity extends AppCompatActivity
@@ -186,6 +187,11 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_contact_us:
                 getSupportActionBar().setTitle("Contact Us");
                 fragment = new ContactUsFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_hotspot_locator:
+                getSupportActionBar().setTitle("Wifi Hotspot Locations");
+                fragment = new HotspotLocationFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
         }

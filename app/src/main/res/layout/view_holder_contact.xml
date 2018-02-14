@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_medium"
         android:text="TextView"
-        android:textSize="@dimen/text_small" />
+        android:textSize="@dimen/text_10" />
 
     <TextView
         android:id="@+id/textview_designation"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_medium"
         android:text="TextView"
-        android:textSize="@dimen/text_small" />
+        android:textSize="@dimen/text_10" />
 
     <TextView
         android:id="@+id/textview_office"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_medium"
         android:text="TextView"
-        android:textSize="@dimen/text_small" />
+        android:textSize="@dimen/text_10" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_medium"
             android:text="Mobile : "
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_10" />
 
         <TextView
             android:id="@+id/textview_mobile"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_medium"
             android:text="TextView"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_10" />
     </LinearLayout>
 
 

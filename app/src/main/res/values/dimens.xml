@@ -6,4 +6,55 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="design_navigation_icon_size">32dp</dimen>
+
+    <dimen name="corner_radius_min">4dp</dimen>
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="corner_radius_medium">12dp</dimen>
+    <dimen name="corner_radius_large">16dp</dimen>
+    <dimen name="corner_radius_xlarge">24dp</dimen>
+    <dimen name="corner_radius_xxlarge">32dp</dimen>
+    <dimen name="corner_radius_xxxlarge">48dp</dimen>
+    <dimen name="corner_radius_xxxxlarge">64dp</dimen>
+    <dimen name="corner_radius_xxxxxlarge">128dp</dimen>
+
+
+    <dimen name="elevation_large">16dp</dimen>
+    <dimen name="elevation_medium">8dp</dimen>
+    <dimen name="elevation_min">2dp</dimen>
+    <dimen name="elevation_small">4dp</dimen>
+    <dimen name="elevation_xlarge">24dp</dimen>
+
+    <dimen name="height_medium">6dp</dimen>
+    <dimen name="height_min">2dp</dimen>
+    <dimen name="height_small">4dp</dimen>
+
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_medium">8dp</dimen>
+    <dimen name="margin_min">2dp</dimen>
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_xlarge">32dp</dimen>
+    <dimen name="margin_xxlarge">64dp</dimen>
+
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_min">2dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_xlarge">32dp</dimen>
+    <dimen name="padding_xxlarge">64dp</dimen>
+
+
+    <dimen name="space_large">32dp</dimen>
+    <dimen name="space_medium">16dp</dimen>
+    <dimen name="space_min">2dp</dimen>
+    <dimen name="space_small">8dp</dimen>
+    <dimen name="space_xlarge">64dp</dimen>
+    <dimen name="space_xxlarge">128dp</dimen>
+
+    <dimen name="text_10">10sp</dimen>
+    <dimen name="text_12">12sp</dimen>
+    <dimen name="text_15">15sp</dimen>
+    <dimen name="text_20">20sp</dimen>
+    <dimen name="text_25">25sp</dimen>
+    <dimen name="text_30">30sp</dimen>
+    <dimen name="text_8">8sp</dimen>
 </resources>

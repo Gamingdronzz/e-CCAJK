@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back"
+    >
+
+
+        <!--<TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:background="@color/colorAccent"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margin_medium"
+            android:paddingTop="@dimen/margin_medium"
+            android:text="@string/contact_us_location"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_20"
+            android:textStyle="bold" />-->
+
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Search location"
+            android:tooltipText="Search location">
+
+        </SearchView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/locations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/padding_medium"
+            android:paddingTop="@dimen/padding_medium">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>

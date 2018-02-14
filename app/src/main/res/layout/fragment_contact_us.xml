@@ -28,7 +28,7 @@
             android:background="@color/colorPrimaryLight"
             android:fontFamily="sans-serif-condensed"
             android:text="Contact Persons"
-            android:textSize="@dimen/text_medium"
+            android:textSize="@dimen/text_12"
             android:textStyle="bold" />
 
         <View

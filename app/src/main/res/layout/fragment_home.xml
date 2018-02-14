@@ -50,7 +50,7 @@
                     android:background="@color/colorPrimaryLight"
                     android:fontFamily="sans-serif-condensed"
                     android:text="Welcome to CCA JK"
-                    android:textSize="@dimen/text_medium"
+                    android:textSize="@dimen/text_20"
                     android:textStyle="bold" />
 
                 <View
@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="true"
-                    android:textSize="@dimen/text_small"
+                    android:textSize="@dimen/text_15"
                     android:text="@string/welcome_short" />
 
                 <android.support.v4.widget.Space
@@ -85,7 +85,7 @@
                     android:background="@color/colorPrimaryLight"
                     android:fontFamily="sans-serif-condensed"
                     android:text="From CCA's Desk"
-                    android:textSize="@dimen/text_medium"
+                    android:textSize="@dimen/text_20"
                     android:textStyle="bold" />
 
                 <View
@@ -97,7 +97,7 @@
 
                 <TextView
                     android:id="@+id/textview_cca_desk"
-                    android:textSize="@dimen/text_small"
+                    android:textSize="@dimen/text_15"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/from_cca_desk" />

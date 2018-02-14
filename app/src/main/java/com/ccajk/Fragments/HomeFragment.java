@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         });
 
         setupSlider();
-
         return view;
     }
 

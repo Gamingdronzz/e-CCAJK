@@ -28,7 +28,7 @@
                 android:background="@color/colorPrimaryLight"
                 android:fontFamily="sans-serif-condensed"
                 android:text="Welcome to CCA JK"
-                android:textSize="@dimen/text_medium"
+                android:textSize="@dimen/text_10"
                 android:textStyle="bold" />
 
             <View
@@ -42,7 +42,7 @@
                 android:id="@+id/textview_welcome_short"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/text_small"
+                android:textSize="@dimen/text_8"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:text="@string/welcome_full" />
 
