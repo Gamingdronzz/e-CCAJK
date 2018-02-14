@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<RecyclerViewAdapterHotspotLocation.MyViewHolder> {
 
-    ArrayList<String> locationArray;
+    ArrayList<LocationModel> locationArray;
 
-    public RecyclerViewAdapterHotspotLocation(ArrayList<String> locationArray) {
+    public RecyclerViewAdapterHotspotLocation(ArrayList<LocationModel> locationArray) {
         setHasStableIds(true);
         this.locationArray = locationArray;
     }
@@ -32,7 +33,7 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        String location = locationArray.get(position);
+        String location = locationArray.get(position).getLocationName();
         holder.tv.setText(location);
     }
 
