@@ -26,6 +26,7 @@ import android.widget.Button;
 
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 
 import java.util.ArrayList;
 
@@ -109,11 +110,9 @@ public class HotspotLocationFragment extends Fragment implements LocationListene
     private void getCurrentLocation() {
         if (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-        }
-        else
-        {
+        } else {
             locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5f,this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5f, this);
         }
 
 
@@ -171,6 +170,21 @@ public class HotspotLocationFragment extends Fragment implements LocationListene
     public void onLocationChanged(Location location) {
         Log.d("latitude ", String.valueOf(location.getLatitude()));
         Log.d("longitude ", String.valueOf(location.getLongitude()));
+
+
+
+        float[] result = new float[1];
+        for (int i = 0; i < latitude.size(); i++) {
+            Location.distanceBetween(location.getLatitude(), location.getLongitude(), latitude.get(i), longitude.get(i),result);
+            if(result[0]<2000){
+                Log.v("Hotspot","Distance " + i + " is " + result[0]);
+            }
+            /*if (Helper.distance(location.getLatitude(), location.getLongitude(), latitude.get(i), longitude.get(i)) < 2000) { // if distance < 0.1 miles we take locations as equal
+
+            }*/
+        }
+
+
     }
 
     @Override

@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ccajk.Activity.HomeActivity;
-import com.ccajk.Prefrences;
+import com.ccajk.Tools.Prefrences;
 import com.ccajk.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
