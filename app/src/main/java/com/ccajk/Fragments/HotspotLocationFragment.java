@@ -1,31 +1,44 @@
 package com.ccajk.Fragments;
 
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Button;
 
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.R;
 
 import java.util.ArrayList;
 
-public class HotspotLocationFragment extends Fragment {
+public class HotspotLocationFragment extends Fragment implements LocationListener {
 
     RecyclerView recyclerView;
+    Button getLocation;
+    LocationManager locationManager;
     RecyclerViewAdapterHotspotLocation adapter;
     ArrayList<String> list = new ArrayList<>();
     ArrayList<Double> latitude = new ArrayList<>();
     ArrayList<Double> longitude = new ArrayList<>();
+    private final int LOCATION_REQUEST_CODE = 101;
 
     public HotspotLocationFragment() {
     }
@@ -35,11 +48,14 @@ public class HotspotLocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hotspot_location, container, false);
-        recyclerView = view.findViewById(R.id.locations);
+
         list = new ArrayList<>();
         latitude = getLatList();
         longitude = getLongList();
+
         adapter = new RecyclerViewAdapterHotspotLocation(list);
+
+        recyclerView = view.findViewById(R.id.locations);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.getItemAnimator().setAddDuration(1000);
@@ -78,7 +94,29 @@ public class HotspotLocationFragment extends Fragment {
 
             }
         });
+
+        getLocation = view.findViewById(R.id.btn_location);
+        getLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCurrentLocation();
+
+            }
+        });
         return view;
+    }
+
+    private void getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+        }
+        else
+        {
+            locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5f,this);
+        }
+
+
     }
 
     private ArrayList<Double> getLatList() {
@@ -127,5 +165,38 @@ public class HotspotLocationFragment extends Fragment {
         list.add("JD (I) Coy NCC  SS Nagrota ");
         adapter.notifyItemInserted(8);
         return list;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("latitude ", String.valueOf(location.getLatitude()));
+        Log.d("longitude ", String.valueOf(location.getLongitude()));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5f, this);
+            }
+        }
     }
 }

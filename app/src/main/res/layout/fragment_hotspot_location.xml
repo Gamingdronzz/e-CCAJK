@@ -20,6 +20,13 @@
             android:textSize="@dimen/text_20"
             android:textStyle="bold" />-->
 
+        <Button
+            android:id="@+id/btn_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:text="Get my location"/>
+
         <SearchView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
