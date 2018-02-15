@@ -4,7 +4,6 @@ package com.ccajk.Tabs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,13 +13,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.ccajk.Activity.MapsActivity;
 import com.ccajk.Models.LocationModel;
@@ -34,12 +34,12 @@ public class TabNearby extends Fragment implements LocationListener {
     private final int LOCATION_REQUEST_CODE = 101;
     LocationManager locationManager;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
+    SeekBar seekBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         init(view);
-
         return view;
     }
 
@@ -51,6 +51,24 @@ public class TabNearby extends Fragment implements LocationListener {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapsActivity.class);
                 v.getContext().startActivity(intent);
+            }
+        });
+
+        seekBar=view.findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Toast.makeText(getContext(),"radius = "+String.valueOf(seekBar.getProgress()+10),Toast.LENGTH_SHORT).show();
+
             }
         });
         getCurrentLocation();
