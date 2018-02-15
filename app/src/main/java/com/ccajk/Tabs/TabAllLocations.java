@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 
 //Our class extending fragment
-public class TabAllLocations extends Fragment implements LocationListener {
+public class TabAllLocations extends Fragment  {
     RecyclerView recyclerView;
 
     //Button getLocation;
@@ -46,7 +46,7 @@ public class TabAllLocations extends Fragment implements LocationListener {
     RecyclerViewAdapterHotspotLocation adapter;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
 
-    private final int LOCATION_REQUEST_CODE = 101;
+
 
     //Overriden method onCreateView
     @Override
@@ -112,67 +112,11 @@ public class TabAllLocations extends Fragment implements LocationListener {
             }
         });*/
 
-        getCurrentLocation();
+        //getCurrentLocation();
 
     }
 
 
-    private void getCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-        } else {
-            locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 2f, this);
-        }
-
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("latitude ", String.valueOf(location.getLatitude()));
-        Log.d("longitude ", String.valueOf(location.getLongitude()));
-
-        float[] result = new float[1];
-        for (int i = 0; i < allLocations.size(); i++) {
-            Location.distanceBetween(location.getLatitude(), location.getLongitude(),allLocations.get(i).getLatitude(), allLocations.get(i).getLongitude(), result);
-            if (result[0] < 2000) {
-                //Log.v("Hotspot", "Distance " + i + " is " + result[0]);
-            }
-            /*if (Helper.distance(location.getLatitude(), location.getLongitude(), latitude.get(i), longitude.get(i)) < 2000) { // if distance < 0.1 miles we take allLocations as equal
-
-            }*/
-        }
-
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5f, this);
-            }
-        }
-    }
 
     private ArrayList<LocationModel> getLocationList() {
         allLocations = new ArrayList<>();
@@ -222,13 +166,7 @@ public class TabAllLocations extends Fragment implements LocationListener {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
 
-        }
-    }
 
 
 }
