@@ -74,7 +74,6 @@ public class HomeActivity extends AppCompatActivity
     protected void onStop() {
 
 
-
         super.onStop();
 
     }
@@ -143,13 +142,14 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        //super.onBackPressed();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             doExit();
-            super.onBackPressed();
         }
+
     }
 
     @Override
@@ -196,11 +196,10 @@ public class HomeActivity extends AppCompatActivity
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 
     private void doExit() {
@@ -211,11 +210,11 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
-        });
-        alertDialog.setNegativeButton("No", null);
-        alertDialog.setMessage("Do you want to exit?");
-        alertDialog.setTitle("CCA JK");
-        alertDialog.show();
+        })
+                .setNegativeButton("No", null)
+                .setMessage("Do you want to exit?")
+                .setTitle("CCA JK")
+                .show();
     }
 
 }

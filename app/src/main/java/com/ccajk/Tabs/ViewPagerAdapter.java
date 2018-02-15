@@ -13,8 +13,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     //integer to count number of tabs
     int tabCount;
-    Tab1 tab1;
-    Tab2 tab2;
+    TabNearby tab1;
+    TabAllLocations tab2;
 
 
     //Constructor to the class
@@ -22,8 +22,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         //Initializing tab count
         this.tabCount= tabCount;
-        tab1 = new Tab1();
-        tab2 = new Tab2();
+        tab1 = new TabNearby();
+        tab2 = new TabAllLocations();
 
     }
 

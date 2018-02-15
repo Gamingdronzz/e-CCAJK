@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 
 //Our class extending fragment
-public class Tab2 extends Fragment implements LocationListener {
+public class TabAllLocations extends Fragment implements LocationListener {
     RecyclerView recyclerView;
 
     //Button getLocation;
@@ -52,7 +52,7 @@ public class Tab2 extends Fragment implements LocationListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.tab_2, container, false);
+        View view = inflater.inflate(R.layout.tab_all_locations, container, false);
         init(view);
         return view;
     }
