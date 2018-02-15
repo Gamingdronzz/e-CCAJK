@@ -1,6 +1,7 @@
 package com.ccajk.Fragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +22,21 @@ import com.ccajk.Tabs.TabAllLocations;
 
 public class HotspotLocationFragment extends Fragment  {
 
-    public static TabLayout tabLayout;
-    public static ViewPager viewPager;
+    public TabLayout tabLayout;
+    public ViewPager viewPager;
     public static int int_items = 2 ;
-
 
 
 
 
     public HotspotLocationFragment() {
     }
+
     class MyAdapter extends FragmentPagerAdapter {
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
+
         }
 
         /**
@@ -49,6 +52,7 @@ public class HotspotLocationFragment extends Fragment  {
             }
             return null;
         }
+
 
         @Override
         public int getCount() {
@@ -80,7 +84,6 @@ public class HotspotLocationFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hotspot_tab_layout, container, false);
-
 
         tabLayout = view.findViewById(R.id.tabs);
         viewPager = view.findViewById(R.id.viewpager);

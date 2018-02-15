@@ -4,6 +4,7 @@ package com.ccajk.Tabs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,37 +24,52 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.ccajk.Activity.HomeActivity;
 import com.ccajk.Activity.MapsActivity;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 //Our class extending fragment
-public class TabNearby extends Fragment implements LocationListener {
-
+public class TabNearby extends Fragment implements LocationListener,OnMapReadyCallback {
+    private GoogleMap mMap;
     private final int LOCATION_REQUEST_CODE = 101;
     LocationManager locationManager;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
     SeekBar seekBar;
+    AppCompatActivity appCompatActivity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         init(view);
+
         return view;
+    }
+
+    public void setActivity(AppCompatActivity appCompatActivity)
+    {
+        this.appCompatActivity = appCompatActivity;
     }
 
     private void init(View view)
     {
-        Button button = view.findViewById(R.id.openMaps);
+      /*  Button button = view.findViewById(R.id.openMaps);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapsActivity.class);
                 v.getContext().startActivity(intent);
             }
-        });
+        });*/
 
         seekBar=view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -72,6 +89,8 @@ public class TabNearby extends Fragment implements LocationListener {
             }
         });
         getCurrentLocation();
+        SupportMapFragment mapFragment = (SupportMapFragment) HomeActivity.mCcontext.getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
 
@@ -114,6 +133,27 @@ public class TabNearby extends Fragment implements LocationListener {
     private void requestLocationPermission()
     {
         ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        LatLng palwal = new LatLng(32.7253156,74.84129833);
+        LatLng alawar = new LatLng(32.712113,74.862223);
+        LatLng sangrur = new LatLng(34.0621045,74.8019077);
+        mMap.addMarker(new MarkerOptions().position(palwal).title("Marker in Palwal"));
+        mMap.addMarker(new MarkerOptions().position(alawar).title("Marker in Alawar"));
+        mMap.addMarker(new MarkerOptions().position(sangrur).title("Marker in Sangrur"));
+
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(palwal)      // Sets the center of the map to Mountain View
+                .zoom(16)                   // Sets the zoom
+                .bearing(0)                // Sets the orientation of the camera to east
+                .tilt(0)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override
