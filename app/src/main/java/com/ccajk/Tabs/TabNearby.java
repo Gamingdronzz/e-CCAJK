@@ -72,9 +72,11 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
         });*/
 
         seekBar=view.findViewById(R.id.seekBar);
+        seekBar.setMax(3);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
             }
 
             @Override
@@ -84,12 +86,22 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(getContext(),"radius = "+String.valueOf(seekBar.getProgress()+10),Toast.LENGTH_SHORT).show();
+                int radius = seekBar.getProgress() + 15;
+                Toast.makeText(getContext(),"New Radius = "+ radius,Toast.LENGTH_SHORT).show();
+                ArrayList<LatLng> markers = new ArrayList<>();
+                markers.add(new LatLng(32.7253156,74.84129833));
+                markers.add(new LatLng(34.0621045,74.8019077));
+
+                ArrayList<String> names = new ArrayList<>();
+                names.add("JK NCC Directorate");
+                names.add("Group Headquarters");
+                AnimateCamera(markers,names,radius);
 
             }
         });
         getCurrentLocation();
-        SupportMapFragment mapFragment = (SupportMapFragment) HomeActivity.mCcontext.getSupportFragmentManager().findFragmentById(R.id.map);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
@@ -138,18 +150,31 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        ArrayList<LatLng> markers = new ArrayList<>();
+        markers.add(new LatLng(32.7253156,74.84129833));
+        markers.add(new LatLng(32.712113,74.862223));
+        markers.add(new LatLng(34.0621045,74.8019077));
 
-        LatLng palwal = new LatLng(32.7253156,74.84129833);
-        LatLng alawar = new LatLng(32.712113,74.862223);
-        LatLng sangrur = new LatLng(34.0621045,74.8019077);
-        mMap.addMarker(new MarkerOptions().position(palwal).title("Marker in Palwal"));
-        mMap.addMarker(new MarkerOptions().position(alawar).title("Marker in Alawar"));
-        mMap.addMarker(new MarkerOptions().position(sangrur).title("Marker in Sangrur"));
+        ArrayList<String> names = new ArrayList<>();
+        names.add("JK NCC Directorate");
+        names.add("JK NCC Directorate Srinagar");
+        names.add("Group Headquarters");
+
+       AnimateCamera(markers,names,17);
+    }
 
 
+    private void AnimateCamera(ArrayList<LatLng> markers,ArrayList<String> names,int zoom)
+    {
+        mMap.clear();
+        int i = 0;
+        for (LatLng latlng :
+                markers) {
+            mMap.addMarker(new MarkerOptions().position(latlng).title(names.get(i++)));
+        }
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(palwal)      // Sets the center of the map to Mountain View
-                .zoom(16)                   // Sets the zoom
+                .target(markers.get(0))      // Sets the center of the map to Mountain View
+                .zoom(zoom)                   // Sets the zoom
                 .bearing(0)                // Sets the orientation of the camera to east
                 .tilt(0)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
