@@ -10,11 +10,20 @@
         android:id="@+id/openMaps"
         android:text="Show on Map"/>
 
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_medium"
+        android:max="10"
+        android:progress="1" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorLightGray">
+
     </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

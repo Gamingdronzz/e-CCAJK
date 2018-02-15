@@ -179,7 +179,7 @@ public class TabAllLocations extends Fragment implements LocationListener {
 
         allLocations.add(new LocationBuilder()
                 .setLatitude(32.7253156)
-                .setLatitude(74.8412983)
+                .setLongitude(74.8412983)
                 .setLocationName("NCC Directorate J&K")
                 .createLocation());
         return allLocations;
