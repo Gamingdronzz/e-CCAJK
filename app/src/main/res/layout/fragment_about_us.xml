@@ -48,6 +48,7 @@
                 android:paddingEnd="@dimen/margin_medium"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:justificationMode="inter_word"
+                android:fontFamily="@font/imprima"
                 android:textStyle="bold"
                 android:text="@string/welcome_full" />
 

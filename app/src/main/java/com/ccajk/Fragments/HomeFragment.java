@@ -33,7 +33,7 @@ import java.util.HashMap;
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout mDemoSlider;
-    private TextView welcomeText;
+    private TextView welcomeText,ccaDeskText;
     View view;
 
     public HomeFragment() {
@@ -66,6 +66,17 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
             }
         });
+
+        SpannableStringBuilder builder2 = new SpannableStringBuilder();
+
+        SpannableString string1 = new SpannableString(getText(R.string.from_cca_desk_short));
+        builder2.append(string1);
+
+        SpannableString string2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
+        string2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, string2.length(), 0);
+        builder2.append(string2);
+        ccaDeskText = view.findViewById(R.id.textview_cca_desk);
+        ccaDeskText.setText(builder2, TextView.BufferType.SPANNABLE);
 
         setupSlider();
         return view;

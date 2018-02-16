@@ -2,7 +2,6 @@ package com.ccajk.Adapter;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,10 +36,10 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(ContactsViewHolder holder, int position) {
         Contact contact = contactArrayList.get(position);
-        holder.name.setText("Name: " + contact.getName());
-        holder.designation.setText("Designation: " + contact.getDesignation());
-        holder.office.setText("Office: " + contact.getOfficeContact());
-        holder.mobile.setText(contact.getMobileContact());
+        holder.name.setText(contact.getName());
+        holder.designation.setText(contact.getDesignation());
+        holder.office.setText("\t"+contact.getOfficeContact());
+        holder.mobile.setText("\t"+contact.getMobileContact());
     }
 
     @Override
