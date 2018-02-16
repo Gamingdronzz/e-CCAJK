@@ -1,17 +1,15 @@
 package com.ccajk.Tabs;
 
 
-
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -20,12 +18,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import com.ccajk.Activity.HomeActivity;
-import com.ccajk.Activity.MapsActivity;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,29 +34,29 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 //Our class extending fragment
-public class TabNearby extends Fragment implements LocationListener,OnMapReadyCallback {
+public class TabNearby extends Fragment implements LocationListener, GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnMyLocationClickListener,
+        OnMapReadyCallback {
     private GoogleMap mMap;
     private final int LOCATION_REQUEST_CODE = 101;
     LocationManager locationManager;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
     SeekBar seekBar;
     AppCompatActivity appCompatActivity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         init(view);
-
         return view;
     }
 
-    public void setActivity(AppCompatActivity appCompatActivity)
-    {
+    public void setActivity(AppCompatActivity appCompatActivity) {
         this.appCompatActivity = appCompatActivity;
     }
 
-    private void init(View view)
-    {
+    private void init(View view) {
       /*  Button button = view.findViewById(R.id.openMaps);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +66,7 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
             }
         });*/
 
-        seekBar=view.findViewById(R.id.seekBar);
+        seekBar = view.findViewById(R.id.seekBar);
         seekBar.setMax(3);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -87,18 +82,19 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int radius = seekBar.getProgress() + 15;
-                Toast.makeText(getContext(),"New Radius = "+ radius,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "New Radius = " + radius, Toast.LENGTH_SHORT).show();
                 ArrayList<LatLng> markers = new ArrayList<>();
-                markers.add(new LatLng(32.7253156,74.84129833));
-                markers.add(new LatLng(34.0621045,74.8019077));
+                markers.add(new LatLng(32.7253156, 74.84129833));
+                markers.add(new LatLng(34.0621045, 74.8019077));
 
                 ArrayList<String> names = new ArrayList<>();
                 names.add("JK NCC Directorate");
                 names.add("Group Headquarters");
-                AnimateCamera(markers,names,radius);
+                AnimateCamera(markers, names, radius);
 
             }
         });
+
         getCurrentLocation();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -108,64 +104,57 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
 
     private void getCurrentLocation() {
 
-
         if (ContextCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
                     Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
             } else {
-
-                // No explanation needed, we can request the permission.
-
                 requestLocationPermission();
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         } else {
             AccessLocation();
         }
-
-
     }
 
     @SuppressLint("MissingPermission")
-    private void AccessLocation()
-    {
+    private void AccessLocation() {
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 2f, this);
-        Log.d("Nearby","Location Requested");
+        Log.d("Nearby", "Location Requested");
     }
 
-    private void requestLocationPermission()
-    {
+    private void requestLocationPermission() {
         ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            requestLocationPermission();
+        }
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+
         ArrayList<LatLng> markers = new ArrayList<>();
-        markers.add(new LatLng(32.7253156,74.84129833));
-        markers.add(new LatLng(32.712113,74.862223));
-        markers.add(new LatLng(34.0621045,74.8019077));
+        markers.add(new LatLng(32.7253156, 74.84129833));
+        markers.add(new LatLng(32.712113, 74.862223));
+        markers.add(new LatLng(34.0621045, 74.8019077));
 
         ArrayList<String> names = new ArrayList<>();
         names.add("JK NCC Directorate");
         names.add("JK NCC Directorate Srinagar");
         names.add("Group Headquarters");
 
-       AnimateCamera(markers,names,17);
+        AnimateCamera(markers, names, 17);
     }
 
 
-    private void AnimateCamera(ArrayList<LatLng> markers,ArrayList<String> names,int zoom)
-    {
+    private void AnimateCamera(ArrayList<LatLng> markers, ArrayList<String> names, int zoom) {
         mMap.clear();
         int i = 0;
         for (LatLng latlng :
@@ -188,7 +177,7 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
 
         float[] result = new float[1];
         for (int i = 0; i < allLocations.size(); i++) {
-            Location.distanceBetween(location.getLatitude(), location.getLongitude(),allLocations.get(i).getLatitude(), allLocations.get(i).getLongitude(), result);
+            Location.distanceBetween(location.getLatitude(), location.getLongitude(), allLocations.get(i).getLatitude(), allLocations.get(i).getLongitude(), result);
             if (result[0] < 2000) {
                 //Log.v("Hotspot", "Distance " + i + " is " + result[0]);
             }
@@ -201,19 +190,20 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
     }
 
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case LOCATION_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (permissions.length == 1 &&
+                        permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
                     AccessLocation();
-                } else {
+                }
+                 else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return;
             }
@@ -222,7 +212,6 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
             // permissions this app might request.
         }
     }
-
 
 
     @Override
@@ -237,6 +226,18 @@ public class TabNearby extends Fragment implements LocationListener,OnMapReadyCa
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this.getActivity(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this.getActivity(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
 
     }
 }
