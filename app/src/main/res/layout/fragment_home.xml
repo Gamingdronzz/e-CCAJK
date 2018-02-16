@@ -40,33 +40,38 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorBlack">
-
-                </View>
+                    android:background="@color/colorDarkBlue"></View>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimaryLight"
-                    android:fontFamily="sans-serif-condensed"
+                    android:fontFamily="@font/artifika"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
                     android:text="Welcome to CCA JK"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_20"
                     android:textStyle="bold" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorBlack">
-
-                </View>
+                    android:background="@color/colorDarkBlue"></View>
 
                 <TextView
                     android:id="@+id/textview_welcome_short"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/margin_medium"
                     android:clickable="true"
+                    android:fontFamily="@font/imprima"
+                    android:justificationMode="inter_word"
+                    android:paddingEnd="@dimen/padding_medium"
+                    android:paddingStart="@dimen/padding_medium"
+                    android:text="@string/welcome_short"
                     android:textSize="@dimen/text_15"
-                    android:text="@string/welcome_short" />
+                    android:textStyle="bold" />
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
@@ -75,32 +80,38 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorBlack">
-
-                </View>
-
+                    android:background="@color/colorDarkBlue"></View>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimaryLight"
-                    android:fontFamily="sans-serif-condensed"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
                     android:text="From CCA's Desk"
+                    android:fontFamily="@font/artifika"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_20"
                     android:textStyle="bold" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorBlack">
-
+                    android:background="@color/colorDarkBlue">
                 </View>
+
 
                 <TextView
                     android:id="@+id/textview_cca_desk"
-                    android:textSize="@dimen/text_15"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/from_cca_desk" />
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:justificationMode="inter_word"
+                    android:fontFamily="@font/imprima"
+                    android:paddingEnd="@dimen/padding_medium"
+                    android:paddingStart="@dimen/padding_medium"
+                    android:text="@string/from_cca_desk"
+                    android:textSize="@dimen/text_15"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>

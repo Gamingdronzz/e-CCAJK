@@ -14,32 +14,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
+            android:fontFamily="@font/imprima"
             android:text="@string/contact_info" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:layout_marginTop="@dimen/margin_large"
-            android:background="@color/colorBlack"></View>
+            android:background="@color/colorDarkBlue"></View>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryLight"
-            android:fontFamily="sans-serif-condensed"
+            android:fontFamily="@font/artifika"
             android:text="Contact Persons"
-            android:textSize="@dimen/text_12"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:textSize="@dimen/text_20"
+            android:textColor="@color/colorWhite"
             android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@color/colorBlack">
-
+            android:background="@color/colorDarkBlue">
         </View>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_contacts"
+            android:layout_marginTop="@dimen/margin_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
