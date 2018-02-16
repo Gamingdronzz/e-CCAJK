@@ -1,116 +1,107 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorOffWhite"
+    android:orientation="vertical"
+    android:weightSum="10"
     tools:context="com.ccajk.Fragments.HomeFragment">
+
+
+    <!--<WebView-->
+    <!--android:id="@+id/slideshow"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="10dp"-->
+    <!--android:visibility="gone">-->
+
+    <!--</WebView>-->
+
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
+
+    </com.daimajia.slider.library.SliderLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_medium"
         android:orientation="vertical">
 
-        <com.daimajia.slider.library.SliderLayout
-            android:id="@+id/slider"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:padding="@dimen/padding_medium">
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xlarge"
+            android:background="@drawable/textview_background_left">
 
-        </com.daimajia.slider.library.SliderLayout>
-
-        <!--<WebView-->
-        <!--android:id="@+id/slideshow"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:visibility="gone">-->
-
-        <!--</WebView>-->
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_large">
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/padding_medium"
+                android:text="Welcome to CCA JK"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_20"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimaryLight"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/artifika"
-                        android:paddingBottom="@dimen/padding_small"
-                        android:paddingTop="@dimen/padding_small"
-                        android:text="Welcome to CCA JK"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_20" />
-
-                    <TextView
-                        android:id="@+id/textview_welcome_short"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_medium"
-                        android:clickable="true"
-                        android:fontFamily="@font/imprima"
-                        android:justificationMode="inter_word"
-                        android:paddingEnd="@dimen/padding_medium"
-                        android:paddingStart="@dimen/padding_medium"
-                        android:text="@string/welcome_short"
-                        android:textSize="@dimen/text_15"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <android.support.v4.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/space_medium" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_large"
-                    android:background="@color/colorPrimaryLight"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/artifika"
-                        android:paddingBottom="@dimen/padding_small"
-                        android:paddingTop="@dimen/padding_small"
-                        android:text="From CCA's Desk"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_20"
-                        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textview_welcome_short"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:paddingLeft="@dimen/padding_medium"
+            android:paddingRight="@dimen/padding_medium"
+            android:clickable="true"
+            android:justificationMode="inter_word"
 
 
-                    <TextView
-                        android:id="@+id/textview_cca_desk"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_medium"
-                        android:fontFamily="@font/imprima"
-                        android:justificationMode="inter_word"
-                        android:paddingEnd="@dimen/padding_medium"
-                        android:paddingStart="@dimen/padding_medium"
-                        android:text="@string/from_cca_desk_short"
-                        android:textSize="@dimen/text_15"
-                        android:textStyle="bold" />
+            android:text="@string/welcome_short"
+            android:textSize="@dimen/text_15"
+            android:textStyle="bold" />
 
 
-                </LinearLayout>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/space_medium" />
 
-            </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/margin_xlarge"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_background_right">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="From CCA's Desk"
+                android:textAlignment="textEnd"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_20"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textview_cca_desk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:paddingLeft="@dimen/padding_medium"
+            android:paddingRight="@dimen/padding_medium"
+            android:justificationMode="inter_word"
+            android:padding="@dimen/padding_medium"
+            android:text="@string/from_cca_desk_short"
+            android:textSize="@dimen/text_15"
+            android:textStyle="bold" />
+
     </LinearLayout>
-</FrameLayout>
+
+</LinearLayout>
+
