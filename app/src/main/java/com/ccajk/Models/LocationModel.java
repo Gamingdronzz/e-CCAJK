@@ -1,5 +1,7 @@
 package com.ccajk.Models;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by balpreet on 2/15/2018.
  */
@@ -7,7 +9,8 @@ package com.ccajk.Models;
 public class LocationModel {
 
     private String locationName;
-    private double longitude,latitude;
+    private LatLng location;
+    //private double longitude,latitude;
 
     public String getLocationName() {
         return locationName;
@@ -17,7 +20,7 @@ public class LocationModel {
         this.locationName = locationName;
     }
 
-    public double getLongitude() {
+    /*public double getLongitude() {
         return longitude;
     }
 
@@ -38,5 +41,18 @@ public class LocationModel {
         this.locationName = locationName;
         this.longitude = longitude;
         this.latitude = latitude;
+    }*/
+
+    public LocationModel(String locationName, LatLng location) {
+        this.locationName = locationName;
+        this.location = location;
+    }
+
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
     }
 }

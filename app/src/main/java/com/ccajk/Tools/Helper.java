@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import android.util.Log;
 
+import com.ccajk.Models.LocationModel;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -23,6 +24,25 @@ import java.util.ArrayList;
 
 public class Helper {
 
+    private ArrayList<LocationModel> locationModels;
+
+    public ArrayList<LocationModel> getLocationModels() {
+        return locationModels;
+    }
+
+    public void setLocationModels(ArrayList<LocationModel> locationModels) {
+        this.locationModels = locationModels;
+    }
+
+    public void addLocation(LocationModel locationModel)
+    {
+        if(locationModels ==null)
+        {
+            locationModels = new ArrayList<LocationModel>();
+        }
+
+        locationModels.add(locationModel);
+    }
     /*
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     User user;
@@ -162,24 +182,17 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public ArrayList<LatLng> getMarkers() {
-        ArrayList<LatLng> markers = new ArrayList<>();
-        markers.add(new LatLng(32.7400343	,74.7403159));
-        markers.add(new LatLng(32.4938192	,75.2548692));
-        markers.add(new LatLng(32.7604934	,74.8989541));
-        markers.add(new LatLng(32.52839,75.120054));
-        markers.add(new LatLng(32.7148855	,74.752726));
-        return markers;
+    public void AddLocations() {
+        if(locationModels==null)
+        {
+            locationModels = new ArrayList<>();
+        }
+        locationModels.add(new LocationModel("Sangrampur",new LatLng(32.7400343	,74.7403159)));
+        locationModels.add(new LocationModel("Sohal",new LatLng(32.4938192	,75.2548692)));
+        locationModels.add(new LocationModel("Sidhra",new LatLng(32.7604934	,74.8989541)));
+        locationModels.add(new LocationModel("Sumb",new LatLng(32.52839,75.120054)));
+        locationModels.add(new LocationModel("Trilokpur",new LatLng(32.7148855	,74.752726)));
     }
 
-    public ArrayList<String> getLocationNames() {
-        ArrayList<String> names = new ArrayList<>();
-        names.add("Sangrampur");
-        names.add("Sohal");
-        names.add("Sidhra");
-        names.add("Sumb");
-        names.add("Trilokpur");
-        return names;
-    }
 }
 

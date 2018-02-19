@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_medium"
     android:elevation="@dimen/elevation_medium"
     app:cardBackgroundColor="@color/colorWhite"
-    app:cardCornerRadius="@dimen/corner_radius_medium"
-    android:layout_height="wrap_content">
+    app:cardCornerRadius="@dimen/corner_radius_medium">
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,28 +18,27 @@
             android:id="@+id/textview_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorBlack"
             android:layout_marginStart="@dimen/margin_medium"
-            android:textStyle="bold"
             android:layout_marginTop="@dimen/margin_medium"
             android:text="TextView"
-            android:textSize="@dimen/text_22" />
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_22"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="2dp"
             android:layout_marginLeft="@dimen/padding_medium"
             android:layout_marginRight="@dimen/margin_medium"
-            android:background="@color/colorBlack"
-            ></View>
+            android:background="@color/colorBlack"></View>
+
         <TextView
             android:id="@+id/textview_designation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorBlack"
-            android:layout_marginBottom="@dimen/margin_medium"
             android:layout_marginLeft="@dimen/margin_medium"
             android:text="TextView"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18" />
 
         <LinearLayout
@@ -47,45 +46,37 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <Button
                 android:id="@+id/textview_office"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:drawableTint="@color/colorBlack"
                 android:layout_margin="@dimen/margin_medium"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:drawableStart="@mipmap/office"
-                android:drawableLeft="@mipmap/office"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_landline"
+                android:drawablePadding="@dimen/padding_medium"
+                android:drawableStart="@drawable/ic_landline"
                 android:text="TextView"
-                android:textSize="@dimen/text_15" />
+                android:textAlignment="textStart"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_15"
+                android:textStyle="bold" />
 
-
-            <!-- <LinearLayout
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content">
-
-                 <TextView
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_margin="@dimen/margin_medium"
-                     android:text="Mobile : "
-                     android:textSize="@dimen/text_15" />-->
-
-            <TextView
+            <Button
                 android:id="@+id/textview_mobile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_medium"
-                android:textColor="@color/colorBlack"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:drawableTint="@color/colorBlack"
-                android:drawableStart="@mipmap/mobile"
-                android:drawableLeft="@mipmap/mobile"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_phone_android_black_24dp"
+                android:drawablePadding="@dimen/padding_medium"
+                android:drawableStart="@drawable/ic_phone_android_black_24dp"
                 android:text="TextView"
-                android:textSize="@dimen/text_15" />
+                android:textAlignment="textStart"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_15"
+                android:textStyle="bold" />
             <!--</LinearLayout>-->
         </LinearLayout>
 

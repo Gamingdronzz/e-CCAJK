@@ -17,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
-import com.ccajk.Models.LocationBuilder;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Models.LocationModelBuilder;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 import com.google.android.gms.maps.model.LatLng;
@@ -47,9 +47,9 @@ public class TabAllLocations extends Fragment {
     }
 
     private void init(View view) {
-        markers = helper.getMarkers();
+        /*markers = helper.getMarkers();
         names = helper.getLocationNames();
-
+*/
         allLocations = new ArrayList<>();
         allLocations = getLocationList();
 
@@ -75,9 +75,9 @@ public class TabAllLocations extends Fragment {
                 View child = rv.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && gestureDetector.onTouchEvent(e)) {
                     int pos = rv.getChildAdapterPosition(child);
-                    LocationModel location = (LocationModel) allLocations.get(pos);
+                    LocationModel location = allLocations.get(pos);
                     // String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%s", lat, log ,Uri.encode(list.get(pos)));
-                    Uri uri = Uri.parse("geo:0,0?q=" + (location.getLatitude() + "," + location.getLongitude() + "(" + Uri.encode(location.getLocationName()) + ")"));
+                    Uri uri = Uri.parse("geo:0,0?q=" + (location.getLocation().latitude + "," + location.getLocation().longitude + "(" + Uri.encode(location.getLocationName()) + ")"));
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     getContext().startActivity(intent);
                 }
@@ -113,11 +113,10 @@ public class TabAllLocations extends Fragment {
         allLocations = new ArrayList<>();
         for (int i = 0; i < markers.size(); i++) {
             LatLng latLng=markers.get(i);
-            allLocations.add(new LocationBuilder()
-                    .setLatitude(latLng.latitude)
-                    .setLongitude(latLng.longitude)
+            allLocations.add(new LocationModelBuilder()
+                    .setLocation(latLng)
                     .setLocationName(names.get(i))
-                    .createLocation());
+                    .createLocationModel());
         }
         return allLocations;
     }
@@ -137,8 +136,6 @@ public class TabAllLocations extends Fragment {
             } else {
                 setupGridLayout(false);
             }*/
-
-
         }
     }
 
