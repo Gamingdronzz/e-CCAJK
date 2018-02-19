@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:drawableBottom="@mipmap/gdlogo"
-        android:fontFamily="cursive"
         android:text="Designed and Developed by"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark" />

@@ -3,8 +3,8 @@ package com.ccajk.Models;
 public class ContactBuilder {
     private String name;
     private String designation;
-    private String officeContact;
-    private String mobileContact;
+    private String officeContact = "";
+    private String mobileContact = "";
 
     public ContactBuilder setName(String name) {
         this.name = name;
