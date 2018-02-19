@@ -46,6 +46,14 @@ public class ContactUsFragment extends Fragment {
     private void getContactsList() {
         contactArrayList.add(new ContactBuilder().setName("Sh. Rajnish Kumar Jenaw ").setDesignation("CCA\nccajk@nic.in").setOfficeContact("2477280").setMobileContact("9419120080").createContact());
         contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
+        contactArrayList.add(new ContactBuilder().setName("Sh Amanullah Tak").setDesignation("JT.CCA\naman.tak@gov.in").setOfficeContact("2477281").setMobileContact("9419120986").createContact());
     }
 
 }

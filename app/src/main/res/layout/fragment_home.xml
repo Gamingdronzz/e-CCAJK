@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorOffWhite"
+
     android:orientation="vertical"
+    android:background="@drawable/side_nav_bar"
     android:weightSum="10"
     tools:context="com.ccajk.Fragments.HomeFragment">
 
@@ -27,7 +28,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+
         android:paddingTop="@dimen/padding_medium"
         android:orientation="vertical">
 
@@ -56,11 +58,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
             android:paddingLeft="@dimen/padding_medium"
+            android:textColor="@color/colorWhite"
             android:paddingRight="@dimen/padding_medium"
             android:clickable="true"
             android:justificationMode="inter_word"
-
-
             android:text="@string/welcome_short"
             android:textSize="@dimen/text_15"
             android:textStyle="bold" />
@@ -81,6 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+
                 android:text="From CCA's Desk"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorBlack"
@@ -95,6 +97,7 @@
             android:layout_marginTop="@dimen/margin_medium"
             android:paddingLeft="@dimen/padding_medium"
             android:paddingRight="@dimen/padding_medium"
+            android:textColor="@color/colorWhite"
             android:justificationMode="inter_word"
             android:padding="@dimen/padding_medium"
             android:text="@string/from_cca_desk_short"

@@ -1,76 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/margin_medium"
+    android:elevation="@dimen/elevation_medium"
+    app:cardBackgroundColor="@color/colorWhite"
+    app:cardCornerRadius="@dimen/corner_radius_medium"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textview_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:layout_marginStart="@dimen/margin_medium"
-        android:fontFamily="@font/imprima"
-        android:text="TextView"
-        android:textSize="@dimen/text_15" />
 
-    <TextView
-        android:id="@+id/textview_designation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_medium"
-        android:layout_marginBottom="@dimen/margin_medium"
-        android:fontFamily="@font/imprima"
-        android:text="TextView"
-        android:textSize="@dimen/text_15" />
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_office"
-            android:layout_width="0dp"
+            android:id="@+id/textview_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_medium"
-            android:layout_weight="1"
-            android:drawableStart="@mipmap/office"
-            android:fontFamily="@font/imprima"
+            android:textColor="@color/colorBlack"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/margin_medium"
             android:text="TextView"
-            android:textSize="@dimen/text_15" />
+            android:textSize="@dimen/text_22" />
 
-        <!-- <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content">
-
-             <TextView
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_margin="@dimen/margin_medium"
-                 android:text="Mobile : "
-                 android:textSize="@dimen/text_15" />-->
-
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_marginLeft="@dimen/padding_medium"
+            android:layout_marginRight="@dimen/margin_medium"
+            android:background="@color/colorBlack"
+            ></View>
         <TextView
-            android:id="@+id/textview_mobile"
-            android:layout_width="0dp"
+            android:id="@+id/textview_designation"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_medium"
-            android:layout_weight="1"
-            android:drawableStart="@mipmap/mobile"
-            android:fontFamily="@font/imprima"
+            android:textColor="@color/colorBlack"
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:layout_marginLeft="@dimen/margin_medium"
             android:text="TextView"
-            android:textSize="@dimen/text_15" />
-        <!--</LinearLayout>-->
+            android:textSize="@dimen/text_18" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textview_office"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:drawableTint="@color/colorBlack"
+                android:layout_margin="@dimen/margin_medium"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:drawableStart="@mipmap/office"
+                android:text="TextView"
+                android:textSize="@dimen/text_15" />
+
+
+            <!-- <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
+
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_margin="@dimen/margin_medium"
+                     android:text="Mobile : "
+                     android:textSize="@dimen/text_15" />-->
+
+            <TextView
+                android:id="@+id/textview_mobile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_medium"
+                android:textColor="@color/colorBlack"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:drawableTint="@color/colorBlack"
+                android:drawableStart="@mipmap/mobile"
+                android:text="TextView"
+                android:textSize="@dimen/text_15" />
+            <!--</LinearLayout>-->
+        </LinearLayout>
+
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginEnd="@dimen/margin_large"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="@dimen/padding_small"
-        android:layout_marginBottom="@dimen/margin_medium"
-        android:background="@color/colorDarkBlue" />
-
-</LinearLayout>
+</android.support.v7.widget.CardView>
