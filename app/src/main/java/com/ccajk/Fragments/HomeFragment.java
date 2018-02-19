@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ccajk.Activity.HomeActivity;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Activity.AboutUsActivity;
 import com.ccajk.R;
+import com.ccajk.Tools.Prefrences;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
@@ -33,7 +33,7 @@ import java.util.HashMap;
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout mDemoSlider;
-    private TextView welcomeText,ccaDeskText;
+    private TextView welcomeText, ccaDeskText;
     View view;
 
     public HomeFragment() {
@@ -48,10 +48,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
-
         SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
         builder.append(str1);
-
         SpannableString str2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
         str2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, str2.length(), 0);
         builder.append(str2);
@@ -60,18 +58,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         welcomeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) getActivity()).getSupportActionBar().setTitle("About Us");
-                Fragment fragment;
-                fragment = new AboutUsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
+                startActivity(intent);
             }
         });
 
-        SpannableStringBuilder builder2 = new SpannableStringBuilder();
 
+        SpannableStringBuilder builder2 = new SpannableStringBuilder();
         SpannableString string1 = new SpannableString(getText(R.string.from_cca_desk_short));
         builder2.append(string1);
-
         SpannableString string2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
         string2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, string2.length(), 0);
         builder2.append(string2);
