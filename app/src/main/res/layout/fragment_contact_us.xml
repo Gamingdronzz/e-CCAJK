@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorOffWhite"
+    android:background="@drawable/side_nav_bar"
     android:orientation="vertical"
     tools:context="com.ccajk.Fragments.ContactUsFragment">
 
@@ -17,45 +17,46 @@
         android:id="@+id/general"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_large"
         android:fontFamily="@font/imprima"
+        android:padding="@dimen/padding_large"
         android:text="@string/contact_info"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/text_15" />
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_15"></TextView>
 
     <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:background="@color/colorBlack"></View>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_medium"
-            android:background="@color/colorOffWhite"
             android:fontFamily="@font/artifika"
             android:text="Contact Persons"
             android:textAlignment="center"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_20"
-            android:textStyle="bold" />
+            android:textStyle="bold"></TextView>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:background="@color/colorBlack"></View>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/general"
             android:layout_marginBottom="8dp"
-            android:background="@color/colorOffWhite"
             android:padding="@dimen/padding_medium"></android.support.v7.widget.RecyclerView>
 
 
