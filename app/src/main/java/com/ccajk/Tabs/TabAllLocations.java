@@ -3,7 +3,6 @@ package com.ccajk.Tabs;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,19 +20,21 @@ import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.Models.LocationBuilder;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
 
 //Our class extending fragment
-public class TabAllLocations extends Fragment  {
+public class TabAllLocations extends Fragment {
     RecyclerView recyclerView;
 
-    //Button getLocation;
-    LocationManager locationManager;
+    private ArrayList<LatLng> markers = new ArrayList<>();
+    private ArrayList<String> names = new ArrayList<>();
+    Helper helper = new Helper();
     RecyclerViewAdapterHotspotLocation adapter;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
-
 
 
     //Overriden method onCreateView
@@ -46,6 +47,9 @@ public class TabAllLocations extends Fragment  {
     }
 
     private void init(View view) {
+        markers = helper.getMarkers();
+        names = helper.getLocationNames();
+
         allLocations = new ArrayList<>();
         allLocations = getLocationList();
 
@@ -105,15 +109,16 @@ public class TabAllLocations extends Fragment  {
     }
 
 
-
     private ArrayList<LocationModel> getLocationList() {
         allLocations = new ArrayList<>();
-
-        allLocations.add(new LocationBuilder()
-                .setLatitude(32.7253156)
-                .setLongitude(74.8412983)
-                .setLocationName("NCC Directorate J&K")
-                .createLocation());
+        for (int i = 0; i < markers.size(); i++) {
+            LatLng latLng=markers.get(i);
+            allLocations.add(new LocationBuilder()
+                    .setLatitude(latLng.latitude)
+                    .setLongitude(latLng.longitude)
+                    .setLocationName(names.get(i))
+                    .createLocation());
+        }
         return allLocations;
     }
 
@@ -153,8 +158,6 @@ public class TabAllLocations extends Fragment  {
             recyclerView.setLayoutManager(manager);
         }
     }
-
-
 
 
 }
