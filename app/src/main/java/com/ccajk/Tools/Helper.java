@@ -12,8 +12,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
  * Created by hp on 09-02-2018.
@@ -137,13 +138,15 @@ public class Helper {
 
     */
 
-    /** calculates the distance between two locations in MILES */
+    /**
+     * calculates the distance between two locations in MILES
+     */
     public static double distance(double lat1, double lng1, double lat2, double lng2) {
 
         double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
 
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
 
         double sindLat = Math.sin(dLat / 2);
         double sindLng = Math.sin(dLng / 2);
@@ -151,12 +154,32 @@ public class Helper {
         double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
                 * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         double dist = earthRadius * c;
-        Log.v("Helper","Distance between coordinates = " + dist);
+        Log.v("Helper", "Distance between coordinates = " + dist);
 
         return dist; // output distance, in MILES
+    }
+
+    public ArrayList<LatLng> getMarkers() {
+        ArrayList<LatLng> markers = new ArrayList<>();
+        markers.add(new LatLng(32.7400343	,74.7403159));
+        markers.add(new LatLng(32.4938192	,75.2548692));
+        markers.add(new LatLng(32.7604934	,74.8989541));
+        markers.add(new LatLng(32.52839,75.120054));
+        markers.add(new LatLng(32.7148855	,74.752726));
+        return markers;
+    }
+
+    public ArrayList<String> getLocationNames() {
+        ArrayList<String> names = new ArrayList<>();
+        names.add("Sangrampur");
+        names.add("Sohal");
+        names.add("Sidhra");
+        names.add("Sumb");
+        names.add("Trilokpur");
+        return names;
     }
 }
 

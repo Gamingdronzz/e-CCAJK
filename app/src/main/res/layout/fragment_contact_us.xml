@@ -1,9 +1,10 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/side_nav_bar"
+    android:background="@color/colorOffWhite"
+    android:orientation="vertical"
     tools:context="com.ccajk.Fragments.ContactUsFragment">
 
     <!--  <LinearLayout
@@ -14,28 +15,25 @@
 
     <TextView
         android:id="@+id/general"
-        android:layout_width="362dp"
-        android:layout_height="165dp"
-        android:layout_margin="@dimen/margin_medium"
-        android:layout_marginBottom="356dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/imprima"
-        android:text="@string/contact_info"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_15" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/general"
-        android:layout_marginTop="8dp"
-        android:elevation="@dimen/elevation_medium"
-        app:cardBackgroundColor="@color/colorOffWhite"
-        app:cardCornerRadius="@dimen/corner_radius_xlarge"
-        app:layout_constraintTop_toBottomOf="@+id/general"
-        tools:layout_editor_absoluteX="16dp">
+        android:padding="@dimen/padding_large"
+        android:fontFamily="@font/imprima"
+        android:text="@string/contact_info"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_15" />
 
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorBlack"></View>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +45,10 @@
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
             android:textStyle="bold" />
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorBlack"></View>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_contacts"
             android:layout_width="match_parent"
@@ -58,7 +59,5 @@
             android:padding="@dimen/padding_medium"></android.support.v7.widget.RecyclerView>
 
 
-    </android.support.v7.widget.CardView>
-
-    <!--  </LinearLayout>-->
-</android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+</LinearLayout>
