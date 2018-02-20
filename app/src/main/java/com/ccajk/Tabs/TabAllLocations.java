@@ -30,9 +30,9 @@ import java.util.ArrayList;
 public class TabAllLocations extends Fragment {
     RecyclerView recyclerView;
 
-    private ArrayList<LatLng> markers = new ArrayList<>();
-    private ArrayList<String> names = new ArrayList<>();
-    Helper helper = new Helper();
+    /*private ArrayList<LatLng> markers = new ArrayList<>();
+    private ArrayList<String> names = new ArrayList<>();*/
+
     RecyclerViewAdapterHotspotLocation adapter;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class TabAllLocations extends Fragment {
         names = helper.getLocationNames();
 */
         allLocations = new ArrayList<>();
-        allLocations = getLocationList();
+        allLocations = Helper.getInstance().getLocationModels();
 
 
         adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
@@ -60,7 +60,7 @@ public class TabAllLocations extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.getItemAnimator().setAddDuration(1000);
-        getLocationList();
+        /*getLocationList();*/
 
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
 
@@ -109,7 +109,7 @@ public class TabAllLocations extends Fragment {
     }
 
 
-    private ArrayList<LocationModel> getLocationList() {
+   /* private ArrayList<LocationModel> getLocationList() {
         allLocations = new ArrayList<>();
         for (int i = 0; i < markers.size(); i++) {
             LatLng latLng=markers.get(i);
@@ -119,7 +119,7 @@ public class TabAllLocations extends Fragment {
                     .createLocationModel());
         }
         return allLocations;
-    }
+    }*/
 
     @Override
     public void onConfigurationChanged(Configuration config) {

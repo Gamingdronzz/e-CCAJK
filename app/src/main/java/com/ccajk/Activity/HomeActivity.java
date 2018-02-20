@@ -17,11 +17,10 @@ import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    public static AppCompatActivity mCcontext;
 
 //    WebView webView;
 //    final String removeLogo = "document.getElementsByClassName('logo')[0].style.display=\"none\"; ";
@@ -37,13 +36,12 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mCcontext = this;
 
 //        webView = findViewById(R.id.slideshow);
 //        setupWebview();
 //        webView.loadUrl("http://ccajk.gov.in/index.php");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

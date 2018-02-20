@@ -23,6 +23,27 @@ import java.util.ArrayList;
 
 
 public class Helper {
+    private static Helper _instance;
+    public static Helper getInstance()
+    {
+        if(_instance == null)
+        {
+            return new Helper();
+        }
+        else
+        {
+            return _instance;
+        }
+    }
+
+    public Helper()
+    {
+        _instance = this;
+        if(getLocationModels()==null)
+        {
+            AddLocations();
+        }
+    }
 
     private ArrayList<LocationModel> locationModels;
 

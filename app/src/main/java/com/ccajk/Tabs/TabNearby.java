@@ -4,6 +4,7 @@ package com.ccajk.Tabs;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
@@ -38,6 +39,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.warkiz.widget.IndicatorSeekBar;
+import com.warkiz.widget.IndicatorSeekBarType;
+import com.warkiz.widget.IndicatorType;
+import com.warkiz.widget.TickType;
 
 import java.util.ArrayList;
 
@@ -48,18 +53,17 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private GoogleMap mMap;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private Marker mCurrLocationMarker;
     private LatLng latLng;
-    private int radius;
     private int seekBarValue;
+    private
     FusedLocationProviderClient mFusedLocationClient;
 
 
     /*private ArrayList<LatLng> markers = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>();*/
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
-    Helper helper = new Helper();
-    private SeekBar seekBar;
+    IndicatorSeekBar seekBar;
+    //private SeekBar seekBar;
     private final int LOCATION_REQUEST_CODE = 101;
 
     AppCompatActivity appCompatActivity;
@@ -84,15 +88,55 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     }
 
     private void init(View view) {
+
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         /*markers = helper.getMarkers();
         names = helper.getLocationNames();*/
-        helper.AddLocations();
-        locationModels = helper.getLocationModels();
+        locationModels = Helper.getInstance().getLocationModels();
 
         seekBar = view.findViewById(R.id.seekBar);
-        seekBar.setMax(3);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar.getBuilder()
+                .setMax(3)
+                .setMin(0)
+                .setProgress(0)
+                .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
+                .setTickType(TickType.OVAL)
+                .setTickNum(1)
+                .setBackgroundTrackSize(2)//dp size
+                .setProgressTrackSize(3)//dp size
+                .setIndicatorType(IndicatorType.CIRCULAR_BUBBLE)
+                .setIndicatorColor(getResources().getColor(R.color.colorAccent))
+                .build();
+
+        seekBar.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
+
+            }
+
+            @Override
+            public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+                seekBarValue = seekBar.getProgress();
+                //radius = seekBarValue + 15;
+
+                //Toast.makeText(getContext(), "New Radius = " + radius, Toast.LENGTH_SHORT).show();
+                if (mLastLocation != null) {
+                    AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(seekBarValue));
+                }
+            }
+        });
+      /*  seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -106,15 +150,15 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekBarValue = seekBar.getProgress();
-                radius = seekBarValue + 15;
+                //radius = seekBarValue + 15;
 
-                Toast.makeText(getContext(), "New Radius = " + radius, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "New Radius = " + radius, Toast.LENGTH_SHORT).show();
                 if (mLastLocation != null) {
-                    AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, radius);
+                    AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(seekBarValue));
                 }
 
             }
-        });
+        });*/
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -133,8 +177,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         mMap.setOnMyLocationClickListener(this);
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(120000); // two minute interval
-        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setInterval(2000); // two minute interval
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -151,8 +195,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             mMap.setMyLocationEnabled(true);
         }
-        if(mLastLocation!=null) {
-            AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, 17);
+        if (mLastLocation != null) {
+            AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels,0);
         }
     }
 
@@ -170,8 +214,9 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title("Current Position");
-                AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, 15);
+                AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels,getZoomValue(0));
                 Log.v("MapsActivity", "Animating through Callback ");
+                mFusedLocationClient.removeLocationUpdates(mLocationCallback);
                 /*int i = 0;
 
 
@@ -193,6 +238,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         int i = 0;
         ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations);
         if (filteredMarkers == null) {
+            Log.v("MapsActivity", "Map Cleared");
             Snackbar.make(this.getView(), "No Locations in nearby\nIncrease Radius", Snackbar.LENGTH_SHORT);
             return;
         }
@@ -233,8 +279,12 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         return filteredLocations;
     }
 
+    private int getZoomValue(int seekBarValue) {
+        return 15 - seekBarValue;
+    }
+
     private int getRadius(int seekBarValue) {
-        Log.v("MapsActivity","Value = " + seekBarValue * 30000);
+        Log.v("MapsActivity", "Value = " + seekBarValue * 30000);
         return seekBarValue * 30000;
     }
 
@@ -259,13 +309,19 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this.getActivity(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        if(mLastLocation == null)
+        {
+            Toast.makeText(this.getActivity(), "Please Enable Location First", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Toast.makeText(this.getActivity(), "Going to My Location", Toast.LENGTH_SHORT).show();
         return false;
     }
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this.getActivity(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this.getActivity(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        Toast.makeText(this.getActivity(), "You are here",Toast.LENGTH_SHORT).show();
 
     }
 

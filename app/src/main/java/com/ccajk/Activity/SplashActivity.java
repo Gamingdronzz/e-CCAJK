@@ -33,21 +33,23 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void StartAnimations() {
-        final Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
+        final Animation animationAlpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+        final Animation animationScale = AnimationUtils.loadAnimation(this, R.anim.scale);
         final Animation animationBounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
 
-        anim.reset();
+        animationAlpha.reset();
+        animationScale.reset();
         animationBounce.reset();
 
 
         imageView.clearAnimation();
-        imageView.startAnimation(anim);
+        imageView.startAnimation(animationScale);
 
         gd.clearAnimation();
         gd.startAnimation(animationBounce);
 
-        anim.setAnimationListener(new Animation.AnimationListener() {
+        animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 

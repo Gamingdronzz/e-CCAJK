@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/splash_background"
     android:layout_height="match_parent"
     tools:context="com.ccajk.Activity.SplashActivity">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/logo"
+        android:tint="@color/colorBlack"
         android:layout_centerInParent="true"
-        android:padding="@dimen/padding_large"
+        android:layout_margin="@dimen/margin_xxxxlarge"
         android:src="@drawable/logo"
          />
 
@@ -24,6 +25,7 @@
         android:drawableBottom="@mipmap/gdlogo"
         android:text="Designed and Developed by"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textSize="@dimen/text_10"
+        android:textColor="@color/colorBlack" />
 
 </RelativeLayout>
