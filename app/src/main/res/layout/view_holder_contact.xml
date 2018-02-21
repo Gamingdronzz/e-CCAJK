@@ -9,7 +9,7 @@
     app:cardCornerRadius="@dimen/corner_radius_medium">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -53,9 +53,7 @@
                 android:layout_margin="@dimen/margin_medium"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_landline"
                 android:drawablePadding="@dimen/padding_medium"
-                android:drawableStart="@drawable/ic_landline"
                 android:text="TextView"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorBlack"
@@ -69,9 +67,7 @@
                 android:layout_margin="@dimen/margin_medium"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_phone_android_black_24dp"
                 android:drawablePadding="@dimen/padding_medium"
-                android:drawableStart="@drawable/ic_phone_android_black_24dp"
                 android:text="TextView"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorBlack"

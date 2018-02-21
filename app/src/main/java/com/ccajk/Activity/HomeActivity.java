@@ -17,11 +17,9 @@ import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
 //    WebView webView;
 //    final String removeLogo = "document.getElementsByClassName('logo')[0].style.display=\"none\"; ";
 //    final String removeHead = "document.getElementsByClassName('head-r')[0].style.display=\"none\"; ";
@@ -36,11 +34,6 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-//        webView = findViewById(R.id.slideshow);
-//        setupWebview();
-//        webView.loadUrl("http://ccajk.gov.in/index.php");
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -72,73 +65,8 @@ public class HomeActivity extends AppCompatActivity
     @Override
 
     protected void onStop() {
-
-
         super.onStop();
-
     }
-
-
-
-
-  /*  private void setupWebview() {
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient() {
-
-            @RequiresApi(Build.VERSION_CODES.O)
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(request.getUrl().toString());
-                return super.shouldOverrideUrlLoading(view, request);
-            }
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    Log.d("Url", url);
-                    view.loadUrl(url);
-                }
-                return true;
-            }
-
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                Toast.makeText(getApplicationContext(), "We are getting things fixed..", Toast.LENGTH_SHORT).show();
-            }
-
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-
-            }
-        });
-
-        webView.setWebChromeClient
-                (
-                        new WebChromeClient() {
-                            @Override
-                            public void onProgressChanged(WebView view, int newProgress) {
-                                StringBuilder stringBuilder = new StringBuilder();
-                                stringBuilder.append("javascript:");
-                                stringBuilder.append("(function() { ");
-
-                                stringBuilder.append(removeHead);
-                                stringBuilder.append(removeFont);
-                                stringBuilder.append(removeLogo);
-                                stringBuilder.append(removeMain);
-                                stringBuilder.append(removeIndicator);
-                                stringBuilder.append(removeFlexy);
-                                stringBuilder.append(removeWrapper);
-                                stringBuilder.append(removeFooter);
-                                stringBuilder.append("} ) ()");
-                                view.loadUrl(stringBuilder.toString());
-
-                            }
-
-                        }
-                );
-    }*/
-
 
     @Override
     public void onBackPressed() {

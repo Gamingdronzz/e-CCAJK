@@ -37,7 +37,7 @@ public class ContactUsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview_contacts);
 
         getContactsList();
-        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList);
+        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList,getContext());
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;

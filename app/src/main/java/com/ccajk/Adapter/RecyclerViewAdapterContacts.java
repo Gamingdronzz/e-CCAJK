@@ -1,7 +1,9 @@
 package com.ccajk.Adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,9 +25,10 @@ import java.util.ArrayList;
 public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerViewAdapterContacts.ContactsViewHolder> {
 
     ArrayList<Contact> contactArrayList;
-
-    public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList) {
+    Context context;
+    public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList,Context context) {
         this.contactArrayList = contactArrayList;
+        this.context=context;
     }
 
     @Override
@@ -40,7 +43,9 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         holder.name.setText(contact.getName());
         holder.designation.setText(contact.getDesignation());
         holder.office.setText("\t"+contact.getOfficeContact());
+        holder.office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context,R.drawable.ic_landline),null,null,null);
         holder.mobile.setText("\t"+contact.getMobileContact());
+        holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context,R.drawable.ic_phone_android_black_24dp),null,null,null);
     }
 
     @Override
