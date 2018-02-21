@@ -1,10 +1,7 @@
 package com.ccajk.Fragments;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -18,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
+import com.ccajk.Activity.BrowserActivity;
 import com.ccajk.R;
-import com.ccajk.Tools.Prefrences;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
@@ -88,46 +85,26 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     public void onSliderClick(BaseSliderView slider) {
 
         final String name = (String) slider.getBundle().get("extra");
-        if (Prefrences.getLeaveApp(getContext()) == false) {
-            final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                    .setTitle("CCA JK")
-                    .setMessage("You are about to leave the application and open the link in external browser")
-                    .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Prefrences.setLeaveApp(getContext(), true);
-                            loadWebSite(name);
-                        }
-                    })
-                    .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create();
-            alertDialog.show();
-        } else {
-            loadWebSite(name);
-        }
+        loadWebSite(name);
     }
 
     private void loadWebSite(String name) {
-        Intent intent;
+        Intent intent = new Intent(HomeFragment.this.getActivity(), BrowserActivity.class);
         switch (name) {
             case "Digital India":
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.digitalindia.gov.in/"));
+                intent.putExtra("url", "http://www.digitalindia.gov.in/");
                 startActivity(intent);
                 break;
             case "Swachh Bharat Abhiyan":
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://swachhbharat.mygov.in"));
+                intent.putExtra("url", "https://swachhbharat.mygov.in");
                 startActivity(intent);
                 break;
             case "Controller of Communication Accounts":
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://ccajk.gov.in/"));
+                intent.putExtra("url", "http://ccajk.gov.in/");
                 startActivity(intent);
+                break;
         }
+
     }
 
     private void setupSlider() {
