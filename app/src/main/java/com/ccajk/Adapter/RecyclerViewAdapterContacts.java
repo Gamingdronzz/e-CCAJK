@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,14 +51,14 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView designation;
-        private TextView office;
-        private TextView mobile;
+        private Button office;
+        private Button mobile;
 
         public ContactsViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.textview_name);
             designation = itemView.findViewById(R.id.textview_designation);
-            office = itemView.findViewById(R.id.textview_office);
+            office = itemView.findViewById(R.id.button_office);
             mobile = itemView.findViewById(R.id.textview_mobile);
 
             mobile.setOnClickListener(new View.OnClickListener() {
