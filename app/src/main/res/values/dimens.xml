@@ -29,7 +29,6 @@
     <dimen name="height_small">4dp</dimen>
 
 
-
     <dimen name="margin_min">2dp</dimen>
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_medium">8dp</dimen>
@@ -40,12 +39,17 @@
     <dimen name="margin_xxxxlarge">64dp</dimen>
     <dimen name="margin_xxxxxlarge">96dp</dimen>
 
-    <dimen name="padding_large">16dp</dimen>
-    <dimen name="padding_medium">8dp</dimen>
+
+
     <dimen name="padding_min">2dp</dimen>
     <dimen name="padding_small">4dp</dimen>
-    <dimen name="padding_xlarge">32dp</dimen>
-    <dimen name="padding_xxlarge">64dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="padding_xlarge">24dp</dimen>
+    <dimen name="padding_xxlarge">32dp</dimen>
+    <dimen name="padding_xxxlarge">48dp</dimen>
+    <dimen name="padding_xxxxlarge">64dp</dimen>
+    <dimen name="padding_xxxxxlarge">96dp</dimen>
 
 
     <dimen name="space_large">32dp</dimen>

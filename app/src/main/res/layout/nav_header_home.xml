@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/side_nav_bar"
+    android:background="@color/colorPrimary"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingTop="@dimen/padding_xxlarge"
@@ -20,13 +20,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:textSize="@dimen/text_20"
         android:text="CCA JK"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text_15"
         android:text="ccajk@nic.in" />
 
 </LinearLayout>

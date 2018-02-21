@@ -23,7 +23,7 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_above="@id/seekBar"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -33,20 +33,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/nearby"
-        app:isb_track_background_bar_size="@dimen/padding_xlarge"
+        android:background="#66000000"
         android:paddingBottom="@dimen/padding_medium"
-        android:paddingLeft="@dimen/padding_large"
-        android:paddingRight="@dimen/padding_large"
-        android:paddingTop="@dimen/padding_medium"></com.warkiz.widget.IndicatorSeekBar>
+        android:paddingLeft="@dimen/padding_xxlarge"
+        android:paddingRight="@dimen/padding_xxlarge"
+        android:paddingTop="@dimen/padding_medium"
+        app:isb_indicator_color="@color/colorAccent"
+        app:isb_indicator_stay="true"
+        app:isb_indicator_text_color="@color/colorWhite"
+        app:isb_indicator_text_size="@dimen/text_15"
+        app:isb_indicator_type="circular_bubble"
+        app:isb_max="4"
+        app:isb_min="0"
+        app:isb_seek_bar_type="discrete_ticks"
+        app:isb_text_color="@color/colorWhite"
+        app:isb_thumb_color="@color/colorPrimary"
+        app:isb_thumb_width="@dimen/margin_large"
+        app:isb_track_background_bar_color="@color/colorWhite"
+        app:isb_track_background_bar_size="@dimen/padding_xlarge"
+        app:isb_track_progress_bar_color="@color/colorAccent"
+        app:isb_track_progress_bar_size="@dimen/margin_small">
+    </com.warkiz.widget.IndicatorSeekBar>
 
     <TextView
         android:id="@+id/nearby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="#66000000"
+        android:paddingBottom="@dimen/padding_small"
         android:text="NEARBY RADIUS"
         android:textAlignment="center"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_18"
         android:textStyle="bold" />
     <!--&lt;!&ndash; <android.support.v7.widget.RecyclerView
          android:id="@+id/recycler_view_1"
