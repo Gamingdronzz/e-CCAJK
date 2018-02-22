@@ -5,6 +5,7 @@ package com.ccajk.Models;
  */
 
 public class Contact {
+    public static final String NA="N/A";
     private String name;
     private String designation;
     private String officeContact;

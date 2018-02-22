@@ -1,11 +1,12 @@
 package com.ccajk.Models;
 
 public class ContactBuilder {
+
     private String name;
     private String designation;
-    private String email;
-    private String officeContact;
-    private String mobileContact;
+    private String email = Contact.NA;
+    private String officeContact=Contact.NA;
+    private String mobileContact=Contact.NA;
 
     public ContactBuilder setName(String name) {
         this.name = name;

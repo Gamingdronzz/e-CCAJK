@@ -3,10 +3,9 @@ package com.ccajk.Tabs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -20,25 +19,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.IndicatorSeekBarType;
 import com.warkiz.widget.IndicatorType;
@@ -50,6 +55,7 @@ import java.util.ArrayList;
 public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
+    private static final int REQUEST_CHECK_SETTINGS = 200;
     private GoogleMap mMap;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
@@ -57,6 +63,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private int seekBarValue;
     private
     FusedLocationProviderClient mFusedLocationClient;
+
+    private final String TAG = "Nearby";
 
 
     /*private ArrayList<LatLng> markers = new ArrayList<>();
@@ -67,6 +75,18 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private final int LOCATION_REQUEST_CODE = 101;
 
     AppCompatActivity appCompatActivity;
+
+    LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Log.v(TAG,"Updating My Location");
+            for (Location location : locationResult.getLocations()) {
+                placeMarkerOnMyLocation(location, locationResult);
+
+            }
+        }
+    };
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,73 +192,129 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
-        mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
+        setMyMap(googleMap);
+        createLocationRequest();
+        checkForLocationPermissions();
 
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(2000); // two minute interval
-        mLocationRequest.setFastestInterval(2000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        if (mLastLocation != null) {
+            AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, 0);
+        }
+    }
 
+
+    private void checkForLocationPermissions() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this.getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                mMap.setMyLocationEnabled(true);
+                Log.v(TAG,"Permission Granted");
+
+                requestLocationUpdates();
             } else {
                 requestLocationPermission();
+                Log.v(TAG,"Permission Denied and requesting");
             }
         } else {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-            mMap.setMyLocationEnabled(true);
-        }
-        if (mLastLocation != null) {
-            AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels,0);
+            Log.v(TAG,"Below M");
+            requestLocationUpdates();
         }
     }
 
-    LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            for (Location location : locationResult.getLocations()) {
-                Log.v("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                mLastLocation = location;
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(2000); // two minute interval
+        mLocationRequest.setFastestInterval(2000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        SettingsClient client = LocationServices.getSettingsClient(this.getActivity());
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+                task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                        if(task.isSuccessful())
+                        {
+                            Log.v(TAG,"Task  Granted");
+                        }
+                    }
+                });
+        task.addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
+                Log.v(TAG,"Access  Granted");
+            }
+        });
+
+        task.addOnFailureListener(this.getActivity(), new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    onLocationAcccessRequestFailure(e);
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    Log.v(TAG,"Access Denied");
+
+                }
+            }
+        });
+        Log.v(TAG,"Location Request Created");
+    }
+
+    private void setMyMap(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+        Log.v(TAG,"Maps Set");
+    }
+
+    private void onLocationAcccessRequestFailure(Exception e) {
+        try {
+            // Show the dialog by calling startResolutionForResult(),
+            // and check the result in onActivityResult().
+            ResolvableApiException resolvable = (ResolvableApiException) e;
+            resolvable.startResolutionForResult(this.getActivity(),
+                    REQUEST_CHECK_SETTINGS);
+        } catch (IntentSender.SendIntentException sendEx) {
+            // Ignore the error.
+        }
+    }
+
+    private void placeMarkerOnMyLocation(Location location, LocationResult locationResult) {
+        Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
+        mLastLocation = location;
                /* if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.remove();
                 }*/
 
-                latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Current Position");
-                AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels,getZoomValue(0));
-                Log.v("MapsActivity", "Animating through Callback ");
-                mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-                /*int i = 0;
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(0));
+        Log.v(TAG, "Animating through Callback ");
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
 
+    @SuppressLint("MissingPermission")
+    private void requestLocationUpdates() {
 
-                for(i=0;i<)
-                for (LatLng latlng : markers) {
-                    mMap.addMarker(new MarkerOptions().position(latlng).title(names.get(i++)));
-                }
-                mCurrLocationMarker = mMap.addMarker(markerOptions);
-
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));*/
-            }
-        }
-    };
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        mMap.setMyLocationEnabled(true);
+        Log.v(TAG,"Requesting Location Updates");
+    }
 
     private void AnimateCamera(LatLng focussedLocation, ArrayList<LocationModel> allLocations, int zoom) {
-        Log.v("MapsActivity", "In function");
+        Log.v(TAG, "In function");
         mMap.clear();
-        Log.v("MapsActivity", "Map Cleared");
+        Log.v(TAG, "Map Cleared");
         int i = 0;
         ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations);
         if (filteredMarkers == null) {
-            Log.v("MapsActivity", "Map Cleared");
+            Log.v(TAG, "Map Cleared");
             Snackbar.make(this.getView(), "No Locations in nearby\nIncrease Radius", Snackbar.LENGTH_SHORT);
             return;
         }
@@ -256,7 +332,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 .tilt(0)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Log.v("MapsActivity", "Animation Done");
+        Log.v(TAG, "Animation Done");
     }
 
     private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels) {
@@ -284,7 +360,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     }
 
     private int getRadius(int seekBarValue) {
-        Log.v("MapsActivity", "Value = " + seekBarValue * 30000);
+        Log.v(TAG, "Value = " + seekBarValue * 30000);
         return seekBarValue * 30000;
     }
 
@@ -297,8 +373,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 if (permissions.length == 1 &&
                         permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                    mMap.setMyLocationEnabled(true);
+                    requestLocationUpdates();
                 } else {
 
                 }
@@ -307,10 +382,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         }
     }
 
+
     @Override
     public boolean onMyLocationButtonClick() {
-        if(mLastLocation == null)
-        {
+        if (mLastLocation == null) {
             Toast.makeText(this.getActivity(), "Please Enable Location First", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -321,7 +396,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         //Toast.makeText(this.getActivity(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
-        Toast.makeText(this.getActivity(), "You are here",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), "You are here", Toast.LENGTH_SHORT).show();
 
     }
 
