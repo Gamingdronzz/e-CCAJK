@@ -8,6 +8,8 @@ public class Contact {
     private String name;
     private String designation;
     private String officeContact;
+    private String mobileContact;
+    private String email;
 
     public String getName() {
         return name;
@@ -41,13 +43,22 @@ public class Contact {
         this.mobileContact = mobileContact;
     }
 
-    public Contact(String name, String designation, String officeContact, String mobileContact) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Contact(String name, String designation, String email, String officeContact, String mobileContact) {
 
         this.name = name;
+        this.email=email;
         this.designation = designation;
         this.officeContact = officeContact;
         this.mobileContact = mobileContact;
     }
 
-    private String mobileContact;
+
 }

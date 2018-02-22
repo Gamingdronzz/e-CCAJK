@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/side_nav_bar"
+    android:background="@color/colorGray"
     android:orientation="vertical"
     tools:context="com.ccajk.Fragments.ContactUsFragment">
 
@@ -38,10 +38,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_medium"
             android:fontFamily="@font/artifika"
             android:text="Contact Persons"
-            android:textAlignment="center"
+            android:padding="@dimen/padding_medium"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_20"
             android:textStyle="bold"></TextView>

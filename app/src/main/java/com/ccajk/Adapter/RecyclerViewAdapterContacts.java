@@ -26,9 +26,10 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     ArrayList<Contact> contactArrayList;
     Context context;
-    public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList,Context context) {
+
+    public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList, Context context) {
         this.contactArrayList = contactArrayList;
-        this.context=context;
+        this.context = context;
     }
 
     @Override
@@ -42,10 +43,27 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         Contact contact = contactArrayList.get(position);
         holder.name.setText(contact.getName());
         holder.designation.setText(contact.getDesignation());
-        holder.office.setText("\t"+contact.getOfficeContact());
-        holder.office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context,R.drawable.ic_landline),null,null,null);
-        holder.mobile.setText("\t"+contact.getMobileContact());
-        holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context,R.drawable.ic_phone_android_black_24dp),null,null,null);
+
+        holder.email.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_mail_outline_black_24dp), null, null, null);
+        if (contact.getEmail() != null) {
+            holder.email.setText("\t" + contact.getEmail());
+        } else {
+            holder.email.setText("\tN/A");
+        }
+
+        holder.office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
+        if (contact.getOfficeContact() != null) {
+            holder.office.setText("\t" + contact.getOfficeContact());
+        } else {
+            holder.office.setText("\tN/A");
+        }
+
+        holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
+        if (contact.getMobileContact() != null) {
+            holder.mobile.setText("\t" + contact.getMobileContact());
+        } else {
+            holder.mobile.setText("\tN/A");
+        }
     }
 
     @Override
@@ -56,8 +74,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView designation;
-        private Button office;
-        private Button mobile;
+        private Button mobile, email, office;
 
         public ContactsViewHolder(View itemView) {
             super(itemView);
@@ -65,12 +82,13 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             designation = itemView.findViewById(R.id.textview_designation);
             office = itemView.findViewById(R.id.button_office);
             mobile = itemView.findViewById(R.id.textview_mobile);
+            email = itemView.findViewById(R.id.button_email);
 
             mobile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String number = mobile.getText().toString();
-                    Log.v("Adapter","Contact = " + number);
+                    Log.v("Adapter", "Contact = " + number);
                     if (number == null || number.equals("")) {
                         Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
                         return;
@@ -85,13 +103,29 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                 @Override
                 public void onClick(View v) {
                     String number = office.getText().toString();
-                    Log.v("Adapter","Contact = " + number);
+                    Log.v("Adapter", "Contact = " + number);
                     if (number == null || number.equals("")) {
                         Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + "0191" + number));
+                    v.getContext().startActivity(intent);
+                }
+            });
+
+            email.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String mail = email.getText().toString();
+                    Log.v("Adapter", "Contact = " + email);
+                    if (email == null || email.equals("")) {
+                        Toast.makeText(v.getContext(), "Email not available", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
                     v.getContext().startActivity(intent);
                 }
             });

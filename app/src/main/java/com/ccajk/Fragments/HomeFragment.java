@@ -93,14 +93,17 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         switch (name) {
             case "Digital India":
                 intent.putExtra("url", "http://www.digitalindia.gov.in/");
+                intent.putExtra("title","Digital India");
                 startActivity(intent);
                 break;
             case "Swachh Bharat Abhiyan":
                 intent.putExtra("url", "https://swachhbharat.mygov.in");
+                intent.putExtra("title","Swachh Bharat");
                 startActivity(intent);
                 break;
             case "Controller of Communication Accounts":
                 intent.putExtra("url", "http://ccajk.gov.in/");
+                intent.putExtra("title","CCA J&K");
                 startActivity(intent);
                 break;
         }

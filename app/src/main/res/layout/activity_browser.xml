@@ -11,12 +11,12 @@
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@android:style/Widget.ProgressBar.Horizontal" />
+         style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
 
     <WebView
         android:id="@+id/webview_cca"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="fill_parent">
     </WebView>
 
 </LinearLayout>

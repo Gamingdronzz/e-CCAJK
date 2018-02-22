@@ -1,6 +1,7 @@
 package com.ccajk.Activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -121,6 +122,12 @@ public class HomeActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Wifi Hotspot Locations");
                 fragment = new HotspotLocationFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_rti:
+                Intent intent= new Intent(HomeActivity.this,BrowserActivity.class);
+                intent.putExtra("url","https://rtionline.gov.in/");
+                intent.putExtra("title","RTI");
+                startActivity(intent);
                 break;
         }
 

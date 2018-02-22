@@ -19,22 +19,37 @@ import com.ccajk.R;
 
 public class BrowserActivity extends AppCompatActivity {
     WebView webView;
-ProgressBar progressBar;
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       setContentView(R.layout.activity_browser);
+        setContentView(R.layout.activity_browser);
+
+        getSupportActionBar().setTitle(getIntent().getStringExtra("title"));
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setMax(100);
         progressBar.setVisibility(View.GONE);
-        webView=findViewById(R.id.webview_cca);
-        String url= getIntent().getStringExtra("url");
+
+        webView = findViewById(R.id.webview_cca);
+        setupWebview();
+        String url = getIntent().getStringExtra("url");
         webView.loadUrl(url);
     }
 
     private void setupWebview() {
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
+
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        webView.setScrollbarFadingEnabled(false);
+
         webView.setWebViewClient(new WebViewClient() {
 
             @RequiresApi(Build.VERSION_CODES.O)
@@ -62,17 +77,18 @@ ProgressBar progressBar;
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(0);
+                progressBar.setProgress(5);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                progressBar.setVisibility(View.GONE);
                 progressBar.setProgress(100);
+                progressBar.setVisibility(View.GONE);
+
             }
         });
 
-        webView.setWebChromeClient(new WebChromeClient(){
+        webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
