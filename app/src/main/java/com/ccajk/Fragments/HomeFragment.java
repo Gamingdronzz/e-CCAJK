@@ -4,6 +4,7 @@ package com.ccajk.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
@@ -32,6 +34,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private SliderLayout mDemoSlider;
     private TextView welcomeText, ccaDeskText;
     View view;
+    private ImageButton imageButtonLogout;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -42,7 +45,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
+        imageButtonLogout = view.findViewById(R.id.logout);
+        imageButtonLogout.setBackground(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_logout_24dp));
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
@@ -93,17 +97,17 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         switch (name) {
             case "Digital India":
                 intent.putExtra("url", "http://www.digitalindia.gov.in/");
-                intent.putExtra("title","Digital India");
+                intent.putExtra("title", "Digital India");
                 startActivity(intent);
                 break;
             case "Swachh Bharat Abhiyan":
                 intent.putExtra("url", "https://swachhbharat.mygov.in");
-                intent.putExtra("title","Swachh Bharat");
+                intent.putExtra("title", "Swachh Bharat");
                 startActivity(intent);
                 break;
             case "Controller of Communication Accounts":
                 intent.putExtra("url", "http://ccajk.gov.in/");
-                intent.putExtra("title","CCA J&K");
+                intent.putExtra("title", "CCA J&K");
                 startActivity(intent);
                 break;
         }

@@ -51,7 +51,7 @@ public class StatisticsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
 
-        adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+        //adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
 
         recyclerView = view.findViewById(R.id.recyclerview_locations);
         recyclerView.setAdapter(adapter);
