@@ -65,6 +65,10 @@
                 android:id="@+id/navmenu_inspection"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Inspection" />
+            <item
+                android:id="@+id/navmenu_statistics"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Statistics" />
         </menu>
 
     </item>

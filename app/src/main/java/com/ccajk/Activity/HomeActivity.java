@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
+import com.ccajk.Fragments.StatisticsFragment;
 import com.ccajk.R;
 
 public class HomeActivity extends AppCompatActivity
@@ -124,10 +125,15 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_rti:
-                Intent intent= new Intent(HomeActivity.this,BrowserActivity.class);
-                intent.putExtra("url","https://rtionline.gov.in/");
-                intent.putExtra("title","RTI");
+                Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
+                intent.putExtra("url", "https://rtionline.gov.in/");
+                intent.putExtra("title", "RTI");
                 startActivity(intent);
+                break;
+            case R.id.navmenu_statistics:
+                getSupportActionBar().setTitle("Statistics");
+                fragment = new StatisticsFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
         }
 

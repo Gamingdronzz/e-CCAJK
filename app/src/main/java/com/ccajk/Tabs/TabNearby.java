@@ -98,9 +98,9 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @Override
     public void onPause() {
         super.onPause();
-        if (mFusedLocationClient != null) {
+      /*  if (mFusedLocationClient != null) {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-        }
+        }*/
     }
 
     public void setActivity(AppCompatActivity appCompatActivity) {
