@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccajk.Models.LocationModel;
@@ -56,37 +57,29 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
     private static final int REQUEST_CHECK_SETTINGS = 200;
+    private final int LOCATION_REQUEST_CODE = 101;
+    private TextView kilometres;
     private GoogleMap mMap;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
     private LatLng latLng;
     private int seekBarValue;
-    private
-    FusedLocationProviderClient mFusedLocationClient;
-
+    private FusedLocationProviderClient mFusedLocationClient;
     private final String TAG = "Nearby";
-
-
-    /*private ArrayList<LatLng> markers = new ArrayList<>();
-    private ArrayList<String> names = new ArrayList<>();*/
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
     IndicatorSeekBar seekBar;
-    //private SeekBar seekBar;
-    private final int LOCATION_REQUEST_CODE = 101;
 
     AppCompatActivity appCompatActivity;
 
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
-            Log.v(TAG,"Updating My Location");
+            Log.v(TAG, "Updating My Location");
             for (Location location : locationResult.getLocations()) {
                 placeMarkerOnMyLocation(location, locationResult);
-
             }
         }
     };
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,8 +101,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     }
 
     private void init(View view) {
-
-
+        kilometres = view.findViewById(R.id.nearby);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         /*markers = helper.getMarkers();
         names = helper.getLocationNames();*/
@@ -148,37 +140,13 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             @Override
             public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
                 seekBarValue = seekBar.getProgress();
-                //radius = seekBarValue + 15;
-
-                //Toast.makeText(getContext(), "New Radius = " + radius, Toast.LENGTH_SHORT).show();
+                kilometres.setText("WITHIN " + Math.pow((seekBarValue+1),2) + " KM");
                 if (mLastLocation != null) {
                     AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(seekBarValue));
                 }
             }
         });
-      /*  seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                seekBarValue = seekBar.getProgress();
-                //radius = seekBarValue + 15;
-
-                //Toast.makeText(getContext(), "New Radius = " + radius, Toast.LENGTH_SHORT).show();
-                if (mLastLocation != null) {
-                    AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(seekBarValue));
-                }
-
-            }
-        });*/
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -208,15 +176,15 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
-                Log.v(TAG,"Permission Granted");
+                Log.v(TAG, "Permission Granted");
 
                 requestLocationUpdates();
             } else {
                 requestLocationPermission();
-                Log.v(TAG,"Permission Denied and requesting");
+                Log.v(TAG, "Permission Denied and requesting");
             }
         } else {
-            Log.v(TAG,"Below M");
+            Log.v(TAG, "Below M");
             requestLocationUpdates();
         }
     }
@@ -230,22 +198,21 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 .addLocationRequest(mLocationRequest);
         SettingsClient client = LocationServices.getSettingsClient(this.getActivity());
         Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-                task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                        if(task.isSuccessful())
-                        {
-                            Log.v(TAG,"Task  Granted");
-                        }
-                    }
-                });
+        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                if (task.isSuccessful()) {
+                    Log.v(TAG, "Task  Granted");
+                }
+            }
+        });
         task.addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                 // All location settings are satisfied. The client can initialize
                 // location requests here.
                 // ...
-                Log.v(TAG,"Access  Granted");
+                Log.v(TAG, "Access  Granted");
             }
         });
 
@@ -256,19 +223,19 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     onLocationAcccessRequestFailure(e);
                     // Location settings are not satisfied, but this can be fixed
                     // by showing the user a dialog.
-                    Log.v(TAG,"Access Denied");
+                    Log.v(TAG, "Access Denied");
 
                 }
             }
         });
-        Log.v(TAG,"Location Request Created");
+        Log.v(TAG, "Location Request Created");
     }
 
     private void setMyMap(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        Log.v(TAG,"Maps Set");
+        Log.v(TAG, "Maps Set");
     }
 
     private void onLocationAcccessRequestFailure(Exception e) {
@@ -289,7 +256,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                /* if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.remove();
                 }*/
-
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
@@ -304,7 +270,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         mMap.setMyLocationEnabled(true);
-        Log.v(TAG,"Requesting Location Updates");
+        Log.v(TAG, "Requesting Location Updates");
     }
 
     private void AnimateCamera(LatLng focussedLocation, ArrayList<LocationModel> allLocations, int zoom) {

@@ -40,7 +40,6 @@
     <dimen name="margin_xxxxxlarge">96dp</dimen>
 
 
-
     <dimen name="padding_min">2dp</dimen>
     <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_medium">8dp</dimen>

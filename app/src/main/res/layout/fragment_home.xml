@@ -9,13 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-                <View
+               <!-- <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/colorBlack"></View>
@@ -43,10 +42,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true" />
 
-                </RelativeLayout>
-
-
-
+                </RelativeLayout>-->
 
             <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/slider"

@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,13 +83,13 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -98,6 +99,21 @@ public class HomeActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }*/
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem logout = menu.add("Logout");
+        logout.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
+        logout.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -109,11 +125,9 @@ public class HomeActivity extends AppCompatActivity
         switch (id) {
             case R.id.navmenu_home:
                 getSupportActionBar().setTitle("Home");
-
                 fragment = new HomeFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
-
             case R.id.navmenu_contact_us:
                 getSupportActionBar().setTitle("Contact Us");
                 fragment = new ContactUsFragment();

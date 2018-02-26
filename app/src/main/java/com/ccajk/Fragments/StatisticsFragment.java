@@ -1,35 +1,18 @@
 package com.ccajk.Fragments;
 
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.ccajk.Activity.AboutUsActivity;
-import com.ccajk.Activity.BrowserActivity;
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
-import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
-
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,15 +31,16 @@ public class StatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
 
         //adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
 
-        recyclerView = view.findViewById(R.id.recyclerview_locations);
-        recyclerView.setAdapter(adapter);
+        recyclerView = view.findViewById(R.id.recyclerview_statistics);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.getItemAnimator().setAddDuration(1000);
+
+        //recyclerView.setAdapter(adapter);
         /*getLocationList();*/
 
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
