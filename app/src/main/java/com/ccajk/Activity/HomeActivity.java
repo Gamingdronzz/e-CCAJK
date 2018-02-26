@@ -1,5 +1,7 @@
 package com.ccajk.Activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +14,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
@@ -33,6 +44,8 @@ public class HomeActivity extends AppCompatActivity
 //    final String removeMain = "document.getElementsByClassName('cont-main')[0].style.display=\"none\"; ";
 //    final String removeFooter = "document.getElementsByClassName('article')[0].style.display=\"none\"; ";
 
+    FrameLayout frameLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +53,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        frameLayout = findViewById(R.id.contentPanel);
        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +122,11 @@ public class HomeActivity extends AppCompatActivity
         logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
+                /*Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
                 startActivity(intent);
-                return false;
+                */
+                showLoginPopup();
+                return true;
             }
         });
         return super.onPrepareOptionsMenu(menu);
@@ -156,6 +172,46 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    private void showLoginPopup() {
+        ImageView ppo, pwd;
+        ImageButton close;
+        final View mProgressView;
+
+        View popupView = LayoutInflater.from(HomeActivity.this).inflate(R.layout.login_popup, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        ppo = popupView.findViewById(R.id.image_ppo);
+        ppo.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_person_black_24dp));
+        pwd = popupView.findViewById(R.id.image_pwd);
+        pwd.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_password));
+
+        mProgressView = popupView.findViewById(R.id.login_progress);
+        close=popupView.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+        Button signin = popupView.findViewById(R.id.sign_in_button);
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mProgressView.setVisibility(View.VISIBLE);
+                mProgressView.animate().setDuration(2000).alpha(1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mProgressView.setVisibility(View.GONE);
+                    }
+                });
+            }
+        });
+
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        popupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
+
+    }
 
     private void doExit() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
