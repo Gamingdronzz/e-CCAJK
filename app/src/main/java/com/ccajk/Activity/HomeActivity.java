@@ -169,7 +169,7 @@ public class HomeActivity extends AppCompatActivity
         final View mProgressView;
 
         View popupView = LayoutInflater.from(HomeActivity.this).inflate(R.layout.login_popup, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         ppo = popupView.findViewById(R.id.image_ppo);
         ppo.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_person_black_24dp));
