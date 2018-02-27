@@ -34,15 +34,6 @@ import com.ccajk.R;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-//    WebView webView;
-//    final String removeLogo = "document.getElementsByClassName('logo')[0].style.display=\"none\"; ";
-//    final String removeHead = "document.getElementsByClassName('head-r')[0].style.display=\"none\"; ";
-//    final String removeIndicator = "document.getElementsByClassName('indicator')[0].style.display=\"none\"; ";
-//    final String removeFont = "document.getElementsByClassName('font')[0].style.display=\"none\"; ";
-//    final String removeFlexy = "document.getElementsByClassName('flexy-menu')[0].style.display=\"none\"; ";
-//    final String removeWrapper = "document.getElementsByClassName('wrapper')[0].style.display=\"none\"; ";
-//    final String removeMain = "document.getElementsByClassName('cont-main')[0].style.display=\"none\"; ";
-//    final String removeFooter = "document.getElementsByClassName('article')[0].style.display=\"none\"; ";
 
     FrameLayout frameLayout;
 
@@ -186,7 +177,7 @@ public class HomeActivity extends AppCompatActivity
         pwd.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_password));
 
         mProgressView = popupView.findViewById(R.id.login_progress);
-        close=popupView.findViewById(R.id.close);
+        close = popupView.findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

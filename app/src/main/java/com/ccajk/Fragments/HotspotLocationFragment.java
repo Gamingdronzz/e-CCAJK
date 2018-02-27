@@ -1,24 +1,19 @@
 package com.ccajk.Fragments;
 
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.ccajk.Activity.MapsActivity;
 import com.ccajk.R;
-import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tabs.TabAllLocations;
+import com.ccajk.Tabs.TabNearby;
 
 public class HotspotLocationFragment extends Fragment  {
 

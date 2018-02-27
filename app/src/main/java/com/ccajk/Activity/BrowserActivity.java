@@ -20,22 +20,25 @@ import com.ccajk.R;
 public class BrowserActivity extends AppCompatActivity {
     WebView webView;
     ProgressBar progressBar;
+    String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
+        init();
+        setupWebview();
+        webView.loadUrl(url);
+    }
+
+    private void init() {
 
         getSupportActionBar().setTitle(getIntent().getStringExtra("title"));
-
         progressBar = findViewById(R.id.progressBar);
         progressBar.setMax(100);
         progressBar.setVisibility(View.GONE);
-
         webView = findViewById(R.id.webview_cca);
-        setupWebview();
-        String url = getIntent().getStringExtra("url");
-        webView.loadUrl(url);
+        url = getIntent().getStringExtra("url");
     }
 
     private void setupWebview() {

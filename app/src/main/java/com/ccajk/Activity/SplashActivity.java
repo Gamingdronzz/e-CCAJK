@@ -1,14 +1,13 @@
 package com.ccajk.Activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ccajk.Activity.HomeActivity;
 import com.ccajk.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -23,7 +22,6 @@ public class SplashActivity extends AppCompatActivity {
         bindVIews();
         //ShowNextActivity();
         StartAnimations();
-
     }
 
     private void bindVIews() {
@@ -37,11 +35,9 @@ public class SplashActivity extends AppCompatActivity {
         final Animation animationScale = AnimationUtils.loadAnimation(this, R.anim.scale);
         final Animation animationBounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
-
         animationAlpha.reset();
         animationScale.reset();
         animationBounce.reset();
-
 
         imageView.clearAnimation();
         imageView.startAnimation(animationScale);
@@ -52,14 +48,11 @@ public class SplashActivity extends AppCompatActivity {
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 LoadNextActivity();
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -68,13 +61,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void LoadNextActivity() {
-
-
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), HomeActivity.class);
-
         startActivity(intent);
         finish();
-
     }
 }
