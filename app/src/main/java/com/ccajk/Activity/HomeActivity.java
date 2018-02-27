@@ -14,28 +14,42 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.StatisticsFragment;
+import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
+import com.ccajk.Tools.Prefrences;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
 
+    String TAG = "firebase";
+    Menu mMenu;
     FrameLayout frameLayout;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +68,7 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 */
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -107,19 +121,33 @@ public class HomeActivity extends AppCompatActivity
     }*/
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem logout = menu.add("Logout");
-        logout.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
-        logout.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+
+        if (Prefrences.getSignedIn(this) == false) {
+            MenuItem login = menu.add("Login");
+            login.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
+            login.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            login.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
                 /*Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
                 startActivity(intent);
                 */
-                showLoginPopup();
-                return true;
-            }
-        });
+                    showLoginPopup();
+                    return true;
+                }
+            });
+        } else {
+            MenuItem logout = menu.add("Logout");
+            logout.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
+            logout.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    confirmLogout();
+                    return true;
+                }
+            });
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -166,6 +194,8 @@ public class HomeActivity extends AppCompatActivity
     private void showLoginPopup() {
         ImageView ppo, pwd;
         ImageButton close;
+        final AutoCompleteTextView autoCompleteTextView;
+        final EditText editText;
         final View mProgressView;
 
         View popupView = LayoutInflater.from(HomeActivity.this).inflate(R.layout.login_popup, null);
@@ -175,7 +205,8 @@ public class HomeActivity extends AppCompatActivity
         ppo.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_person_black_24dp));
         pwd = popupView.findViewById(R.id.image_pwd);
         pwd.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_password));
-
+        autoCompleteTextView = popupView.findViewById(R.id.ppo);
+        editText = popupView.findViewById(R.id.password);
         mProgressView = popupView.findViewById(R.id.login_progress);
         close = popupView.findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
@@ -184,10 +215,13 @@ public class HomeActivity extends AppCompatActivity
                 popupWindow.dismiss();
             }
         });
+
         Button signin = popupView.findViewById(R.id.sign_in_button);
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RequestLogin(autoCompleteTextView.getText().toString(), editText.getText().toString());
+
                 mProgressView.setVisibility(View.VISIBLE);
                 mProgressView.animate().setDuration(2000).alpha(1).setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -219,4 +253,73 @@ public class HomeActivity extends AppCompatActivity
                 .show();
     }
 
+
+    @Override
+    public void RequestLogin(final String pensionerCode, final String password) {
+        DatabaseReference dbref = databaseReference.child("user").child(pensionerCode);
+        Log.d(TAG, "RequestLogin: ");
+        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                if (dataSnapshot == null) {
+                    OnUserNotExist();
+                }
+                if (dataSnapshot != null) {
+                    String dbpassword = dataSnapshot.child("password").getValue().toString();
+                    if (dbpassword.equals(password)) {
+                        OnLoginSuccesful(dataSnapshot);
+                    } else {
+                        OnLoginFailure();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Error");
+                OnUserNotExist();
+            }
+        });
+    }
+
+    @Override
+    public void OnLoginSuccesful(DataSnapshot dataSnapshot) {
+        String username = dataSnapshot.child("name").getValue().toString();
+        String ppo = dataSnapshot.child("ppo").getValue().toString();
+
+        changePrefrences(ppo, username);
+        changeNavHeader(ppo, username);
+        changeActionBarMenu();
+    }
+
+    @Override
+    public void OnLoginFailure() {
+
+    }
+
+    @Override
+    public void OnUserNotExist() {
+        Log.d(TAG, "User does not exist");
+    }
+
+    private void changePrefrences(String ppo, String user) {
+        Prefrences.setSignedIn(this, true);
+        Prefrences.setPpo(this, ppo);
+        Prefrences.setUsername(this, user);
+    }
+
+    private void changeNavHeader(String ppo, String username) {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        TextView name = navigationView.findViewById(R.id.textview_name);
+        TextView pensionerCode = navigationView.findViewById(R.id.textview_ppo);
+        name.setText(username);
+        pensionerCode.setText(ppo);
+    }
+
+    private void changeActionBarMenu() {
+
+    }
+    private void confirmLogout() {
+    }
 }

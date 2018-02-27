@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "158632546092",
+    "firebase_url": "https://cca-jk.firebaseio.com",
+    "project_id": "cca-jk",
+    "storage_bucket": "cca-jk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158632546092:android:e9623ae5bd258881",
+        "android_client_info": {
+          "package_name": "com.ccajk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "158632546092-laat5nhh3lqcs6rl6t2km3b56de7ncg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoxc5cJFhonJ74fnlWHzFnX-OggIQ_zZs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

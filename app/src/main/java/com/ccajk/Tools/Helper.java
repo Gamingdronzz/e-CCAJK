@@ -1,15 +1,5 @@
 
 package com.ccajk.Tools;
-/*
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-*/
-
-
 import android.util.Log;
 
 import com.ccajk.Models.LocationModel;
@@ -64,6 +54,44 @@ public class Helper {
 
         locationModels.add(locationModel);
     }
+
+    /**
+     * calculates the distance between two locations in MILES
+     */
+    public static double distance(double lat1, double lng1, double lat2, double lng2) {
+
+        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double dist = earthRadius * c;
+        Log.v("Helper", "Distance between coordinates = " + dist);
+
+        return dist; // output distance, in MILES
+    }
+
+    public void AddLocations() {
+        if(locationModels==null)
+        {
+            locationModels = new ArrayList<>();
+        }
+        locationModels.add(new LocationModel("Sangrampur",new LatLng(32.7400343	,74.7403159)));
+        locationModels.add(new LocationModel("Sohal",new LatLng(32.4938192	,75.2548692)));
+        locationModels.add(new LocationModel("Sidhra",new LatLng(32.7604934	,74.8989541)));
+        locationModels.add(new LocationModel("Sumb",new LatLng(32.52839,75.120054)));
+        locationModels.add(new LocationModel("Trilokpur",new LatLng(32.7148855	,74.752726)));
+    }
+
+
     /*
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     User user;
@@ -178,42 +206,6 @@ public class Helper {
     }
 
     */
-
-    /**
-     * calculates the distance between two locations in MILES
-     */
-    public static double distance(double lat1, double lng1, double lat2, double lng2) {
-
-        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
-
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
-
-        double sindLat = Math.sin(dLat / 2);
-        double sindLng = Math.sin(dLng / 2);
-
-        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        double dist = earthRadius * c;
-        Log.v("Helper", "Distance between coordinates = " + dist);
-
-        return dist; // output distance, in MILES
-    }
-
-    public void AddLocations() {
-        if(locationModels==null)
-        {
-            locationModels = new ArrayList<>();
-        }
-        locationModels.add(new LocationModel("Sangrampur",new LatLng(32.7400343	,74.7403159)));
-        locationModels.add(new LocationModel("Sohal",new LatLng(32.4938192	,75.2548692)));
-        locationModels.add(new LocationModel("Sidhra",new LatLng(32.7604934	,74.8989541)));
-        locationModels.add(new LocationModel("Sumb",new LatLng(32.52839,75.120054)));
-        locationModels.add(new LocationModel("Trilokpur",new LatLng(32.7148855	,74.752726)));
-    }
 
 }
 
