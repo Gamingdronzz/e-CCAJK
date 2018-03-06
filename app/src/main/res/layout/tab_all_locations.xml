@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:background="@color/colorLightGray"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-    <SearchView
+    <RadioGroup
+        android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Search location"
-        android:tooltipText="Search location">
+        android:checkedButton="@+id/radioButtonName">
 
-    </SearchView>
+        <RadioButton
+            android:id="@+id/radioButtonName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Name" />
+
+        <RadioButton
+            android:id="@+id/radioButtonState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="State" />
+    </RadioGroup>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_locations"
         android:layout_width="match_parent"
-        android:background="@color/colorLightGray"
         android:layout_height="match_parent"
+        android:background="@color/colorLightGray"
         android:paddingBottom="@dimen/padding_medium"
         android:paddingTop="@dimen/padding_medium">
 

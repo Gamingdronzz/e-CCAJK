@@ -10,6 +10,8 @@ public class LocationModel {
 
     private String locationName;
     private LatLng location;
+    private String state;
+    private String district;
     //private double longitude,latitude;
 
     public String getLocationName() {
@@ -43,9 +45,11 @@ public class LocationModel {
         this.latitude = latitude;
     }*/
 
-    public LocationModel(String locationName, LatLng location) {
+    public LocationModel(String locationName, LatLng location, String state,String district) {
         this.locationName = locationName;
         this.location = location;
+        this.state=state;
+        this.district=district;
     }
 
     public LatLng getLocation() {
