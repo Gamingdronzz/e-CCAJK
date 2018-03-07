@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if (Prefrences.getSignedIn(this) == false) {
+        if (Prefrences.getInstance().getSignedIn(this) == false) {
             MenuItem login = menu.add("Login");
             login.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
             login.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -304,9 +304,9 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void changePrefrences(String ppo, String user) {
-        Prefrences.setSignedIn(this, true);
-        Prefrences.setPpo(this, ppo);
-        Prefrences.setUsername(this, user);
+        Prefrences.getInstance().setSignedIn(this, true);
+        Prefrences.getInstance().setPpo(this, ppo);
+        Prefrences.getInstance().setUsername(this, user);
     }
 
     private void changeNavHeader(String ppo, String username) {
