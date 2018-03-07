@@ -77,12 +77,12 @@ public class Helper {
         if (locationModels == null) {
             locationModels = new ArrayList<>();
         }
-        locationModels.add(new LocationModel("Sangrampur", new LatLng(32.7400343, 74.7403159), States.JammuKashmir.toString() ,Districts.Jammu.toString()));
-        locationModels.add(new LocationModel("Sohal", new LatLng(32.4938192, 75.2548692), States.JammuKashmir.toString() ,Districts.Jammu.toString()));
-        locationModels.add(new LocationModel("Sidhra", new LatLng(32.7604934, 74.8989541), States.JammuKashmir.toString() ,Districts.Jammu.toString()));
-        locationModels.add(new LocationModel("Sumb", new LatLng(32.52839, 75.120054), States.JammuKashmir.toString() ,Districts.Jammu.toString()));
-        locationModels.add(new LocationModel("Trilokpur", new LatLng(32.7148855, 74.752726),States.JammuKashmir.toString() ,Districts.Jammu.toString()));
-        Log.d( "AddLocations: ",States.AndhraPradesh.toString());
+        locationModels.add(new LocationModel("Sangrampur", new LatLng(32.7400343, 74.7403159), getState(States.JammuKashmir), ""));
+        locationModels.add(new LocationModel("Sohal", new LatLng(32.4938192, 75.2548692), getState(States.JammuKashmir), ""));
+        locationModels.add(new LocationModel("Sidhra", new LatLng(32.7604934, 74.8989541), getState(States.JammuKashmir), ""));
+        locationModels.add(new LocationModel("Sumb", new LatLng(32.52839, 75.120054), getState(States.JammuKashmir), ""));
+        locationModels.add(new LocationModel("Trilokpur", new LatLng(32.7148855, 74.752726), getState(States.JammuKashmir), ""));
+
     }
 
 
@@ -117,21 +117,41 @@ public class Helper {
         WestBengal
     }
 
-    public enum Districts {
-        Doda,
-        Jammu,
-        Kathua,
-        Kishtwar,
-        Poonch,
-        Rajouri,
-        Ramban,
-        Reasi,
-        Samba,
-        Udhampur
+    public String[] states =
+            {
+                    "Andhra Pradesh",
+                    "Arunachal Pradesh",
+                    "Assam",
+                    "Bihar",
+                    "Chhattisgarh",
+                    "Goa",
+                    "Gujarat",
+                    "Haryana",
+                    "Himachal Pradesh",
+                    "Jammu and Kashmir",
+                    "Jharkhand",
+                    "Karnataka",
+                    "Kerala",
+                    "Madya Pradesh",
+                    "Maharashtra",
+                    "Manipur",
+                    "Meghalaya",
+                    "Mizoram",
+                    "Nagaland",
+                    "Orissa",
+                    "Punjab",
+                    "Rajasthan",
+                    "Sikkim",
+                    "Tamil Nadu",
+                    "Tripura",
+                    "Uttaranchal",
+                    "Uttar Pradesh",
+                    "West Bengal"
+            };
+
+    public String getState(States state) {
+        return states[state.ordinal()];
     }
-
-
-
 
 }
 

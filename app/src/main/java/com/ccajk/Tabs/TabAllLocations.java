@@ -1,11 +1,13 @@
 package com.ccajk.Tabs;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,30 +16,29 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.Models.LocationModel;
-import com.ccajk.Models.LocationModelBuilder;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
 
 //Our class extending fragment
 public class TabAllLocations extends Fragment {
+
+    RadioGroup radioGroup;
     RecyclerView recyclerView;
-
-    /*private ArrayList<LatLng> markers = new ArrayList<>();
-    private ArrayList<String> names = new ArrayList<>();*/
-
     RecyclerViewAdapterHotspotLocation adapter;
+    String[] locations;
     ArrayList<LocationModel> allLocations = new ArrayList<>();
+    ArrayList<LocationModel> filteredLocations = new ArrayList<>();
 
-
-    //Overriden method onCreateView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -47,14 +48,29 @@ public class TabAllLocations extends Fragment {
     }
 
     private void init(View view) {
-        /*markers = helper.getMarkers();
-        names = helper.getLocationNames();
-*/
+
+        radioGroup = view.findViewById(R.id.search);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radioButtonName) {
+                    ShowSearchByNameDialog();
+                } else if (checkedId == R.id.radioButtonState) {
+
+                }
+            }
+        });
+
         allLocations = new ArrayList<>();
         allLocations = Helper.getInstance().getLocationModels();
-
-
         adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+
+        locations = new String[allLocations.size()];
+        int i = 0;
+        for (LocationModel locationModel : allLocations) {
+            locations[i] = locationModel.getLocationName();
+            i++;
+        }
 
         recyclerView = view.findViewById(R.id.recyclerview_locations);
         recyclerView.setAdapter(adapter);
@@ -95,31 +111,52 @@ public class TabAllLocations extends Fragment {
             }
         });
 
-       /* getLocation = view.findViewById(R.id.btn_location);
-        getLocation.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void ShowSearchByNameDialog() {
+
+        radioGroup.clearCheck();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_name, (ViewGroup) getView(), false);
+
+        final AutoCompleteTextView input = viewInflated.findViewById(R.id.input);
+        ArrayAdapter<String> actAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, locations);
+        input.setAdapter(actAdapter);
+
+        builder.setView(viewInflated);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                getCurrentLocation();
-
+            public void onClick(DialogInterface dialog, int which) {
+                String name = input.getText().toString();
+                FilterLocationsByName(name);
+                dialog.dismiss();
             }
-        });*/
-
-        //getCurrentLocation();
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
 
     }
 
-
-   /* private ArrayList<LocationModel> getLocationList() {
-        allLocations = new ArrayList<>();
-        for (int i = 0; i < markers.size(); i++) {
-            LatLng latLng=markers.get(i);
-            allLocations.add(new LocationModelBuilder()
-                    .setLocation(latLng)
-                    .setLocationName(names.get(i))
-                    .createLocationModel());
+    private void FilterLocationsByName(String name) {
+        filteredLocations = new ArrayList<>();
+        for (LocationModel locationModel : allLocations) {
+            if (locationModel.getLocationName().equals(name))
+                filteredLocations.add(locationModel);
         }
-        return allLocations;
-    }*/
+        if (filteredLocations.size() == 0) {
+            Toast.makeText(getContext(), "No Locations found", Toast.LENGTH_SHORT).show();
+            adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+        } else {
+            adapter = new RecyclerViewAdapterHotspotLocation(filteredLocations);
+        }
+        recyclerView.setAdapter(adapter);
+    }
 
     @Override
     public void onConfigurationChanged(Configuration config) {

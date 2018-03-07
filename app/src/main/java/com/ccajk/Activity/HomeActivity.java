@@ -198,7 +198,7 @@ public class HomeActivity extends AppCompatActivity
         final EditText editText;
         final View mProgressView;
 
-        View popupView = LayoutInflater.from(HomeActivity.this).inflate(R.layout.login_popup, null);
+        View popupView = LayoutInflater.from(HomeActivity.this).inflate(R.layout.dialog_login, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         ppo = popupView.findViewById(R.id.image_ppo);

@@ -2,34 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorLightGray"
+    android:padding="@dimen/padding_medium"
     android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:textSize="@dimen/text_15"
+        android:textColor="@color/colorBlack"
+        android:text="Search Location by"/>
 
     <RadioGroup
         android:id="@+id/search"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checkedButton="@+id/radioButtonName">
+        android:layout_height="wrap_content">
 
-        <RadioButton
-            android:id="@+id/radioButtonName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Name" />
+            <RadioButton
+                android:id="@+id/radioButtonName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Name" />
 
-        <RadioButton
-            android:id="@+id/radioButtonState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="State" />
+            <RadioButton
+                android:id="@+id/radioButtonState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="State" />
+
     </RadioGroup>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_locations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_medium"
         android:background="@color/colorLightGray"
         android:paddingBottom="@dimen/padding_medium"
         android:paddingTop="@dimen/padding_medium">

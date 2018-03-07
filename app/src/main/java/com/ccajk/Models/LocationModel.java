@@ -22,6 +22,22 @@ public class LocationModel {
         this.locationName = locationName;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
     /*public double getLongitude() {
         return longitude;
     }

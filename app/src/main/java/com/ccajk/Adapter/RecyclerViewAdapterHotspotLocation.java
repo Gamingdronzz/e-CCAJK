@@ -34,7 +34,9 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String location = locationArray.get(position).getLocationName();
-        holder.tv.setText(location);
+        String state = locationArray.get(position).getState();
+        holder.tv.setText(location + "  (" + state + ")");
+
     }
 
     @Override
@@ -44,10 +46,12 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tv;
+        private TextView tv2;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.tv = itemView.findViewById(R.id.loc);
+            //this.tv2 = itemView.findViewById(R.id.state);
         }
     }
 }
