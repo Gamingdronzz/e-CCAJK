@@ -3,6 +3,7 @@ package com.ccajk.Tools;
 
 import android.util.Log;
 
+import com.ccajk.Models.District;
 import com.ccajk.Models.LocationModel;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,6 +16,14 @@ import java.util.ArrayList;
 
 public class Helper {
     private static Helper _instance;
+    private ArrayList<LocationModel> locationModels;
+
+   public Helper() {
+        _instance = this;
+        if (getLocationModels() == null) {
+            AddLocations();
+        }
+    }
 
     public static Helper getInstance() {
         if (_instance == null) {
@@ -24,29 +33,12 @@ public class Helper {
         }
     }
 
-    public Helper() {
-        _instance = this;
-        if (getLocationModels() == null) {
-            AddLocations();
-        }
-    }
-
-    private ArrayList<LocationModel> locationModels;
-
     public ArrayList<LocationModel> getLocationModels() {
         return locationModels;
     }
 
     public void setLocationModels(ArrayList<LocationModel> locationModels) {
         this.locationModels = locationModels;
-    }
-
-    public void addLocation(LocationModel locationModel) {
-        if (locationModels == null) {
-            locationModels = new ArrayList<LocationModel>();
-        }
-
-        locationModels.add(locationModel);
     }
 
     /**
@@ -74,14 +66,15 @@ public class Helper {
     }
 
     public void AddLocations() {
+        String dist = getDistrictList().get(0).getName();
         if (locationModels == null) {
             locationModels = new ArrayList<>();
         }
-        locationModels.add(new LocationModel("Sangrampur", new LatLng(32.7400343, 74.7403159), getState(States.JammuKashmir), ""));
-        locationModels.add(new LocationModel("Sohal", new LatLng(32.4938192, 75.2548692), getState(States.JammuKashmir), ""));
-        locationModels.add(new LocationModel("Sidhra", new LatLng(32.7604934, 74.8989541), getState(States.JammuKashmir), ""));
-        locationModels.add(new LocationModel("Sumb", new LatLng(32.52839, 75.120054), getState(States.JammuKashmir), ""));
-        locationModels.add(new LocationModel("Trilokpur", new LatLng(32.7148855, 74.752726), getState(States.JammuKashmir), ""));
+        locationModels.add(new LocationModel("Sangrampur", new LatLng(32.7400343, 74.7403159), getState(States.JammuKashmir), dist));
+        locationModels.add(new LocationModel("Sohal", new LatLng(32.4938192, 75.2548692), getState(States.JammuKashmir), dist));
+        locationModels.add(new LocationModel("Sidhra", new LatLng(32.7604934, 74.8989541), getState(States.JammuKashmir), dist));
+        locationModels.add(new LocationModel("Sumb", new LatLng(32.52839, 75.120054), getState(States.JammuKashmir), getDistrictList().get(1).getName()));
+        locationModels.add(new LocationModel("Trilokpur", new LatLng(32.7148855, 74.752726), getState(States.JammuKashmir), dist));
 
     }
 
@@ -117,7 +110,7 @@ public class Helper {
         WestBengal
     }
 
-    public String[] states =
+    public static String[] stateList =
             {
                     "Andhra Pradesh",
                     "Arunachal Pradesh",
@@ -150,7 +143,25 @@ public class Helper {
             };
 
     public String getState(States state) {
-        return states[state.ordinal()];
+        return stateList[state.ordinal()];
+    }
+
+    public ArrayList<String> getDistrictsOfState(States state) {
+        ArrayList<String> list = new ArrayList<>();
+        for (District district : getDistrictList()) {
+            if (district.getState() == state)
+                list.add(district.getName());
+        }
+        return list;
+    }
+
+    public ArrayList<District> getDistrictList() {
+        ArrayList<District> districtList = new ArrayList<>();
+        districtList.add(new District("Jammu", States.JammuKashmir));
+        districtList.add(new District("Samba", States.JammuKashmir));
+        districtList.add(new District("Kathua", States.JammuKashmir));
+        districtList.add(new District("Mohali", States.Punjab));
+        return districtList;
     }
 
 }

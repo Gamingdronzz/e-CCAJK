@@ -16,9 +16,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
@@ -32,7 +34,9 @@ import java.util.ArrayList;
 //Our class extending fragment
 public class TabAllLocations extends Fragment {
 
+    String TAG = "All Locations";
     RadioGroup radioGroup;
+    Spinner districtSpinner, stateSpinner;
     RecyclerView recyclerView;
     RecyclerViewAdapterHotspotLocation adapter;
     String[] locations;
@@ -54,9 +58,12 @@ public class TabAllLocations extends Fragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.radioButtonName) {
+
                     ShowSearchByNameDialog();
+
                 } else if (checkedId == R.id.radioButtonState) {
 
+                    ShowSearchByStateDialog();
                 }
             }
         });
@@ -102,16 +109,15 @@ public class TabAllLocations extends Fragment {
 
             @Override
             public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
             }
 
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
             }
         });
 
     }
+
 
     private void ShowSearchByNameDialog() {
 
@@ -140,7 +146,58 @@ public class TabAllLocations extends Fragment {
             }
         });
         builder.show();
+    }
 
+
+    private void ShowSearchByStateDialog() {
+        radioGroup.clearCheck();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        final View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_state, (ViewGroup) getView(), false);
+
+        stateSpinner = viewInflated.findViewById(R.id.spinnerState);
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
+                getContext(), android.R.layout.simple_spinner_item, Helper.stateList);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateSpinner.setAdapter(adapterSpinner);
+
+        stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                populateSpinnerDistrict(viewInflated, Helper.States.values()[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        builder.setView(viewInflated);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FilterLocationsByState(stateSpinner.getSelectedItem(), districtSpinner.getSelectedItem());
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+
+    private void populateSpinnerDistrict(View view, Helper.States state) {
+
+        districtSpinner = view.findViewById(R.id.spinnerDistrict);
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
+                getContext(), android.R.layout.simple_spinner_item, Helper.getInstance().getDistrictsOfState(state));
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        districtSpinner.setAdapter(adapterSpinner);
     }
 
     private void FilterLocationsByName(String name) {
@@ -157,6 +214,25 @@ public class TabAllLocations extends Fragment {
         }
         recyclerView.setAdapter(adapter);
     }
+
+
+    private void FilterLocationsByState(Object selectedItem, Object selectedItem1) {
+        filteredLocations = new ArrayList<>();
+        for (LocationModel locationModel : allLocations) {
+            if (locationModel.getState().equals(selectedItem)) {
+                if (locationModel.getDistrict().equals(selectedItem1))
+                    filteredLocations.add(locationModel);
+            }
+        }
+        if (filteredLocations.size() == 0) {
+            Toast.makeText(getContext(), "No Locations found", Toast.LENGTH_SHORT).show();
+            adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+        } else {
+            adapter = new RecyclerViewAdapterHotspotLocation(filteredLocations);
+        }
+        recyclerView.setAdapter(adapter);
+    }
+
 
     @Override
     public void onConfigurationChanged(Configuration config) {
