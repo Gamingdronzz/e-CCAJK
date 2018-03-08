@@ -13,7 +13,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.Home" parent="Theme.AppCompat.Light">
+    <style name="AppTheme.NoActionBar.Home">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.NoActionBar.Splash">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.RegOrLogin">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

@@ -53,9 +53,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:paddingTop="@dimen/padding_medium"
+            android:textColor="@color/colorOffWhite"
             android:paddingBottom="@dimen/padding_medium"
-            android:background="#66000000"
-            android:drawableTint="@color/colorAccent"
+            android:background="@color/colorPrimary"
             android:text="UPLOAD"
             android:textSize="@dimen/text_20" />
 

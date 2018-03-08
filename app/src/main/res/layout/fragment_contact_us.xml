@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray"
+    android:background="@color/colorOffWhite"
     android:orientation="vertical"
     tools:context="com.ccajk.Fragments.ContactUsFragment">
 
@@ -20,7 +20,7 @@
         android:fontFamily="@font/imprima"
         android:padding="@dimen/padding_large"
         android:text="@string/contact_info"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_15"></TextView>
 
     <LinearLayout
@@ -41,7 +41,7 @@
             android:fontFamily="@font/artifika"
             android:text="Contact Persons"
             android:padding="@dimen/padding_medium"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
             android:textStyle="bold"></TextView>
 
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/general"
-            android:layout_marginBottom="8dp"
+            android:paddingBottom="8dp"
             android:padding="@dimen/padding_medium"></android.support.v7.widget.RecyclerView>
 
 
