@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
+import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.StatisticsFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
@@ -184,6 +185,11 @@ public class HomeActivity extends AppCompatActivity
                 fragment = new StatisticsFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
+            case R.id.navmenu_inspection:
+                getSupportActionBar().setTitle("Inspection");
+                fragment = new InspectionFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -320,6 +326,7 @@ public class HomeActivity extends AppCompatActivity
     private void changeActionBarMenu() {
 
     }
+
     private void confirmLogout() {
     }
 }

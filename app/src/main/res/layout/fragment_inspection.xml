@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ccajk.Fragments.InspectionFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/button_choose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center"
+                android:tint="@color/colorAccent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Choose File to Upload"
+                android:textSize="@dimen/text_18" />
+
+            <ImageButton
+                android:id="@+id/button_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="@dimen/margin_xxxlarge"
+                android:tint="@color/colorAccent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Add Location Coordinates"
+                android:textSize="@dimen/text_18" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_upload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="@dimen/padding_medium"
+            android:paddingBottom="@dimen/padding_medium"
+            android:background="#66000000"
+            android:drawableTint="@color/colorAccent"
+            android:text="UPLOAD"
+            android:textSize="@dimen/text_20" />
+
+    </RelativeLayout>
+</FrameLayout>

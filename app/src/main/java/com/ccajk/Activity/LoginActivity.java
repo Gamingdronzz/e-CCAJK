@@ -2,6 +2,7 @@ package com.ccajk.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
@@ -53,6 +54,18 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         mProgressView = findViewById(R.id.login_progress);
+
+        Button skip = findViewById(R.id.skip_button);
+        skip.setCompoundDrawablesWithIntrinsicBounds(null,null, AppCompatResources.getDrawable(this,R.drawable.ic_navigate_next_black_24dp),null);
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
     }
 
     private void populateAutoComplete() {

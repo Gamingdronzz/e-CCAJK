@@ -46,4 +46,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="reg_or_login_text1">Log in to register and track grievances</string>
+
+    <string name="reg_or_login_text2">Not Yet Registered? Register to Login</string>
+
 </resources>
