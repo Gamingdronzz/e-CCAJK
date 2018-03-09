@@ -37,7 +37,7 @@
 
 
         <TextView
-            android:id="@+id/textview_welcome_short"
+            android:id="@+id/display"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/margin_medium"
@@ -45,7 +45,6 @@
             android:justificationMode="inter_word"
             android:paddingEnd="@dimen/padding_medium"
             android:paddingStart="@dimen/padding_medium"
-            android:text="@string/welcome_full"
             android:textSize="@dimen/text_15"
             android:textStyle="bold" />
 

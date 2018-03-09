@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ccajk.R;
-import com.ccajk.Tools.Prefrences;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -65,10 +64,11 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
-        if (Prefrences.getInstance().getSignedIn(this))
+        /*if (Prefrences.getInstance().getSignedIn(this))
             intent.setClass(getApplicationContext(), HomeActivity.class);
         else
-            intent.setClass(getApplicationContext(), RegOrLoginActivity.class);
+            intent.setClass(getApplicationContext(), RegOrLoginActivity.class);*/
+        intent.setClass(getApplicationContext(), HomeActivity.class);
         startActivity(intent);
         finish();
     }

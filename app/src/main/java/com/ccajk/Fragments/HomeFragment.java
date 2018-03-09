@@ -59,6 +59,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
+                intent.putExtra("Text",getString(R.string.welcome_full));
+                intent.putExtra("Title","About Us");
                 startActivity(intent);
             }
         });
@@ -72,6 +74,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         builder2.append(string2);
         ccaDeskText = view.findViewById(R.id.textview_cca_desk);
         ccaDeskText.setText(builder2, TextView.BufferType.SPANNABLE);
+        ccaDeskText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
+                intent.putExtra("Text",getString(R.string.from_cca_desk));
+                intent.putExtra("Title","From CCA's Desk");
+                startActivity(intent);
+            }
+        });
 
         setupSlider();
         return view;

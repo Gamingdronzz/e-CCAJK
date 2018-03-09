@@ -28,7 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.HomeFragment;
@@ -103,6 +102,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -120,8 +120,9 @@ public class HomeActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }*/
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+
+   /* @Override
+       public boolean onPrepareOptionsMenu(Menu menu) {
 
         if (Prefrences.getInstance().getSignedIn(this) == false) {
             MenuItem login = menu.add("Login");
@@ -130,9 +131,9 @@ public class HomeActivity extends AppCompatActivity
             login.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                /*Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
+                *//*Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
                 startActivity(intent);
-                */
+                *//*
                     showLoginPopup();
                     return true;
                 }
@@ -150,7 +151,7 @@ public class HomeActivity extends AppCompatActivity
             });
         }
         return super.onPrepareOptionsMenu(menu);
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -295,8 +296,7 @@ public class HomeActivity extends AppCompatActivity
         String ppo = dataSnapshot.child("ppo").getValue().toString();
 
         changePrefrences(ppo, username);
-        changeNavHeader(ppo, username);
-        changeActionBarMenu();
+
     }
 
     @Override
@@ -315,18 +315,4 @@ public class HomeActivity extends AppCompatActivity
         Prefrences.getInstance().setUsername(this, user);
     }
 
-    private void changeNavHeader(String ppo, String username) {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        TextView name = navigationView.findViewById(R.id.textview_name);
-        TextView pensionerCode = navigationView.findViewById(R.id.textview_ppo);
-        name.setText(username);
-        pensionerCode.setText(ppo);
-    }
-
-    private void changeActionBarMenu() {
-
-    }
-
-    private void confirmLogout() {
-    }
 }
