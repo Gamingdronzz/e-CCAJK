@@ -10,7 +10,7 @@ import android.preference.PreferenceManager;
 
 public class Prefrences {
     private static Prefrences _instance;
-    static final String PREF_REGISTERED="Registered";
+
     static final String PREF_SIGNED_IN="signedIn";
     static final String PREF_PPO="ppo";
     static final String PREF_USER_NAME="username";
@@ -29,16 +29,6 @@ public class Prefrences {
 
     static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    public void setRegisterd(Context context,boolean reg){
-        SharedPreferences.Editor editor=getSharedPreferences(context).edit();
-        editor.putBoolean(PREF_REGISTERED,reg);
-        editor.commit();
-    }
-
-    public Boolean getRegistered(Context context){
-        return getSharedPreferences(context).getBoolean(PREF_REGISTERED,false);
     }
 
     public  void setSignedIn(Context context, boolean signedin) {

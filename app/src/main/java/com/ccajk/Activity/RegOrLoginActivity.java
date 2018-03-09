@@ -23,7 +23,7 @@ public class RegOrLoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               newActivity(LoginActivity.class);
+                newActivity(LoginActivity.class);
             }
         });
 
@@ -31,24 +31,23 @@ public class RegOrLoginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                newActivity(RegisterActivity.class);
             }
         });
 
         Button skip = findViewById(R.id.skip_button);
-        skip.setCompoundDrawablesWithIntrinsicBounds(null,null, AppCompatResources.getDrawable(this,R.drawable.ic_navigate_next_black_24dp),null);
+        skip.setCompoundDrawablesWithIntrinsicBounds(null, null, AppCompatResources.getDrawable(this, R.drawable.ic_navigate_next_black_24dp), null);
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newActivity(HomeActivity.class);
+                finish();
             }
         });
     }
 
-    public void newActivity(Class cls){
+    public void newActivity(Class cls) {
         Intent intent = new Intent(RegOrLoginActivity.this, cls);
         startActivity(intent);
-        finish();
-
     }
 }

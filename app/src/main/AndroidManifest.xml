@@ -54,12 +54,14 @@
         <activity android:name=".Activity.BrowserActivity" />
         <activity
             android:name=".Activity.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
         <activity
             android:name=".Activity.RegOrLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar.RegOrLogin"></activity>
-        <activity android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
+            android:theme="@style/AppTheme.NoActionBar.RegOrLogin" />
+        <activity
+            android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity android:name=".Activity.RegisterActivity"></activity>
     </application>
 
 </manifest>

@@ -5,17 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ccajk.Activity.LoginActivity">
-
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+    tools:context="com.ccajk.Activity.RegisterActivity">
 
     <LinearLayout
         android:id="@+id/login_form"
@@ -40,11 +30,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
-                    android:id="@+id/ppo"
+                <EditText
+                    android:id="@+id/edittext_ppo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="PPO Number"
+                    android:hint="Pensioner Code"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -59,7 +49,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/image_pwd"
+                android:id="@+id/image_mobile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -70,14 +60,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/edittext_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:imeActionId="6"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
+                    android:hint="Mobile Number"
+                    android:inputType="number"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
@@ -93,12 +80,12 @@
             app:cardCornerRadius="@dimen/corner_radius_large">
 
             <Button
-                android:id="@+id/sign_in_button"
+                android:id="@+id/register_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#00000000"
-                android:text="SIGN IN"
+                android:text="REGISTER"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
@@ -113,8 +100,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/margin_small"
-        android:textStyle="italic"
         android:text="Skip"
-        android:textSize="@dimen/text_18" />
+        android:textSize="@dimen/text_18"
+        android:textStyle="italic" />
 
 </RelativeLayout>

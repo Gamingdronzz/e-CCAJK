@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ccajk.R;
+import com.ccajk.Tools.Prefrences;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -49,10 +50,12 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationStart(Animation animation) {
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 LoadNextActivity();
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -62,7 +65,10 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), RegOrLoginActivity.class);
+        if (Prefrences.getInstance().getSignedIn(this))
+            intent.setClass(getApplicationContext(), HomeActivity.class);
+        else
+            intent.setClass(getApplicationContext(), RegOrLoginActivity.class);
         startActivity(intent);
         finish();
     }
