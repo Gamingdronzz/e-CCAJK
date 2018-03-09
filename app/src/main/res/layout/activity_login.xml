@@ -12,8 +12,9 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/login_form"
         android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
@@ -113,8 +114,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/margin_small"
-        android:textStyle="italic"
         android:text="Skip"
-        android:textSize="@dimen/text_18" />
+        android:textSize="@dimen/text_18"
+        android:textStyle="italic" />
 
 </RelativeLayout>

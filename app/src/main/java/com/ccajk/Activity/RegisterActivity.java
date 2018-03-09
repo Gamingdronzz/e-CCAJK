@@ -14,7 +14,7 @@ import com.ccajk.R;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText mCode,mMobile;
-    private ImageView ppo, mob;
+    private ImageView ppo,pwd, mob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         mob=findViewById(R.id.image_mobile);
         mob.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_phone_android_black_24dp));
+
+        pwd = findViewById(R.id.image_pwd);
+        pwd.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_password));
 
         mCode= findViewById(R.id.edittext_ppo);
         mMobile = findViewById(R.id.edittext_mobile);
