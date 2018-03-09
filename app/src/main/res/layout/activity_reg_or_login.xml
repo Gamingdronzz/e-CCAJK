@@ -4,19 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorOffWhite"
+    android:background="@color/colorPrimaryLight"
     tools:context="com.ccajk.Activity.RegOrLoginActivity">
 
-    <TextView
+    <!--<TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_large"
         android:fontFamily="@font/artifika"
-        android:text="Welcome !"
-        android:textColor="@color/colorBlack"
+        android:text="Welcome"
         android:textAlignment="center"
-        android:textSize="@dimen/text_25" />
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_25" />-->
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:paddingTop="@dimen/padding_large"
+        android:paddingStart="@dimen/padding_large"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo2"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,17 +39,18 @@
             android:layout_marginTop="@dimen/margin_xxlarge"
             android:text="@string/reg_or_login_text1"
             android:textAlignment="center"
-            android:textSize="@dimen/text_18" />
+            android:textColor="@color/colorLightBlack"
+            android:textSize="@dimen/text_15" />
 
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:backgroundTint="@color/colorPrimary"
-            app:cardElevation="@dimen/elevation_medium"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="@dimen/corner_radius_medium">
+            android:backgroundTint="@color/colorWhite"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardElevation="@dimen/elevation_medium">
 
             <Button
                 android:id="@+id/sign_in_button"
@@ -49,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:text="SIGN IN"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorLightBlack"
                 android:textStyle="bold" />
 
         </android.support.v7.widget.CardView>
@@ -59,19 +68,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_xxxxlarge"
             android:text="@string/reg_or_login_text2"
-
             android:textAlignment="center"
-            android:textSize="@dimen/text_18" />
+            android:textColor="@color/colorLightBlack"
+            android:textSize="@dimen/text_15" />
 
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            app:cardElevation="@dimen/elevation_medium"
-            android:backgroundTint="@color/colorPrimary"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="@dimen/corner_radius_medium">
+            android:backgroundTint="@color/colorWhite"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardElevation="@dimen/elevation_medium">
 
             <Button
                 android:id="@+id/register_button"
@@ -79,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:text="REGISTER"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorLightBlack"
                 android:textStyle="bold" />
 
         </android.support.v7.widget.CardView>
@@ -89,26 +98,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/skip_button"
+        android:textColor="@color/colorLightBlack"
         android:gravity="center"
-        android:text="@string/not_a_pensioner"/>
+        android:text="@string/not_a_pensioner" />
 
     <Button
         android:id="@+id/skip_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginEnd="@dimen/margin_small"
-        android:text="Skip"
         android:background="@null"
-        android:textSize="@dimen/text_15"
-        />
-   <!-- <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_above="@id/skip_button"
-        android:background="@color/colorBlack">
+        android:text="Skip"
+        android:textSize="@dimen/text_15" />
+    <!-- <View
+         android:layout_width="wrap_content"
+         android:layout_height="1dp"
+         android:layout_above="@id/skip_button"
+         android:background="@color/colorBlack">
 
-    </View>-->
+     </View>-->
 
 </RelativeLayout>

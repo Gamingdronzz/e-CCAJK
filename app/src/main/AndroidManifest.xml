@@ -58,6 +58,8 @@
         <activity
             android:name=".Activity.RegOrLoginActivity"
             android:theme="@style/AppTheme.NoActionBar.RegOrLogin"></activity>
+        <activity android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
     </application>
 
 </manifest>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_medium"
+    android:layout_margin="@dimen/margin_medium"
+    android:background="@drawable/custom_layout_background"
     android:elevation="@dimen/elevation_medium"
     app:cardBackgroundColor="@color/colorWhite"
     >
@@ -12,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_medium"
         android:orientation="vertical">
 
         <TextView
@@ -37,10 +39,10 @@
 
         <Button
             android:id="@+id/button_email"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_medium"
-            android:layout_marginStart="@dimen/margin_medium"
+            android:paddingEnd="@dimen/padding_medium"
+            android:paddingStart="@dimen/padding_medium"
             android:background="@android:color/transparent"
             android:text="TextView"
             android:textAlignment="textStart"
@@ -82,6 +84,13 @@
                  />
 
         </LinearLayout>
-
+<!--<View
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:layout_marginTop="@dimen/margin_large"
+    android:layout_marginBottom="@dimen/margin_large"
+    android:layout_marginStart="@dimen/margin_large"
+    android:layout_marginEnd="@dimen/margin_large"
+    android:background="@color/colorLightGray"></View>-->
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</LinearLayout>

@@ -47,9 +47,9 @@
         completions."
     </string>
 
-    <string name="reg_or_login_text1">Sign in to register grievances and track them</string>
+    <string name="reg_or_login_text1">SIGN IN TO REGISTER GRIEVANCES</string>
 
-    <string name="reg_or_login_text2">Not Yet Registered?</string>
+    <string name="reg_or_login_text2">NOT YET REGISTERED?</string>
     <string name="not_a_pensioner">Not a Pensioner ?</string>
 
 </resources>

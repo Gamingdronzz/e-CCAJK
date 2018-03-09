@@ -18,15 +18,17 @@
                 android:id="@+id/button_choose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
                 android:layout_gravity="center"
+                android:background="@android:color/transparent"
                 android:tint="@color/colorAccent" />
 
             <TextView
+                android:id="@+id/textview_choose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:gravity="center_horizontal"
-                android:text="Choose File to Upload"
+                android:text="Choose Image to Upload"
                 android:textSize="@dimen/text_18" />
 
             <ImageButton
@@ -34,13 +36,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@android:color/transparent"
                 android:layout_marginTop="@dimen/margin_xxxlarge"
+                android:background="@android:color/transparent"
                 android:tint="@color/colorAccent" />
 
             <TextView
+                android:id="@+id/textview_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:gravity="center_horizontal"
                 android:text="Add Location Coordinates"
                 android:textSize="@dimen/text_18" />
@@ -52,11 +56,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingTop="@dimen/padding_medium"
-            android:textColor="@color/colorOffWhite"
-            android:paddingBottom="@dimen/padding_medium"
             android:background="@color/colorPrimary"
+            android:paddingBottom="@dimen/padding_medium"
+            android:paddingTop="@dimen/padding_medium"
             android:text="UPLOAD"
+            android:textColor="@color/colorOffWhite"
             android:textSize="@dimen/text_20" />
 
     </RelativeLayout>
