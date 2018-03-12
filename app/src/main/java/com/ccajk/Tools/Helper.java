@@ -18,7 +18,7 @@ public class Helper {
     private static Helper _instance;
     private ArrayList<LocationModel> locationModels;
 
-   public Helper() {
+    public Helper() {
         _instance = this;
         if (getLocationModels() == null) {
             AddLocations();
@@ -162,6 +162,15 @@ public class Helper {
         districtList.add(new District("Kathua", States.JammuKashmir));
         districtList.add(new District("Mohali", States.Punjab));
         return districtList;
+    }
+
+    public String[] submittedByList(int gtype) {
+        String first;
+        if (gtype == 0)
+            first = "Pensioner";
+        else
+            first = "GPF Benificiary";
+        return new String[]{first, "Other"};
     }
 
 }

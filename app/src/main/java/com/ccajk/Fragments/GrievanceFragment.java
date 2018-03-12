@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 
 
 public class GrievanceFragment extends Fragment {
@@ -20,6 +22,7 @@ public class GrievanceFragment extends Fragment {
     TextView heading;
     private ImageView ppo, mob, details, type, submittedby, attach;
     Spinner grievanceType, grievanceSubmitedBy;
+    Button submit;
 
     String[] list = {"Type 1", "Type 2", "Type 3"};
 
@@ -66,8 +69,7 @@ public class GrievanceFragment extends Fragment {
         submittedby.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
 
         grievanceSubmitedBy = view.findViewById(R.id.spinner_submitted_by);
-        grievanceSubmitedBy.setPrompt("Grievance Submitted By");
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, list);
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(gtype));
         grievanceSubmitedBy.setAdapter(arrayAdapter1);
 
         attach = view.findViewById(R.id.image_attach);
