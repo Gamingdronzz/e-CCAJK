@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import com.ccajk.Fragments.ContactUsFragment;
+import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
@@ -159,6 +160,7 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment;
+        Bundle bundle;
         switch (id) {
             case R.id.navmenu_home:
                 getSupportActionBar().setTitle("Home");
@@ -189,6 +191,22 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_inspection:
                 getSupportActionBar().setTitle("Inspection");
                 fragment = new InspectionFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_pension:
+                bundle=new Bundle();
+                bundle.putInt("Category",0);
+                getSupportActionBar().setTitle("Grievance Registeration");
+                fragment = new GrievanceFragment();
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_gpf:
+                bundle=new Bundle();
+                bundle.putInt("Category",1);
+                getSupportActionBar().setTitle("Grievance Registeration");
+                fragment = new GrievanceFragment();
+                fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
         }

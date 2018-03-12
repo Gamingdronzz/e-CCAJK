@@ -38,29 +38,6 @@ public class LocationModel {
         this.district = district;
     }
 
-    /*public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public LocationModel(String locationName, double longitude, double latitude) {
-
-        this.locationName = locationName;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }*/
-
     public LocationModel(String locationName, LatLng location, String state,String district) {
         this.locationName = locationName;
         this.location = location;
