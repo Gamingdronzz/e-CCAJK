@@ -38,8 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/edittext_ppo"
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_ppo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Pensioner Code"
@@ -68,8 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/edittext_mobile"
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Mobile Number"

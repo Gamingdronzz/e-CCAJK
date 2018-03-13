@@ -77,6 +77,13 @@ public class HomeActivity extends AppCompatActivity
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        if (Prefrences.getInstance().getSignedIn(this)) {
+            navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
+            navigationView.getMenu().findItem(R.id.staff_other).setVisible(true);
+        } else {
+            navigationView.getMenu().findItem(R.id.staff_other).setVisible(false);
+            navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
+        }
         navigationView.setNavigationItemSelectedListener(this);
 
         Fragment fragment = new HomeFragment();
@@ -194,16 +201,16 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_pension:
-                bundle=new Bundle();
-                bundle.putInt("Category",0);
+                bundle = new Bundle();
+                bundle.putInt("Category", 0);
                 getSupportActionBar().setTitle("Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_gpf:
-                bundle=new Bundle();
-                bundle.putInt("Category",1);
+                bundle = new Bundle();
+                bundle.putInt("Category", 1);
                 getSupportActionBar().setTitle("Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);

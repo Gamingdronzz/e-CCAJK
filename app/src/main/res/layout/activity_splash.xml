@@ -3,31 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/splash_background"
     android:layout_height="match_parent"
+    android:background="@drawable/splash_background"
     tools:context="com.ccajk.Activity.SplashActivity">
 
     <ImageView
+        android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/logo"
-        android:tint="@color/colorBlack"
-
         android:layout_centerInParent="true"
         android:layout_margin="@dimen/margin_xxxxxlarge"
         android:src="@drawable/logo"
-         />
+        android:tint="@color/colorBlack" />
 
     <TextView
         android:id="@+id/designedBy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableTint="@color/colorWhite"
         android:layout_alignParentBottom="true"
         android:drawableBottom="@mipmap/gdlogo"
         android:text="Designed and Developed by"
         android:textAlignment="center"
-        android:textSize="@dimen/text_10"
-        android:textColor="@color/colorBlack" />
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_10" />
 
 </RelativeLayout>

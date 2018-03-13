@@ -50,7 +50,6 @@
     </item>
 
 
-
     <item android:title="Others">
         <menu>
             <item
@@ -61,10 +60,7 @@
                 android:id="@+id/navmenu_hotspot_locator"
                 android:icon="@drawable/ic_menu_send"
                 android:title="WIFI Hotspot Locator" />
-            <item
-                android:id="@+id/navmenu_inspection"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Inspection" />
+
             <item
                 android:id="@+id/navmenu_statistics"
                 android:icon="@drawable/ic_menu_slideshow"
@@ -72,7 +68,37 @@
         </menu>
 
     </item>
+    <item
+        android:id="@+id/staff_login"
+        android:title="Staff Corner">
+        <menu>
+            <item
+                android:id="@+id/navmenu_login"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Log in" />
 
+        </menu>
+
+    </item>
+    <item
+        android:id="@+id/staff_other"
+        android:title="Staff Corner">
+        <menu>
+            <item
+                android:id="@+id/navmenu_inspection"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Inspection" />
+            <item
+                android:id="@+id/navmenu_payment_update"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Update Payment Status" />
+            <item
+                android:id="@+id/navmenu_logout"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Logout" />
+        </menu>
+
+    </item>
 
 
 </menu>

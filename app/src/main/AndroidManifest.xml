@@ -31,6 +31,7 @@
         <activity
             android:name=".Activity.HomeActivity"
             android:label="@string/title_activity_home"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
