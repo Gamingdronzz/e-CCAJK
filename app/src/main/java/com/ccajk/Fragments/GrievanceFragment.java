@@ -49,11 +49,11 @@ public class GrievanceFragment extends Fragment {
     }
 
     private void init(View view, final int gtype) {
-        heading = view.findViewById(R.id.heading);
+      /*  heading = view.findViewById(R.id.heading);
         if (gtype == 0)
             heading.setText("Register Pension Grievance");
         else
-            heading.setText("Register GPF Grievance");
+            heading.setText("Register GPF Grievance");*/
 
         ppo = view.findViewById(R.id.image_ppo);
         ppo.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
