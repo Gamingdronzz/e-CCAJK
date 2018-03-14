@@ -27,7 +27,6 @@ public class PanUploadFragment extends Fragment {
     public PanUploadFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

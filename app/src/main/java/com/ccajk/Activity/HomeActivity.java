@@ -100,14 +100,18 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.contentPanel);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }/* else {
             doExit();
+        }*/
+        else if (f instanceof HomeFragment) {
+            doExit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, new HomeFragment()).commit();
         }
-
     }
 
 
