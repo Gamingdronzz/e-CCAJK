@@ -17,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,11 +28,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import com.ccajk.Fragments.AdhaarUploadFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
+import com.ccajk.Fragments.PanUploadFragment;
 import com.ccajk.Fragments.StatisticsFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
@@ -48,7 +49,6 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
 
     String TAG = "firebase";
-    Menu mMenu;
     FrameLayout frameLayout;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -203,7 +203,7 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_pension:
                 bundle = new Bundle();
                 bundle.putInt("Category", 0);
-                getSupportActionBar().setTitle("Grievance Registeration");
+                getSupportActionBar().setTitle("Pension Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
@@ -211,9 +211,19 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_gpf:
                 bundle = new Bundle();
                 bundle.putInt("Category", 1);
-                getSupportActionBar().setTitle("Grievance Registeration");
+                getSupportActionBar().setTitle("GPF Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_aadhaar:
+                fragment = new AdhaarUploadFragment();
+                getSupportActionBar().setTitle("Upload Aadhaar");
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_pan:
+                fragment = new PanUploadFragment();
+                getSupportActionBar().setTitle("Upload PAN");
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
         }
@@ -319,7 +329,6 @@ public class HomeActivity extends AppCompatActivity
     public void OnLoginSuccesful(DataSnapshot dataSnapshot) {
         String username = dataSnapshot.child("name").getValue().toString();
         String ppo = dataSnapshot.child("ppo").getValue().toString();
-
         changePrefrences(ppo, username);
 
     }

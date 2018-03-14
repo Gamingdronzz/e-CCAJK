@@ -34,7 +34,7 @@
                 android:padding="@dimen/padding_medium">
 
                 <ImageView
-                    android:id="@+id/image_ppo"
+                    android:id="@+id/image_pcode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content">
 
                     <AutoCompleteTextView
-                        android:id="@+id/autocomplete_ppo"
+                        android:id="@+id/autocomplete_pcode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Pensioner Code"
@@ -199,6 +199,7 @@
                     android:tint="@color/colorAccent" />
 
                 <Button
+                    android:id="@+id/button_attach"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Add File (Image or Pdf only)"

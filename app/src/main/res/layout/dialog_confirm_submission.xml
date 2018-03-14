@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
-            android:text="PPO No:"
+            android:text="Pensioner Code:"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_15" />
 
@@ -50,6 +50,7 @@
             android:textSize="@dimen/text_15" />
 
         <TextView
+            android:id="@+id/detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

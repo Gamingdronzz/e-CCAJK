@@ -24,8 +24,7 @@ import com.ccajk.Tools.Helper;
 
 public class GrievanceFragment extends Fragment {
 
-    TextView heading;
-    ImageView ppo, mob, details, type, submittedby, attach;
+    ImageView pcode, mob, details, type, submittedby, attach;
     AutoCompleteTextView pensionerCode, mobileNo;
     EditText grievanceDetails;
     Spinner grievanceType, grievanceSubmitedBy;
@@ -49,14 +48,9 @@ public class GrievanceFragment extends Fragment {
     }
 
     private void init(View view, final int gtype) {
-      /*  heading = view.findViewById(R.id.heading);
-        if (gtype == 0)
-            heading.setText("Register Pension Grievance");
-        else
-            heading.setText("Register GPF Grievance");*/
 
-        ppo = view.findViewById(R.id.image_ppo);
-        ppo.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
+        pcode = view.findViewById(R.id.image_pcode);
+        pcode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
         mob = view.findViewById(R.id.image_mobile);
         mob.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_phone_android_black_24dp));
         details = view.findViewById(R.id.image_details);
@@ -76,7 +70,7 @@ public class GrievanceFragment extends Fragment {
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(gtype));
         grievanceSubmitedBy.setAdapter(arrayAdapter1);
 
-        pensionerCode = view.findViewById(R.id.autocomplete_ppo);
+        pensionerCode = view.findViewById(R.id.autocomplete_pcode);
         mobileNo = view.findViewById(R.id.autocomplete_mobile);
         grievanceDetails = view.findViewById(R.id.edittext_details);
 
@@ -92,7 +86,7 @@ public class GrievanceFragment extends Fragment {
 
     private boolean checkInput() {
         if (pensionerCode.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this.getContext(), "PPO No required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getContext(), "Pensioner Code required", Toast.LENGTH_SHORT).show();
             pensionerCode.requestFocus();
             return false;
         } else if (mobileNo.getText().toString().trim().isEmpty()) {
