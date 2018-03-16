@@ -24,7 +24,8 @@ import android.widget.Toast;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Prefrences;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -105,7 +106,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         /*markers = helper.getMarkers();
         names = helper.getLocationNames();*/
-        locationModels = Helper.getInstance().getLocationModels();
+        locationModels = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
 
         seekBar = view.findViewById(R.id.seekBar);
         seekBar.getBuilder()
@@ -140,7 +141,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             @Override
             public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
                 seekBarValue = seekBar.getProgress();
-                kilometres.setText("WITHIN " + Math.pow((seekBarValue+1),2) + " KM");
+                kilometres.setText("WITHIN " + Math.pow((seekBarValue + 1), 2) + " KM");
                 if (mLastLocation != null) {
                     AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(seekBarValue));
                 }
@@ -312,10 +313,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         int radius = getRadius(seekBarValue);
         LatLng latLng;
         for (int i = 0; i < length; i++) {
-            latLng = locationModels.get(i).getLocation();
-            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), latLng.latitude, latLng.longitude, results);
+            LocationModel locationModel = locationModels.get(i);
+            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude()), results);
             if (results[0] <= radius) {
-                filteredLocations.add(latLng);
+                filteredLocations.add(new LatLng(Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude())));
             }
         }
         return filteredLocations;

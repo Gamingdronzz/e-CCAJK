@@ -1,10 +1,94 @@
 package com.ccajk.Tools;
 
+import com.ccajk.Models.LocationModel;
+import com.ccajk.Models.State;
+
+import java.util.ArrayList;
+
 /**
  * Created by hp on 06-03-2018.
  */
 
 public class FireBaseHelper {
+
+    private static FireBaseHelper _instance;
+    private ArrayList<LocationModel> locationModels;
+
+    public ArrayList<State> statelist;
+
+    public FireBaseHelper() {
+        _instance = this;
+        statelist = getStatelist();
+    }
+
+    public static FireBaseHelper getInstance() {
+        if (_instance == null) {
+            return new FireBaseHelper();
+        } else {
+            return _instance;
+        }
+    }
+
+    public ArrayList<LocationModel> getLocationModels(String stateId) {
+        AddLocations(stateId);
+        return locationModels;
+    }
+
+
+    public void AddLocations(String stateId) {
+        if (stateId == "all") {
+            //code for adding all locations to firebase
+        } else {
+            locationModels = new ArrayList<>();
+            locationModels.add(new LocationModel("Sangrampur", "32.7400343", "74.7403159", stateId, "jammu"));
+            locationModels.add(new LocationModel("Sohal", "32.4938192", "75.2548692", stateId, "jammu"));
+            locationModels.add(new LocationModel("Sidhra", "32.7604934", "74.8989541", stateId, "jammu"));
+            locationModels.add(new LocationModel("Sumb", "32.52839", "75.120054", stateId, "samba"));
+            locationModels.add(new LocationModel("Trilokpur", "32.7148855", "74.752726", stateId, "jammu"));
+        }
+    }
+
+    public ArrayList<State> getStatelist() {
+        statelist = new ArrayList<>();
+        statelist.add(new State("anp", "Andhra Pradesh"));
+                    /*"Arunachal Pradesh",
+                    "Assam",
+                    "Bihar",
+                    "Chhattisgarh",
+                    "Goa",
+                    "Gujarat",
+                    "Haryana",
+                    "Himachal Pradesh",*/
+        statelist.add(new State("jnk", "Jammu and Kashmir"));
+                    /*"Jharkhand",
+                    "Karnataka",
+                    "Kerala",
+                    "Madya Pradesh",
+                    "Maharashtra",
+                    "Manipur",
+                    "Meghalaya",
+                    "Mizoram",
+                    "Nagaland",
+                    "Orissa",*/
+        statelist.add(new State("pnb", "Punjab"));
+                    /*"Rajasthan",
+                    "Sikkim",
+                    "Tamil Nadu",
+                    "Tripura",
+                    "Uttaranchal",
+                    "Uttar Pradesh",
+                    "West Bengal"*/
+        return statelist;
+    }
+
+
+    public String getState(String stateId) {
+        for (State s : statelist) {
+            if (s.getId() == stateId)
+                return s.getName();
+        }
+        return null;
+    }
 
     /*
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();

@@ -14,6 +14,7 @@ public class Prefrences {
     static final String PREF_SIGNED_IN="signedIn";
     static final String PREF_PPO="ppo";
     static final String PREF_USER_NAME="username";
+    static final String PREF_STATE="state";
 
     public Prefrences() {
         _instance = this;
@@ -51,14 +52,14 @@ public class Prefrences {
         return getSharedPreferences(context).getString(PREF_PPO,null);
     }
 
-    public  void setUsername(Context context, String username) {
+    public  void setPrefState(Context context, String state) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(PREF_USER_NAME,username);
+        editor.putString(PREF_STATE,state);
         editor.commit();
     }
 
-    public String getUsername(Context context) {
-        return getSharedPreferences(context).getString(PREF_USER_NAME,null);
+    public String getPrefState(Context context) {
+        return getSharedPreferences(context).getString(PREF_STATE,"jnk");
     }
 
 

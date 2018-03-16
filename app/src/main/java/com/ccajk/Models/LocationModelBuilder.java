@@ -1,25 +1,29 @@
 package com.ccajk.Models;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class LocationModelBuilder {
+    private String latitude;
+    private String longitude;
     private String locationName;
-    private LatLng location;
-    private String state;
+    private String stateId;
     private String district;
+
+    public LocationModelBuilder setLatitude(String latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public LocationModelBuilder setLongitude(String longitude) {
+        this.longitude = longitude;
+        return this;
+    }
 
     public LocationModelBuilder setLocationName(String locationName) {
         this.locationName = locationName;
         return this;
     }
 
-    public LocationModelBuilder setLocation(LatLng location) {
-        this.location = location;
-        return this;
-    }
-
-    public LocationModelBuilder setState(String state) {
-        this.state = state;
+    public LocationModelBuilder setStateId(String state) {
+        this.stateId = state;
         return this;
     }
 
@@ -29,6 +33,6 @@ public class LocationModelBuilder {
     }
 
     public LocationModel createLocationModel() {
-        return new LocationModel(locationName, location,state,district);
+        return new LocationModel(locationName, latitude, longitude, stateId, district);
     }
 }

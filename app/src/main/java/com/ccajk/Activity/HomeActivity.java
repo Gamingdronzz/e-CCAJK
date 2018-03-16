@@ -350,7 +350,6 @@ public class HomeActivity extends AppCompatActivity
     private void changePrefrences(String ppo, String user) {
         Prefrences.getInstance().setSignedIn(this, true);
         Prefrences.getInstance().setPpo(this, ppo);
-        Prefrences.getInstance().setUsername(this, user);
     }
 
 }

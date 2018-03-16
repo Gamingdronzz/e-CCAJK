@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
+import com.ccajk.Tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -34,8 +35,8 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String location = locationArray.get(position).getLocationName();
-        String state = locationArray.get(position).getState();
-        holder.tv.setText(location + "  (" + state + ")");
+        String stateId = locationArray.get(position).getStateId();
+        holder.tv.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
 
     }
 

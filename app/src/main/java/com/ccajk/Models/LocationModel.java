@@ -1,7 +1,5 @@
 package com.ccajk.Models;
 
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by balpreet on 2/15/2018.
  */
@@ -9,10 +7,34 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationModel {
 
     private String locationName;
-    private LatLng location;
-    private String state;
+    private String latitude;
+    private String longitude;
+    private String stateId;
     private String district;
-    //private double longitude,latitude;
+
+    public LocationModel(String locationName, String latitude, String longitude, String state, String district) {
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.stateId = state;
+        this.district = district;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
     public String getLocationName() {
         return locationName;
@@ -22,12 +44,12 @@ public class LocationModel {
         this.locationName = locationName;
     }
 
-    public String getState() {
-        return state;
+    public String getStateId() {
+        return stateId;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStateId(String state) {
+        this.stateId = state;
     }
 
     public String getDistrict() {
@@ -38,18 +60,4 @@ public class LocationModel {
         this.district = district;
     }
 
-    public LocationModel(String locationName, LatLng location, String state,String district) {
-        this.locationName = locationName;
-        this.location = location;
-        this.state=state;
-        this.district=district;
-    }
-
-    public LatLng getLocation() {
-        return location;
-    }
-
-    public void setLocation(LatLng location) {
-        this.location = location;
-    }
 }

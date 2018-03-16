@@ -24,11 +24,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
+import com.ccajk.Adapter.StatesAdapter;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Models.State;
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Prefrences;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 //Our class extending fragment
@@ -69,7 +73,7 @@ public class TabAllLocations extends Fragment {
         });
 
         allLocations = new ArrayList<>();
-        allLocations = Helper.getInstance().getLocationModels();
+        allLocations = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
         adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
 
         locations = new String[allLocations.size()];
@@ -100,7 +104,7 @@ public class TabAllLocations extends Fragment {
                     int pos = rv.getChildAdapterPosition(child);
                     LocationModel location = allLocations.get(pos);
                     // String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%s", lat, log ,Uri.encode(list.get(pos)));
-                    Uri uri = Uri.parse("geo:0,0?q=" + (location.getLocation().latitude + "," + location.getLocation().longitude + "(" + Uri.encode(location.getLocationName()) + ")"));
+                    Uri uri = Uri.parse("geo:0,0?q=" + (location.getLatitude() + "," + location.getLongitude() + "(" + Uri.encode(location.getLocationName()) + ")"));
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     getContext().startActivity(intent);
                 }
@@ -155,16 +159,14 @@ public class TabAllLocations extends Fragment {
         final View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_state, (ViewGroup) getView(), false);
 
         stateSpinner = viewInflated.findViewById(R.id.spinnerState);
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
-                getContext(), android.R.layout.simple_spinner_item, Helper.stateList);
-        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stateSpinner.setAdapter(adapterSpinner);
+        StatesAdapter statesAdapter = new StatesAdapter(getContext(), FireBaseHelper.getInstance().statelist);
+        stateSpinner.setAdapter(statesAdapter);
 
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                populateSpinnerDistrict(viewInflated, Helper.States.values()[position]);
+                State state = FireBaseHelper.getInstance().statelist.get(position);
+                populateSpinnerDistrict(viewInflated, state.getId());
             }
 
             @Override
@@ -191,11 +193,15 @@ public class TabAllLocations extends Fragment {
     }
 
 
-    private void populateSpinnerDistrict(View view, Helper.States state) {
-
+    private void populateSpinnerDistrict(View view, String stateId) {
+        HashSet<String> districts = new HashSet<>();
         districtSpinner = view.findViewById(R.id.spinnerDistrict);
+        for (LocationModel locationModel : allLocations) {
+            if (locationModel.getStateId().equals(stateId))
+                districts.add(locationModel.getDistrict());
+        }
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
-                getContext(), android.R.layout.simple_spinner_item, Helper.getInstance().getDistrictsOfState(state));
+                getContext(), android.R.layout.simple_spinner_item, new ArrayList<String>(districts));
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         districtSpinner.setAdapter(adapterSpinner);
     }
@@ -219,7 +225,7 @@ public class TabAllLocations extends Fragment {
     private void FilterLocationsByState(Object selectedItem, Object selectedItem1) {
         filteredLocations = new ArrayList<>();
         for (LocationModel locationModel : allLocations) {
-            if (locationModel.getState().equals(selectedItem)) {
+            if (locationModel.getStateId().equals(((State) selectedItem).getId())) {
                 if (locationModel.getDistrict().equals(selectedItem1))
                     filteredLocations.add(locationModel);
             }

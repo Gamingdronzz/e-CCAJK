@@ -11,6 +11,7 @@ public class Contact {
     private String officeContact;
     private String mobileContact;
     private String email;
+    private String stateId;
 
     public String getName() {
         return name;
@@ -52,13 +53,22 @@ public class Contact {
         this.email = email;
     }
 
-    public Contact(String name, String designation, String email, String officeContact, String mobileContact) {
+    public String getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(String stateId) {
+        this.stateId = stateId;
+    }
+
+    public Contact(String name, String designation, String email, String officeContact, String mobileContact, String stateId) {
 
         this.name = name;
         this.email=email;
         this.designation = designation;
         this.officeContact = officeContact;
         this.mobileContact = mobileContact;
+        this.stateId=stateId;
     }
 
 
