@@ -19,6 +19,7 @@ public class FireBaseHelper {
     public FireBaseHelper() {
         _instance = this;
         statelist = getStatelist();
+
     }
 
     public static FireBaseHelper getInstance() {
@@ -36,17 +37,15 @@ public class FireBaseHelper {
 
 
     public void AddLocations(String stateId) {
-        if (stateId == "all") {
-            //code for adding all locations to firebase
-        } else {
             locationModels = new ArrayList<>();
             locationModels.add(new LocationModel("Sangrampur", "32.7400343", "74.7403159", stateId, "jammu"));
             locationModels.add(new LocationModel("Sohal", "32.4938192", "75.2548692", stateId, "jammu"));
             locationModels.add(new LocationModel("Sidhra", "32.7604934", "74.8989541", stateId, "jammu"));
             locationModels.add(new LocationModel("Sumb", "32.52839", "75.120054", stateId, "samba"));
             locationModels.add(new LocationModel("Trilokpur", "32.7148855", "74.752726", stateId, "jammu"));
-        }
+
     }
+
 
     public ArrayList<State> getStatelist() {
         statelist = new ArrayList<>();

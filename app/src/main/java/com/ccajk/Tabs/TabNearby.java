@@ -280,8 +280,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Log.v(TAG, "Map Cleared");
         int i = 0;
         ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations);
-        if (filteredMarkers == null) {
-            Log.v(TAG, "Map Cleared");
+        if (filteredMarkers.size()==0) {
             Snackbar.make(this.getView(), "No Locations in nearby\nIncrease Radius", Snackbar.LENGTH_SHORT);
             return;
         }

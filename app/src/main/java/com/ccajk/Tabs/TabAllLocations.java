@@ -44,7 +44,7 @@ public class TabAllLocations extends Fragment {
     RecyclerView recyclerView;
     RecyclerViewAdapterHotspotLocation adapter;
     String[] locations;
-    ArrayList<LocationModel> allLocations = new ArrayList<>();
+    ArrayList<LocationModel> stateLocations= new ArrayList<>();
     ArrayList<LocationModel> filteredLocations = new ArrayList<>();
 
     @Override
@@ -72,13 +72,12 @@ public class TabAllLocations extends Fragment {
             }
         });
 
-        allLocations = new ArrayList<>();
-        allLocations = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
-        adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+        stateLocations=FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
+        adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
 
-        locations = new String[allLocations.size()];
+        locations = new String[stateLocations.size()];
         int i = 0;
-        for (LocationModel locationModel : allLocations) {
+        for (LocationModel locationModel : stateLocations) {
             locations[i] = locationModel.getLocationName();
             i++;
         }
@@ -102,7 +101,7 @@ public class TabAllLocations extends Fragment {
                 View child = rv.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && gestureDetector.onTouchEvent(e)) {
                     int pos = rv.getChildAdapterPosition(child);
-                    LocationModel location = allLocations.get(pos);
+                    LocationModel location = stateLocations.get(pos);
                     // String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%s", lat, log ,Uri.encode(list.get(pos)));
                     Uri uri = Uri.parse("geo:0,0?q=" + (location.getLatitude() + "," + location.getLongitude() + "(" + Uri.encode(location.getLocationName()) + ")"));
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -196,7 +195,7 @@ public class TabAllLocations extends Fragment {
     private void populateSpinnerDistrict(View view, String stateId) {
         HashSet<String> districts = new HashSet<>();
         districtSpinner = view.findViewById(R.id.spinnerDistrict);
-        for (LocationModel locationModel : allLocations) {
+        for (LocationModel locationModel : stateLocations) {
             if (locationModel.getStateId().equals(stateId))
                 districts.add(locationModel.getDistrict());
         }
@@ -208,13 +207,13 @@ public class TabAllLocations extends Fragment {
 
     private void FilterLocationsByName(String name) {
         filteredLocations = new ArrayList<>();
-        for (LocationModel locationModel : allLocations) {
+        for (LocationModel locationModel : stateLocations) {
             if (locationModel.getLocationName().equals(name))
                 filteredLocations.add(locationModel);
         }
         if (filteredLocations.size() == 0) {
             Toast.makeText(getContext(), "No Locations found", Toast.LENGTH_SHORT).show();
-            adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+            adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
         } else {
             adapter = new RecyclerViewAdapterHotspotLocation(filteredLocations);
         }
@@ -224,7 +223,7 @@ public class TabAllLocations extends Fragment {
 
     private void FilterLocationsByState(Object selectedItem, Object selectedItem1) {
         filteredLocations = new ArrayList<>();
-        for (LocationModel locationModel : allLocations) {
+        for (LocationModel locationModel : stateLocations) {
             if (locationModel.getStateId().equals(((State) selectedItem).getId())) {
                 if (locationModel.getDistrict().equals(selectedItem1))
                     filteredLocations.add(locationModel);
@@ -232,7 +231,7 @@ public class TabAllLocations extends Fragment {
         }
         if (filteredLocations.size() == 0) {
             Toast.makeText(getContext(), "No Locations found", Toast.LENGTH_SHORT).show();
-            adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
+            adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
         } else {
             adapter = new RecyclerViewAdapterHotspotLocation(filteredLocations);
         }
