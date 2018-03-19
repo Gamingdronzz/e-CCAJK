@@ -28,16 +28,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
-import com.ccajk.Fragments.AdhaarUploadFragment;
+import com.ccajk.Fragments.CheckFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
-import com.ccajk.Fragments.PanUploadFragment;
 import com.ccajk.Fragments.StatisticsFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Prefrences;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -206,7 +206,7 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_pension:
                 bundle = new Bundle();
-                bundle.putInt("Category", 0);
+                bundle.putInt("Category", Helper.getInstance().CATEGORY_PENSION);
                 getSupportActionBar().setTitle("Pension Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
@@ -214,20 +214,26 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_gpf:
                 bundle = new Bundle();
-                bundle.putInt("Category", 1);
+                bundle.putInt("Category", Helper.getInstance().CATEGORY_GPF);
                 getSupportActionBar().setTitle("GPF Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_aadhaar:
-                fragment = new AdhaarUploadFragment();
+                fragment = new CheckFragment();
+                bundle = new Bundle();
+                bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
                 getSupportActionBar().setTitle("Upload Aadhaar");
+                fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_pan:
-                fragment = new PanUploadFragment();
+                fragment = new CheckFragment();
+                bundle = new Bundle();
+                bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
+                fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
         }

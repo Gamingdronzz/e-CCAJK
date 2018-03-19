@@ -11,6 +11,10 @@ import android.util.Log;
 public class Helper {
     private static Helper _instance;
 
+    public final int CATEGORY_PENSION=0;
+    public final int CATEGORY_GPF=1;
+    public final int UPLOAD_TYPE_ADHAAR=0;
+    public final int UPLOAD_TYPE_PAN=1;
 
     public Helper() {
         _instance = this;
@@ -47,9 +51,6 @@ public class Helper {
 
         return dist; // output distance, in MILES
     }
-
-
-
 
     public String[] submittedByList(int gtype) {
         String first;

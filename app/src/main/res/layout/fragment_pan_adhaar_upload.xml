@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ccajk.Fragments.AdhaarUploadFragment">
+    tools:context="com.ccajk.Fragments.PanAdhaarUploadFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
             android:padding="@dimen/padding_medium">
 
             <ImageView
-                android:id="@+id/image_adhaar"
+                android:id="@+id/image_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -59,12 +59,10 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/autocomplete_adhaar"
+                    android:id="@+id/autocomplete_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Aadhaar Number"
                     android:inputType="number"
-                    android:maxLength="16"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
@@ -88,7 +86,7 @@
                 android:id="@+id/button_attach"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add Aadhaar File (Image or Pdf only)"
+                android:text="Add File (Image or Pdf only)"
                 android:textColor="@color/colorWhite" />
 
         </LinearLayout>

@@ -2,6 +2,8 @@ package com.ccajk.Tools;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.State;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -12,12 +14,14 @@ import java.util.ArrayList;
 public class FireBaseHelper {
 
     private static FireBaseHelper _instance;
+    public DatabaseReference databaseReference;
     private ArrayList<LocationModel> locationModels;
 
     public ArrayList<State> statelist;
 
     public FireBaseHelper() {
         _instance = this;
+        databaseReference=FirebaseDatabase.getInstance().getReference();
         statelist = getStatelist();
 
     }

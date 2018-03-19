@@ -51,5 +51,6 @@
 
     <string name="reg_or_login_text2">NOT YET REGISTERED?</string>
     <string name="not_a_pensioner">Not a Pensioner ?</string>
+    <string name="title_activity_pan_adhaar_history">PanAdhaarHistoryActivity</string>
 
 </resources>
