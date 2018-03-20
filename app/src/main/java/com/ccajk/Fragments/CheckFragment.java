@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ccajk.Activity.PanAdhaarHistoryActivity;
+import com.ccajk.Activity.PanAdhaarUploadActivity;
 import com.ccajk.R;
 
 public class CheckFragment extends Fragment {
@@ -39,11 +41,9 @@ public class CheckFragment extends Fragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new PanAdhaarUploadFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("UploadType", type);
-                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                Intent intent = new Intent(getContext(), PanAdhaarUploadActivity.class);
+                intent.putExtra("UploadType", type);
+                startActivity(intent);
             }
         });
 
@@ -51,10 +51,14 @@ public class CheckFragment extends Fragment {
         check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getContext(), PanAdhaarHistoryActivity.class);
-                intent.putExtra("UploadType", type);
-                intent.putExtra("PensionerCode", pcode.getText().toString());
-                startActivity(intent);
+                if (pcode.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getContext(), "Please enter a pensioner code", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getContext(), PanAdhaarHistoryActivity.class);
+                    intent.putExtra("UploadType", type);
+                    intent.putExtra("PensionerCode", pcode.getText().toString());
+                    startActivity(intent);
+                }
             }
         });
     }

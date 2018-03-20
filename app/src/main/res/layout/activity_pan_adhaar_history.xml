@@ -7,8 +7,19 @@
     android:orientation="vertical"
     tools:context="com.ccajk.Activity.PanAdhaarHistoryActivity">
 
+    <TextView
+        android:id="@+id/textview_current"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_20"
+        android:fontFamily="sans-serif-condensed"
+        android:padding="@dimen/padding_medium"
+        android:textAlignment="center" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_history"
+        android:layout_marginTop="@dimen/margin_large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 

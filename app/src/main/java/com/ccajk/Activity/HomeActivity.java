@@ -106,10 +106,10 @@ public class HomeActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         }/* else {
             doExit();
-        }*/
-        else if (f instanceof HomeFragment) {
+        }*/ else if (f instanceof HomeFragment) {
             doExit();
         } else {
+            getSupportActionBar().setTitle("Home");
             getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, new HomeFragment()).commit();
         }
     }

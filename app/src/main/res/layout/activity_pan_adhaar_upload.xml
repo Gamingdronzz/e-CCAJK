@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ccajk.Fragments.PanAdhaarUploadFragment">
+    tools:context="com.ccajk.Activity.PanAdhaarUploadActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,7 +62,6 @@
                     android:id="@+id/autocomplete_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>

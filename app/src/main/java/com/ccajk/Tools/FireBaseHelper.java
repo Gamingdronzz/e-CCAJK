@@ -14,14 +14,19 @@ import java.util.ArrayList;
 public class FireBaseHelper {
 
     private static FireBaseHelper _instance;
-    public DatabaseReference databaseReference;
     private ArrayList<LocationModel> locationModels;
+
+    public DatabaseReference databaseReference;
+    public final String ROOT_ADHAAR = "Adhaar";
+    public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
+    public final String ROOT_PAN = "Pan";
+    public final String ROOT_PAN_STATUS = "Pan-Status";
 
     public ArrayList<State> statelist;
 
     public FireBaseHelper() {
         _instance = this;
-        databaseReference=FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         statelist = getStatelist();
 
     }
@@ -41,12 +46,12 @@ public class FireBaseHelper {
 
 
     public void AddLocations(String stateId) {
-            locationModels = new ArrayList<>();
-            locationModels.add(new LocationModel("Sangrampur", "32.7400343", "74.7403159", stateId, "jammu"));
-            locationModels.add(new LocationModel("Sohal", "32.4938192", "75.2548692", stateId, "jammu"));
-            locationModels.add(new LocationModel("Sidhra", "32.7604934", "74.8989541", stateId, "jammu"));
-            locationModels.add(new LocationModel("Sumb", "32.52839", "75.120054", stateId, "samba"));
-            locationModels.add(new LocationModel("Trilokpur", "32.7148855", "74.752726", stateId, "jammu"));
+        locationModels = new ArrayList<>();
+        locationModels.add(new LocationModel("Sangrampur", "32.7400343", "74.7403159", stateId, "jammu"));
+        locationModels.add(new LocationModel("Sohal", "32.4938192", "75.2548692", stateId, "jammu"));
+        locationModels.add(new LocationModel("Sidhra", "32.7604934", "74.8989541", stateId, "jammu"));
+        locationModels.add(new LocationModel("Sumb", "32.52839", "75.120054", stateId, "samba"));
+        locationModels.add(new LocationModel("Trilokpur", "32.7148855", "74.752726", stateId, "jammu"));
 
     }
 

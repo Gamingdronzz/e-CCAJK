@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_medium"
+    android:background="@drawable/custom_layout_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_medium"
+            android:text="Request for Update:"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+
+        <TextView
+            android:id="@+id/textview_applied"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_medium"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_medium"
+            android:text="Request Processing:"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+
+        <TextView
+            android:id="@+id/textview_processing"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_medium"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_medium"
+            android:text="Request Result:"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+
+        <TextView
+            android:id="@+id/textview_result"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_medium"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_medium"
+            android:text="Request Status:"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+
+        <TextView
+            android:id="@+id/textview_status"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_medium"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15" />
+    </LinearLayout>
+</LinearLayout>
