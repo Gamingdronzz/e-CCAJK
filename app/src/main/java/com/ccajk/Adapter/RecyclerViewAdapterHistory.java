@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.ccajk.Models.PanAdhaarStatus;
 import com.ccajk.R;
+import com.ccajk.Tools.FireBaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
         holder.applied.setText("");
         holder.applied.setText(dt.format(panAdhaarStatus.getAppliedDate()));
         holder.status.setText("");
-        holder.status.setText(panAdhaarStatus.getStatus());
+        holder.status.setText(FireBaseHelper.getInstance().getStatusString(panAdhaarStatus.getStatus()));
 
         holder.processed.setText("");
         if (panAdhaarStatus.getProcessingDate() == null)
@@ -58,7 +59,6 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
     public int getItemCount() {
         return panAdhaarStatusArrayList.size();
     }
-
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
 

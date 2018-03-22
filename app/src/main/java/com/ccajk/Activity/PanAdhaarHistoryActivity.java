@@ -27,7 +27,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
     TextView textView;
     RecyclerView recyclerView;
     RecyclerViewAdapterHistory historyAdapter;
-    LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     ArrayList<PanAdhaarStatus> panAdhaarStatusArrayList = new ArrayList<>();
     DatabaseReference dbref;
 
@@ -37,7 +37,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pan_adhaar_history);
         pcode = getIntent().getStringExtra("PensionerCode");
         type = getIntent().getIntExtra("UploadType", -1);
-        getSupportActionBar().setTitle((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR?"Aadhaar Updation Status":"Pan Updation Status"));
+        getSupportActionBar().setTitle((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar Updation Status" : "Pan Updation Status"));
         init();
     }
 
@@ -71,7 +71,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
 
                         panAdhaarStatus = dataSnapshot1.getValue(PanAdhaarStatus.class);
                         Log.d(TAG, panAdhaarStatus.getAppliedDate().toString());
-                        status = panAdhaarStatus.getStatus();
+                        status = FireBaseHelper.getInstance().getStatusString(panAdhaarStatus.getStatus());
                         panAdhaarStatusArrayList.add(panAdhaarStatus);
                         historyAdapter.notifyDataSetChanged();
                     }

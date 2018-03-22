@@ -10,7 +10,7 @@ public class PanAdhaarStatus {
     Date appliedDate;
     Date processingDate;
     Date resultDate;
-    String status;
+    long status;
 
     public Date getAppliedDate() {
         return appliedDate;
@@ -36,18 +36,18 @@ public class PanAdhaarStatus {
         this.resultDate = result;
     }
 
-    public String getStatus() {
+    public long getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
     public PanAdhaarStatus() {
     }
 
-    public PanAdhaarStatus(Date appliedDate, Date processingDate, Date resultDate, String status) {
+    public PanAdhaarStatus(Date appliedDate, Date processingDate, Date resultDate, int status) {
 
         this.appliedDate = appliedDate;
         this.processingDate = processingDate;

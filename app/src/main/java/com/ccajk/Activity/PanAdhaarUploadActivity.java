@@ -39,6 +39,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
     AutoCompleteTextView pensionerCode, number;
     DatabaseReference dbref, statusref;
     Button upload, chooseFile;
+    String code;
     int type;
     long count;
 
@@ -47,6 +48,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pan_adhaar_upload);
         type = getIntent().getIntExtra("UploadType", -1);
+        code = getIntent().getStringExtra("PensionerCode");
         getSupportActionBar().setTitle((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar Updation" : "Pan Updation"));
         init();
     }
@@ -60,7 +62,8 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
         attach.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_attach_file_black_24dp));
 
         pensionerCode = findViewById(R.id.autocomplete_pcode);
-
+        pensionerCode.setText(code);
+        
         number = findViewById(R.id.autocomplete_number);
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
             number.setHint("Aadhaar Number");
@@ -85,7 +88,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
     }
 
     private boolean checkInput() {
-        String trimmed=number.getText().toString().replaceAll("\\s","");
+        String trimmed = number.getText().toString().replaceAll("\\s", "");
         if (pensionerCode.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Pensioner Code required", Toast.LENGTH_SHORT).show();
             pensionerCode.requestFocus();
@@ -126,8 +129,8 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
     }
 
     private void loadValues(View v) {
-        TextView ppoNo = v.findViewById(R.id.textview_ppo_no);
-        ppoNo.setText(ppoNo.getText() + " " + pensionerCode.getText());
+        TextView pNo = v.findViewById(R.id.textview_ppo_no);
+        pNo.setText(pNo.getText() + " " + pensionerCode.getText());
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
         mobNo.setText((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar No: " : "PAN No: ") + number.getText());
         v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
@@ -139,7 +142,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
     }
 
     private void uploadAdhaarOrPan() {
-        final String code = pensionerCode.getText().toString();
+
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
             dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR);
             statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS);
@@ -158,7 +161,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             count = dataSnapshot.getChildrenCount();
-                            PanAdhaarStatus panAdhaarStatus = new PanAdhaarStatus(new Date(), null, null, "Request Submitted");
+                            PanAdhaarStatus panAdhaarStatus = new PanAdhaarStatus(new Date(), null, null, 0);
                             statusref.child(code).child(String.valueOf(count + 1)).setValue(panAdhaarStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
