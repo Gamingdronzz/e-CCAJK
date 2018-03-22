@@ -2,6 +2,7 @@ package com.ccajk.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +37,7 @@ import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.StatisticsFragment;
+import com.ccajk.Fragments.TrackFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
@@ -70,10 +73,21 @@ public class HomeActivity extends AppCompatActivity
         });
 */
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        };
+        drawer.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -104,9 +118,7 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }/* else {
-            doExit();
-        }*/ else if (f instanceof HomeFragment) {
+        }else if (f instanceof HomeFragment) {
             doExit();
         } else {
             getSupportActionBar().setTitle("Home");
@@ -234,6 +246,11 @@ public class HomeActivity extends AppCompatActivity
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
                 fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_tracking:
+                getSupportActionBar().setTitle("Track Grievance");
+                fragment = new TrackFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
         }
