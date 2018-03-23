@@ -35,7 +35,7 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String location = locationArray.get(position).getLocationName();
-        String stateId = locationArray.get(position).getStateId();
+        String stateId = locationArray.get(position).getStateID();
         holder.tv.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
 
     }

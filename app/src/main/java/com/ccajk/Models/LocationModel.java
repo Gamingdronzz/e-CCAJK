@@ -6,58 +6,62 @@ package com.ccajk.Models;
 
 public class LocationModel {
 
-    private String locationName;
-    private String latitude;
-    private String longitude;
-    private String stateId;
-    private String district;
+    private String LocationName;
+    private Double Latitude;
+    private Double Longitude;
+    private String StateID;
+    private String District;
 
-    public LocationModel(String locationName, String latitude, String longitude, String state, String district) {
-        this.locationName = locationName;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.stateId = state;
-        this.district = district;
+    public LocationModel()
+    {
+
+    }
+    public LocationModel(String locationName, Double latitude, Double longitude, String state, String district) {
+        this.LocationName = locationName;
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+        this.StateID = state;
+        this.District = district;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public Double getLatitude() {
+        return Latitude;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
+    public void setLatitude(Double latitude) {
+        this.Latitude = latitude;
     }
 
-    public String getLongitude() {
-        return longitude;
+    public Double getLongitude() {
+        return Longitude;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setLongitude(Double longitude) {
+        this.Longitude = longitude;
     }
 
     public String getLocationName() {
-        return locationName;
+        return LocationName;
     }
 
     public void setLocationName(String locationName) {
-        this.locationName = locationName;
+        this.LocationName = locationName;
     }
 
-    public String getStateId() {
-        return stateId;
+    public String getStateID() {
+        return StateID;
     }
 
-    public void setStateId(String state) {
-        this.stateId = state;
+    public void setStateID(String state) {
+        this.StateID = state;
     }
 
     public String getDistrict() {
-        return district;
+        return District;
     }
 
     public void setDistrict(String district) {
-        this.district = district;
+        this.District = district;
     }
 
 }

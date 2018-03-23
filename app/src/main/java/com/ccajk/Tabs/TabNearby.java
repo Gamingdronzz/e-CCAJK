@@ -3,14 +3,15 @@ package com.ccajk.Tabs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +26,7 @@ import android.widget.Toast;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Tools.Helper;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -46,12 +47,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.IndicatorSeekBarType;
 import com.warkiz.widget.IndicatorType;
 import com.warkiz.widget.TickType;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 //Our class extending fragment
 public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonClickListener,
@@ -67,8 +73,9 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private int seekBarValue;
     private FusedLocationProviderClient mFusedLocationClient;
     private final String TAG = "Nearby";
-    private ArrayList<LocationModel> locationModels = new ArrayList<>();
     IndicatorSeekBar seekBar;
+    ProgressDialog progressDialog;
+
 
     AppCompatActivity appCompatActivity;
 
@@ -86,17 +93,35 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         init(view);
+
         return view;
     }
 
     private void init(View view) {
+        progressDialog = new ProgressDialog(getContext());
         kilometres = view.findViewById(R.id.nearby);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        locationModels = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
+        progressDialog.show();
+        final long starttime = new Date().getTime();
+        if (Helper.getInstance().getAllLocations() == null) {
+            DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+            databaseReference.child("Locations").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    new AddLocationsIntoList().execute(dataSnapshot);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+        //locationModels = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
 
         seekBar = view.findViewById(R.id.seekBar);
         seekBar.getBuilder()
-                .setMax(3)
+                .setMax(2)
                 .setMin(0)
                 .setProgress(0)
                 .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
@@ -124,9 +149,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             @Override
             public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
                 seekBarValue = seekBar.getProgress();
-                kilometres.setText("WITHIN " + Math.pow((seekBarValue + 1), 2) + " KM");
+                double km = Math.pow((seekBarValue + 1), 2);
+                kilometres.setText("WITHIN " + km + " KM");
                 if (mLastLocation != null) {
-                    AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(seekBarValue));
+                    AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), Helper.getInstance().getAllLocations(), getZoomValue(seekBarValue));
                 }
             }
         });
@@ -143,7 +169,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         checkForLocationPermissions();
 
         if (mLastLocation != null) {
-            AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, 0);
+            AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), Helper.getInstance().getAllLocations(), 0);
         }
     }
 
@@ -250,7 +276,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, getZoomValue(0));
+        AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), Helper.getInstance().getAllLocations(), getZoomValue(0));
         Log.v(TAG, "Animating through Callback ");
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
@@ -259,18 +285,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Log.v(TAG, "In function");
         mMap.clear();
         Log.v(TAG, "Map Cleared");
-        int i = 0;
-        ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations);
-        if (filteredMarkers.size() == 0) {
-            Snackbar.make(this.getView(), "No Locations in nearby\nIncrease Radius", Snackbar.LENGTH_SHORT);
-            return;
-        }
 
-        for (LatLng latlng :
-                filteredMarkers) {
-            mMap.addMarker(new MarkerOptions().position(latlng).title(allLocations.get(i++).getLocationName()));
-        }
-
+        new FilterMarkers().execute(allLocations);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(focussedLocation)
@@ -282,21 +298,24 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Log.v(TAG, "Animation Done");
     }
 
-    private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels) {
-        if (locationModels == null) {
-            Snackbar.make(this.getView(), "Error 1", Snackbar.LENGTH_SHORT);
+
+    private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> allLocationModels) {
+        if (allLocationModels == null) {
+            Log.d(TAG, "No Locations");
             return null;
         }
         ArrayList<LatLng> filteredLocations = new ArrayList<>();
-        int length = locationModels.size();
+        int length = allLocationModels.size();
         float[] results = new float[1];
-        int radius = getRadius(seekBarValue);
+        double radius = getRadius(seekBarValue);
+        Log.d(TAG, "Radius = " + radius);
         LatLng latLng;
         for (int i = 0; i < length; i++) {
-            LocationModel locationModel = locationModels.get(i);
-            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude()), results);
+            LocationModel currentLocationModel = allLocationModels.get(i);
+            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.valueOf(currentLocationModel.getLatitude()), Double.valueOf(currentLocationModel.getLongitude()), results);
             if (results[0] <= radius) {
-                filteredLocations.add(new LatLng(Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude())));
+                Log.d(TAG, "Adding Location distance " + results[0]);
+                filteredLocations.add(new LatLng(Double.valueOf(currentLocationModel.getLatitude()), Double.valueOf(currentLocationModel.getLongitude())));
             }
         }
         return filteredLocations;
@@ -306,9 +325,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         return 15 - seekBarValue;
     }
 
-    private int getRadius(int seekBarValue) {
-        Log.v(TAG, "Value = " + seekBarValue * 30000);
-        return seekBarValue * 30000;
+    private double getRadius(int seekBarValue) {
+        double radius = Math.pow((seekBarValue + 1), 2) * 1000;
+        Log.v(TAG, "Value = " + radius);
+        return radius;
     }
 
     @SuppressLint("MissingPermission")
@@ -346,5 +366,70 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Toast.makeText(this.getActivity(), "You are here", Toast.LENGTH_SHORT).show();
 
     }
+
+    public String getElapsedTimeMinutesSecondsString(long miliseconds) {
+        long elapsedTime = miliseconds;
+        String format = String.format("%%0%dd", 2);
+        elapsedTime = elapsedTime / 1000;
+        String seconds = String.format(format, elapsedTime % 60);
+        String minutes = String.format(format, elapsedTime / 60);
+        return minutes + ":" + seconds;
+    }
+
+
+    class FilterMarkers extends AsyncTask<Object, Object, Object> {
+
+        ArrayList<LocationModel> allLocations;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            allLocations = (ArrayList<LocationModel>) objects[0];
+            int i = 0;
+            ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations);
+            return filteredMarkers;
+
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            ArrayList<LatLng> filteredMarkers = (ArrayList<LatLng>) o;
+            if (filteredMarkers.size() == 0) {
+                //Snackbar.make(this, "No Locations in nearby\nIncrease Radius", Snackbar.LENGTH_SHORT);
+                return;
+            }
+            int i = 0;
+            for (LatLng latlng :
+                    filteredMarkers) {
+                mMap.addMarker(new MarkerOptions().position(latlng).title(allLocations.get(i++).getLocationName()));
+            }
+        }
+
+
+    }
+
+    class AddLocationsIntoList extends AsyncTask<Object, Object, Object> {
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+
+            DataSnapshot dataSnapshot = (DataSnapshot) objects[0];
+            for (DataSnapshot ds :
+                    dataSnapshot.getChildren()) {
+                LocationModel locationModel = ds.getValue(LocationModel.class);
+                //TODO
+                //Save locations in local memory here
+                Helper.getInstance().allLocationModels.add(locationModel);
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if ((boolean) o) {
+                progressDialog.dismiss();
+            }
+        }
+    }
+
 
 }

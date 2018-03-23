@@ -1,7 +1,16 @@
 
 package com.ccajk.Tools;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.ccajk.Models.LocationModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /*
  * Created by hp on 09-02-2018.
@@ -16,6 +25,8 @@ public class Helper {
     public final int UPLOAD_TYPE_ADHAAR=0;
     public final int UPLOAD_TYPE_PAN=1;
 
+    public ArrayList<LocationModel> allLocationModels;
+
     public Helper() {
         _instance = this;
     }
@@ -28,6 +39,12 @@ public class Helper {
         }
     }
 
+    public ArrayList<LocationModel> getAllLocations()
+    {
+        //TODO
+        //Fetch locations models from local memory here
+        return allLocationModels;
+    }
     /**
      * calculates the distance between two locations in MILES
      */
@@ -61,5 +78,38 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
+    public void addLocations(int value)
+    {
+        Random random = new Random();
+        double maxLongitude = 32.8,minLongitude = 32.1;
+        double maxLatitude = 74.5, minLatitude = 75.5;
+        for(int i=10;i<value+10;i++)
+        {
+            double randomLongitude = minLatitude + random.nextDouble() * (maxLatitude - minLatitude);
+            double randomLatitude  = minLongitude + random.nextDouble() * (maxLongitude - minLongitude);
+            DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+            databaseReference.child("Locations").child("Location"+"-"+i).child("Latitude").setValue(randomLatitude).addOnCompleteListener(new CompletionListener());
+            databaseReference.child("Locations").child("Location"+"-"+i).child("Longitude").setValue(randomLongitude);
+            databaseReference.child("Locations").child("Location"+"-"+i).child("StateID").setValue("jnk");
+            databaseReference.child("Locations").child("Location"+"-"+i).child("District").setValue("jammu");
+            databaseReference.child("Locations").child("Location"+"-"+i).child("LocationName").setValue("Location-"+i);
+            Log.d("Helper","Adding Location = " + randomLatitude + " : " + randomLongitude );
+        }
+    }
+
+
+
+
+    class CompletionListener implements OnCompleteListener<Void>
+    {
+
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if(task.isSuccessful())
+            {
+                Log.d("Completion",task.toString());
+            }
+        }
+    }
 }
 

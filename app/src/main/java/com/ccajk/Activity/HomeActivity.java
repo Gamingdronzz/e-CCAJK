@@ -1,7 +1,5 @@
 package com.ccajk.Activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,22 +11,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
 
 import com.ccajk.Fragments.CheckFragment;
 import com.ccajk.Fragments.ContactUsFragment;
@@ -38,19 +25,15 @@ import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.StatisticsFragment;
 import com.ccajk.Fragments.TrackFragment;
-import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Prefrences;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
-
+        implements NavigationView.OnNavigationItemSelectedListener//, ILoginProcessor
+{
     String TAG = "firebase";
     FrameLayout frameLayout;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -78,6 +61,7 @@ public class HomeActivity extends AppCompatActivity
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -118,7 +102,7 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if (f instanceof HomeFragment) {
+        } else if (f instanceof HomeFragment) {
             doExit();
         } else {
             getSupportActionBar().setTitle("Home");
@@ -180,7 +164,7 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
         Fragment fragment;
         Bundle bundle;
@@ -260,7 +244,24 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-    private void showLoginPopup() {
+
+    private void doExit() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                HomeActivity.this, R.style.MyAlertDialogStyle);
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        })
+                .setNegativeButton("No", null)
+                .setMessage("Do you want to exit?")
+                .setTitle("CCA JK")
+                .show();
+    }
+
+}
+    /*private void showLoginPopup() {
         ImageView ppo, pwd;
         ImageButton close;
         final AutoCompleteTextView autoCompleteTextView;
@@ -305,25 +306,11 @@ public class HomeActivity extends AppCompatActivity
         popupWindow.update();
         popupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
 
-    }
-
-    private void doExit() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                HomeActivity.this, R.style.MyAlertDialogStyle);
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        })
-                .setNegativeButton("No", null)
-                .setMessage("Do you want to exit?")
-                .setTitle("CCA JK")
-                .show();
-    }
+    }*/
 
 
-    @Override
+
+   /* @Override
     public void RequestLogin(final String pensionerCode, final String password) {
         DatabaseReference dbref = databaseReference.child("user").child(pensionerCode);
         Log.d(TAG, "RequestLogin: ");
@@ -373,6 +360,6 @@ public class HomeActivity extends AppCompatActivity
     private void changePrefrences(String ppo, String user) {
         Prefrences.getInstance().setSignedIn(this, true);
         Prefrences.getInstance().setPpo(this, ppo);
-    }
+    }*/
 
-}
+
