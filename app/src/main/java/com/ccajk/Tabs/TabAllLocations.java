@@ -213,7 +213,7 @@ public class TabAllLocations extends Fragment {
         HashSet<String> districts = new HashSet<>();
         districtSpinner = view.findViewById(R.id.spinnerDistrict);
         for (LocationModel locationModel : stateLocations) {
-            if (locationModel.getStateId().equals(stateId))
+            if (locationModel.getStateID().equals(stateId))
                 districts.add(locationModel.getDistrict());
         }
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
@@ -228,7 +228,7 @@ public class TabAllLocations extends Fragment {
     private void FilterLocationsByState(Object selectedItem, Object selectedItem1) {
         filteredLocations = new ArrayList<>();
         for (LocationModel locationModel : stateLocations) {
-            if (locationModel.getStateId().equals(((State) selectedItem).getId())) {
+            if (locationModel.getStateID().equals(((State) selectedItem).getId())) {
                 if (locationModel.getDistrict().equals(selectedItem1))
                     filteredLocations.add(locationModel);
             }

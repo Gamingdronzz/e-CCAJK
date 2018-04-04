@@ -1,18 +1,18 @@
 package com.ccajk.Models;
 
 public class LocationModelBuilder {
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
     private String locationName;
     private String stateId;
     private String district;
 
-    public LocationModelBuilder setLatitude(String latitude) {
+    public LocationModelBuilder setLatitude(Double latitude) {
         this.latitude = latitude;
         return this;
     }
 
-    public LocationModelBuilder setLongitude(String longitude) {
+    public LocationModelBuilder setLongitude(Double longitude) {
         this.longitude = longitude;
         return this;
     }

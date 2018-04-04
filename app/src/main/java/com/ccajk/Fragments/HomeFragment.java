@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         //imageButtonLogout = view.findViewById(R.id.logout);
         //imageButtonLogout.setBackground(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_logout_24dp));
 
+       // Helper.getInstance().addLocations(10000);
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
         builder.append(str1);

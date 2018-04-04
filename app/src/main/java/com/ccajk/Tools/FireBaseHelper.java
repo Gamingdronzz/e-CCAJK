@@ -2,6 +2,7 @@ package com.ccajk.Tools;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.State;
+import com.ccajk.Providers.DummyLocationProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -29,7 +30,6 @@ public class FireBaseHelper {
         _instance = this;
         databaseReference = FirebaseDatabase.getInstance().getReference();
         statelist = getStatelist();
-
     }
 
     public static FireBaseHelper getInstance() {
@@ -55,18 +55,9 @@ public class FireBaseHelper {
     }
 
     public ArrayList<LocationModel> getLocationModels(String stateId) {
-        AddLocations(stateId);
-        return locationModels;
-    }
-
-
-    public void AddLocations(String stateId) {
-        locationModels = new ArrayList<>();
-        locationModels.add(new LocationModel("Sangrampur", "32.7400343", "74.7403159", stateId, "jammu"));
-        locationModels.add(new LocationModel("Sohal", "32.4938192", "75.2548692", stateId, "jammu"));
-        locationModels.add(new LocationModel("Sidhra", "32.7604934", "74.8989541", stateId, "jammu"));
-        locationModels.add(new LocationModel("Sumb", "32.52839", "75.120054", stateId, "samba"));
-        locationModels.add(new LocationModel("Trilokpur", "32.7148855", "74.752726", stateId, "jammu"));
+        DummyLocationProvider dummyLocationProvider = new DummyLocationProvider();
+        dummyLocationProvider.storeLocations("jnk");
+        return new DummyLocationProvider().getLocations();
     }
 
 
