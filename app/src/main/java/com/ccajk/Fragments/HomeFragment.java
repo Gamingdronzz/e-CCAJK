@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             public void onClick(View v) {
                 Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
                 intent.putExtra("Text",getString(R.string.welcome_full));
-                intent.putExtra("Title","About Us");
+                intent.putExtra("Title","Welcome to CCA JK");
                 startActivity(intent);
             }
         });

@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Tools.Preferences;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -92,7 +92,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private void init(View view) {
         kilometres = view.findViewById(R.id.nearby);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        locationModels = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
+        locationModels = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getPrefState(getContext()));
 
         seekBar = view.findViewById(R.id.seekBar);
         seekBar.getBuilder()

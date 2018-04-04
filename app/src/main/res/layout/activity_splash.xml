@@ -16,7 +16,7 @@
         android:src="@drawable/logo"
         android:tint="@color/colorBlack" />
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/designedBy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,6 +25,6 @@
         android:text="Designed and Developed by"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
-        android:textSize="@dimen/text_10" />
+        android:textSize="@dimen/text_10" />-->
 
 </RelativeLayout>

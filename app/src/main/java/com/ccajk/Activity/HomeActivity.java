@@ -30,7 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
-import com.ccajk.Fragments.CheckFragment;
+import com.ccajk.Fragments.AadharPanCheckFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
@@ -41,7 +41,7 @@ import com.ccajk.Fragments.TrackFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -91,11 +91,11 @@ public class HomeActivity extends AppCompatActivity
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-        if (Prefrences.getInstance().getSignedIn(this)) {
+        if (Preferences.getInstance().getSignedIn(this)) {
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
-            navigationView.getMenu().findItem(R.id.staff_other).setVisible(true);
+            navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
         } else {
-            navigationView.getMenu().findItem(R.id.staff_other).setVisible(false);
+            navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
         }
         navigationView.setNavigationItemSelectedListener(this);
@@ -148,7 +148,7 @@ public class HomeActivity extends AppCompatActivity
    /* @Override
        public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if (Prefrences.getInstance().getSignedIn(this) == false) {
+        if (Preferences.getInstance().getSignedIn(this) == false) {
             MenuItem login = menu.add("Login");
             login.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
             login.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -233,7 +233,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_aadhaar:
-                fragment = new CheckFragment();
+                fragment = new AadharPanCheckFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
                 getSupportActionBar().setTitle("Upload Aadhaar");
@@ -241,7 +241,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_pan:
-                fragment = new CheckFragment();
+                fragment = new AadharPanCheckFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
@@ -252,6 +252,9 @@ public class HomeActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Track Grievance");
                 fragment = new TrackFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                break;
+            case R.id.navmenu_login:
+                showLoginPopup();
                 break;
         }
 
@@ -334,11 +337,17 @@ public class HomeActivity extends AppCompatActivity
                 if (dataSnapshot == null) {
                     OnUserNotExist();
                 }
-                if (dataSnapshot != null) {
-                    String dbpassword = dataSnapshot.child("password").getValue().toString();
-                    if (dbpassword.equals(password)) {
-                        OnLoginSuccesful(dataSnapshot);
-                    } else {
+                else if (dataSnapshot != null) {
+                    if(dataSnapshot.child("password").exists()) {
+                        String dbpassword = dataSnapshot.child("password").getValue().toString();
+                        if (dbpassword.equals(password)) {
+                            OnLoginSuccesful(dataSnapshot);
+                        } else {
+                            OnLoginFailure();
+                        }
+                    }
+                    else
+                    {
                         OnLoginFailure();
                     }
                 }
@@ -355,7 +364,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void OnLoginSuccesful(DataSnapshot dataSnapshot) {
         String username = dataSnapshot.child("name").getValue().toString();
-        String ppo = dataSnapshot.child("ppo").getValue().toString();
+        String ppo = dataSnapshot.child("emp_id").getValue().toString();
         changePrefrences(ppo, username);
 
     }
@@ -371,8 +380,8 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void changePrefrences(String ppo, String user) {
-        Prefrences.getInstance().setSignedIn(this, true);
-        Prefrences.getInstance().setPpo(this, ppo);
+        Preferences.getInstance().setSignedIn(this, true);
+        Preferences.getInstance().setPpo(this, ppo);
     }
 
 }

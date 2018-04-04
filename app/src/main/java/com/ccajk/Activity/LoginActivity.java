@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
+import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,38 +75,38 @@ public class LoginActivity extends AppCompatActivity implements ILoginProcessor 
 
     @Override
     public void RequestLogin(String PensionerCode, final String password) {
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference dbref = databaseReference.child("user").child(PensionerCode);
-        Log.d(TAG, "RequestLogin: ");
-        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                if (dataSnapshot == null) {
-                    OnUserNotExist();
-                }
-                if (dataSnapshot != null) {
-                    String dbpassword = dataSnapshot.child("password").getValue().toString();
-                    if (dbpassword.equals(password)) {
-                        OnLoginSuccesful(dataSnapshot);
-                    } else {
-                        OnLoginFailure();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "Error");
-                OnUserNotExist();
-            }
-        });
+        OnLoginSuccesful(null);
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//        DatabaseReference dbref = databaseReference.child("user").child(PensionerCode);
+//        Log.d(TAG, "RequestLogin: ");
+//        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+//                if (dataSnapshot == null) {
+//                    OnUserNotExist();
+//                }
+//                if (dataSnapshot != null) {
+//                    String dbpassword = dataSnapshot.child("password").getValue().toString();
+//                    if (dbpassword.equals(password)) {
+//                        OnLoginSuccesful(dataSnapshot);
+//                    } else {
+//                        OnLoginFailure();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d(TAG, "Error");
+//                OnUserNotExist();
+//            }
+//        });
     }
 
     @Override
     public void OnLoginSuccesful(DataSnapshot dataSnapshot) {
-
+        Preferences.getInstance().setSignedIn(this,true);
     }
 
     @Override

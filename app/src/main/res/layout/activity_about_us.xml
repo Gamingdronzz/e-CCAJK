@@ -12,40 +12,15 @@
         android:paddingTop="@dimen/margin_medium"
         >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/colorDarkBlue"></View>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryLight"
-            android:fontFamily="@font/artifika"
-            android:paddingBottom="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_small"
-            android:text="Welcome to CCA JK"
-            android:textAlignment="center"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_20"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/colorDarkBlue"></View>
-
 
         <TextView
             android:id="@+id/display"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:fontFamily="@font/imprima"
+
             android:justificationMode="inter_word"
-            android:paddingEnd="@dimen/padding_medium"
-            android:paddingStart="@dimen/padding_medium"
-            android:textSize="@dimen/text_15"
+            android:padding="@dimen/padding_large"
+            android:textSize="@dimen/text_18"
             android:textStyle="bold" />
 
     </LinearLayout>

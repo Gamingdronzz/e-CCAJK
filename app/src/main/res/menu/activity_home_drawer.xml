@@ -81,7 +81,7 @@
 
     </item>
     <item
-        android:id="@+id/staff_other"
+        android:id="@+id/staff_panel"
         android:title="Staff Corner">
         <menu>
             <item
@@ -89,9 +89,13 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="Inspection" />
             <item
-                android:id="@+id/navmenu_payment_update"
+                android:id="@+id/navmenu_UpdateStatus"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Update Payment Status" />
+                android:title="Inspection" />
+            <!--<item-->
+                <!--android:id="@+id/navmenu_payment_update"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="Update Payment Status" />-->
             <item
                 android:id="@+id/navmenu_logout"
                 android:icon="@drawable/ic_menu_send"

@@ -2,37 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorLightBlack"
+    android:layout_height="250dp"
+    android:paddingTop="@dimen/padding_xlarge"
+    android:background="@drawable/splash_background"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_xxlarge"
-   android:paddingLeft="@dimen/padding_xlarge"
+
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
+        android:foregroundGravity="center"
         android:id="@+id/imageView"
+        android:padding="@dimen/padding_medium"
+        android:tint="@color/colorBlack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_bsnl" />
-
-    <TextView
-        android:id="@+id/textview_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:textSize="@dimen/text_20"
-        android:textColor="@color/colorWhite"
-        android:text="Sh. Rajnish Kumar Jenaw"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-    <TextView
-        android:id="@+id/textview_ppo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_15"
-        android:paddingBottom="@dimen/padding_small"
-        android:text="123456789012345" />
-
+        app:srcCompat="@drawable/logo" />
 </LinearLayout>

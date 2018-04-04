@@ -26,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void bindVIews() {
         imageView = findViewById(R.id.logo);
-        gd = findViewById(R.id.designedBy);
+        //gd = findViewById(R.id.designedBy);
 
     }
 
@@ -42,8 +42,8 @@ public class SplashActivity extends AppCompatActivity {
         imageView.clearAnimation();
         imageView.startAnimation(animationScale);
 
-        gd.clearAnimation();
-        gd.startAnimation(animationBounce);
+        //gd.clearAnimation();
+        //gd.startAnimation(animationBounce);
 
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -64,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
-        /*if (Prefrences.getInstance().getSignedIn(this))
+        /*if (Preferences.getInstance().getSignedIn(this))
             intent.setClass(getApplicationContext(), HomeActivity.class);
         else
             intent.setClass(getApplicationContext(), RegOrLoginActivity.class);*/

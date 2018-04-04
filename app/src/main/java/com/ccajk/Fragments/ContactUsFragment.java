@@ -14,7 +14,7 @@ import com.ccajk.Adapter.RecyclerViewAdapterContacts;
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
 import com.ccajk.R;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -41,8 +41,8 @@ public class ContactUsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview_contacts);
         textView = view.findViewById(R.id.general);
 
-        textView.setText(getGeneralText(Prefrences.getInstance().getPrefState(getContext())));
-        getContactsList(Prefrences.getInstance().getPrefState(getContext()));
+        textView.setText(getGeneralText(Preferences.getInstance().getPrefState(getContext())));
+        getContactsList(Preferences.getInstance().getPrefState(getContext()));
 
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
         recyclerView.setAdapter(adapterContacts);

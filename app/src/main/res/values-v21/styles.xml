@@ -3,7 +3,7 @@
     <style name="AppTheme.NoActionBar.Splash">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">#ee8317</item>
+        <item name="android:statusBarColor">@color/colorSaffron</item>
     </style>
 
     <style name="AppTheme.NoActionBar.RegOrLogin" parent="Theme.AppCompat.Light">

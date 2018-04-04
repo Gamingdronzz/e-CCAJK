@@ -22,7 +22,7 @@ import com.ccajk.Models.PanAdhaarStatus;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -89,15 +89,23 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
 
     private boolean checkInput() {
         String trimmed = number.getText().toString().replaceAll("\\s", "");
+
+        //If Pensioner code is empty
         if (pensionerCode.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Pensioner Code required", Toast.LENGTH_SHORT).show();
             pensionerCode.requestFocus();
             return false;
-        } else if ((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) && (trimmed.length() < 16)) {
+
+
+        }
+        //If Aadhar number is not complete
+        else if ((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) && (trimmed.length() < 16)) {
             Toast.makeText(this, "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
             number.requestFocus();
             return false;
-        } else if ((type == Helper.getInstance().UPLOAD_TYPE_PAN) && (trimmed.length() < 10)) {
+        }
+        //If PAN number is not complete
+        else if ((type == Helper.getInstance().UPLOAD_TYPE_PAN) && (trimmed.length() < 10)) {
             Toast.makeText(this, "Enter a Valid Pan Number", Toast.LENGTH_SHORT).show();
             number.requestFocus();
             return false;
@@ -151,7 +159,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
             statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
         }
 
-        final PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), "FileName", Prefrences.getInstance().getPrefState(this));
+        final PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), "FileName", Preferences.getInstance().getPrefState(this));
 
         dbref.child(code).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -8,21 +8,21 @@ import android.preference.PreferenceManager;
  * Created by hp on 13-02-2018.
  */
 
-public class Prefrences {
-    private static Prefrences _instance;
+public class Preferences {
+    private static Preferences _instance;
 
     static final String PREF_SIGNED_IN="signedIn";
     static final String PREF_PPO="ppo";
     static final String PREF_USER_NAME="username";
     static final String PREF_STATE="state";
 
-    public Prefrences() {
+    public Preferences() {
         _instance = this;
     }
 
-    public static Prefrences getInstance() {
+    public static Preferences getInstance() {
         if (_instance == null) {
-            return new Prefrences();
+            return new Preferences();
         } else {
             return _instance;
         }

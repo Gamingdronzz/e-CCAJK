@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ccajk.Fragments.AadharPanCheckFragment">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edittext_pcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
+            android:hint="Pensioner Code"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_check_status"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccentDark"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_18"
+        android:layout_alignParentBottom="true"
+        android:text="Check Update Status" />
+
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_large"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_20" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center"
+            android:id="@+id/button_layout"
+            android:background="@color/colorAccentDark"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_upload"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_18"
+                android:layout_weight=".5"
+                android:text="UPLOAD NOW" />
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorBlack"></View>
+
+            <Button
+                android:id="@+id/btn_view"
+                android:layout_width="0dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_18"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:layout_weight=".5"
+                android:text="VIEW DETAILS" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

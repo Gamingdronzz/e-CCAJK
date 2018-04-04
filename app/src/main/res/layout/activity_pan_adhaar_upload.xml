@@ -96,10 +96,9 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorAccentDark"
         android:text="UPLOAD"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_20"
-        android:textStyle="bold" />
+        android:textSize="@dimen/text_18" />
 
 </RelativeLayout>

@@ -27,7 +27,7 @@ import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
-import com.ccajk.Tools.Prefrences;
+import com.ccajk.Tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -77,7 +77,7 @@ public class TabAllLocations extends Fragment {
             }
         });
 
-        stateLocations = FireBaseHelper.getInstance().getLocationModels(Prefrences.getInstance().getPrefState(getContext()));
+        stateLocations = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getPrefState(getContext()));
         adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
 
         locations = new String[stateLocations.size()];
