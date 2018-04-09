@@ -43,16 +43,15 @@ import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
 
     String TAG = "firebase";
     FrameLayout frameLayout;
+    NavigationView navigationView;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     @Override
@@ -90,7 +89,7 @@ public class HomeActivity extends AppCompatActivity
         actionBarDrawerToggle.syncState();
 
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         if (Preferences.getInstance().getSignedIn(this)) {
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
             navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
@@ -143,38 +142,6 @@ public class HomeActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }*/
-
-   /* @Override
-       public boolean onPrepareOptionsMenu(Menu menu) {
-
-        if (Preferences.getInstance().getSignedIn(this) == false) {
-            MenuItem login = menu.add("Login");
-            login.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
-            login.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            login.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                *//*Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
-                startActivity(intent);
-                *//*
-                    showLoginPopup();
-                    return true;
-                }
-            });
-        } else {
-            MenuItem logout = menu.add("Logout");
-            logout.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_logout_24dp));
-            logout.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    confirmLogout();
-                    return true;
-                }
-            });
-        }
-        return super.onPrepareOptionsMenu(menu);
     }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -256,11 +223,19 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_login:
                 showLoginPopup();
                 break;
+            case R.id.navmenu_logout:
+                logout();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout() {
+        Preferences.getInstance().clearPrefs(this);
+        navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
+        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
     }
 
     private void showLoginPopup() {
@@ -328,7 +303,9 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void RequestLogin(final String pensionerCode, final String password) {
-        DatabaseReference dbref = databaseReference.child("user").child(pensionerCode);
+
+        changePrefrences(pensionerCode,"Name");
+        /*DatabaseReference dbref = databaseReference.child("user").child(pensionerCode);
         Log.d(TAG, "RequestLogin: ");
         dbref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -358,7 +335,7 @@ public class HomeActivity extends AppCompatActivity
                 Log.d(TAG, "Error");
                 OnUserNotExist();
             }
-        });
+        });*/
     }
 
     @Override
@@ -366,7 +343,6 @@ public class HomeActivity extends AppCompatActivity
         String username = dataSnapshot.child("name").getValue().toString();
         String ppo = dataSnapshot.child("emp_id").getValue().toString();
         changePrefrences(ppo, username);
-
     }
 
     @Override
@@ -382,6 +358,8 @@ public class HomeActivity extends AppCompatActivity
     private void changePrefrences(String ppo, String user) {
         Preferences.getInstance().setSignedIn(this, true);
         Preferences.getInstance().setPpo(this, ppo);
+        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
+        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
     }
 
 }

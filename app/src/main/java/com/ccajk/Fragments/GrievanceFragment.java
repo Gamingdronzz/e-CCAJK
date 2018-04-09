@@ -29,8 +29,7 @@ public class GrievanceFragment extends Fragment {
     EditText grievanceDetails;
     Spinner grievanceType, grievanceSubmitedBy;
     Button submit;
-
-    String[] list = {"Type 1", "Type 2", "Type 3"};
+String[] list;
 
     public GrievanceFragment() {
 
@@ -63,6 +62,10 @@ public class GrievanceFragment extends Fragment {
         attach.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_attach_file_black_24dp));
 
         grievanceType = view.findViewById(R.id.spinner_type);
+        if (gtype == Helper.getInstance().CATEGORY_PENSION)
+            list = Helper.getInstance().getPensionGrievanceList();
+        else
+            list = Helper.getInstance().getGPFGrievanceList();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, list);
         grievanceType.setAdapter(arrayAdapter);
 

@@ -27,6 +27,31 @@ public class Helper {
 
     public ArrayList<LocationModel> allLocationModels;
 
+    public String[] PGlist = {
+            "Change of PDA",
+            "Correction in PPO",
+            "Wrong Fixation of Pension",
+            "Non Updation of DA",
+            "Non Payment of Monthly Pension",
+            "Non Payment of Medical Allowance",
+            "Non Starting of Family Pension",
+            "Non Revision as per Latest CPC",
+            "Rrequest for CGIES",
+            "Excess/Short Payment",
+            "Enhancement of Pension on Attaining 75/80",
+            "Others"
+    };
+
+    public String[] GPFlist = {
+            "GPF Final Payment not received",
+            "Correction in the Name",
+            "Change of Nomination",
+            "GPF Account not transfered",
+            "Details of GPF Deposit A/C Slip",
+            "Non Payment of GPF Withdrawal",
+            "Others"
+    };
+
     public Helper() {
         _instance = this;
     }
@@ -45,6 +70,38 @@ public class Helper {
         //Fetch locations models from local memory here
         return allLocationModels;
     }
+
+
+    public String[] getPensionGrievanceList()
+    {
+        return PGlist;
+    }
+    public String[] getGPFGrievanceList()
+    {
+        return GPFlist;
+    }
+
+    public String[] submittedByList(int gtype) {
+        String first;
+        if (gtype == 0)
+            first = "Pensioner";
+        else
+            first = "GPF Benificiary";
+        return new String[]{first, "Other"};
+    }
+
+    class CompletionListener implements OnCompleteListener<Void>
+    {
+
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if(task.isSuccessful())
+            {
+                Log.d("Completion",task.toString());
+            }
+        }
+    }
+
     /**
      * calculates the distance between two locations in MILES
      */
@@ -69,15 +126,6 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public String[] submittedByList(int gtype) {
-        String first;
-        if (gtype == 0)
-            first = "Pensioner";
-        else
-            first = "GPF Benificiary";
-        return new String[]{first, "Other"};
-    }
-
     public void addLocations(int value)
     {
         Random random = new Random();
@@ -99,17 +147,5 @@ public class Helper {
 
 
 
-
-    class CompletionListener implements OnCompleteListener<Void>
-    {
-
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
-            if(task.isSuccessful())
-            {
-                Log.d("Completion",task.toString());
-            }
-        }
-    }
 }
 

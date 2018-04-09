@@ -53,7 +53,7 @@ public class AadharPanCheckFragment extends Fragment {
         linearLayout = view.findViewById(R.id.layout2);
         message = view.findViewById(R.id.textView_message);
         progressDialog = new ProgressDialog(view.getContext());
-linearLayoutButton = view.findViewById(R.id.button_layout);
+        linearLayoutButton = view.findViewById(R.id.button_layout);
         upload = view.findViewById(R.id.btn_upload);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
