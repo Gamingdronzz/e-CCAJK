@@ -20,9 +20,9 @@ public class FireBaseHelper {
     public DatabaseReference databaseReference;
     public final String ROOT_PENSIONERS = "Pensioners";
     public final String ROOT_ADHAAR = "Adhaar";
-    public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     public final String ROOT_PAN = "Pan";
-    public final String ROOT_PAN_STATUS = "Pan-Status";
+    //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
+    //public final String ROOT_PAN_STATUS = "Pan-Status";
 
     public ArrayList<State> statelist;
 

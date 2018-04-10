@@ -10,12 +10,9 @@ import android.widget.TextView;
 import com.ccajk.Adapter.RecyclerViewAdapterHistory;
 import com.ccajk.Models.PanAdhaarStatus;
 import com.ccajk.R;
-import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -56,7 +53,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
     }
 
     private void getHistory() {
-        if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR)
+        /*if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR)
             dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS).child(pcode);
         else
             dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS).child(pcode);
@@ -86,7 +83,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 }
 

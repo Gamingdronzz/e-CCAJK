@@ -85,10 +85,19 @@
                 android:id="@+id/button_attach"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add File (Image or Pdf only)"
+                android:text="Add File (Image or Pdf only, less than 5mb)"
                 android:textColor="@color/colorWhite" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textview_file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_large"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15"/>
+
     </LinearLayout>
 
     <Button

@@ -11,11 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ccajk.Activity.PanAdhaarHistoryActivity;
 import com.ccajk.Activity.PanAdhaarUploadActivity;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
@@ -26,15 +24,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 public class AadharPanCheckFragment extends Fragment {
+
+    String TAG = "Check";
     int type;
     String typeName;
-    Button upload, details, check;
-    TextInputEditText pcode;
-    TextView message;
-    LinearLayout linearLayout;
-    LinearLayout linearLayoutButton;
-    DatabaseReference dbref, numberRef;
+    DatabaseReference numberRef;
+
     ProgressDialog progressDialog;
+    Button upload,check;
+    TextInputEditText pcode;
+    TextView optionalMessage,statusMessage;
+
+
     public AadharPanCheckFragment() {
     }
 
@@ -49,12 +50,14 @@ public class AadharPanCheckFragment extends Fragment {
     }
 
     private void init(View view, final int type) {
+
         pcode = view.findViewById(R.id.edittext_pcode);
-        linearLayout = view.findViewById(R.id.layout2);
-        message = view.findViewById(R.id.textView_message);
         progressDialog = new ProgressDialog(view.getContext());
-        linearLayoutButton = view.findViewById(R.id.button_layout);
+        optionalMessage = view.findViewById(R.id.textView_message);
+        statusMessage= view.findViewById(R.id.textView_status);
+
         upload = view.findViewById(R.id.btn_upload);
+        upload.setVisibility(View.GONE);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +68,7 @@ public class AadharPanCheckFragment extends Fragment {
             }
         });
 
-        details = view.findViewById(R.id.btn_view);
+        /*details = view.findViewById(R.id.btn_view);
         details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +77,7 @@ public class AadharPanCheckFragment extends Fragment {
                 intent.putExtra("PensionerCode", pcode.getText().toString());
                 startActivity(intent);
             }
-        });
+        });*/
 
         check = view.findViewById(R.id.btn_check_status);
         check.setOnClickListener(new View.OnClickListener() {
@@ -84,43 +87,36 @@ public class AadharPanCheckFragment extends Fragment {
                     Toast.makeText(getContext(), "Please enter a pensioner code", Toast.LENGTH_SHORT).show();
                 } else {
                     check.setVisibility(View.GONE);
-                    linearLayout.setVisibility(View.VISIBLE);
                     checkStatus();
                 }
             }
         });
 
-      ManageLayouts();
-
-    }
-
-    private void ManageLayouts()
-    {
-        linearLayoutButton.setVisibility(View.GONE);
-        upload.setVisibility(View.GONE);
-        details.setVisibility(View.GONE);
-        message.setVisibility(View.GONE);
     }
 
     private void checkStatus() {
         progressDialog.show();
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS).child(pcode.getText().toString());
             numberRef = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR).child(pcode.getText().toString());
             typeName = "Aadhaar";
             progressDialog.setMessage("Checking Aadhar Verification Status\nPlease Wait...");
         } else {
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS).child(pcode.getText().toString());
             numberRef = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN).child(pcode.getText().toString());
             typeName = "PAN";
             progressDialog.setMessage("Checking PAN Verification Status\nPlease Wait...");
         }
-        dbref.addValueEventListener(new ValueEventListener() {
+        numberRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, dataSnapshot.toString());
+                if (dataSnapshot.getValue() != null) {
 
-                if (dataSnapshot.getChildrenCount() > 0) {
-                    dbref.child(String.valueOf(dataSnapshot.getChildrenCount())).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+                    long status = (long) dataSnapshot.child("status").getValue();
+                    String number = (String) dataSnapshot.child("number").getValue();
+                    String msg = (String) dataSnapshot.child("msg").getValue();
+                    Log.d(TAG, String.valueOf(status));
+                    setMessageAndAction(status,msg,number);
+                    /*numberRef.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             long status = (long) dataSnapshot.getValue();
@@ -130,61 +126,45 @@ public class AadharPanCheckFragment extends Fragment {
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.d( "onCancelled: ",databaseError.getMessage());
-                            setMessageAndAction(100);
+
                         }
-                    });
+                    });*/
                 } else {
-                    setMessageAndAction(-1);
+                    setMessageAndAction(-1,null,null);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d(TAG, "Cancelled");
+                setMessageAndAction(100,null,null);
             }
         });
     }
 
-    private void setMessageAndAction(long status) {
-       ManageLayouts();
-        message.setVisibility(View.VISIBLE);
-        switch ((int) status) {
+    private void setMessageAndAction(long status,String msg,String number) {
+         switch ((int) status) {
             case -1:
-                message.setText("Your " + typeName + " Number is not updated");
-                linearLayoutButton.setVisibility(View.VISIBLE);
+                statusMessage.setText(typeName + " Number not updated");
+                optionalMessage.setText(msg);
                 upload.setVisibility(View.VISIBLE);
-
                 break;
             case 0:
             case 1:
-                message.setText("Your " + typeName + " Number Updation is under process");
-                linearLayoutButton.setVisibility(View.VISIBLE);
-                details.setVisibility(View.VISIBLE);
+                statusMessage.setText(typeName + " Number Updation under process");
+                optionalMessage.setText(msg);
                 break;
             case 2:
-                message.setText("Your " + typeName + " Number Updation Failed");
-                linearLayoutButton.setVisibility(View.VISIBLE);
+                statusMessage.setText(typeName + " Number Updation Failed");
+                optionalMessage.setText(msg);
                 upload.setVisibility(View.VISIBLE);
-                details.setVisibility(View.VISIBLE);
                 break;
             case 3:
-                numberRef.child("number").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String num = (String) dataSnapshot.getValue();
-                        message.setText("Your " + typeName + " Number is updated\n\n" + typeName + " = " + num);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                statusMessage.setText("Your " + typeName + " Number is updated\n\n" + typeName + " Number = " + number);
                 break;
             case 100:
-                message.setText("Some Error Occured. Please Try Again");
+                statusMessage.setText("Some Error Occured. Please Try Again");
                 check.setVisibility(View.VISIBLE);
-                linearLayout.setVisibility(View.GONE);
         }
 
         progressDialog.dismiss();
@@ -194,8 +174,8 @@ public class AadharPanCheckFragment extends Fragment {
     public void onResume() {
         super.onResume();
         upload.setVisibility(View.GONE);
-        details.setVisibility(View.GONE);
-        linearLayout.setVisibility(View.GONE);
         check.setVisibility(View.VISIBLE);
+        statusMessage.setText("");
+        optionalMessage.setText("");
     }
 }

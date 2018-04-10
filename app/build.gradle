@@ -39,6 +39,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'com.google.firebase:firebase-database:11.8.0'
     compile 'com.linchaolong.android:imagepicker:1.5'
+    compile 'com.kingfisherphuoc:easy-file-folder-picker-dialog:1.4'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -3,6 +3,7 @@ package com.ccajk.Fragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
@@ -21,15 +22,25 @@ import android.widget.Toast;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 
+import java.io.File;
+import java.util.List;
+
+import easyfilepickerdialog.kingfisher.com.library.model.DialogConfig;
+import easyfilepickerdialog.kingfisher.com.library.model.SupportFile;
+import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment;
+
 
 public class GrievanceFragment extends Fragment {
 
+    String TAG = "Grievance";
     ImageView pcode, mob, details, type, submittedby, attach;
+    TextView filename;
     AutoCompleteTextView pensionerCode, mobileNo;
     EditText grievanceDetails;
     Spinner grievanceType, grievanceSubmitedBy;
-    Button submit;
-String[] list;
+    Button submit, chooseFile;
+    String[] list;
+    String fileChosed;
 
     public GrievanceFragment() {
 
@@ -76,6 +87,15 @@ String[] list;
         pensionerCode = view.findViewById(R.id.autocomplete_pcode);
         mobileNo = view.findViewById(R.id.autocomplete_mobile);
         grievanceDetails = view.findViewById(R.id.edittext_details);
+        filename = view.findViewById(R.id.textview_file_name);
+
+        chooseFile = view.findViewById(R.id.button_attach);
+        chooseFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFileChooser();
+            }
+        });
 
         submit = view.findViewById(R.id.button_submit);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +105,34 @@ String[] list;
                     confirmSubmission();
             }
         });
+    }
+
+    private void showFileChooser() {
+        DialogConfig dialogConfig = new DialogConfig.Builder()
+                .enableMultipleSelect(false) // default is false
+                .enableFolderSelect(false) // default is false
+                .initialDirectory(Environment.getExternalStorageDirectory().getAbsolutePath()) // default is sdcard
+                .supportFiles(new SupportFile(".jpeg", 0), new SupportFile(".jpg", 0), new SupportFile(".pdf", 0)) // default is showing all file types.
+                .build();
+
+        new FilePickerDialogFragment.Builder()
+                .configs(dialogConfig)
+                .onFilesSelected(new FilePickerDialogFragment.OnFilesSelectedListener() {
+                    @Override
+                    public void onFileSelected(List<File> list) {
+                        for (File file : list) {
+                            if (file.length() / 1048576 > 5) {
+                                Toast.makeText(getContext(), "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
+                                fileChosed = null;
+                            } else {
+                                filename.setText(file.getName());
+                                fileChosed = file.getAbsolutePath();
+                            }
+                        }
+                    }
+                })
+                .build()
+                .show(getActivity().getSupportFragmentManager(), null);
     }
 
     private boolean checkInput() {
@@ -138,7 +186,7 @@ String[] list;
         TextView details = v.findViewById(R.id.textview_grievance_details);
         details.setText(grievanceDetails.getText());
         TextView fileName = v.findViewById(R.id.textview_file_name);
-        fileName.setText(fileName.getText() + " File Name");
+        fileName.setText(fileName.getText() + fileChosed);
     }
 
 

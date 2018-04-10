@@ -25,6 +25,8 @@ public class Helper {
     public final int UPLOAD_TYPE_ADHAAR=0;
     public final int UPLOAD_TYPE_PAN=1;
 
+    public String TAG="helper";
+
     public ArrayList<LocationModel> allLocationModels;
 
     public String[] PGlist = {
@@ -89,6 +91,7 @@ public class Helper {
             first = "GPF Benificiary";
         return new String[]{first, "Other"};
     }
+
 
     class CompletionListener implements OnCompleteListener<Void>
     {
