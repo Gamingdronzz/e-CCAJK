@@ -213,7 +213,7 @@ public class GrievanceFragment extends Fragment {
         TextView details = v.findViewById(R.id.textview_grievance_details);
         details.setText(grievanceDetails.getText());
         TextView fileName = v.findViewById(R.id.textview_file_name);
-        fileName.setText(fileName.getText() + fileChosed == null ? Helper.getInstance().Nil : fileChosed);
+        fileName.setText(fileChosed == null ? Helper.getInstance().Nil : fileChosed);
     }
 
 
@@ -237,7 +237,7 @@ public class GrievanceFragment extends Fragment {
                 Preferences.getInstance().getPrefState(getContext()),
                 0, date);
 
-        dbref.child(code).setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dbref.child(code).push().setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -249,6 +249,5 @@ public class GrievanceFragment extends Fragment {
         });
 
     }
-
 
 }

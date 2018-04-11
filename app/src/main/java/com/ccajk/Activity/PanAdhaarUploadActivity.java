@@ -191,7 +191,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
         v.findViewById(R.id.detail).setVisibility(View.GONE);
         v.findViewById(R.id.textview_grievance_details).setVisibility(View.GONE);
         TextView fileName = v.findViewById(R.id.textview_file_name);
-        fileName.setText(fileName.getText() + fileChosed);
+        fileName.setText(fileChosed);
     }
 
     private void uploadAdhaarOrPan() {
