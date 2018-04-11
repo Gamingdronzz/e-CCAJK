@@ -1,4 +1,4 @@
-package com.ccajk.Activity;
+package com.ccajk.Unused;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.ccajk.Adapter.RecyclerViewAdapterHistory;
-import com.ccajk.Models.PanAdhaarStatus;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 import com.google.firebase.database.DataSnapshot;

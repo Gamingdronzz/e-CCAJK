@@ -4,6 +4,7 @@ package com.ccajk.Fragments;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
@@ -14,15 +15,23 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ccajk.Models.Grievance;
 import com.ccajk.R;
+import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.Preferences;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import easyfilepickerdialog.kingfisher.com.library.model.DialogConfig;
@@ -39,8 +48,10 @@ public class GrievanceFragment extends Fragment {
     EditText grievanceDetails;
     Spinner grievanceType, grievanceSubmitedBy;
     Button submit, chooseFile;
+    ImageButton remove;
     String[] list;
-    String fileChosed;
+    String fileChosed, fileChosedPath,code;
+    int gtype;
 
     public GrievanceFragment() {
 
@@ -52,12 +63,12 @@ public class GrievanceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_grievance, container, false);
         Bundle bundle = this.getArguments();
-        int gtype = bundle.getInt("Category");
-        init(view, gtype);
+        gtype = bundle.getInt("Category");
+        init(view);
         return view;
     }
 
-    private void init(View view, final int gtype) {
+    private void init(View view) {
 
         pcode = view.findViewById(R.id.image_pcode);
         pcode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
@@ -97,6 +108,17 @@ public class GrievanceFragment extends Fragment {
             }
         });
 
+        remove = view.findViewById(R.id.btn_remove);
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fileChosed = null;
+                fileChosedPath = null;
+                filename.setText("");
+                remove.setVisibility(View.GONE);
+            }
+        });
+
         submit = view.findViewById(R.id.button_submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,10 +146,14 @@ public class GrievanceFragment extends Fragment {
                             if (file.length() / 1048576 > 5) {
                                 Toast.makeText(getContext(), "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
                                 fileChosed = null;
+                                fileChosedPath = null;
+                                remove.setVisibility(View.GONE);
                             } else {
-                                filename.setText(file.getName());
-                                fileChosed = file.getAbsolutePath();
+                                fileChosedPath = file.getAbsolutePath();
+                                fileChosed = file.getName();
+                                remove.setVisibility(View.VISIBLE);
                             }
+                            filename.setText(fileChosed);
                         }
                     }
                 })
@@ -136,7 +162,8 @@ public class GrievanceFragment extends Fragment {
     }
 
     private boolean checkInput() {
-        if (pensionerCode.getText().toString().trim().isEmpty()) {
+        code=pensionerCode.getText().toString();
+        if (code.trim().isEmpty()) {
             Toast.makeText(this.getContext(), "Pensioner Code required", Toast.LENGTH_SHORT).show();
             pensionerCode.requestFocus();
             return false;
@@ -176,7 +203,7 @@ public class GrievanceFragment extends Fragment {
 
     private void loadValues(View v) {
         TextView ppoNo = v.findViewById(R.id.textview_ppo_no);
-        ppoNo.setText(ppoNo.getText() + " " + pensionerCode.getText());
+        ppoNo.setText(ppoNo.getText() + " " + code);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
         mobNo.setText(mobNo.getText() + " " + mobileNo.getText());
         TextView grievance = v.findViewById(R.id.textview_grievance_type);
@@ -186,11 +213,42 @@ public class GrievanceFragment extends Fragment {
         TextView details = v.findViewById(R.id.textview_grievance_details);
         details.setText(grievanceDetails.getText());
         TextView fileName = v.findViewById(R.id.textview_file_name);
-        fileName.setText(fileName.getText() + fileChosed);
+        fileName.setText(fileName.getText() + fileChosed == null ? Helper.getInstance().Nil : fileChosed);
     }
 
 
     private void submitGrievance() {
+        DatabaseReference dbref;
+          if (gtype == Helper.getInstance().CATEGORY_PENSION) {
+            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION);
+            } else {
+               dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF);
+            }
+
+        Date date= new Date();
+        Grievance grievance= new Grievance(
+                code,
+                mobileNo.getText().toString(),
+                grievanceType.getSelectedItem().toString(),
+                grievanceDetails.getText().toString(),
+                grievanceSubmitedBy.getSelectedItem().toString(),
+                fileChosed,
+                null,
+                Preferences.getInstance().getPrefState(getContext()),
+                0, date);
+
+        dbref.child(code).setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Unable to update", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
+
 
 }

@@ -49,16 +49,16 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".Unused.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".Activity.RegOrLoginActivity"
+            android:name=".Unused.RegOrLoginActivity"
             android:theme="@style/AppTheme.NoActionBar.RegOrLogin" />
         <activity
             android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".Activity.RegisterActivity" />
-        <activity android:name=".Activity.PanAdhaarHistoryActivity" />
+        <activity android:name=".Unused.RegisterActivity" />
+        <activity android:name=".Unused.PanAdhaarHistoryActivity" />
         <activity android:name=".Activity.PanAdhaarUploadActivity" />
         <activity android:name=".Activity.AboutUsActivity" />
         <activity android:name=".Activity.BrowserActivity" />

@@ -1,4 +1,4 @@
-package com.ccajk.Activity;
+package com.ccajk.Unused;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,14 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.ccajk.Activity.HomeActivity;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity implements ILoginProcessor {
 

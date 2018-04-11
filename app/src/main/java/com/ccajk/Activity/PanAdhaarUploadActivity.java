@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -43,7 +44,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
     AutoCompleteTextView pensionerCode, number;
     DatabaseReference dbref;
     Button upload, chooseFile;
-    String code, fileChosed;
+    String code, fileChosed,fileChosedPath;
     int type;
 
     @Override
@@ -114,9 +115,11 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
                             if (file.length() / 1048576 > 5) {
                                 Toast.makeText(PanAdhaarUploadActivity.this, "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
                                 fileChosed = null;
+                                fileChosedPath=null;
                             } else {
-                                filename.setText(file.getName());
-                                fileChosed = file.getAbsolutePath();
+                                fileChosedPath = file.getAbsolutePath();
+                                fileChosed=file.getName();
+                                filename.setText(fileChosed);
                             }
                         }
                     }
@@ -147,7 +150,9 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
             Toast.makeText(this, "Enter a Valid Pan Number", Toast.LENGTH_SHORT).show();
             number.requestFocus();
             return false;
-        } else if (fileChosed == null) {
+        }
+        //if no file selected
+        else if (fileChosed == null) {
             Toast.makeText(this, "Select a file", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -199,7 +204,10 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
             //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
         }
 
-        final PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), "FileName", Preferences.getInstance().getPrefState(this), new Date(), 0, null);
+        Date date= new Date();
+        Log.d(TAG, "uploadAdhaarOrPan: "+ date);
+        PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), fileChosed, Preferences.getInstance().getPrefState(this), 0, "optional message",date);
+        Log.d(TAG, "uploadAdhaarOrPan: "+ panAdhaar + panAdhaar.getUploadDate());
 
         dbref.child(code).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

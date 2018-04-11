@@ -1,4 +1,4 @@
-package com.ccajk.Adapter;
+package com.ccajk.Unused;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ccajk.Models.PanAdhaarStatus;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 
@@ -39,7 +38,7 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
         holder.applied.setText("");
         holder.applied.setText(dt.format(panAdhaarStatus.getAppliedDate()));
         holder.status.setText("");
-        holder.status.setText(FireBaseHelper.getInstance().getStatusString(panAdhaarStatus.getStatus()));
+        holder.status.setText(FireBaseHelper.getInstance().getAdhaarPanStatusString(panAdhaarStatus.getStatus()));
 
         holder.processed.setText("");
         if (panAdhaarStatus.getProcessingDate() == null)

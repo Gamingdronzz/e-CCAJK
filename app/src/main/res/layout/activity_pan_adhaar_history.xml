@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ccajk.Activity.PanAdhaarHistoryActivity">
+    tools:context="com.ccajk.Unused.PanAdhaarHistoryActivity">
 
     <TextView
         android:id="@+id/textview_current"

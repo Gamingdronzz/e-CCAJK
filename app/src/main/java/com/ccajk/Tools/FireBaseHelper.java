@@ -21,6 +21,8 @@ public class FireBaseHelper {
     public final String ROOT_PENSIONERS = "Pensioners";
     public final String ROOT_ADHAAR = "Adhaar";
     public final String ROOT_PAN = "Pan";
+    public final String ROOT_GRIEVANCE_PENSION="Pension Grievance";
+    public final String ROOT_GRIEVANCE_GPF="GPF Grievance";
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     //public final String ROOT_PAN_STATUS = "Pan-Status";
 
@@ -40,7 +42,7 @@ public class FireBaseHelper {
         }
     }
 
-    public String getStatusString(long status) {
+    public String getAdhaarPanStatusString(long status) {
         switch ((int)status) {
             case 0:
                 return "Request Submitted";

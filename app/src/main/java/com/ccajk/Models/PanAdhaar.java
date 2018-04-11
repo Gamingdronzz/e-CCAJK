@@ -12,8 +12,16 @@ public class PanAdhaar {
     String filename;
     String state;
     String msg;
-    Date date;
+    Date uploadDate;
     long status;
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    }
 
     public String getPcode() {
         return pcode;
@@ -47,10 +55,6 @@ public class PanAdhaar {
         this.state = state;
     }
 
-    public void setResultDate(Date date) {
-        this.date = date;
-    }
-
     public long getStatus() {
         return status;
     }
@@ -68,14 +72,14 @@ public class PanAdhaar {
     }
 
 
-    public PanAdhaar(String pcode, String number, String filename, String state, Date date, long status,String msg) {
+    public PanAdhaar(String pcode, String number, String filename, String state, long status, String msg,Date uploadDate) {
         this.pcode = pcode;
         this.number = number;
         this.filename = filename;
         this.state = state;
-        this.date = date;
         this.status = status;
         this.msg=msg;
+        this.uploadDate = uploadDate;
     }
 
     public PanAdhaar() {

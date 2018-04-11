@@ -1,4 +1,4 @@
-package com.ccajk.Activity;
+package com.ccajk.Unused;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.ccajk.Activity.HomeActivity;
 import com.ccajk.R;
 
 public class RegisterActivity extends AppCompatActivity {

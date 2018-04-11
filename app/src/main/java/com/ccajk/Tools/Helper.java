@@ -20,12 +20,12 @@ import java.util.Random;
 public class Helper {
     private static Helper _instance;
 
-    public final int CATEGORY_PENSION=0;
-    public final int CATEGORY_GPF=1;
-    public final int UPLOAD_TYPE_ADHAAR=0;
-    public final int UPLOAD_TYPE_PAN=1;
+    public final int CATEGORY_PENSION = 0;
+    public final int CATEGORY_GPF = 1;
+    public final int UPLOAD_TYPE_ADHAAR = 0;
+    public final int UPLOAD_TYPE_PAN = 1;
 
-    public String TAG="helper";
+    public final String Nil = "Nil";
 
     public ArrayList<LocationModel> allLocationModels;
 
@@ -66,20 +66,18 @@ public class Helper {
         }
     }
 
-    public ArrayList<LocationModel> getAllLocations()
-    {
+    public ArrayList<LocationModel> getAllLocations() {
         //TODO
         //Fetch locations models from local memory here
         return allLocationModels;
     }
 
 
-    public String[] getPensionGrievanceList()
-    {
+    public String[] getPensionGrievanceList() {
         return PGlist;
     }
-    public String[] getGPFGrievanceList()
-    {
+
+    public String[] getGPFGrievanceList() {
         return GPFlist;
     }
 
@@ -93,14 +91,12 @@ public class Helper {
     }
 
 
-    class CompletionListener implements OnCompleteListener<Void>
-    {
+    class CompletionListener implements OnCompleteListener<Void> {
 
         @Override
         public void onComplete(@NonNull Task<Void> task) {
-            if(task.isSuccessful())
-            {
-                Log.d("Completion",task.toString());
+            if (task.isSuccessful()) {
+                Log.d("Completion", task.toString());
             }
         }
     }
@@ -129,26 +125,27 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public void addLocations(int value)
-    {
+    public void addLocations(int value) {
         Random random = new Random();
-        double maxLongitude = 32.8,minLongitude = 32.1;
+        double maxLongitude = 32.8, minLongitude = 32.1;
         double maxLatitude = 74.5, minLatitude = 75.5;
-        for(int i=10;i<value+10;i++)
-        {
+        for (int i = 0; i < value; i++) {
             double randomLongitude = minLatitude + random.nextDouble() * (maxLatitude - minLatitude);
-            double randomLatitude  = minLongitude + random.nextDouble() * (maxLongitude - minLongitude);
+            double randomLatitude = minLongitude + random.nextDouble() * (maxLongitude - minLongitude);
             DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
-            databaseReference.child("Locations").child("Location"+"-"+i).child("Latitude").setValue(randomLatitude).addOnCompleteListener(new CompletionListener());
-            databaseReference.child("Locations").child("Location"+"-"+i).child("Longitude").setValue(randomLongitude);
-            databaseReference.child("Locations").child("Location"+"-"+i).child("StateID").setValue("jnk");
-            databaseReference.child("Locations").child("Location"+"-"+i).child("District").setValue("jammu");
-            databaseReference.child("Locations").child("Location"+"-"+i).child("LocationName").setValue("Location-"+i);
-            Log.d("Helper","Adding Location = " + randomLatitude + " : " + randomLongitude );
+            databaseReference.child("Locations").child("Location" + "-" + i).child("Latitude").setValue(randomLatitude).addOnCompleteListener(new CompletionListener());
+            databaseReference.child("Locations").child("Location" + "-" + i).child("Longitude").setValue(randomLongitude);
+            databaseReference.child("Locations").child("Location" + "-" + i).child("StateID").setValue("jnk");
+            databaseReference.child("Locations").child("Location" + "-" + i).child("District").setValue("jammu");
+            databaseReference.child("Locations").child("Location" + "-" + i).child("LocationName").setValue("Location-" + i);
+            Log.d("Helper", "Adding Location = " + randomLatitude + " : " + randomLongitude);
         }
     }
 
-
+    public void remove() {
+        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+        databaseReference.child("Locations").removeValue();
+    }
 
 }
 

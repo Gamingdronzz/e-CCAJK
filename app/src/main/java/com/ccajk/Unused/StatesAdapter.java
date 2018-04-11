@@ -1,4 +1,4 @@
-package com.ccajk.Adapter;
+package com.ccajk.Unused;
 
 import android.content.Context;
 import android.view.LayoutInflater;

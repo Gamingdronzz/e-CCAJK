@@ -1,4 +1,4 @@
-package com.ccajk.Activity;
+package com.ccajk.Unused;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v7.content.res.AppCompatResources;
 import android.view.View;
 import android.widget.Button;
 
+import com.ccajk.Activity.HomeActivity;
 import com.ccajk.R;
 
 public class RegOrLoginActivity extends AppCompatActivity {
