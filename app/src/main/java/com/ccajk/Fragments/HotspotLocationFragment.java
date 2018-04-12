@@ -22,21 +22,34 @@ public class HotspotLocationFragment extends Fragment  {
     public static int int_items = 2 ;
 
 
-
-
     public HotspotLocationFragment() {
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_hotspot_tab_layout, container, false);
+        tabLayout = view.findViewById(R.id.tabs);
+        viewPager = view.findViewById(R.id.viewpager);
+
+        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager);
+            }
+        });
+
+        return view;
     }
 
     class MyAdapter extends FragmentPagerAdapter {
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
-
         }
-
-        /**
-         * Return fragment with respect to Position .
-         */
 
         @Override
         public Fragment getItem(int position)
@@ -48,17 +61,10 @@ public class HotspotLocationFragment extends Fragment  {
             return null;
         }
 
-
         @Override
         public int getCount() {
-
             return int_items;
-
         }
-
-        /**
-         * This method returns the title of the tab according to the position.
-         */
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -72,39 +78,5 @@ public class HotspotLocationFragment extends Fragment  {
             return null;
         }
     }
-
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hotspot_tab_layout, container, false);
-
-        tabLayout = view.findViewById(R.id.tabs);
-        viewPager = view.findViewById(R.id.viewpager);
-
-/**
- *Set an Apater for the View Pager
- */
-        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-
-        /**
-         * Now , this is a workaround ,
-         * The setupWithViewPager dose't works without the runnable .
-         * Maybe a Support Library Bug .
-         */
-
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(viewPager);
-            }
-        });
-
-
-
-        return view;
-    }
-
 
 }

@@ -1,6 +1,7 @@
 package com.ccajk.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,7 +42,6 @@ import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment
 
 public class GrievanceFragment extends Fragment {
 
-    String TAG = "Grievance";
     ImageView pcode, mob, details, type, submittedby, attach;
     TextView filename;
     AutoCompleteTextView pensionerCode, mobileNo;
@@ -49,6 +49,9 @@ public class GrievanceFragment extends Fragment {
     Spinner grievanceType, grievanceSubmitedBy;
     Button submit, chooseFile;
     ImageButton remove;
+    ProgressDialog progressDialog;
+
+    String TAG = "Grievance";
     String[] list;
     String fileChosed, fileChosedPath,code;
     int gtype;
@@ -69,6 +72,9 @@ public class GrievanceFragment extends Fragment {
     }
 
     private void init(View view) {
+
+        progressDialog=new ProgressDialog(this.getContext());
+        progressDialog.setMessage("Please Wait...");
 
         pcode = view.findViewById(R.id.image_pcode);
         pcode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
@@ -218,6 +224,7 @@ public class GrievanceFragment extends Fragment {
 
 
     private void submitGrievance() {
+        progressDialog.show();
         DatabaseReference dbref;
           if (gtype == Helper.getInstance().CATEGORY_PENSION) {
             dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION);
@@ -241,10 +248,11 @@ public class GrievanceFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "Unable to update", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.dismiss();
             }
         });
 

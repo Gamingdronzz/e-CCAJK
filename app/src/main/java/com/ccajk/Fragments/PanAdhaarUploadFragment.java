@@ -1,6 +1,7 @@
 package com.ccajk.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,12 +40,14 @@ import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment
 
 public class PanAdhaarUploadFragment extends Fragment {
 
-    private static final String TAG = "PanAdhaarUpload";
     ImageView pcode, cardImage, attach;
     TextView filename;
     AutoCompleteTextView pensionerCode, number;
-    DatabaseReference dbref;
     Button upload, chooseFile;
+    ProgressDialog progressDialog;
+
+    DatabaseReference dbref;
+    private static final String TAG = "PanAdhaarUpload";
     String code, fileChosed, fileChosedPath;
     int type;
     
@@ -62,6 +65,8 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void init(View view) {
+        progressDialog = new ProgressDialog(view.getContext());
+        progressDialog.setMessage("Please Wait...");
         pcode = view.findViewById(R.id.image_pcode);
         pcode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         cardImage = view.findViewById(R.id.image_number);
@@ -200,6 +205,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void uploadAdhaarOrPan() {
 
+        progressDialog.show();
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
             dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR);
             //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS);
@@ -214,6 +220,7 @@ public class PanAdhaarUploadFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    progressDialog.dismiss();
                     Toast.makeText(getContext(), "Request sent for upload", Toast.LENGTH_SHORT).show();
                    /* statusref.child(code).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -241,6 +248,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
