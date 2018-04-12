@@ -1,18 +1,18 @@
-package com.ccajk.Activity;
+package com.ccajk.Fragments;
 
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,18 +25,19 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import easyfilepickerdialog.kingfisher.com.library.model.DialogConfig;
 import easyfilepickerdialog.kingfisher.com.library.model.SupportFile;
 import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment;
 
-public class PanAdhaarUploadActivity extends AppCompatActivity {
+
+public class PanAdhaarUploadFragment extends Fragment {
 
     private static final String TAG = "PanAdhaarUpload";
     ImageView pcode, cardImage, attach;
@@ -44,31 +45,32 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
     AutoCompleteTextView pensionerCode, number;
     DatabaseReference dbref;
     Button upload, chooseFile;
-    String code, fileChosed,fileChosedPath;
+    String code, fileChosed, fileChosedPath;
     int type;
+    
+    public PanAdhaarUploadFragment() {
 
+    }
+    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pan_adhaar_upload);
-        type = getIntent().getIntExtra("UploadType", -1);
-        code = getIntent().getStringExtra("PensionerCode");
-        getSupportActionBar().setTitle((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar Updation" : "Pan Updation"));
-        init();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_pan_adhaar_upload, container, false);
+        type =this.getArguments().getInt("UploadType");
+        init(view);
+        return view;
     }
 
-    private void init() {
-        pcode = findViewById(R.id.image_pcode);
-        pcode.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_person_black_24dp));
-        cardImage = findViewById(R.id.image_number);
-        cardImage.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_card_black_24dp));
-        attach = findViewById(R.id.image_attach);
-        attach.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_attach_file_black_24dp));
+    private void init(View view) {
+        pcode = view.findViewById(R.id.image_pcode);
+        pcode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
+        cardImage = view.findViewById(R.id.image_number);
+        cardImage.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
+        attach = view.findViewById(R.id.image_attach);
+        attach.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_attach_file_black_24dp));
 
-        pensionerCode = findViewById(R.id.autocomplete_pcode);
-        pensionerCode.setText(code);
 
-        number = findViewById(R.id.autocomplete_number);
+        number = view.findViewById(R.id.autocomplete_number);
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
             number.setHint("Aadhaar Number");
             number.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -78,8 +80,9 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
             number.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         }
 
-        filename = findViewById(R.id.textview_file_name);
-        chooseFile = findViewById(R.id.button_attach);
+        pensionerCode = view.findViewById(R.id.autocomplete_pcode);
+        filename = view.findViewById(R.id.textview_file_name);
+        chooseFile = view.findViewById(R.id.button_attach);
         chooseFile.setText(type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Select Aadhaar File" : "Select PAN File");
         chooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +91,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
             }
         });
 
-        upload = findViewById(R.id.button_upload);
+        upload = view.findViewById(R.id.button_upload);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,28 +115,29 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
                     @Override
                     public void onFileSelected(List<File> list) {
                         for (File file : list) {
-                            if (file.length() / 1048576 > 5) {
-                                Toast.makeText(PanAdhaarUploadActivity.this, "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
+                            if (file.length() / 1048576 > 1) {
+                                Toast.makeText(getContext(), "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
                                 fileChosed = null;
-                                fileChosedPath=null;
+                                fileChosedPath = null;
                             } else {
                                 fileChosedPath = file.getAbsolutePath();
-                                fileChosed=file.getName();
+                                fileChosed = file.getName();
                                 filename.setText(fileChosed);
                             }
                         }
                     }
                 })
                 .build()
-                .show(getSupportFragmentManager(), null);
+                .show(getActivity().getSupportFragmentManager(), null);
     }
 
     private boolean checkInput() {
+        code = pensionerCode.getText().toString();
         String trimmed = number.getText().toString().replaceAll("\\s", "");
 
         //If Pensioner code is empty
-        if (pensionerCode.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Pensioner Code required", Toast.LENGTH_SHORT).show();
+        if (code.trim().isEmpty()) {
+            Toast.makeText(getContext(), "Pensioner Code required", Toast.LENGTH_SHORT).show();
             pensionerCode.requestFocus();
             return false;
 
@@ -141,26 +145,26 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
         }
         //If Aadhar number is not complete
         else if ((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) && (trimmed.length() < 16)) {
-            Toast.makeText(this, "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
             number.requestFocus();
             return false;
         }
         //If PAN number is not complete
         else if ((type == Helper.getInstance().UPLOAD_TYPE_PAN) && (trimmed.length() < 10)) {
-            Toast.makeText(this, "Enter a Valid Pan Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Enter a Valid Pan Number", Toast.LENGTH_SHORT).show();
             number.requestFocus();
             return false;
         }
         //if no file selected
         else if (fileChosed == null) {
-            Toast.makeText(this, "Select a file", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Select a file", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
     private void confirmSubmission() {
-        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         confirmDialog.setView(v);
@@ -183,7 +187,7 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
 
     private void loadValues(View v) {
         TextView pNo = v.findViewById(R.id.textview_ppo_no);
-        pNo.setText(pNo.getText() + " " + pensionerCode.getText());
+        pNo.setText(pNo.getText() + " " + code);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
         mobNo.setText((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar No: " : "PAN No: ") + number.getText());
         v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
@@ -204,16 +208,13 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
             //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
         }
 
-        Date date= new Date();
-        Log.d(TAG, "uploadAdhaarOrPan: "+ date);
-        PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), fileChosed, Preferences.getInstance().getPrefState(this), 0, "optional message",date);
-        Log.d(TAG, "uploadAdhaarOrPan: "+ panAdhaar + panAdhaar.getUploadDate());
+        PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), fileChosed, Preferences.getInstance().getPrefState(getContext()));
 
         dbref.child(code).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(PanAdhaarUploadActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Request sent for upload", Toast.LENGTH_SHORT).show();
                    /* statusref.child(code).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -235,17 +236,14 @@ public class PanAdhaarUploadActivity extends AppCompatActivity {
 
                         }
                     });*/
-                } else {
-                    Toast.makeText(PanAdhaarUploadActivity.this, "Unable to update", Toast.LENGTH_SHORT).show();
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
-
-
 }
-
-
-
-

@@ -30,13 +30,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
-import com.ccajk.Fragments.AadharPanCheckFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
-import com.ccajk.Fragments.StatisticsFragment;
+import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.Fragments.TrackFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
@@ -173,11 +172,11 @@ public class HomeActivity extends AppCompatActivity
                 intent.putExtra("title", "RTI");
                 startActivity(intent);
                 break;
-            case R.id.navmenu_statistics:
+           /* case R.id.navmenu_statistics:
                 getSupportActionBar().setTitle("Statistics");
                 fragment = new StatisticsFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
-                break;
+                break;*/
             case R.id.navmenu_inspection:
                 getSupportActionBar().setTitle("Inspection");
                 fragment = new InspectionFragment();
@@ -200,7 +199,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_aadhaar:
-                fragment = new AadharPanCheckFragment();
+                fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
                 getSupportActionBar().setTitle("Upload Aadhaar");
@@ -208,7 +207,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;
             case R.id.navmenu_pan:
-                fragment = new AadharPanCheckFragment();
+                fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
@@ -236,6 +235,9 @@ public class HomeActivity extends AppCompatActivity
         Preferences.getInstance().clearPrefs(this);
         navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
         navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
+
+        getSupportActionBar().setTitle("Home");
+        getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, new HomeFragment()).commit();
     }
 
     private void showLoginPopup() {

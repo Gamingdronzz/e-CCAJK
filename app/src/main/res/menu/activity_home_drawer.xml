@@ -22,10 +22,10 @@
                 android:icon="@drawable/ic_action_rti"
                 android:title="RTI" />
 
-            <item
+            <!--<item
                 android:id="@+id/navmenu_payment_status"
                 android:icon="@drawable/ic_action_payment"
-                android:title="Payment Status" />
+                android:title="Payment Status" />-->
 
             <item
                 android:id="@+id/navmenu_aadhaar"
@@ -61,10 +61,10 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="WIFI Hotspot Locator" />
 
-            <item
+            <!--<item
                 android:id="@+id/navmenu_statistics"
                 android:icon="@drawable/ic_menu_slideshow"
-                android:title="Statistics" />
+                android:title="Statistics" />-->
         </menu>
 
     </item>

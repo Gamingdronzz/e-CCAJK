@@ -59,7 +59,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Unused.RegisterActivity" />
         <activity android:name=".Unused.PanAdhaarHistoryActivity" />
-        <activity android:name=".Activity.PanAdhaarUploadActivity" />
+        <activity android:name=".Unused.PanAdhaarUploadActivity" />
         <activity android:name=".Activity.AboutUsActivity" />
         <activity android:name=".Activity.BrowserActivity" />
     </application>

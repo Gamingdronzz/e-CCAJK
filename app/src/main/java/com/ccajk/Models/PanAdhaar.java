@@ -1,7 +1,5 @@
 package com.ccajk.Models;
 
-import java.util.Date;
-
 /**
  * Created by hp on 19-03-2018.
  */
@@ -11,17 +9,9 @@ public class PanAdhaar {
     String number;
     String filename;
     String state;
-    String msg;
-    Date uploadDate;
-    long status;
-
-    public Date getUploadDate() {
-        return uploadDate;
-    }
-
-    public void setUploadDate(Date uploadDate) {
-        this.uploadDate = uploadDate;
-    }
+    //String msg;
+    //Date uploadDate;
+    //long status;
 
     public String getPcode() {
         return pcode;
@@ -55,7 +45,7 @@ public class PanAdhaar {
         this.state = state;
     }
 
-    public long getStatus() {
+   /* public long getStatus() {
         return status;
     }
 
@@ -71,15 +61,19 @@ public class PanAdhaar {
         this.msg = msg;
     }
 
+    public Date getUploadDate() {
+        return uploadDate;
+    }
 
-    public PanAdhaar(String pcode, String number, String filename, String state, long status, String msg,Date uploadDate) {
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+*/
+    public PanAdhaar(String pcode, String number, String filename, String state) {
         this.pcode = pcode;
         this.number = number;
         this.filename = filename;
         this.state = state;
-        this.status = status;
-        this.msg=msg;
-        this.uploadDate = uploadDate;
     }
 
     public PanAdhaar() {
