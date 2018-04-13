@@ -65,8 +65,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void init(View view) {
-        progressDialog = new ProgressDialog(view.getContext());
-        progressDialog.setMessage("Please Wait...");
+        progressDialog = Helper.getInstance().getProgressDialog(this.getActivity(),"Please Wait...");
         pcode = view.findViewById(R.id.image_pcode);
         pcode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         cardImage = view.findViewById(R.id.image_number);

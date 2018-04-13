@@ -2,6 +2,7 @@ package com.ccajk.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,11 +40,14 @@ import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.Fragments.TrackFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
+import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
@@ -60,7 +64,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        frameLayout = findViewById(R.id.contentPanel);
+        frameLayout = findViewById(R.id.fragmentPlaceholder);
        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +80,7 @@ public class HomeActivity extends AppCompatActivity
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -99,7 +104,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Fragment fragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
 
     }
 
@@ -112,15 +117,15 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.contentPanel);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if (f instanceof HomeFragment) {
+        } else if (f instanceof HomeFragment) {
             doExit();
         } else {
             getSupportActionBar().setTitle("Home");
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, new HomeFragment()).commit();
         }
     }
 
@@ -154,17 +159,17 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_home:
                 getSupportActionBar().setTitle("Home");
                 fragment = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_contact_us:
                 getSupportActionBar().setTitle("Contact Us");
                 fragment = new ContactUsFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_hotspot_locator:
                 getSupportActionBar().setTitle("Wifi Hotspot Locations");
                 fragment = new HotspotLocationFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_rti:
                 Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
@@ -180,7 +185,7 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_inspection:
                 getSupportActionBar().setTitle("Inspection");
                 fragment = new InspectionFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_pension:
                 bundle = new Bundle();
@@ -188,7 +193,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Pension Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_gpf:
                 bundle = new Bundle();
@@ -196,7 +201,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("GPF Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
@@ -204,7 +209,7 @@ public class HomeActivity extends AppCompatActivity
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
                 getSupportActionBar().setTitle("Upload Aadhaar");
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
@@ -212,12 +217,12 @@ public class HomeActivity extends AppCompatActivity
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_tracking:
                 getSupportActionBar().setTitle("Track Grievance");
                 fragment = new TrackFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
                 break;
             case R.id.navmenu_login:
                 showLoginPopup();
@@ -237,7 +242,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
 
         getSupportActionBar().setTitle("Home");
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, new HomeFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, new HomeFragment()).commit();
     }
 
     private void showLoginPopup() {
@@ -306,7 +311,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void RequestLogin(final String pensionerCode, final String password) {
 
-        changePrefrences(pensionerCode,"Name");
+        changePrefrences(pensionerCode, "Name");
         /*DatabaseReference dbref = databaseReference.child("user").child(pensionerCode);
         Log.d(TAG, "RequestLogin: ");
         dbref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -364,4 +369,17 @@ public class HomeActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult()", Integer.toString(resultCode));
+
+
+                List<Fragment> nearby = getSupportFragmentManager().getFragments();
+                for (Fragment frag :
+                        nearby) {
+                    frag.onActivityResult(requestCode, resultCode, data);
+                }
+                return;
+            }
 }

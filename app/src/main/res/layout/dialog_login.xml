@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_large"
                     android:background="@color/colorAccentDark"
-                    android:text="SIGN IN"
+                    android:text="Log In"
 
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_18" />

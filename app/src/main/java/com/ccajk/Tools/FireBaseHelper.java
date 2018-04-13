@@ -59,7 +59,7 @@ public class FireBaseHelper {
     public ArrayList<LocationModel> getLocationModels(String stateId) {
         DummyLocationProvider dummyLocationProvider = new DummyLocationProvider();
         dummyLocationProvider.storeLocations("jnk");
-        return new DummyLocationProvider().getLocations();
+        return dummyLocationProvider.getLocations();
     }
 
 

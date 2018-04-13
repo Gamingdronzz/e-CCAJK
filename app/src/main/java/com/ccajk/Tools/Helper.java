@@ -1,10 +1,26 @@
 
 package com.ccajk.Tools;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.ccajk.Models.LocationModel;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +42,7 @@ public class Helper {
     public final int UPLOAD_TYPE_PAN = 1;
 
     public final String Nil = "Nil";
+    private final String TAG = "Helper";
 
     public ArrayList<LocationModel> allLocationModels;
 
@@ -71,6 +88,24 @@ public class Helper {
         //Fetch locations models from local memory here
         return allLocationModels;
     }
+
+    public boolean checkForLocationPermissions(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //Location Permission already granted
+                Log.v(TAG, "Permission Granted");
+                return true;
+            } else {
+                return false;
+
+            }
+        } else {
+            return true;
+        }
+    }
+
 
 
     public String[] getPensionGrievanceList() {
@@ -125,6 +160,12 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
+    public ProgressDialog getProgressDialog(Context context,String message)
+    {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(message);
+        return progressDialog;
+    }
     public void addLocations(int value) {
         Random random = new Random();
         double maxLongitude = 32.8, minLongitude = 32.1;
