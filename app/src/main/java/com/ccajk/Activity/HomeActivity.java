@@ -49,6 +49,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
+import shortbread.Shortcut;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
 
@@ -147,7 +149,16 @@ public class HomeActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }*/
-
+    @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi, shortLabel = "HotSpot Locations")
+    public void ShowHotSpotLocations()
+    {
+        ShowFragment("Wifi Hotspot Locations",new HotspotLocationFragment());
+    }
+    private void ShowFragment(String title,Fragment fragment)
+    {
+        getSupportActionBar().setTitle(title);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -157,19 +168,13 @@ public class HomeActivity extends AppCompatActivity
         Bundle bundle;
         switch (id) {
             case R.id.navmenu_home:
-                getSupportActionBar().setTitle("Home");
-                fragment = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Home",new HomeFragment());
                 break;
             case R.id.navmenu_contact_us:
-                getSupportActionBar().setTitle("Contact Us");
-                fragment = new ContactUsFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Contact Us",new ContactUsFragment());
                 break;
             case R.id.navmenu_hotspot_locator:
-                getSupportActionBar().setTitle("Wifi Hotspot Locations");
-                fragment = new HotspotLocationFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Wifi Hotspot Locations",new HotspotLocationFragment());
                 break;
             case R.id.navmenu_rti:
                 Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
@@ -183,9 +188,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;*/
             case R.id.navmenu_inspection:
-                getSupportActionBar().setTitle("Inspection");
-                fragment = new InspectionFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Inspection",new InspectionFragment());
                 break;
             case R.id.navmenu_pension:
                 bundle = new Bundle();
@@ -198,18 +201,16 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_gpf:
                 bundle = new Bundle();
                 bundle.putInt("Category", Helper.getInstance().CATEGORY_GPF);
-                getSupportActionBar().setTitle("GPF Grievance Registeration");
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("GPF Grievance Registeration",fragment);
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
-                getSupportActionBar().setTitle("Upload Aadhaar");
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Upload Aadhar",fragment);
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
@@ -217,12 +218,10 @@ public class HomeActivity extends AppCompatActivity
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Upload PAN",fragment);
                 break;
             case R.id.navmenu_tracking:
-                getSupportActionBar().setTitle("Track Grievance");
-                fragment = new TrackFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Track Grievance",new TrackFragment());
                 break;
             case R.id.navmenu_login:
                 showLoginPopup();
