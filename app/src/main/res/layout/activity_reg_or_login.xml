@@ -16,15 +16,12 @@
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_25" />-->
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-
-        android:paddingStart="@dimen/padding_large"
-        android:paddingTop="@dimen/padding_large"
-        android:src="@drawable/logo2" />
+        app:srcCompat="@drawable/ic_drawable_satyamev_jayate_new" />
 
     <LinearLayout
         android:layout_width="match_parent"

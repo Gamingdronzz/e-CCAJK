@@ -7,14 +7,20 @@
     android:background="@drawable/splash_background"
     tools:context="com.ccajk.Activity.SplashActivity">
 
-    <ImageView
+    <!--<android.support.v7.widget.AppCompatImageView-->
+        <!---->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_margin="@dimen/margin_large"-->
+         <!--/>-->
+
+    <com.sdsmdg.harjot.vectormaster.VectorMasterView
         android:id="@+id/logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_margin="@dimen/margin_xxxxxlarge"
-        android:src="@drawable/logo"
-        android:tint="@color/colorBlack" />
+        app:vector_src="@drawable/ic_drawable_satyamev_jayate_new"/>
 
    <!-- <TextView
         android:id="@+id/designedBy"

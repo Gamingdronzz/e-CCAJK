@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -159,6 +160,8 @@ public class HomeActivity extends AppCompatActivity
         getSupportActionBar().setTitle(title);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
     }
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

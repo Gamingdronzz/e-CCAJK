@@ -8,10 +8,13 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.ccajk.Models.LocationModel;
+import com.ccajk.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -89,23 +92,6 @@ public class Helper {
         return allLocationModels;
     }
 
-    public boolean checkForLocationPermissions(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                //Location Permission already granted
-                Log.v(TAG, "Permission Granted");
-                return true;
-            } else {
-                return false;
-
-            }
-        } else {
-            return true;
-        }
-    }
-
 
 
     public String[] getPensionGrievanceList() {
@@ -164,8 +150,23 @@ public class Helper {
     {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
+
         return progressDialog;
     }
+
+    public void showSnackBar(CharSequence message,View view)
+    {
+        Snackbar.make(view.findViewById(R.id.fragmentPlaceholder),message,Snackbar.LENGTH_INDEFINITE)
+                .setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.v(TAG,"Yes Clicked");
+                    }
+                })
+                .show();
+    }
+
+
     public void addLocations(int value) {
         Random random = new Random();
         double maxLongitude = 32.8, minLongitude = 32.1;

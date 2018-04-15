@@ -1,18 +1,22 @@
 package com.ccajk.Activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ccajk.R;
+import com.sdsmdg.harjot.vectormaster.VectorMasterView;
 
 public class SplashActivity extends AppCompatActivity {
 
-    ImageView imageView;
+    VectorMasterView imageView;
     TextView gd;
 
     @Override

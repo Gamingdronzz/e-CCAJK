@@ -3,19 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:paddingTop="@dimen/padding_xlarge"
-    android:background="@drawable/splash_background"
+    android:background="@color/colorSaffron"
     android:gravity="bottom"
     android:orientation="vertical"
-
+    android:paddingTop="@dimen/padding_xlarge"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:foregroundGravity="center"
+    <com.sdsmdg.harjot.vectormaster.VectorMasterView
         android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foregroundGravity="center"
         android:padding="@dimen/padding_medium"
-        android:tint="@color/colorBlack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logo" />
+        app:vector_src="@drawable/ic_drawable_satyamev_jayate_new" />
 </LinearLayout>

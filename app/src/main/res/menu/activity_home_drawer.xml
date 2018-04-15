@@ -4,19 +4,23 @@
     tools:showIn="navigation_view">
     <item
         android:id="@+id/navmenu_home"
-        android:title="Home" />
+        android:title="Home"
+        android:icon="@drawable/ic_drawable_home"/>
 
     <item android:title="Functions">
         <menu>
             <item
                 android:id="@+id/navmenu_pension"
-                android:title="Pension Grievance" />
+                android:title="Pension Grievance"
+                android:icon="@drawable/ic_drawable_pension"/>
             <item
                 android:id="@+id/navmenu_gpf"
-                android:title="GPF Grievance" />
+                android:title="GPF Grievance"
+                android:icon="@drawable/ic_drawable_gpf"/>
             <item
                 android:id="@+id/navmenu_rti"
-                android:title="RTI" />
+                android:title="RTI"
+                android:icon="@drawable/ic_drawable_rti"/>
 
             <!--<item
                 android:id="@+id/navmenu_payment_status"
@@ -25,7 +29,8 @@
 
             <item
                 android:id="@+id/navmenu_aadhaar"
-                android:title="Upload AADHAAR" />
+                android:title="Upload AADHAAR"
+                android:icon="@drawable/ic_drawable_aadhaar"/>
 
             <item
                 android:id="@+id/navmenu_pan"
@@ -37,6 +42,7 @@
         <menu>
             <item
                 android:id="@+id/navmenu_tracking"
+                android:icon="@drawable/ic_drawable_tracking"
                 android:title="Track Grievance" />
 
         </menu>
@@ -47,11 +53,11 @@
         <menu>
             <item
                 android:id="@+id/navmenu_contact_us"
-
+                android:icon="@drawable/ic_contact_phone_black_24dp"
                 android:title="Contact Us" />
             <item
                 android:id="@+id/navmenu_hotspot_locator"
-
+                android:icon="@drawable/ic_wifi"
                 android:title="WIFI Hotspot Locator" />
 
             <!--<item
@@ -67,7 +73,9 @@
         <menu>
             <item
                 android:id="@+id/navmenu_login"
-                android:title="Log in" />
+                android:title="Log in"
+                android:icon="@drawable/ic_drawbale_login_24dp"
+                />
 
         </menu>
 
@@ -90,7 +98,7 @@
                 <!--android:title="Update Payment Status" />-->
             <item
                 android:id="@+id/navmenu_logout"
-                android:icon="@drawable/ic_menu_send"
+
                 android:title="Logout" />
         </menu>
 
