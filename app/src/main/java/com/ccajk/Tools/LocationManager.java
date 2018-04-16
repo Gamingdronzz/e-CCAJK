@@ -1,44 +1,32 @@
 package com.ccajk.Tools;
 
 import android.Manifest;
-
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
-import android.widget.SeekBar;
-import android.widget.Toast;
 
-import com.ccajk.Models.LocationModel;
+import com.ccajk.R;
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import java.util.ArrayList;
-
-import static com.ccajk.Tabs.TabNearby.LOCATION_REQUEST_CODE;
 
 /**
  * Created by balpreet on 4/15/2018.
@@ -46,23 +34,30 @@ import static com.ccajk.Tabs.TabNearby.LOCATION_REQUEST_CODE;
 
 public class LocationManager {
     final String TAG = "LocationManager";
-    Context context;
+    public static final int LOCATION_REQUEST_CODE = 101;
+    public static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 102;
 
-    public LocationManager(Context context) {
+    Fragment context;
+    LocationRequest mLocationRequest;
+    LocationCallback mLocationCallback;
+    FusedLocationProviderClient mFusedLocationClient;
+
+    public LocationManager(Fragment context, LocationCallback locationCallback, FusedLocationProviderClient mFusedLocationClient, LocationRequest mLocationRequest) {
         this.context = context;
+        this.mLocationCallback = locationCallback;
+        this.mFusedLocationClient = mFusedLocationClient;
+        this.mLocationRequest = mLocationRequest;
     }
 
-    public boolean getLocationPermission(Context context) {
+    public boolean getLocationPermission() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                //Location Permission already granted
+            if (ContextCompat.checkSelfPermission(context.getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
                 Log.v(TAG, "Permission Granted");
                 return true;
             } else {
                 return false;
-
             }
         } else {
             return true;
@@ -71,92 +66,131 @@ public class LocationManager {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestLocationPermission(Fragment fragment, int requestCode) {
-        //ActivityCompat.requestPermissions(this.getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-        fragment.requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},requestCode);
+        fragment.requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, requestCode);
     }
 
-    public Task<LocationSettingsResponse> createLocationRequest(Context context,LocationRequest mLocationRequest) {
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
 
-        SettingsClient client = LocationServices.getSettingsClient(context);
+    public Task<LocationSettingsResponse> createLocationRequest() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
+
+        SettingsClient client = LocationServices.getSettingsClient(context.getActivity());
         Log.v(TAG, "Location Request Created");
 
         Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
         return task;
-
-
     }
 
-    public void AnimateCamera(LatLng focussedLocation, ArrayList<LocationModel> allLocations, int zoom, GoogleMap mMap, Location mLastLocation, Context context, int seekBarValue) {
-//        if (progressDialog.isShowing()) {
-//            progressDialog.dismiss();
-//        }
-        Log.v(TAG, "In function");
-        mMap.clear();
-        Log.v(TAG, "Map Cleared");
-        Circle circle = mMap.addCircle(new CircleOptions().center(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).radius(getRadius(seekBarValue) * 1000).strokeColor(Color.RED));
-        circle.setVisible(true);
-        getZoomLevel(circle);
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(focussedLocation)
-                .zoom(zoom)                   // Sets the zoom
-                .bearing(0)                // Sets the orientation of the camera to east
-                .tilt(0)                   // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Log.v(TAG, "Animation Done");
+    @SuppressLint("NewApi")
+    public void ManageLocation() {
+        Log.v(TAG, "Checking for location permission");
+        if (getLocationPermission()) {
+            Log.v(TAG, "Permission Available\nChecking for location on or off");
+            Task<LocationSettingsResponse> task = createLocationRequest();
+            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                    Log.v(TAG, "On Task Complete");
+                    if (task.isSuccessful()) {
+                        Log.v(TAG, "Task is Successful");
+                        requestLocationUpdates();
+                    } else {
+                        Log.v(TAG, "Task is not Successful");
+                    }
+                }
+            });
+            task.addOnSuccessListener(context.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                    Log.v(TAG, "On Task Success");
+                    // All location settings are satisfied. The client can initialize
+                    // location requests here.
+                    // ...
 
-        int i = 0;
-        ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations,seekBarValue,mLastLocation);
-        if (filteredMarkers.size() == 0) {
-            Toast.makeText(context, "No Locations nearby\nIncrease Radius", Toast.LENGTH_LONG).show();
-            return;
+                }
+            });
+
+            task.addOnFailureListener(context.getActivity(), new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.v(TAG, "On Task Failed");
+                    if (e instanceof ResolvableApiException) {
+                        onLocationAcccessRequestFailure(e);
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+
+                    }
+                }
+            });
+        } else {
+            Log.v(TAG, "Permission not Available");
+            if (context.getParentFragment() != null)
+                requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
+            else
+                requestLocationPermission(context, LOCATION_REQUEST_CODE);
         }
-
-        for (LatLng latlng :
-                filteredMarkers) {
-            mMap.addMarker(new MarkerOptions().position(latlng).title(allLocations.get(i++).getLocationName()));
-        }
-
-//        if (progressDialog.isShowing()) {
-//            progressDialog.dismiss();
-//        }
     }
 
-    private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels,int seekBarValue,Location mLastLocation) {
-        if (locationModels == null) {
-            return null;
-        }
-        ArrayList<LatLng> filteredLocations = new ArrayList<>();
-        int length = locationModels.size();
-        float[] results = new float[1];
-        double radius = getRadius(seekBarValue) * 1000;
 
-        for (int i = 0; i < length; i++) {
-            LocationModel locationModel = locationModels.get(i);
-            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude()), results);
-            if (results[0] <= radius) {
-                filteredLocations.add(new LatLng(Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude())));
+    @SuppressLint("MissingPermission")
+    public void requestLocationUpdates() {
+        //progressDialog.setMessage("Getting Current Location");
+        //progressDialog.show();
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+
+
+    public void onLocationAcccessRequestFailure(Exception e) {
+        Log.v(TAG, "Request Failure Further process");
+        try {
+            // Show the dialog by calling startResolutionForResult(),
+            // and check the result in onActivityResult().
+            ResolvableApiException resolvable = (ResolvableApiException) e;
+            resolvable.startResolutionForResult(context.getActivity(),
+                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
+        } catch (IntentSender.SendIntentException sendEx) {
+            // Ignore the error.
+        }
+    }
+
+    public void ShowDialogOnPermissionDenied(String message) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                context.getActivity(), R.style.MyAlertDialogStyle);
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ManageLocation();
             }
-        }
-        return filteredLocations;
+        })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setMessage(message)
+                .setTitle("CCA JK")
+                .show();
     }
 
-    public double getRadius(int seekBarValue) {
+    public void ShowDialogOnLocationOff(String message) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                context.getActivity(), R.style.MyAlertDialogStyle);
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ManageLocation();
+            }
+        })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        double radius = Math.pow((seekBarValue + 1), 2);
-        Log.v(TAG, "Radius = " + radius);
-        return radius;
+                    }
+                })
+                .setMessage(message)
+                .setTitle("CCA JK")
+                .show();
     }
-    private int getZoomLevel(Circle circle) {
-        int zoomLevel = 1;
-        if (circle != null) {
-            double radius = circle.getRadius();
-            double scale = radius / 500;
-            zoomLevel = (int) (16 - Math.log(scale) / Math.log(2));
-        }
-        return zoomLevel;
-    }
+
 }
