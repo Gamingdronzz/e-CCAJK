@@ -3,6 +3,7 @@ package com.ccajk.Fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.LocationManager;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,7 +47,7 @@ import static com.ccajk.Tools.LocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment {
 
     private static final String TAG = "Inspection";
-//    ImageButton choose, location;
+    //    ImageButton choose, location;
     TextView textChoose, textLocation;
     Button upload;
     ImagePicker imagePicker;
@@ -55,6 +58,8 @@ public class InspectionFragment extends Fragment {
     FusedLocationProviderClient mFusedLocationClient;
     LocationCallback mLocationCallback;
     LocationRequest mLocationRequest;
+    ProgressDialog progressDialog;
+    boolean isCurrentLocationFound = false;
 
     public InspectionFragment() {
 
@@ -97,6 +102,19 @@ public class InspectionFragment extends Fragment {
             }
         });
         upload = view.findViewById(R.id.button_upload);
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isCurrentLocationFound)
+                {
+                    uploadInspectionDataToCloud();
+                }
+                else
+                {
+                    Log.d(TAG, "onClick: Please set current location coordinates first");
+                }
+            }
+        });
         //upload.setCompoundDrawablesWithIntrinsicBounds(null, AppCompatResources.getDrawable(getContext(), R.drawable.ic_file_upload_black_24dp), null, null);
         mLocationCallback = new LocationCallback() {
             @Override
@@ -112,15 +130,30 @@ public class InspectionFragment extends Fragment {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         locationManager = new LocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
+        progressDialog = new ProgressDialog(view.getContext());
+        progressDialog.setMessage("Getting Current Location Coordinates\nPlease Wait...");
+    }
 
+    private void uploadInspectionDataToCloud()
+    {
 
+    }
+    private void manageProgressDialog()
+    {
+        if(progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+        else
+        {
+            progressDialog.show();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
-
-
-        if(locationManager.checkForLocationPermission()) {
+        manageProgressDialog();
+        if (locationManager.checkForLocationPermission()) {
             Task<LocationSettingsResponse> task = locationManager.ManageLocation();
             if (task != null) {
                 task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
@@ -155,16 +188,16 @@ public class InspectionFragment extends Fragment {
                 });
 
             }
-        }
-        else
-        {
-            locationManager.requestLocationPermission(this,LOCATION_REQUEST_CODE);
+        } else {
+            locationManager.requestLocationPermission(this, LOCATION_REQUEST_CODE);
         }
 //        if (mLastLocation == null)
 //            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
     private void showCoordinates(Location location) {
+        isCurrentLocationFound = true;
+        manageProgressDialog();
         mLastLocation = location;
         latitude = location.getLatitude();
         longitude = location.getLongitude();
@@ -178,7 +211,7 @@ public class InspectionFragment extends Fragment {
 
         imagePicker = new ImagePicker();
         imagePicker.setTitle("Select Image");
-        imagePicker.setCropImage(true);
+        imagePicker.setCropImage(false);
         imagePicker.startChooser(this.getActivity(), new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
@@ -195,15 +228,16 @@ public class InspectionFragment extends Fragment {
             public void cropConfig(CropImage.ActivityBuilder builder) {
                 builder
                         .setMultiTouchEnabled(false)
-                        .setGuidelines(CropImageView.Guidelines.OFF)
+                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(960, 540)
-                        .setAspectRatio(16, 9);
+                        .setRequestedSize(540, 960)
+                        .setAspectRatio(9, 16);
             }
 
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
+                Log.d(TAG, "onPermissionDenied: Permission not given to choose message");
             }
         });
 
@@ -244,23 +278,22 @@ public class InspectionFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult: "+"Inspection");
+        Log.d(TAG, "onRequestPermissionsResult: " + "Inspection");
 
         switch (requestCode) {
 
             case LOCATION_REQUEST_CODE: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.ManageLocation();
+                    getLocationCoordinates();
 
                 } else {
                     locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nInspection will not work without location access.\n\nDo you want to grant location acces ?");
                 }
                 break;
             }
-            default:
-            {
-                if(imagePicker!=null)
-                imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
+            default: {
+                if (imagePicker != null)
+                    imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
             }
 
         }

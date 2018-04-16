@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,8 @@ import com.ccajk.Models.Contact;
 import com.ccajk.R;
 
 import java.util.ArrayList;
+
+import butterknife.OnClick;
 
 /**
  * Created by hp on 13-02-2018.
@@ -26,6 +29,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     ArrayList<Contact> contactArrayList;
     Context context;
+
 
     public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList, Context context) {
         this.contactArrayList = contactArrayList;
@@ -53,6 +57,14 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
         holder.mobile.setText("\t" + contact.getMobileContact());
 
+        if(contact.isExpanded()) {
+            holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+         holder.linearLayoutExpandableArea.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -61,6 +73,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     }
 
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearLayoutExpandableArea;
         private TextView name;
         private TextView designation;
         private Button mobile, email, office;
@@ -72,6 +85,8 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             office = itemView.findViewById(R.id.button_office);
             mobile = itemView.findViewById(R.id.textview_mobile);
             email = itemView.findViewById(R.id.button_email);
+            linearLayoutExpandableArea = itemView.findViewById(R.id.expande_area_contact);
+            linearLayoutExpandableArea.setVisibility(View.GONE);
 
             mobile.setOnClickListener(new View.OnClickListener() {
                 @Override

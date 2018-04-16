@@ -10,10 +10,15 @@ import shortbread.Shortbread;
  */
 
 public class AppController extends Application {
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         Shortbread.create(this);
     }
 }

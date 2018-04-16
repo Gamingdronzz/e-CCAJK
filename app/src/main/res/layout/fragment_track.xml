@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin_medium"
     android:orientation="vertical"
     tools:context="com.ccajk.Fragments.TrackFragment">
 
@@ -29,15 +30,16 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_check_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/margin_large"
-            android:text="Track" />
+
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_check_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_button"
+        android:layout_gravity="center"
 
+        android:text="Track" />
 
 </LinearLayout>
