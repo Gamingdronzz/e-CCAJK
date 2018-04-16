@@ -115,9 +115,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_large"
-                    android:background="@color/colorAccentDark"
+                    android:background="@drawable/custom_button"
                     android:text="Log In"
-
+                    android:layout_margin="@dimen/margin_medium"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_18" />
 

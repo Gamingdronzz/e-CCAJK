@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin_medium"
     tools:context="com.ccajk.Fragments.PanAdhaarUploadFragment">
 
     <LinearLayout
@@ -104,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorAccentDark"
+        android:background="@drawable/custom_button"
         android:text="UPLOAD"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18" />

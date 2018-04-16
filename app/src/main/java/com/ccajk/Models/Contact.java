@@ -13,6 +13,16 @@ public class Contact {
     private String email;
     private String stateId;
 
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
+
+    private boolean isExpanded;
+
     public String getName() {
         return name;
     }
