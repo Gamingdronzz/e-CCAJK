@@ -25,16 +25,22 @@ import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.LocationManager;
 import com.ccajk.Tools.MapsHelper;
 import com.ccajk.Tools.Preferences;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.IndicatorSeekBarType;
 import com.warkiz.widget.IndicatorType;
@@ -160,10 +166,49 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         setMyMap(googleMap);
 
-        locationManager.ManageLocation();
-        mMap.setMyLocationEnabled(true);
+        Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+        if(task!=null) {
+            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                    Log.v(TAG, "On Task Complete");
+                    if (task.isSuccessful()) {
+                        Log.v(TAG, "Task is Successful");
+                        locationManager.requestLocationUpdates(mMap);
+
+                    } else {
+                        Log.v(TAG, "Task is not Successful");
+                    }
+                }
+            });
+            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                    Log.v(TAG, "On Task Success");
+                    // All location settings are satisfied. The client can initialize
+                    // location requests here.
+                    // ...
+
+                }
+            });
+
+            task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.v(TAG, "On Task Failed");
+                    if (e instanceof ResolvableApiException) {
+                        locationManager.onLocationAcccessRequestFailure(e);
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+
+                    }
+                }
+            });
+        }
+
 
         if (mLastLocation != null) {
             mapsHelper.AnimateCamera(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), locationModels, 0, mMap, mLastLocation, getActivity(), seekBarValue);
@@ -269,7 +314,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @Override
     public boolean onMyLocationButtonClick() {
         if (mLastLocation == null) {
-            Toast.makeText(this.getActivity(), "Please Enable Location First", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getActivity(), "Please Enable Location and Internet", Toast.LENGTH_LONG).show();
             return false;
         }
         return false;
@@ -310,7 +355,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 switch (resultCode) {
                     case Activity.RESULT_OK: {
                         Log.v(TAG, "Resolution success");
-                        locationManager.requestLocationUpdates();
+                        locationManager.requestLocationUpdates(mMap);
                         break;
                     }
                     case Activity.RESULT_CANCELED: {

@@ -21,13 +21,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.LocationManager;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
@@ -114,7 +119,39 @@ public class InspectionFragment extends Fragment {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
 
         locationManager = new LocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
-        locationManager.ManageLocation();
+        Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+        if(task!=null) {
+            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                    Log.v(TAG, "On Task Complete");
+                    if (task.isSuccessful()) {
+                        Log.v(TAG, "Task is Successful");
+                        locationManager.requestLocationUpdates();
+
+                    } else {
+                        Log.v(TAG, "Task is not Successful");
+                    }
+                }
+            });
+            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                    Log.v(TAG, "On Task Success");
+                }
+            });
+
+            task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.v(TAG, "On Task Failed");
+                    if (e instanceof ResolvableApiException) {
+                        locationManager.onLocationAcccessRequestFailure(e);
+                    }
+                }
+            });
+
+        }
         if (mLastLocation == null)
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
@@ -160,22 +197,15 @@ public class InspectionFragment extends Fragment {
             }
         });
 
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
-        if (imagePicker != null) {
-            //Helper.getInstance().showSnackBar("Not null",this.getView());
-            Log.d(TAG, "Not null");
+        if (imagePicker != null)
             imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
-        }
-        else
-        {
-            Helper.getInstance().showSnackBar("null",this.getView());
-        }
+
         switch (requestCode) {
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST: {
@@ -186,7 +216,6 @@ public class InspectionFragment extends Fragment {
                         break;
                     }
                     case Activity.RESULT_CANCELED: {
-                        // The user was asked to change settings, but chose not to
                         Log.v(TAG, "Resolution denied");
                         locationManager.ShowDialogOnLocationOff("Location not turned on! Inspection will not show nearby locations without location access. Do you want to turn location on ?");
                         break;
@@ -219,9 +248,6 @@ public class InspectionFragment extends Fragment {
                 break;
             }
 
-//            case CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE:
-//                imagePicker.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-//                break;
         }
 
     }

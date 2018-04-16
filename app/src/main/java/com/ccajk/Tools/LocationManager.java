@@ -7,7 +7,6 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,9 +22,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -82,62 +79,40 @@ public class LocationManager {
 
 
     @SuppressLint("NewApi")
-    public void ManageLocation() {
+    public Task<LocationSettingsResponse> ManageLocation() {
         Log.v(TAG, "Checking for location permission");
         if (getLocationPermission()) {
             Log.v(TAG, "Permission Available\nChecking for location on or off");
             Task<LocationSettingsResponse> task = createLocationRequest();
-            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                    Log.v(TAG, "On Task Complete");
-                    if (task.isSuccessful()) {
-                        Log.v(TAG, "Task is Successful");
-                        requestLocationUpdates();
-                    } else {
-                        Log.v(TAG, "Task is not Successful");
-                    }
-                }
-            });
-            task.addOnSuccessListener(context.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-                @Override
-                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                    Log.v(TAG, "On Task Success");
-                    // All location settings are satisfied. The client can initialize
-                    // location requests here.
-                    // ...
-
-                }
-            });
-
-            task.addOnFailureListener(context.getActivity(), new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.v(TAG, "On Task Failed");
-                    if (e instanceof ResolvableApiException) {
-                        onLocationAcccessRequestFailure(e);
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-
-                    }
-                }
-            });
+            return task;
         } else {
             Log.v(TAG, "Permission not Available");
             if (context.getParentFragment() != null)
                 requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
             else
                 requestLocationPermission(context, LOCATION_REQUEST_CODE);
+            return  null;
         }
     }
 
 
     @SuppressLint("MissingPermission")
-    public void requestLocationUpdates() {
+    public void requestLocationUpdates(GoogleMap mMap) {
         //progressDialog.setMessage("Getting Current Location");
         //progressDialog.show();
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        mMap.setMyLocationEnabled(true);
     }
+
+
+    @SuppressLint("MissingPermission")
+    public void requestLocationUpdates( ) {
+        //progressDialog.setMessage("Getting Current Location");
+        //progressDialog.show();
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+    }
+
 
 
     public void onLocationAcccessRequestFailure(Exception e) {
