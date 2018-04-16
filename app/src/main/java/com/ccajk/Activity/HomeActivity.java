@@ -2,13 +2,12 @@ package com.ccajk.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -41,7 +40,6 @@ import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.Fragments.TrackFragment;
 import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
-import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
@@ -55,7 +53,7 @@ import shortbread.Shortcut;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
 
-    String TAG = "firebase";
+    String TAG = "Home";
     FrameLayout frameLayout;
     NavigationView navigationView;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -165,7 +163,6 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment;
         Bundle bundle;
@@ -375,13 +372,22 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult()", Integer.toString(resultCode));
+        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
+        for (Fragment frag : allFragments) {
+                frag.onActivityResult(requestCode, resultCode, data);
+        }
+        return;
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
-                List<Fragment> nearby = getSupportFragmentManager().getFragments();
-                for (Fragment frag :
-                        nearby) {
-                    frag.onActivityResult(requestCode, resultCode, data);
-                }
-                return;
-            }
+        for (Fragment frag : allFragments) {
+            Log.d(TAG, "onRequestPermissionsResult: "+frag.toString());
+            frag.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        }
+    }
 }
