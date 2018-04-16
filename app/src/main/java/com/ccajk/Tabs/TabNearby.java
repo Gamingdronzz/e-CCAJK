@@ -42,19 +42,15 @@ import com.warkiz.widget.TickType;
 
 import java.util.ArrayList;
 
+import static com.ccajk.Tools.LocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
+import static com.ccajk.Tools.LocationManager.LOCATION_REQUEST_CODE;
+
 //Our class extending fragment
 public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
-    public static final int LOCATION_REQUEST_CODE = 101;
-    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 102;
     private TextView kilometres;
-    private GoogleMap mMap;
-    private LocationRequest mLocationRequest;
-    private Location mLastLocation;
-    private LatLng latLng;
     private int seekBarValue;
-    private FusedLocationProviderClient mFusedLocationClient;
     private final String TAG = "Nearby";
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
     IndicatorSeekBar seekBar;
@@ -62,6 +58,11 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     LocationManager locationManager;
     MapsHelper mapsHelper;
 
+    private FusedLocationProviderClient mFusedLocationClient;
+    private GoogleMap mMap;
+    private LocationRequest mLocationRequest;
+    private Location mLastLocation;
+    private LatLng latLng;
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
