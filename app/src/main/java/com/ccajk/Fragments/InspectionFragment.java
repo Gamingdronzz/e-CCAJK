@@ -1,23 +1,21 @@
 package com.ccajk.Fragments;
 
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ccajk.R;
@@ -46,7 +44,7 @@ import static com.ccajk.Tools.LocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment {
 
     private static final String TAG = "Inspection";
-    ImageButton choose, location;
+//    ImageButton choose, location;
     TextView textChoose, textLocation;
     Button upload;
     ImagePicker imagePicker;
@@ -56,6 +54,7 @@ public class InspectionFragment extends Fragment {
     LocationManager locationManager;
     FusedLocationProviderClient mFusedLocationClient;
     LocationCallback mLocationCallback;
+    LocationRequest mLocationRequest;
 
     public InspectionFragment() {
 
@@ -78,32 +77,27 @@ public class InspectionFragment extends Fragment {
                 showImageChooser();
             }
         });
-        choose = view.findViewById(R.id.button_choose);
-        choose.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_circle_black_24dp));
-        choose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageChooser();
-            }
-        });
+//        choose = view.findViewById(R.id.button_choose);
+//        choose.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_circle_black_24dp));
+//        choose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showImageChooser();
+//            }
+//        });
 
         textLocation = view.findViewById(R.id.textview_location);
 
-        location = view.findViewById(R.id.button_location);
-        location.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_location_black_24dp));
-        location.setOnClickListener(new View.OnClickListener() {
+//        location = view.findViewById(R.id.button_location);
+//        location.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_location_black_24dp));
+        textLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocationCoordinates();
             }
         });
         upload = view.findViewById(R.id.button_upload);
-        upload.setCompoundDrawablesWithIntrinsicBounds(null, AppCompatResources.getDrawable(getContext(), R.drawable.ic_file_upload_black_24dp), null, null);
-
-    }
-
-    @SuppressLint("MissingPermission")
-    private void getLocationCoordinates() {
+        //upload.setCompoundDrawablesWithIntrinsicBounds(null, AppCompatResources.getDrawable(getContext(), R.drawable.ic_file_upload_black_24dp), null, null);
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -112,56 +106,72 @@ public class InspectionFragment extends Fragment {
                 }
             }
         };
-        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(2000); // two minute interval
         mLocationRequest.setFastestInterval(2000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-
         locationManager = new LocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
-        Task<LocationSettingsResponse> task = locationManager.ManageLocation();
-        if(task!=null) {
-            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                    Log.v(TAG, "On Task Complete");
-                    if (task.isSuccessful()) {
-                        Log.v(TAG, "Task is Successful");
-                        locationManager.requestLocationUpdates();
 
-                    } else {
-                        Log.v(TAG, "Task is not Successful");
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void getLocationCoordinates() {
+
+
+        if(locationManager.checkForLocationPermission()) {
+            Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+            if (task != null) {
+                task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                        Log.v(TAG, "On Task Complete");
+                        if (task.isSuccessful()) {
+                            Log.v(TAG, "Task is Successful");
+                            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                            locationManager.requestLocationUpdates();
+
+                        } else {
+                            Log.v(TAG, "Task is not Successful");
+                        }
                     }
-                }
-            });
-            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-                @Override
-                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                    Log.v(TAG, "On Task Success");
-                }
-            });
-
-            task.addOnFailureListener(getActivity(), new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.v(TAG, "On Task Failed");
-                    if (e instanceof ResolvableApiException) {
-                        locationManager.onLocationAcccessRequestFailure(e);
+                });
+                task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                    @Override
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                        Log.v(TAG, "On Task Success");
                     }
-                }
-            });
+                });
 
+                task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.v(TAG, "On Task Failed");
+                        if (e instanceof ResolvableApiException) {
+                            locationManager.onLocationAcccessRequestFailure(e);
+                        }
+                    }
+                });
+
+            }
         }
-        if (mLastLocation == null)
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        else
+        {
+            locationManager.requestLocationPermission(this,LOCATION_REQUEST_CODE);
+        }
+//        if (mLastLocation == null)
+//            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
     private void showCoordinates(Location location) {
         mLastLocation = location;
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        textLocation.setText(location.getLatitude() + " , " + location.getLongitude());
     }
 
     private void showImageChooser() {
@@ -235,7 +245,7 @@ public class InspectionFragment extends Fragment {
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(TAG, "onRequestPermissionsResult: "+"Inspection");
-        imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
+
         switch (requestCode) {
 
             case LOCATION_REQUEST_CODE: {
@@ -246,6 +256,11 @@ public class InspectionFragment extends Fragment {
                     locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nInspection will not work without location access.\n\nDo you want to grant location acces ?");
                 }
                 break;
+            }
+            default:
+            {
+                if(imagePicker!=null)
+                imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
             }
 
         }

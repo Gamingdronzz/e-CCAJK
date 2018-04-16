@@ -227,7 +227,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     /*@TargetApi(Build.VERSION_CODES.M)
     private void ManageLocation() {
         Log.v(TAG, "Checking for location permission");
-        if (locationManager.getLocationPermission()) {
+        if (locationManager.checkForLocationPermission()) {
             Log.v(TAG, "Permission Available\nChecking for location on or off");
             Task<LocationSettingsResponse> task = locationManager.createLocationRequest();
             task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {

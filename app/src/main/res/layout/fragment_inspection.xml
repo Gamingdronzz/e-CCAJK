@@ -14,50 +14,69 @@
             android:layout_centerInParent="true"
             android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/button_choose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:tint="@color/colorAccent" />
+            <!--  <ImageButton
+                  android:id="@+id/button_choose"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:background="@android:color/transparent"
+                  android:tint="@color/colorAccent" />-->
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textview_choose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:drawableTint="@color/colorAccent"
+                android:drawableTop="@drawable/ic_add_circle_black_24dp"
                 android:gravity="center_horizontal"
                 android:text="Choose Image to Upload"
                 android:textSize="@dimen/text_18" />
 
-            <ImageButton
-                android:id="@+id/button_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_xxxlarge"
-                android:background="@android:color/transparent"
-                android:tint="@color/colorAccent" />
+            <!--   <ImageButton
+                   android:id="@+id/button_location"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center"
+                   android:layout_marginTop="@dimen/margin_xxxlarge"
+                   android:background="@android:color/transparent"
+                   android:tint="@color/colorAccent" />-->
 
-            <TextView
-                android:id="@+id/textview_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:gravity="center_horizontal"
-                android:text="Add Location Coordinates"
-                android:textSize="@dimen/text_18" />
+            <!--<android.support.v7.widget.AppCompatTextView-->
+                <!--android:id="@+id/textview_location"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/margin_xxxlarge"-->
+                <!--android:clickable="true"-->
+                <!--android:drawableTint="@color/colorAccent"-->
+                <!--android:drawableTop="@drawable/ic_add_location_black_24dp"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="Add Location Coordinates"-->
+                <!--android:textSize="@dimen/text_18" />-->
+
+
 
         </LinearLayout>
 
-        <Button
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_location"
+            android:layout_above="@+id/button_upload"
+            android:drawableLeft="@drawable/ic_add_location_black_24dp"
+            android:layout_width="match_parent"
+            android:textAlignment="textStart"
+            android:gravity="center_vertical"
+            android:text="Current Location - N/A"
+            android:drawableRight="@drawable/ic_refresh_black_24dp"
+            android:layout_height="wrap_content"
+            tools:ignore="RtlCompat" />
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
             android:paddingBottom="@dimen/padding_medium"
+            android:drawableTop="@drawable/ic_file_upload_black_24dp"
             android:paddingTop="@dimen/padding_medium"
             android:text="UPLOAD"
             android:textColor="@color/colorOffWhite"

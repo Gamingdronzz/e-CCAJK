@@ -46,7 +46,7 @@ public class LocationManager {
         this.mLocationRequest = mLocationRequest;
     }
 
-    public boolean getLocationPermission() {
+    public boolean checkForLocationPermission() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(context.getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -81,7 +81,7 @@ public class LocationManager {
     @SuppressLint("NewApi")
     public Task<LocationSettingsResponse> ManageLocation() {
         Log.v(TAG, "Checking for location permission");
-        if (getLocationPermission()) {
+        if (checkForLocationPermission()) {
             Log.v(TAG, "Permission Available\nChecking for location on or off");
             Task<LocationSettingsResponse> task = createLocationRequest();
             return task;
