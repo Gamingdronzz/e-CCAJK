@@ -36,7 +36,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public RecyclerViewAdapterContacts.ContactsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewAdapterContacts.ContactsViewHolder viewHolder = new ContactsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_contact, parent, false),new ViewClickListener());
+        RecyclerViewAdapterContacts.ContactsViewHolder viewHolder = new ContactsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_contact, parent, false), new ViewClickListener());
         return viewHolder;
     }
 
@@ -56,14 +56,12 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
         holder.mobile.setText("\t" + contact.getMobileContact());
 
-        if(contact.isExpanded()) {
+        if (contact.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
-        }
-        else
-        {
-         holder.linearLayoutExpandableArea.setVisibility(View.GONE);
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_down_black_24dp,0);
+            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
+        } else {
+            holder.linearLayoutExpandableArea.setVisibility(View.GONE);
+            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
         }
 
     }
@@ -80,7 +78,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         private Button mobile, email, office;
         private ViewClickListener viewClickListener;
 
-        public ContactsViewHolder(View itemView,ViewClickListener viewClickListener) {
+        public ContactsViewHolder(View itemView, ViewClickListener viewClickListener) {
             super(itemView);
             name = itemView.findViewById(R.id.textview_name);
             designation = itemView.findViewById(R.id.textview_designation);
@@ -96,7 +94,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                 public void onClick(View v) {
                     String number = mobile.getText().toString();
                     Log.v("Adapter", "Contact = " + number);
-                    if (number.equals("\t"+Contact.NA)) {
+                    if (number.equals("\t" + Contact.NA)) {
                         Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -111,7 +109,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                 public void onClick(View v) {
                     String number = office.getText().toString();
                     Log.v("Adapter", "Contact = " + number);
-                    if (number.equals("\t"+Contact.NA)) {
+                    if (number.equals("\t" + Contact.NA)) {
                         Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -126,7 +124,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                 public void onClick(View v) {
                     String mail = email.getText().toString();
                     Log.v("Adapter", "Contact = " + mail);
-                    if (mail.equals("\t"+Contact.NA)) {
+                    if (mail.equals("\t" + Contact.NA)) {
                         Toast.makeText(v.getContext(), "Email not available", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -140,14 +138,12 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    class ViewClickListener implements View.OnClickListener
-    {
+    class ViewClickListener implements View.OnClickListener {
         public void setPosition(int position) {
             this.position = position;
         }
 
         private int position;
-
 
 
         @Override

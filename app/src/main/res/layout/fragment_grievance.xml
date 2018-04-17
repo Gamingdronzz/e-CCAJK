@@ -214,8 +214,8 @@
                     android:layout_gravity="center_vertical"
                     android:background="@null"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
-                  android:visibility="gone"
-                    android:tint="@color/colorAccent" />
+                    android:tint="@color/colorAccent"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -240,6 +240,7 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18"
         android:textStyle="bold" />
+
 </RelativeLayout>
 
 

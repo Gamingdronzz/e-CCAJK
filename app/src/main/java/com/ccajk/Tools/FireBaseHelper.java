@@ -28,8 +28,8 @@ public class FireBaseHelper {
     public final String ROOT_PENSIONERS = "Pensioners";
     public final String ROOT_ADHAAR = "Adhaar";
     public final String ROOT_PAN = "Pan";
-    public final String ROOT_GRIEVANCE_PENSION="Pension Grievance";
-    public final String ROOT_GRIEVANCE_GPF="GPF Grievance";
+    public final String ROOT_GRIEVANCE_PENSION = "Pension Grievance";
+    public final String ROOT_GRIEVANCE_GPF = "GPF Grievance";
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     //public final String ROOT_PAN_STATUS = "Pan-Status";
 
@@ -52,11 +52,9 @@ public class FireBaseHelper {
 
     public UploadTask uploadFile(String rootFolder, String subFolder, String filePath, String subType) {
         StorageReference sref;
-        if(subType!=null) {
+        if (subType != null) {
             sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType);
-        }
-        else
-        {
+        } else {
             sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder);
         }
 
@@ -66,7 +64,7 @@ public class FireBaseHelper {
     }
 
     public String getAdhaarPanStatusString(long status) {
-        switch ((int)status) {
+        switch ((int) status) {
             case 0:
                 return "Request Submitted";
             case 1:

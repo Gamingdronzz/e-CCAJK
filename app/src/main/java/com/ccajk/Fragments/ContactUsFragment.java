@@ -49,33 +49,33 @@ public class ContactUsFragment extends Fragment {
         recyclerView.setAdapter(adapterContacts);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//
-////                if(expandedPosition!=-1)
-////                {
-////                    Contact contact = contactArrayList.get(expandedPosition);
-////                    contact.setExpanded(false);
-////                }
-////                if(position == expandedPosition) {
-////
-////                }
-////                else
-////                {
-//                    Contact contact = contactArrayList.get(position);
-//                    contact.setExpanded(!contact.isExpanded());
-//                    expandedPosition = position;
-//                    Log.d(TAG, "onClick: Changing expanded of " + position + "to " + contact.isExpanded());
-//                    adapterContacts.notifyDataSetChanged();
-////                }
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
+        /*recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                if(expandedPosition!=-1)
+                {
+                    Contact contact = contactArrayList.get(expandedPosition);
+                    contact.setExpanded(false);
+                }
+                if(position == expandedPosition) {
+
+                }
+                else
+                {
+                    Contact contact = contactArrayList.get(position);
+                    contact.setExpanded(!contact.isExpanded());
+                    expandedPosition = position;
+                    Log.d(TAG, "onClick: Changing expanded of " + position + "to " + contact.isExpanded());
+                    adapterContacts.notifyDataSetChanged();
+          }
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));*/
 
         return view;
     }

@@ -91,7 +91,7 @@ public class LocationManager {
                 requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
             else
                 requestLocationPermission(context, LOCATION_REQUEST_CODE);
-            return  null;
+            return null;
         }
     }
 
@@ -106,13 +106,12 @@ public class LocationManager {
 
 
     @SuppressLint("MissingPermission")
-    public void requestLocationUpdates( ) {
+    public void requestLocationUpdates() {
         //progressDialog.setMessage("Getting Current Location");
         //progressDialog.show();
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
 
     }
-
 
 
     public void onLocationAcccessRequestFailure(Exception e) {
