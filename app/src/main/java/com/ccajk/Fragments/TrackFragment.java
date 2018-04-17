@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class TrackFragment extends Fragment {
 
-    Button track;
+    Button buttonTrack;
     CheckBox gpfCheckbox, pensionCheckBox;
     TextInputEditText editTextPCode;
 
@@ -45,23 +45,23 @@ public class TrackFragment extends Fragment {
         gpfCheckbox = view.findViewById(R.id.checkBoxGPF);
         pensionCheckBox = view.findViewById(R.id.checkBoxPension);
 
-        track = view.findViewById(R.id.btn_check_status);
-        track.setOnClickListener(new View.OnClickListener() {
+        buttonTrack = view.findViewById(R.id.btn_check_status);
+        buttonTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),nextclass.class);
-                intent.putExtra("pensionerCode",editTextPCode.getText().toString());
-                if (gpfCheckbox.isChecked()) {
-                   intent.putExtra("gpf",true);
-                }
-                if (pensionCheckBox.isChecked()) {
-                    intent.putExtra("pension",true);
-                }
-                if (!gpfCheckbox.isChecked() && !pensionCheckBox.isChecked()) {
-                    Toast.makeText(getContext(), "Please select one", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                startActivity(intent);
+//                Intent intent=new Intent(getActivity(),nextclass.class);
+//                intent.putExtra("pensionerCode",editTextPCode.getText().toString());
+//                if (gpfCheckbox.isChecked()) {
+//                   intent.putExtra("gpf",true);
+//                }
+//                if (pensionCheckBox.isChecked()) {
+//                    intent.putExtra("pension",true);
+//                }
+//                if (!gpfCheckbox.isChecked() && !pensionCheckBox.isChecked()) {
+//                    Toast.makeText(getContext(), "Please select one", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                startActivity(intent);
             }
         });
 

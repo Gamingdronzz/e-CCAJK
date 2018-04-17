@@ -14,6 +14,9 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -57,6 +60,7 @@ public class BrowserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_browser, container, false);
+        setHasOptionsMenu(true);
         init(view);
         setupWebview();
         webView.loadUrl(url);
@@ -71,6 +75,16 @@ public class BrowserFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
         webView = view.findViewById(R.id.webview_cca);
         url = args.getString("url");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setupWebview() {
@@ -106,8 +120,9 @@ public class BrowserFragment extends Fragment {
             }
 
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                Toast.makeText(getContext(), "We are getting things fixed..", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "We are getting things fixed..", Toast.LENGTH_SHORT).show();
                 setSubtitle("Some Error Occured. Please Refresh");
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
