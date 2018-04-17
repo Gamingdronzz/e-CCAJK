@@ -1,11 +1,17 @@
 package com.ccajk.Tools;
 
+import android.net.Uri;
+
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.State;
 import com.ccajk.Providers.DummyLocationProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +24,7 @@ public class FireBaseHelper {
     private ArrayList<LocationModel> locationModels;
 
     public DatabaseReference databaseReference;
+    public StorageReference storageReference;
     public final String ROOT_PENSIONERS = "Pensioners";
     public final String ROOT_ADHAAR = "Adhaar";
     public final String ROOT_PAN = "Pan";
@@ -31,6 +38,7 @@ public class FireBaseHelper {
     public FireBaseHelper() {
         _instance = this;
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         statelist = getStatelist();
     }
 
@@ -40,6 +48,21 @@ public class FireBaseHelper {
         } else {
             return _instance;
         }
+    }
+
+    public UploadTask uploadFile(String rootFolder, String subFolder, String filePath, String subType) {
+        StorageReference sref;
+        if(subType!=null) {
+            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType);
+        }
+        else
+        {
+            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder);
+        }
+
+        Uri file = Uri.fromFile(new File(filePath));
+        UploadTask uploadTask = sref.putFile(file);
+        return uploadTask;
     }
 
     public String getAdhaarPanStatusString(long status) {

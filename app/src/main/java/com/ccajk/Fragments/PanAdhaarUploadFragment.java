@@ -3,6 +3,7 @@ package com.ccajk.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +29,10 @@ import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.List;
@@ -48,24 +52,26 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     DatabaseReference dbref;
     private static final String TAG = "PanAdhaarUpload";
-    String code, fileChosed, fileChosedPath;
+    String code, fileChosed, fileChosedPath, uploadType;
     int type;
-    
+
     public PanAdhaarUploadFragment() {
 
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pan_adhaar_upload, container, false);
-        type =this.getArguments().getInt("UploadType");
+        type = this.getArguments().getInt("UploadType");
         init(view);
         return view;
     }
 
     private void init(View view) {
-        progressDialog = Helper.getInstance().getProgressDialog(this.getActivity(),"Please Wait...");
+        uploadType = (type == Helper.getInstance().UPLOAD_TYPE_PAN ?
+                FireBaseHelper.getInstance().ROOT_PAN : FireBaseHelper.getInstance().ROOT_ADHAAR);
+        progressDialog = Helper.getInstance().getProgressDialog(this.getActivity(), "Please Wait...");
         pcode = view.findViewById(R.id.image_pcode);
         pcode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         cardImage = view.findViewById(R.id.image_number);
@@ -168,12 +174,12 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void confirmSubmission() {
-        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
-        confirmDialog.setView(v);
+
+        AlertDialog.Builder confirmDialog = Helper.getInstance().getConfirmationDialog(getActivity(), v);
         loadValues(v);
-        confirmDialog.setTitle("Confirm Input Before Submission");
+
         confirmDialog.setPositiveButton("UPLOAD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -205,13 +211,8 @@ public class PanAdhaarUploadFragment extends Fragment {
     private void uploadAdhaarOrPan() {
 
         progressDialog.show();
-        if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR);
-            //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS);
-        } else {
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN);
-            //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
-        }
+        dbref = FireBaseHelper.getInstance().databaseReference.child(uploadType);
+        //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
 
         PanAdhaar panAdhaar = new PanAdhaar(code, number.getText().toString(), fileChosed, Preferences.getInstance().getPrefState(getContext()));
 
@@ -219,9 +220,8 @@ public class PanAdhaarUploadFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Request sent for upload", Toast.LENGTH_SHORT).show();
-                   /* statusref.child(code).addListenerForSingleValueEvent(new ValueEventListener() {
+                    uploadFile();
+                    /* statusref.child(code).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             count = dataSnapshot.getChildrenCount();
@@ -242,6 +242,10 @@ public class PanAdhaarUploadFragment extends Fragment {
 
                         }
                     });*/
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Unable to upload", Toast.LENGTH_SHORT).show();
+
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -252,5 +256,30 @@ public class PanAdhaarUploadFragment extends Fragment {
             }
         });
 
+    }
+
+    private void uploadFile() {
+        UploadTask uploadTask;
+
+        uploadTask = FireBaseHelper.getInstance().uploadFile(uploadType, code, fileChosedPath, null);
+
+        if (uploadTask != null) {
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(getContext(), "Unable to upload file", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onFailure: " + exception.getMessage());
+                    progressDialog.dismiss();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getContext(), "Request sent for upload", Toast.LENGTH_SHORT).show();
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                    progressDialog.dismiss();
+                }
+            });
+        }
     }
 }

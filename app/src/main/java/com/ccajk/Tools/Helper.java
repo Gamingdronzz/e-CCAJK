@@ -1,29 +1,17 @@
 
 package com.ccajk.Tools;
 
-import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -58,7 +46,7 @@ public class Helper {
             "Non Payment of Medical Allowance",
             "Non Starting of Family Pension",
             "Non Revision as per Latest CPC",
-            "Rrequest for CGIES",
+            "Request for CGIES",
             "Excess/Short Payment",
             "Enhancement of Pension on Attaining 75/80",
             "Others"
@@ -93,7 +81,6 @@ public class Helper {
     }
 
 
-
     public String[] getPensionGrievanceList() {
         return PGlist;
     }
@@ -111,6 +98,14 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
+
+
+    public AlertDialog.Builder getConfirmationDialog(Activity context,View view) {
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
+        confirmDialog.setView(view);
+        confirmDialog.setTitle("Confirm Input Before Submission");
+        return confirmDialog;
+    }
 
     class CompletionListener implements OnCompleteListener<Void> {
 
@@ -146,21 +141,18 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public ProgressDialog getProgressDialog(Context context,String message)
-    {
+    public ProgressDialog getProgressDialog(Context context, String message) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
-
         return progressDialog;
     }
 
-    public void showSnackBar(CharSequence message,View view)
-    {
-        Snackbar.make(view.findViewById(R.id.fragmentPlaceholder),message,Snackbar.LENGTH_INDEFINITE)
+    public void showSnackBar(CharSequence message, View view) {
+        Snackbar.make(view.findViewById(R.id.fragmentPlaceholder), message, Snackbar.LENGTH_INDEFINITE)
                 .setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.v(TAG,"Yes Clicked");
+                        Log.v(TAG, "Yes Clicked");
                     }
                 })
                 .show();
@@ -188,6 +180,5 @@ public class Helper {
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child("Locations").removeValue();
     }
-
 }
 

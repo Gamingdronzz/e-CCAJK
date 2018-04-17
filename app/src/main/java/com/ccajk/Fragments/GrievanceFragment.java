@@ -3,12 +3,14 @@ package com.ccajk.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +30,14 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.Date;
@@ -53,7 +61,7 @@ public class GrievanceFragment extends Fragment {
 
     String TAG = "Grievance";
     String[] list;
-    String fileChosed, fileChosedPath,code;
+    String fileChosed, fileChosedPath, code, typeofGrievance, replacedGrievance, category;
     int gtype;
 
     public GrievanceFragment() {
@@ -72,8 +80,12 @@ public class GrievanceFragment extends Fragment {
     }
 
     private void init(View view) {
+        if (gtype == Helper.getInstance().CATEGORY_PENSION)
+            category = FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION;
+        else
+            category = FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF;
 
-        progressDialog=new ProgressDialog(this.getContext());
+        progressDialog = new ProgressDialog(this.getContext());
         progressDialog.setMessage("Please Wait...");
 
         pcode = view.findViewById(R.id.image_pcode);
@@ -149,14 +161,15 @@ public class GrievanceFragment extends Fragment {
                     @Override
                     public void onFileSelected(List<File> list) {
                         for (File file : list) {
-                            if (file.length() / 1048576 > 5) {
-                                Toast.makeText(getContext(), "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
+                            if (file.length() / 1048576 > 1) {
+                                Toast.makeText(getContext(), "Please Choose a file of 1mb or less", Toast.LENGTH_SHORT).show();
                                 fileChosed = null;
                                 fileChosedPath = null;
                                 remove.setVisibility(View.GONE);
                             } else {
                                 fileChosedPath = file.getAbsolutePath();
                                 fileChosed = file.getName();
+                                Log.d(TAG, "onFileSelected: " + fileChosedPath);
                                 remove.setVisibility(View.VISIBLE);
                             }
                             filename.setText(fileChosed);
@@ -168,7 +181,10 @@ public class GrievanceFragment extends Fragment {
     }
 
     private boolean checkInput() {
-        code=pensionerCode.getText().toString();
+        code = pensionerCode.getText().toString();
+        typeofGrievance = grievanceType.getSelectedItem().toString();
+        replacedGrievance = typeofGrievance.replaceAll("/", "-");
+
         if (code.trim().isEmpty()) {
             Toast.makeText(this.getContext(), "Pensioner Code required", Toast.LENGTH_SHORT).show();
             pensionerCode.requestFocus();
@@ -186,12 +202,12 @@ public class GrievanceFragment extends Fragment {
     }
 
     private void confirmSubmission() {
-        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this.getContext());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
-        confirmDialog.setView(v);
+
+        AlertDialog.Builder confirmDialog = Helper.getInstance().getConfirmationDialog(getActivity(),v);
         loadValues(v);
-        confirmDialog.setTitle("Confirm Input Before Submission");
+
         confirmDialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -213,7 +229,7 @@ public class GrievanceFragment extends Fragment {
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
         mobNo.setText(mobNo.getText() + " " + mobileNo.getText());
         TextView grievance = v.findViewById(R.id.textview_grievance_type);
-        grievance.setText(grievance.getText() + " " + grievanceType.getSelectedItem());
+        grievance.setText(grievance.getText() + " " + typeofGrievance);
         TextView gr_by = v.findViewById(R.id.textview_grievance_by);
         gr_by.setText(gr_by.getText() + " " + grievanceSubmitedBy.getSelectedItem());
         TextView details = v.findViewById(R.id.textview_grievance_details);
@@ -225,37 +241,81 @@ public class GrievanceFragment extends Fragment {
 
     private void submitGrievance() {
         progressDialog.show();
-        DatabaseReference dbref;
-          if (gtype == Helper.getInstance().CATEGORY_PENSION) {
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION);
-            } else {
-               dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF);
-            }
+        final DatabaseReference dbref;
+        dbref = FireBaseHelper.getInstance().databaseReference.child(category);
 
-        Date date= new Date();
-        Grievance grievance= new Grievance(
+        final Grievance grievance = new Grievance(
                 code,
                 mobileNo.getText().toString(),
-                grievanceType.getSelectedItem().toString(),
+                typeofGrievance,
                 grievanceDetails.getText().toString(),
                 grievanceSubmitedBy.getSelectedItem().toString(),
                 fileChosed,
                 null,
                 Preferences.getInstance().getPrefState(getContext()),
-                0, date);
+                0, new Date());
 
-        dbref.child(code).push().setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dbref.child(code).child(replacedGrievance).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: "+ dataSnapshot);
+                if (dataSnapshot.getValue() == null) {
+                    dbref.child(code).child(replacedGrievance).setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                if (fileChosed != null) {
+                                    uploadFile();
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            }
+
+                        }
+                    });
                 } else {
-                    Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Grievance Already Submitted", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
-                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
+
+    }
+
+    private void uploadFile() {
+        UploadTask uploadTask;
+
+        uploadTask = FireBaseHelper.getInstance().uploadFile(category, code, fileChosedPath, replacedGrievance);
+
+        if (uploadTask != null) {
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(getContext(), "Unable to upload file", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onFailure: " + exception.getMessage());
+                    progressDialog.dismiss();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                    progressDialog.dismiss();
+                }
+            });
+        }
     }
 
 }
