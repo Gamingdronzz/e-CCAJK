@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin_medium"
-    android:background="@drawable/custom_layout_background"
     android:elevation="@dimen/elevation_medium"
+    android:orientation="vertical"
     android:animateLayoutChanges="true"
-    app:cardBackgroundColor="@color/colorWhite"
     >
 
 
@@ -19,9 +17,10 @@
 
         <TextView
             android:id="@+id/textview_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingRight="@dimen/padding_medium"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_medium"
+            android:paddingStart="@dimen/padding_medium"
             android:layout_marginTop="@dimen/margin_medium"
             android:text="TextView"
             android:textStyle="bold"
@@ -32,7 +31,7 @@
             android:id="@+id/textview_designation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_medium"
+            android:paddingStart="@dimen/padding_medium"
             android:text="TextView"
             android:textStyle="italic"
             android:textColor="@color/colorBlack"
@@ -41,51 +40,50 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:id="@+id/expande_area_contact"
+            android:id="@+id/expandable_area_contact"
+            android:animateLayoutChanges="true"
+            android:padding="@dimen/padding_medium"
             android:layout_height="wrap_content">
             <Button
                 android:id="@+id/button_email"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/padding_medium"
-                android:paddingStart="@dimen/padding_medium"
-                android:background="@android:color/transparent"
                 android:text="TextView"
+                android:layout_marginBottom="@dimen/margin_medium"
+                android:background="@drawable/custom_button"
                 android:textAlignment="textStart"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_15"
                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/button_office"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_medium"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:text="TextView"
+                    android:layout_marginRight="@dimen/margin_medium"
+                    android:background="@drawable/custom_button"
                     android:textAlignment="textStart"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_15"
                     />
 
                 <Button
                     android:id="@+id/textview_mobile"
                     android:layout_width="0dp"
+                    android:layout_marginLeft="@dimen/margin_medium"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_medium"
-                    android:layout_marginStart="@dimen/margin_medium"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/custom_button"
                     android:text="TextView"
                     android:textAlignment="textStart"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_15"
                     />
 
@@ -101,4 +99,9 @@
     android:layout_marginEnd="@dimen/margin_large"
     android:background="@color/colorLightGray"></View>-->
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:background="@color/colorGray"></View>
 </LinearLayout>
