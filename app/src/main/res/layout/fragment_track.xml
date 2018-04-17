@@ -1,16 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_medium"
-    android:orientation="vertical"
     tools:context="com.ccajk.Fragments.TrackFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -30,6 +28,24 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <CheckBox
+            android:id="@+id/checkBoxPension"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_xxlarge"
+            android:text="Pension Grievance"
+            android:textSize="@dimen/text_20" />
+
+        <CheckBox
+            android:id="@+id/checkBoxGPF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
+            android:text="GPF Grievance"
+            android:textSize="@dimen/text_20" />
 
     </LinearLayout>
 
@@ -37,9 +53,11 @@
         android:id="@+id/btn_check_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-
+        android:background="@drawable/custom_button"
+        android:textSize="@dimen/text_20"
         android:text="Track" />
 
-</LinearLayout>
+
+</RelativeLayout>
