@@ -27,6 +27,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.ccajk.Adapter.RecyclerViewAdapterContacts;
 import com.ccajk.Listeners.ClickListener;
@@ -79,12 +80,22 @@ public class BrowserFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_refresh_link:
+                if(progressBar.getVisibility()== View.GONE)
+                webView.reload();
+                break;
+            default:
+                break;
+        }
+
+        return true;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_browser,menu);
     }
 
     private void setupWebview() {
@@ -134,6 +145,7 @@ public class BrowserFragment extends Fragment {
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                setSubtitle(view.getTitle());
                 progressBar.setProgress(100);
                 progressBar.setVisibility(View.GONE);
 
