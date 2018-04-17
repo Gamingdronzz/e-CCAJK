@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
 import com.ccajk.Activity.BrowserActivity;
+import com.ccajk.Activity.HomeActivity;
 import com.ccajk.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -47,7 +48,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         //imageButtonLogout = view.findViewById(R.id.logout);
         //imageButtonLogout.setBackground(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_logout_24dp));
 
-       // Helper.getInstance().addLocations(300);
+        // Helper.getInstance().addLocations(300);
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
         builder.append(str1);
@@ -60,8 +61,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
-                intent.putExtra("Text",getString(R.string.welcome_full));
-                intent.putExtra("Title","Welcome to CCA JK");
+                intent.putExtra("Text", getString(R.string.welcome_full));
+                intent.putExtra("Title", "Welcome to CCA JK");
                 startActivity(intent);
             }
         });
@@ -79,8 +80,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
-                intent.putExtra("Text",getString(R.string.from_cca_desk));
-                intent.putExtra("Title","From CCA's Desk");
+                intent.putExtra("Text", getString(R.string.from_cca_desk));
+                intent.putExtra("Title", "From CCA's Desk");
                 startActivity(intent);
             }
         });
@@ -104,22 +105,37 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void loadWebSite(String name) {
-        Intent intent = new Intent(HomeFragment.this.getActivity(), BrowserActivity.class);
+
+        BrowserFragment browserFragment = new BrowserFragment();
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+
+
+        //Intent intent = new Intent(HomeFragment.this.getActivity(), BrowserActivity.class);
+        Bundle bundle = new Bundle();
         switch (name) {
             case "Digital India":
-                intent.putExtra("url", "http://www.digitalindia.gov.in/");
-                intent.putExtra("title", "Digital India");
-                startActivity(intent);
+//                intent.putExtra("url", "http://www.digitalindia.gov.in/");
+//                intent.putExtra("title", "Digital India");
+//                startActivity(intent);
+                bundle.putString("url", "http://www.digitalindia.gov.in");
+                browserFragment.setArguments(bundle);
+                homeActivity.ShowFragment(name, browserFragment);
                 break;
             case "Swachh Bharat Abhiyan":
-                intent.putExtra("url", "https://swachhbharat.mygov.in");
-                intent.putExtra("title", "Swachh Bharat");
-                startActivity(intent);
+//                intent.putExtra("url", "https://swachhbharat.mygov.in");
+//                intent.putExtra("title", "Swachh Bharat");
+//                startActivity(intent);
+                bundle.putString("url", "https://swachhbharat.mygov.in");
+                browserFragment.setArguments(bundle);
+                homeActivity.ShowFragment(name, browserFragment);
                 break;
             case "Controller of Communication Accounts":
-                intent.putExtra("url", "http://ccajk.gov.in/");
-                intent.putExtra("title", "CCA J&K");
-                startActivity(intent);
+//                intent.putExtra("url", "http://ccajk.gov.in/");
+//                intent.putExtra("title", "CCA J&K");
+//                startActivity(intent);
+                bundle.putString("url", "http://ccajk.gov.in");
+                browserFragment.setArguments(bundle);
+                homeActivity.ShowFragment(name, browserFragment);
                 break;
         }
 

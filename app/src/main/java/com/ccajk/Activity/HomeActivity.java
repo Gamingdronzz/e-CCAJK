@@ -31,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
@@ -104,8 +105,7 @@ public class HomeActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
 
-        Fragment fragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+        ShowFragment("Home", new HomeFragment());
 
     }
 
@@ -124,9 +124,17 @@ public class HomeActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else if (f instanceof HomeFragment) {
             doExit();
+        } else if (f instanceof BrowserFragment) {
+            if(((BrowserFragment) f).canGoBack())
+            {
+                ((BrowserFragment) f).goBack();
+            }
+            else
+            {
+                ShowFragment("Home", new HomeFragment());
+            }
         } else {
-            getSupportActionBar().setTitle("Home");
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, new HomeFragment()).commit();
+            ShowFragment("Home", new HomeFragment());
         }
     }
 
@@ -149,13 +157,13 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }*/
     @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi, shortLabel = "HotSpot Locations")
-    public void ShowHotSpotLocations()
-    {
-        ShowFragment("Wifi Hotspot Locations",new HotspotLocationFragment());
+    public void ShowHotSpotLocations() {
+        ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment());
     }
-    private void ShowFragment(String title,Fragment fragment)
-    {
+
+    public void ShowFragment(String title, Fragment fragment) {
         getSupportActionBar().setTitle(title);
+        getSupportActionBar().setSubtitle("");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
     }
 
@@ -168,19 +176,24 @@ public class HomeActivity extends AppCompatActivity
         Bundle bundle;
         switch (id) {
             case R.id.navmenu_home:
-                ShowFragment("Home",new HomeFragment());
+                ShowFragment("Home", new HomeFragment());
                 break;
             case R.id.navmenu_contact_us:
-                ShowFragment("Contact Us",new ContactUsFragment());
+                ShowFragment("Contact Us", new ContactUsFragment());
                 break;
             case R.id.navmenu_hotspot_locator:
-                ShowFragment("Wifi Hotspot Locations",new HotspotLocationFragment());
+                ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment());
                 break;
             case R.id.navmenu_rti:
-                Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
-                intent.putExtra("url", "https://rtionline.gov.in/");
-                intent.putExtra("title", "RTI");
-                startActivity(intent);
+//                Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
+//                intent.putExtra("url", "https://rtionline.gov.in/");
+//                intent.putExtra("title", "RTI");
+//                startActivity(intent);
+                bundle = new Bundle();
+                bundle.putString("url", "https://rtionline.gov.in/");
+                fragment = new BrowserFragment();
+                fragment.setArguments(bundle);
+                ShowFragment("RTI", fragment);
                 break;
            /* case R.id.navmenu_statistics:
                 getSupportActionBar().setTitle("Statistics");
@@ -188,7 +201,7 @@ public class HomeActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
                 break;*/
             case R.id.navmenu_inspection:
-                ShowFragment("Inspection",new InspectionFragment());
+                ShowFragment("Inspection", new InspectionFragment());
                 break;
             case R.id.navmenu_pension:
                 bundle = new Bundle();
@@ -203,14 +216,14 @@ public class HomeActivity extends AppCompatActivity
                 bundle.putInt("Category", Helper.getInstance().CATEGORY_GPF);
                 fragment = new GrievanceFragment();
                 fragment.setArguments(bundle);
-                ShowFragment("GPF Grievance Registeration",fragment);
+                ShowFragment("GPF Grievance Registeration", fragment);
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
                 fragment.setArguments(bundle);
-                ShowFragment("Upload Aadhar",fragment);
+                ShowFragment("Upload Aadhar", fragment);
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
@@ -218,10 +231,10 @@ public class HomeActivity extends AppCompatActivity
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
                 getSupportActionBar().setTitle("Upload PAN");
                 fragment.setArguments(bundle);
-                ShowFragment("Upload PAN",fragment);
+                ShowFragment("Upload PAN", fragment);
                 break;
             case R.id.navmenu_tracking:
-                ShowFragment("Track Grievance",new TrackFragment());
+                ShowFragment("Track Grievance", new TrackFragment());
                 break;
             case R.id.navmenu_login:
                 showLoginPopup();
@@ -374,7 +387,7 @@ public class HomeActivity extends AppCompatActivity
         Log.d("onActivityResult()", Integer.toString(resultCode));
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
         for (Fragment frag : allFragments) {
-                frag.onActivityResult(requestCode, resultCode, data);
+            frag.onActivityResult(requestCode, resultCode, data);
         }
         return;
     }
@@ -386,8 +399,8 @@ public class HomeActivity extends AppCompatActivity
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            Log.d(TAG, "onRequestPermissionsResult: "+frag.toString());
-            frag.onRequestPermissionsResult(requestCode,permissions,grantResults);
+            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
