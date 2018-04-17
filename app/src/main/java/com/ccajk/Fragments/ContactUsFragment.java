@@ -5,23 +5,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterContacts;
-import com.ccajk.Listeners.ClickListener;
-import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
 import com.ccajk.R;
 import com.ccajk.Tools.Preferences;
 
 import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,8 +47,9 @@ public class ContactUsFragment extends Fragment {
 
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
         recyclerView.setAdapter(adapterContacts);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        /*recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
 
@@ -72,14 +68,14 @@ public class ContactUsFragment extends Fragment {
                     expandedPosition = position;
                     Log.d(TAG, "onClick: Changing expanded of " + position + "to " + contact.isExpanded());
                     adapterContacts.notifyDataSetChanged();
-                }
+          }
             }
 
             @Override
             public void onLongClick(View view, int position) {
 
             }
-        }));
+        }));*/
 
         return view;
     }
