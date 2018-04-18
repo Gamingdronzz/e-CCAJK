@@ -8,17 +8,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import com.ccajk.CustomObjects.CardDrawerLayout;
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
@@ -35,24 +36,30 @@ import java.util.List;
 
 import shortbread.Shortcut;
 
-public class HomeActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String TAG = "Home";
+    String TAG = "MainActivity";
     FrameLayout frameLayout;
     NavigationView navigationView;
+    CardDrawerLayout drawerLayout;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_main);
+        setupToolbar();
+        bindViews();
+        init();
 
-        frameLayout = findViewById(R.id.fragmentPlaceholder);
+        ShowFragment("Home", new HomeFragment(), null);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name) {
+    }
+
+    private void init()
+    {
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -66,11 +73,14 @@ public class HomeActivity extends AppCompatActivity
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             }
         };
-        drawer.addDrawerListener(actionBarDrawerToggle);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        drawerLayout.setViewScale(Gravity.START, 0.85f);
+        drawerLayout.setRadius(Gravity.START, 35);
+        drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
 
-        navigationView = findViewById(R.id.nav_view);
+
         if (Preferences.getInstance().getSignedIn(this)) {
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
             navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
@@ -79,11 +89,21 @@ public class HomeActivity extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
         }
         navigationView.setNavigationItemSelectedListener(this);
-
-        ShowFragment("Home", new HomeFragment(), null);
-
     }
 
+    private void bindViews()
+    {
+        frameLayout = findViewById(R.id.fragmentPlaceholder);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+    }
+
+    private void setupToolbar()
+    {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
 
     @Override
     protected void onStop() {
@@ -93,9 +113,9 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else if (f instanceof HomeFragment) {
             doExit();
         } else if (f instanceof BrowserFragment) {
@@ -157,7 +177,7 @@ public class HomeActivity extends AppCompatActivity
                 ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment(), null);
                 break;
             case R.id.navmenu_rti:
-                /*Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
+                /*Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
                 intent.putExtra("url", "https://rtionline.gov.in/");
                 intent.putExtra("title", "RTI");
                 startActivity(intent);
@@ -204,8 +224,7 @@ public class HomeActivity extends AppCompatActivity
                 logout();
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -219,7 +238,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void doExit() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                HomeActivity.this, R.style.MyAlertDialogStyle);
+                MainActivity.this, R.style.MyAlertDialogStyle);
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

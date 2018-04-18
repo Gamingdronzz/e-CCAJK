@@ -1,14 +1,10 @@
 package com.ccajk.Activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatImageView;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ccajk.R;
@@ -69,10 +65,10 @@ public class SplashActivity extends AppCompatActivity {
     private void LoadNextActivity() {
         Intent intent = new Intent();
         /*if (Preferences.getInstance().getSignedIn(this))
-            intent.setClass(getApplicationContext(), HomeActivity.class);
+            intent.setClass(getApplicationContext(), MainActivity.class);
         else
             intent.setClass(getApplicationContext(), RegOrLoginActivity.class);*/
-        intent.setClass(getApplicationContext(), HomeActivity.class);
+        intent.setClass(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
     }

@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
-import com.ccajk.Activity.HomeActivity;
+import com.ccajk.Activity.MainActivity;
 import com.ccajk.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void loadWebSite(String name) {
 
         BrowserFragment browserFragment = new BrowserFragment();
-        HomeActivity homeActivity = (HomeActivity) getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
 
 
         //Intent intent = new Intent(HomeFragment.this.getActivity(), BrowserActivity.class);
@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //                startActivity(intent);
                 bundle.putString("url", "http://www.digitalindia.gov.in");
                 //browserFragment.setArguments(bundle);
-                homeActivity.ShowFragment(name, browserFragment,bundle);
+                mainActivity.ShowFragment(name, browserFragment,bundle);
                 break;
             case "Swachh Bharat Abhiyan":
 //                intent.putExtra("url", "https://swachhbharat.mygov.in");
@@ -126,7 +126,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //                startActivity(intent);
                 bundle.putString("url", "https://swachhbharat.mygov.in");
                 //browserFragment.setArguments(bundle);
-                homeActivity.ShowFragment(name, browserFragment,bundle);
+                mainActivity.ShowFragment(name, browserFragment,bundle);
                 break;
             case "Controller of Communication Accounts":
 //                intent.putExtra("url", "http://ccajk.gov.in/");
@@ -134,7 +134,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //                startActivity(intent);
                 bundle.putString("url", "http://ccajk.gov.in");
                 //browserFragment.setArguments(bundle);
-                homeActivity.ShowFragment(name, browserFragment,bundle);
+                mainActivity.ShowFragment(name, browserFragment,bundle);
                 break;
         }
 

@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ccajk.Activity.HomeActivity;
+import com.ccajk.Activity.MainActivity;
 import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
 
@@ -55,7 +55,7 @@ public class AadharPanCheckFragment extends Fragment {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), HomeActivity.class);
+                Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.putExtra("UploadType", type);
                 intent.putExtra("PensionerCode", pcode.getText().toString());
                 startActivity(intent);

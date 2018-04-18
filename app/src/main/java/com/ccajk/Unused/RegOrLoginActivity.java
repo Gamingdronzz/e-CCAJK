@@ -7,7 +7,7 @@ import android.support.v7.content.res.AppCompatResources;
 import android.view.View;
 import android.widget.Button;
 
-import com.ccajk.Activity.HomeActivity;
+import com.ccajk.Activity.MainActivity;
 import com.ccajk.R;
 
 public class RegOrLoginActivity extends AppCompatActivity {
@@ -41,7 +41,7 @@ public class RegOrLoginActivity extends AppCompatActivity {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newActivity(HomeActivity.class);
+                newActivity(MainActivity.class);
                 finish();
             }
         });
