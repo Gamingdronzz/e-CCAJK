@@ -28,6 +28,7 @@ import com.ccajk.Models.Grievance;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -203,7 +204,7 @@ public class GrievanceFragment extends Fragment {
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
 
-        AlertDialog.Builder confirmDialog = Helper.getInstance().getConfirmationDialog(getActivity(),v);
+        AlertDialog.Builder confirmDialog = PopUpWindows.getInstance().getConfirmationDialog(getActivity(),v);
         loadValues(v);
 
         confirmDialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {

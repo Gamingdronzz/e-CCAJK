@@ -1,12 +1,10 @@
 
 package com.ccajk.Tools;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
@@ -98,14 +96,6 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
-
-
-    public AlertDialog.Builder getConfirmationDialog(Activity context,View view) {
-        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
-        confirmDialog.setView(view);
-        confirmDialog.setTitle("Confirm Input Before Submission");
-        return confirmDialog;
-    }
 
     class CompletionListener implements OnCompleteListener<Void> {
 

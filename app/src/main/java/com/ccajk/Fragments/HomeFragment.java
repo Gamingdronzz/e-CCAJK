@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
-import com.ccajk.Activity.BrowserActivity;
 import com.ccajk.Activity.HomeActivity;
 import com.ccajk.R;
 import com.daimajia.slider.library.SliderLayout;
@@ -118,24 +117,24 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //                intent.putExtra("title", "Digital India");
 //                startActivity(intent);
                 bundle.putString("url", "http://www.digitalindia.gov.in");
-                browserFragment.setArguments(bundle);
-                homeActivity.ShowFragment(name, browserFragment);
+                //browserFragment.setArguments(bundle);
+                homeActivity.ShowFragment(name, browserFragment,bundle);
                 break;
             case "Swachh Bharat Abhiyan":
 //                intent.putExtra("url", "https://swachhbharat.mygov.in");
 //                intent.putExtra("title", "Swachh Bharat");
 //                startActivity(intent);
                 bundle.putString("url", "https://swachhbharat.mygov.in");
-                browserFragment.setArguments(bundle);
-                homeActivity.ShowFragment(name, browserFragment);
+                //browserFragment.setArguments(bundle);
+                homeActivity.ShowFragment(name, browserFragment,bundle);
                 break;
             case "Controller of Communication Accounts":
 //                intent.putExtra("url", "http://ccajk.gov.in/");
 //                intent.putExtra("title", "CCA J&K");
 //                startActivity(intent);
                 bundle.putString("url", "http://ccajk.gov.in");
-                browserFragment.setArguments(bundle);
-                homeActivity.ShowFragment(name, browserFragment);
+                //browserFragment.setArguments(bundle);
+                homeActivity.ShowFragment(name, browserFragment,bundle);
                 break;
         }
 

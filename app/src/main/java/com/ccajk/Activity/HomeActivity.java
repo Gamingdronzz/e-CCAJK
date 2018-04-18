@@ -1,7 +1,5 @@
 package com.ccajk.Activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,22 +12,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
 
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
@@ -38,26 +26,21 @@ import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
-import com.ccajk.Fragments.TrackFragment;
-import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 import shortbread.Shortcut;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ILoginProcessor {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     String TAG = "Home";
     FrameLayout frameLayout;
     NavigationView navigationView;
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +50,7 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         frameLayout = findViewById(R.id.fragmentPlaceholder);
-       /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-*/
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name) {
             @Override
@@ -105,13 +80,12 @@ public class HomeActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
 
-        ShowFragment("Home", new HomeFragment());
+        ShowFragment("Home", new HomeFragment(), null);
 
     }
 
 
     @Override
-
     protected void onStop() {
         super.onStop();
     }
@@ -125,16 +99,13 @@ public class HomeActivity extends AppCompatActivity
         } else if (f instanceof HomeFragment) {
             doExit();
         } else if (f instanceof BrowserFragment) {
-            if(((BrowserFragment) f).canGoBack())
-            {
+            if (((BrowserFragment) f).canGoBack()) {
                 ((BrowserFragment) f).goBack();
-            }
-            else
-            {
-                ShowFragment("Home", new HomeFragment());
+            } else {
+                ShowFragment("Home", new HomeFragment(), null);
             }
         } else {
-            ShowFragment("Home", new HomeFragment());
+            ShowFragment("Home", new HomeFragment(), null);
         }
     }
 
@@ -158,12 +129,13 @@ public class HomeActivity extends AppCompatActivity
     }*/
     @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi, shortLabel = "HotSpot Locations")
     public void ShowHotSpotLocations() {
-        ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment());
+        ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment(), null);
     }
 
-    public void ShowFragment(String title, Fragment fragment) {
+    public void ShowFragment(String title, Fragment fragment, Bundle bundle) {
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setSubtitle("");
+        fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
     }
 
@@ -176,68 +148,57 @@ public class HomeActivity extends AppCompatActivity
         Bundle bundle;
         switch (id) {
             case R.id.navmenu_home:
-                ShowFragment("Home", new HomeFragment());
+                ShowFragment("Home", new HomeFragment(), null);
                 break;
             case R.id.navmenu_contact_us:
-                ShowFragment("Contact Us", new ContactUsFragment());
+                ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;
             case R.id.navmenu_hotspot_locator:
-                ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment());
+                ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment(), null);
                 break;
             case R.id.navmenu_rti:
-//                Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
-//                intent.putExtra("url", "https://rtionline.gov.in/");
-//                intent.putExtra("title", "RTI");
-//                startActivity(intent);
+                /*Intent intent = new Intent(HomeActivity.this, BrowserActivity.class);
+                intent.putExtra("url", "https://rtionline.gov.in/");
+                intent.putExtra("title", "RTI");
+                startActivity(intent);
+                */
+                fragment = new BrowserFragment();
                 bundle = new Bundle();
                 bundle.putString("url", "https://rtionline.gov.in/");
-                fragment = new BrowserFragment();
-                fragment.setArguments(bundle);
-                ShowFragment("RTI", fragment);
+                ShowFragment("RTI", fragment, bundle);
                 break;
-           /* case R.id.navmenu_statistics:
-                getSupportActionBar().setTitle("Statistics");
-                fragment = new StatisticsFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentPanel, fragment).commit();
-                break;*/
             case R.id.navmenu_inspection:
-                ShowFragment("Inspection", new InspectionFragment());
+                ShowFragment("Inspection", new InspectionFragment(), null);
                 break;
             case R.id.navmenu_pension:
+                fragment = new GrievanceFragment();
                 bundle = new Bundle();
                 bundle.putInt("Category", Helper.getInstance().CATEGORY_PENSION);
-                getSupportActionBar().setTitle("Pension Grievance Registeration");
-                fragment = new GrievanceFragment();
-                fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+                ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
+                fragment = new GrievanceFragment();
                 bundle = new Bundle();
                 bundle.putInt("Category", Helper.getInstance().CATEGORY_GPF);
-                fragment = new GrievanceFragment();
-                fragment.setArguments(bundle);
-                ShowFragment("GPF Grievance Registeration", fragment);
+                ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
-                fragment.setArguments(bundle);
-                ShowFragment("Upload Aadhar", fragment);
+                ShowFragment("Upload Aadhar", fragment, bundle);
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
-                getSupportActionBar().setTitle("Upload PAN");
-                fragment.setArguments(bundle);
-                ShowFragment("Upload PAN", fragment);
+                ShowFragment("Upload PAN", fragment, bundle);
                 break;
             case R.id.navmenu_tracking:
-                ShowFragment("Track Grievance", new TrackFragment());
+                PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_login:
-                showLoginPopup();
+                PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
                 break;
             case R.id.navmenu_logout:
                 logout();
@@ -252,57 +213,9 @@ public class HomeActivity extends AppCompatActivity
         Preferences.getInstance().clearPrefs(this);
         navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
         navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
-
-        getSupportActionBar().setTitle("Home");
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, new HomeFragment()).commit();
+        ShowFragment("Home", new HomeFragment(), null);
     }
 
-    private void showLoginPopup() {
-        ImageView ppo, pwd;
-        ImageButton close;
-        final AutoCompleteTextView autoCompleteTextView;
-        final EditText editText;
-        final View mProgressView;
-
-        View popupView = LayoutInflater.from(HomeActivity.this).inflate(R.layout.dialog_login, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
-        ppo = popupView.findViewById(R.id.image_ppo);
-        ppo.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_person_black_24dp));
-        pwd = popupView.findViewById(R.id.image_pwd);
-        pwd.setImageDrawable(AppCompatResources.getDrawable(HomeActivity.this, R.drawable.ic_password));
-        autoCompleteTextView = popupView.findViewById(R.id.ppo);
-        editText = popupView.findViewById(R.id.password);
-        mProgressView = popupView.findViewById(R.id.login_progress);
-        close = popupView.findViewById(R.id.close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        Button signin = popupView.findViewById(R.id.sign_in_button);
-        signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RequestLogin(autoCompleteTextView.getText().toString(), editText.getText().toString());
-
-                mProgressView.setVisibility(View.VISIBLE);
-                mProgressView.animate().setDuration(2000).alpha(1).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mProgressView.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
-
-        popupWindow.setFocusable(true);
-        popupWindow.update();
-        popupWindow.showAtLocation(frameLayout, Gravity.CENTER, 0, 0);
-
-    }
 
     private void doExit() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -317,68 +230,6 @@ public class HomeActivity extends AppCompatActivity
                 .setMessage("Do you want to exit?")
                 .setTitle("CCA JK")
                 .show();
-    }
-
-
-    @Override
-    public void RequestLogin(final String pensionerCode, final String password) {
-
-        changePrefrences(pensionerCode, "Name");
-        /*DatabaseReference dbref = databaseReference.child("user").child(pensionerCode);
-        Log.d(TAG, "RequestLogin: ");
-        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                if (dataSnapshot == null) {
-                    OnUserNotExist();
-                }
-                else if (dataSnapshot != null) {
-                    if(dataSnapshot.child("password").exists()) {
-                        String dbpassword = dataSnapshot.child("password").getValue().toString();
-                        if (dbpassword.equals(password)) {
-                            OnLoginSuccesful(dataSnapshot);
-                        } else {
-                            OnLoginFailure();
-                        }
-                    }
-                    else
-                    {
-                        OnLoginFailure();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "Error");
-                OnUserNotExist();
-            }
-        });*/
-    }
-
-    @Override
-    public void OnLoginSuccesful(DataSnapshot dataSnapshot) {
-        String username = dataSnapshot.child("name").getValue().toString();
-        String ppo = dataSnapshot.child("emp_id").getValue().toString();
-        changePrefrences(ppo, username);
-    }
-
-    @Override
-    public void OnLoginFailure() {
-
-    }
-
-    @Override
-    public void OnUserNotExist() {
-        Log.d(TAG, "User does not exist");
-    }
-
-    private void changePrefrences(String ppo, String user) {
-        Preferences.getInstance().setSignedIn(this, true);
-        Preferences.getInstance().setPpo(this, ppo);
-        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
-        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
     }
 
 

@@ -63,7 +63,7 @@
                     android:id="@+id/autocomplete_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="number"
+                    android:hint="Number"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
@@ -108,7 +108,6 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/custom_button"
         android:text="UPLOAD"
-
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18" />
 

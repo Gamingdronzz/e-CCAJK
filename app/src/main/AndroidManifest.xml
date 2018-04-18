@@ -13,12 +13,12 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
+        android:name=".App.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".App.AppController"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activity.SplashActivity"
@@ -63,6 +63,7 @@
         <activity android:name=".Unused.PanAdhaarUploadActivity" />
         <activity android:name=".Activity.AboutUsActivity" />
         <activity android:name=".Activity.BrowserActivity" />
+        <activity android:name=".Activity.TrackResultActivity"></activity>
     </application>
 
 </manifest>

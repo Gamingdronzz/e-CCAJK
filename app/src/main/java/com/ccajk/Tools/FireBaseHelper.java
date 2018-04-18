@@ -63,16 +63,16 @@ public class FireBaseHelper {
         return uploadTask;
     }
 
-    public String getAdhaarPanStatusString(long status) {
+    public String StatusString(long status) {
         switch ((int) status) {
             case 0:
-                return "Request Submitted";
+                return "Grievance Submitted";
             case 1:
-                return "Request Processing";
+                return "Grievance resolution in process";
             case 2:
-                return "Updation Failed";
+                return "Unable to resolve";
             case 3:
-                return "Updation Successful";
+                return "Grievance resolved";
         }
         return null;
     }

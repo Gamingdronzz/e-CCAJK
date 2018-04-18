@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.ccajk.Adapter.RecyclerViewAdapterTracking;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +22,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
     DataSnapshot ds;
     TextView textView;
     RecyclerView recyclerView;
-    RecyclerViewAdapterHistory historyAdapter;
+    RecyclerViewAdapterTracking historyAdapter;
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     ArrayList<PanAdhaarStatus> panAdhaarStatusArrayList = new ArrayList<>();
     DatabaseReference dbref;
@@ -43,7 +44,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
-        historyAdapter = new RecyclerViewAdapterHistory(panAdhaarStatusArrayList);
+        //historyAdapter = new RecyclerViewAdapterTracking(panAdhaarStatusArrayList);
         recyclerView.setAdapter(historyAdapter);
         getHistory();
         Log.d(TAG, "init: " + panAdhaarStatusArrayList);

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:gravity="center_vertical"
-
     android:background="#dd000000"
     android:orientation="vertical">
 
