@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,32 +75,25 @@ public class InspectionFragment extends Fragment {
 
     private void init(View view) {
         textChoose = view.findViewById(R.id.textview_choose);
+        textChoose.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp,0,0);
         textChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showImageChooser();
             }
         });
-//        choose = view.findViewById(R.id.button_choose);
-//        choose.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_circle_black_24dp));
-//        choose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showImageChooser();
-//            }
-//        });
 
         textLocation = view.findViewById(R.id.textview_location);
-
-//        location = view.findViewById(R.id.button_location);
-//        location.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_location_black_24dp));
+        textLocation.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_add_location_black_24dp,0,R.drawable.ic_refresh_black_24dp,0);
         textLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocationCoordinates();
             }
         });
+
         upload = view.findViewById(R.id.button_upload);
+        upload.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_file_upload_black_24dp, 0, 0);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +107,7 @@ public class InspectionFragment extends Fragment {
                 }
             }
         });
-        //buttonUpload.setCompoundDrawablesWithIntrinsicBounds(null, AppCompatResources.getDrawable(getContext(), R.drawable.ic_file_upload_black_24dp), null, null);
+
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -130,8 +122,8 @@ public class InspectionFragment extends Fragment {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         locationManager = new LocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
-        progressDialog = new ProgressDialog(view.getContext());
-        progressDialog.setMessage("Getting Current Location Coordinates\nPlease Wait...");
+        progressDialog = Helper.getInstance().getProgressDialog(view.getContext(),
+                "Getting Current Location Coordinates\nPlease Wait...");
     }
 
     private void uploadInspectionDataToCloud()
