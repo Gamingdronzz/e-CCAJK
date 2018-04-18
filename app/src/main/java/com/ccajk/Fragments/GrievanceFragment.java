@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +59,7 @@ public class GrievanceFragment extends Fragment {
     Spinner inputType, inputSubmittedBy;
     Button submit, buttonChooseFile;
     ImageButton buttonRemove;
-    ProgressDialog progressDialog;
+    PopupWindow progressDialog;
 
     ArrayList<GrievanceType> list = new ArrayList<>();
     String TAG = "Grievance";
@@ -81,7 +83,7 @@ public class GrievanceFragment extends Fragment {
 
     private void init(View view) {
 
-        progressDialog = Helper.getInstance().getProgressDialog(getContext(), "Please wait...");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
 
         ImageView imagePensionerCode = view.findViewById(R.id.image_pcode);
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
@@ -234,7 +236,7 @@ public class GrievanceFragment extends Fragment {
 
 
     private void submitGrievance() {
-        progressDialog.show();
+        progressDialog.showAtLocation(getView(), Gravity.CENTER,0,0);
         final DatabaseReference dbref;
         dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
 

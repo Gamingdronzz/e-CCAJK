@@ -1,10 +1,18 @@
 package com.ccajk.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
@@ -28,7 +36,8 @@ public class TrackResultActivity extends AppCompatActivity {
     RecyclerViewAdapterTracking adapterTracking;
     DatabaseReference dbref;
     String pensionerCode;
-    ProgressDialog progressDialog;
+    PopupWindow progressDialog;
+    final String TAG = "Track";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +48,16 @@ public class TrackResultActivity extends AppCompatActivity {
     }
 
     private void init() {
-        progressDialog = Helper.getInstance().getProgressDialog(this, "Please Wait...");
-        progressDialog.show();
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Please Wait...");
+        if(progressDialog == null)
+        {
+            Log.d(TAG, "init: null");
+        }
+        else
+        {
+            progressDialog.showAtLocation(findViewById(R.id.parent_track_result), Gravity.CENTER,0,0);
+        }
+
         dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("pensionerCode");
         grievances = new ArrayList<>();
@@ -88,7 +105,6 @@ public class TrackResultActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (grievances.size() == 0)
                             textView.setText("No Grievances Registered");
-                        progressDialog.dismiss();
                     }
 
                     @Override

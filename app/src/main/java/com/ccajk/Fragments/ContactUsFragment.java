@@ -3,6 +3,7 @@ package com.ccajk.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,11 +24,10 @@ import java.util.ArrayList;
  */
 public class ContactUsFragment extends Fragment {
 
-    TextView textView;
+    AppCompatTextView textViewOfficeAddress,textviewHeadingOfficeAddress;
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
-    private int expandedPosition = -1;
 
     public ContactUsFragment() {
         // Required empty public constructor
@@ -39,16 +39,27 @@ public class ContactUsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_us, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerview_contacts);
-        textView = view.findViewById(R.id.general);
+        bindViews(view);
+        init();
+        return view;
+    }
 
-        textView.setText(getGeneralText(Preferences.getInstance().getPrefState(getContext())));
+    private void init()
+    {
         getContactsList(Preferences.getInstance().getPrefState(getContext()));
 
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
         recyclerView.setAdapter(adapterContacts);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+
+        textviewHeadingOfficeAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ManageOfficeAddress();
+            }
+        });
+        ManageOfficeAddress();
         /*recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -76,8 +87,31 @@ public class ContactUsFragment extends Fragment {
 
             }
         }));*/
+    }
 
-        return view;
+    private boolean ManageOfficeAddress()
+    {
+        if(textViewOfficeAddress.getVisibility() == View.GONE)
+        {
+
+            textViewOfficeAddress.setVisibility(View.VISIBLE);
+            textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
+            return false;
+        }
+        else
+        {
+            textViewOfficeAddress.setVisibility(View.GONE);
+            textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_down_black_24dp,0);
+            return true;
+        }
+    }
+
+    private void bindViews(View view)
+    {
+        recyclerView = view.findViewById(R.id.recyclerview_contacts);
+        textViewOfficeAddress = view.findViewById(R.id.textview_office_address);
+        textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
+        textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getPrefState(getContext())));
     }
 
     private String getGeneralText(String prefState) {

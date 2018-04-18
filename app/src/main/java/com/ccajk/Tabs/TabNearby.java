@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +61,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private final String TAG = "Nearby";
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
     IndicatorSeekBar seekBar;
-    ProgressDialog progressDialog;
+    PopupWindow progressDialog;
     LocationManager locationManager;
     MapsHelper mapsHelper;
 
@@ -103,7 +104,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         locationManager = new LocationManager(this,mLocationCallback,mFusedLocationClient,mLocationRequest);
         mapsHelper = new MapsHelper(view.getContext());
         locationModels = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getPrefState(getContext()));
-        progressDialog = Helper.getInstance().getProgressDialog(view.getContext(), "");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
 
         seekBar = view.findViewById(R.id.seekBar);
         seekBar.getBuilder()

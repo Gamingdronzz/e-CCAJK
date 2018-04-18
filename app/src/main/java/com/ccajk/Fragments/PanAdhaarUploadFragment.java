@@ -13,12 +13,14 @@ import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +50,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     TextView textViewFileName;
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
-    ProgressDialog progressDialog;
+    PopupWindow progressDialog;
 
     DatabaseReference dbref;
     private static final String TAG = "PanAdhaarUpload";
@@ -70,7 +72,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void init(View view) {
 
-        progressDialog = Helper.getInstance().getProgressDialog(this.getActivity(), "Please Wait...");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
 
         ImageView imagePensionerCode = view.findViewById(R.id.image_pcode);
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
@@ -208,7 +210,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void uploadAdhaarOrPan() {
 
-        progressDialog.show();
+        progressDialog.showAtLocation(getView(), Gravity.CENTER,0,0);
         dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
 

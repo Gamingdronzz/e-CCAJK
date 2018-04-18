@@ -13,10 +13,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.ccajk.R;
@@ -57,7 +59,7 @@ public class InspectionFragment extends Fragment {
     FusedLocationProviderClient mFusedLocationClient;
     LocationCallback mLocationCallback;
     LocationRequest mLocationRequest;
-    ProgressDialog progressDialog;
+    PopupWindow progressDialog;
     boolean isCurrentLocationFound = false;
 
     public InspectionFragment() {
@@ -122,7 +124,7 @@ public class InspectionFragment extends Fragment {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         locationManager = new LocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
-        progressDialog = Helper.getInstance().getProgressDialog(view.getContext(),
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(),
                 "Getting Current Location Coordinates\nPlease Wait...");
     }
 
@@ -138,7 +140,7 @@ public class InspectionFragment extends Fragment {
         }
         else
         {
-            progressDialog.show();
+            progressDialog.showAtLocation(getView(), Gravity.START,0,0);
         }
     }
 

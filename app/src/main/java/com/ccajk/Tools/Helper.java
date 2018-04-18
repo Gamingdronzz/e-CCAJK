@@ -1,12 +1,26 @@
 
 package com.ccajk.Tools;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
@@ -179,10 +193,16 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public ProgressDialog getProgressDialog(Context context, String message) {
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage(message);
-        return progressDialog;
+    public PopupWindow getProgressWindow(final Activity context,String message) {
+        TextView textViewMessage;
+
+        View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
+        textViewMessage.setText(message);
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        return  popupWindow;
     }
 
     public void showSnackBar(CharSequence message, View view) {
