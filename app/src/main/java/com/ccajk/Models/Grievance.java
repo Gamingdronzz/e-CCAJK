@@ -9,7 +9,7 @@ import java.util.Date;
 public class Grievance {
     String pcode;
     String mobile;
-    String grievanceType;
+    long grievanceType;
     String details;
     String submittedBy;
     String filename;
@@ -18,7 +18,7 @@ public class Grievance {
     long grievanceStatus;
     Date date;
 
-    public Grievance(String pcode, String mobile, String grievanceType, String details, String submittedBy, String filename, String message, String state, long grievanceStatus, Date date) {
+    public Grievance(String pcode, String mobile, long grievanceType, String details, String submittedBy, String filename, String message, String state, long grievanceStatus, Date date) {
         this.pcode = pcode;
         this.mobile = mobile;
         this.grievanceType = grievanceType;
@@ -51,11 +51,11 @@ public class Grievance {
         this.mobile = mobile;
     }
 
-    public String getGrievanceType() {
+    public long getGrievanceType() {
         return grievanceType;
     }
 
-    public void setGrievanceType(String grievanceType) {
+    public void setGrievanceType(long grievanceType) {
         this.grievanceType = grievanceType;
     }
 

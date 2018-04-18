@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ccajk.Activity.HomeActivity;
 import com.ccajk.R;
-import com.ccajk.Tools.FireBaseHelper;
-import com.ccajk.Tools.Helper;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 public class AadharPanCheckFragment extends Fragment {
 
@@ -30,9 +25,9 @@ public class AadharPanCheckFragment extends Fragment {
     DatabaseReference numberRef;
 
     ProgressDialog progressDialog;
-    Button upload,check;
+    Button upload, check;
     TextInputEditText pcode;
-    TextView optionalMessage,statusMessage;
+    TextView optionalMessage, statusMessage;
 
 
     public AadharPanCheckFragment() {
@@ -53,14 +48,14 @@ public class AadharPanCheckFragment extends Fragment {
         pcode = view.findViewById(R.id.edittext_pcode);
         progressDialog = new ProgressDialog(view.getContext());
         optionalMessage = view.findViewById(R.id.textView_message);
-        statusMessage= view.findViewById(R.id.textView_status);
+        statusMessage = view.findViewById(R.id.textView_status);
 
         upload = view.findViewById(R.id.btn_upload);
         upload.setVisibility(View.GONE);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), PanAdhaarUploadActivity.class);
+                Intent intent = new Intent(getContext(), HomeActivity.class);
                 intent.putExtra("UploadType", type);
                 intent.putExtra("PensionerCode", pcode.getText().toString());
                 startActivity(intent);
@@ -94,7 +89,7 @@ public class AadharPanCheckFragment extends Fragment {
     }
 
     private void checkStatus() {
-        progressDialog.show();
+        /*progressDialog.show();
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
             numberRef = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR).child(pcode.getText().toString());
             typeName = "Aadhaar";
@@ -115,7 +110,7 @@ public class AadharPanCheckFragment extends Fragment {
                     String msg = (String) dataSnapshot.child("msg").getValue();
                     Log.d(TAG, String.valueOf(status));
                     setMessageAndAction(status,msg,number);
-                    /*numberRef.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+                    *//*numberRef.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             long status = (long) dataSnapshot.getValue();
@@ -127,7 +122,7 @@ public class AadharPanCheckFragment extends Fragment {
                             Log.d( "onCancelled: ",databaseError.getMessage());
 
                         }
-                    });*/
+                    });*//*
                 } else {
                     setMessageAndAction(-1,null,null);
                 }
@@ -139,10 +134,11 @@ public class AadharPanCheckFragment extends Fragment {
                 setMessageAndAction(100,null,null);
             }
         });
+    */
     }
 
-    private void setMessageAndAction(long status,String msg,String number) {
-         switch ((int) status) {
+    private void setMessageAndAction(long status, String msg, String number) {
+        switch ((int) status) {
             case -1:
                 statusMessage.setText(typeName + " Number not updated");
                 optionalMessage.setText(msg);

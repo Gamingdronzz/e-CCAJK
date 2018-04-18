@@ -27,7 +27,7 @@ import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
 
@@ -173,25 +173,25 @@ public class HomeActivity extends AppCompatActivity
             case R.id.navmenu_pension:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
-                bundle.putInt("Category", Helper.getInstance().CATEGORY_PENSION);
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION);
                 ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
-                bundle.putInt("Category", Helper.getInstance().CATEGORY_GPF);
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF);
                 ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_ADHAAR);
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_ADHAAR);
                 ShowFragment("Upload Aadhar", fragment, bundle);
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putInt("UploadType", Helper.getInstance().UPLOAD_TYPE_PAN);
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_PAN);
                 ShowFragment("Upload PAN", fragment, bundle);
                 break;
             case R.id.navmenu_tracking:

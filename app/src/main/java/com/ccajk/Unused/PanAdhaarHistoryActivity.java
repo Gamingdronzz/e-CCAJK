@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
@@ -33,7 +32,7 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pan_adhaar_history);
         pcode = getIntent().getStringExtra("PensionerCode");
         type = getIntent().getIntExtra("UploadType", -1);
-        getSupportActionBar().setTitle((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar Updation Status" : "Pan Updation Status"));
+        //getSupportActionBar().setTitle((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar Updation Status" : "Pan Updation Status"));
         init();
     }
 

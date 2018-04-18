@@ -1,6 +1,7 @@
 package com.ccajk.Adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.ccajk.Models.Grievance;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Helper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,14 +36,16 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(TrackViewHolder holder, int position) {
         Grievance grievance = grievances.get(position);
-        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dt = new SimpleDateFormat("MMM d, yyyy");
 
+        holder.grievanceType.setText(getGrievanceType(grievance.getGrievanceType()));
+        Log.d("RecyclerView", "onBindViewHolder: "+getGrievanceType(grievance.getGrievanceType()));
         holder.grievanceApplied.setText("");
-        holder.grievanceApplied.setText(grievance.getGrievanceType());
+        holder.grievanceApplied.setText(Helper.getInstance().getGrievanceString((int) grievance.getGrievanceType()));
         holder.date.setText("");
         holder.date.setText(dt.format(grievance.getDate()));
         holder.status.setText("");
-        holder.status.setText(FireBaseHelper.getInstance().StatusString(grievance.getGrievanceStatus()));
+        holder.status.setText(Helper.getInstance().StatusString(grievance.getGrievanceStatus()));
         holder.message.setText("");
         if (grievance.getMessage() != null)
             holder.message.setText(grievance.getMessage());
@@ -54,12 +58,20 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         return grievances.size();
     }
 
+    public String getGrievanceType(long value) {
+        if (value < 100)
+            return FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION;
+        else
+            return FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF;
+    }
+
     public class TrackViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView grievanceApplied, date, status, message;
+        public TextView grievanceType, grievanceApplied, date, status, message;
 
         public TrackViewHolder(View itemView) {
             super(itemView);
+            grievanceType = itemView.findViewById(R.id.textview_grievance_type);
             grievanceApplied = itemView.findViewById(R.id.textview_grievance);
             date = itemView.findViewById(R.id.textview_date);
             status = itemView.findViewById(R.id.textview_result);

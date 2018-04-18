@@ -52,8 +52,8 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     DatabaseReference dbref;
     private static final String TAG = "PanAdhaarUpload";
-    String pensionerCode, fileChosed, fileChosedPath, uploadType;
-    int type;
+    String pensionerCode, fileChosed, fileChosedPath, root;
+
 
     public PanAdhaarUploadFragment() {
 
@@ -63,14 +63,12 @@ public class PanAdhaarUploadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pan_adhaar_upload, container, false);
-        type = this.getArguments().getInt("UploadType");
+        root = this.getArguments().getString("Root");
         init(view);
         return view;
     }
 
     private void init(View view) {
-        uploadType = (type == Helper.getInstance().UPLOAD_TYPE_PAN ?
-                FireBaseHelper.getInstance().ROOT_PAN : FireBaseHelper.getInstance().ROOT_ADHAAR);
 
         progressDialog = Helper.getInstance().getProgressDialog(this.getActivity(), "Please Wait...");
 
@@ -83,7 +81,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
 
         inputNumber = view.findViewById(R.id.autocomplete_number);
-        if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
+        if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
             //inputNumber.setHint("Aadhaar");
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
@@ -95,7 +93,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         inputPCode = view.findViewById(R.id.autocomplete_pcode);
         textViewFileName = view.findViewById(R.id.textview_file_name);
         buttonChooseFile = view.findViewById(R.id.button_attach);
-        buttonChooseFile.setText(type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Select Aadhaar File" : "Select PAN File");
+        buttonChooseFile.setText("Select " + root + " File");
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,13 +152,13 @@ public class PanAdhaarUploadFragment extends Fragment {
             return false;
         }
         //If Aadhar Number is not complete
-        else if ((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) && (trimmed.length() < 16)) {
+        else if ((root == FireBaseHelper.getInstance().ROOT_ADHAAR) && (trimmed.length() < 16)) {
             Toast.makeText(getContext(), "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
             inputNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
-        else if ((type == Helper.getInstance().UPLOAD_TYPE_PAN) && (trimmed.length() < 10)) {
+        else if ((root == FireBaseHelper.getInstance().ROOT_PAN) && (trimmed.length() < 10)) {
             Toast.makeText(getContext(), "Enter a Valid Pan Number", Toast.LENGTH_SHORT).show();
             inputNumber.requestFocus();
             return false;
@@ -199,7 +197,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         TextView pNo = v.findViewById(R.id.textview_ppo_no);
         pNo.setText(pNo.getText() + " " + pensionerCode);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
-        mobNo.setText((type == Helper.getInstance().UPLOAD_TYPE_ADHAAR ? "Aadhaar No: " : "PAN No: ") + inputNumber.getText());
+        mobNo.setText(root + " No: " + inputNumber.getText());
         TextView fileName = v.findViewById(R.id.textview_file_name);
         fileName.setText(fileChosed);
         v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
@@ -211,7 +209,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     private void uploadAdhaarOrPan() {
 
         progressDialog.show();
-        dbref = FireBaseHelper.getInstance().databaseReference.child(uploadType);
+        dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
 
         PanAdhaar panAdhaar = new PanAdhaar(pensionerCode, inputNumber.getText().toString(), fileChosed, Preferences.getInstance().getPrefState(getContext()));
@@ -261,7 +259,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     private void uploadFile() {
         UploadTask uploadTask;
 
-        uploadTask = FireBaseHelper.getInstance().uploadFile(uploadType, pensionerCode, fileChosedPath, null);
+        uploadTask = FireBaseHelper.getInstance().uploadFile(root, pensionerCode, fileChosedPath, null);
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(new OnFailureListener() {

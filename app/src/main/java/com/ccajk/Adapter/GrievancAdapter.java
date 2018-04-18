@@ -1,4 +1,4 @@
-package com.ccajk.Unused;
+package com.ccajk.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.ccajk.Models.State;
+import com.ccajk.Models.GrievanceType;
 import com.ccajk.R;
 
 import java.util.ArrayList;
@@ -16,23 +16,23 @@ import java.util.ArrayList;
  * Created by hp on 16-03-2018.
  */
 
-public class StatesAdapter extends BaseAdapter {
+public class GrievancAdapter extends BaseAdapter {
     Context context;
-    ArrayList<State> states;
+    ArrayList<GrievanceType> types;
 
-    public StatesAdapter(Context context, ArrayList<State> states) {
+    public GrievancAdapter(Context context, ArrayList<GrievanceType> types) {
         this.context = context;
-        this.states = states;
+        this.types = types;
     }
 
     @Override
     public int getCount() {
-        return states.size();
+        return types.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return states.get(position);
+        return types.get(position);
     }
 
     @Override
@@ -44,9 +44,9 @@ public class StatesAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
-        State state = states.get(position);
+        GrievanceType type=types.get(position);
         TextView textView = convertView.findViewById(R.id.spinner_item);
-        textView.setText(state.getName());
+        textView.setText(type.getName());
         return convertView;
     }
 }

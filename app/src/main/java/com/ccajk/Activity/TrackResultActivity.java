@@ -54,12 +54,7 @@ public class TrackResultActivity extends AppCompatActivity {
     }
 
     private void getGrievances() {
-        addPensionGrievane();
-        addGpfGrievance();
-    }
-
-    private void addPensionGrievane() {
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION).child(pensionerCode)
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -87,30 +82,13 @@ public class TrackResultActivity extends AppCompatActivity {
 
                     }
                 });
-    }
-
-    private void addGpfGrievance() {
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF).child(pensionerCode)
-                .addChildEventListener(new ChildEventListener() {
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        grievances.add(dataSnapshot.getValue(Grievance.class));
-                        adapterTracking.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (grievances.size() == 0)
+                            textView.setText("No Grievances Registered");
+                        progressDialog.dismiss();
                     }
 
                     @Override
@@ -118,18 +96,5 @@ public class TrackResultActivity extends AppCompatActivity {
 
                     }
                 });
-        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (grievances.size() == 0)
-                    textView.setText("No Grievances Registered");
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }

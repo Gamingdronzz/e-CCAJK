@@ -26,8 +26,9 @@ public class FireBaseHelper {
     public DatabaseReference databaseReference;
     public StorageReference storageReference;
     public final String ROOT_PENSIONERS = "Pensioners";
-    public final String ROOT_ADHAAR = "Adhaar";
+    public final String ROOT_ADHAAR = "Aadhaar";
     public final String ROOT_PAN = "Pan";
+    public final String ROOT_GRIEVANCES="Grievances";
     public final String ROOT_GRIEVANCE_PENSION = "Pension Grievance";
     public final String ROOT_GRIEVANCE_GPF = "GPF Grievance";
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
@@ -61,20 +62,6 @@ public class FireBaseHelper {
         Uri file = Uri.fromFile(new File(filePath));
         UploadTask uploadTask = sref.putFile(file);
         return uploadTask;
-    }
-
-    public String StatusString(long status) {
-        switch ((int) status) {
-            case 0:
-                return "Grievance Submitted";
-            case 1:
-                return "Grievance resolution in process";
-            case 2:
-                return "Unable to resolve";
-            case 3:
-                return "Grievance resolved";
-        }
-        return null;
     }
 
     public ArrayList<LocationModel> getLocationModels(String stateId) {

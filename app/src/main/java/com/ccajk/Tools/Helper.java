@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,40 +26,10 @@ import java.util.Random;
 public class Helper {
     private static Helper _instance;
 
-    public final int CATEGORY_PENSION = 0;
-    public final int CATEGORY_GPF = 1;
-    public final int UPLOAD_TYPE_ADHAAR = 0;
-    public final int UPLOAD_TYPE_PAN = 1;
-
     public final String Nil = "Nil";
     private final String TAG = "Helper";
 
     public ArrayList<LocationModel> allLocationModels;
-
-    public String[] PGlist = {
-            "Change of PDA",
-            "Correction in PPO",
-            "Wrong Fixation of Pension",
-            "Non Updation of DA",
-            "Non Payment of Monthly Pension",
-            "Non Payment of Medical Allowance",
-            "Non Starting of Family Pension",
-            "Non Revision as per Latest CPC",
-            "Request for CGIES",
-            "Excess/Short Payment",
-            "Enhancement of Pension on Attaining 75/80",
-            "Others"
-    };
-
-    public String[] GPFlist = {
-            "GPF Final Payment not received",
-            "Correction in the Name",
-            "Change of Nomination",
-            "GPF Account not transfered",
-            "Details of GPF Deposit A/C Slip",
-            "Non Payment of GPF Withdrawal",
-            "Others"
-    };
 
     public Helper() {
         _instance = this;
@@ -72,30 +43,107 @@ public class Helper {
         }
     }
 
-    public ArrayList<LocationModel> getAllLocations() {
-        //TODO
-        //Fetch locations models from local memory here
-        return allLocationModels;
+    public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
+        ArrayList<GrievanceType> types = new ArrayList<>();
+        types.add(new GrievanceType("Change of PDA", 0));
+        types.add(new GrievanceType("Correction in PPO", 1));
+        types.add(new GrievanceType("Wrong Fixation of Pension", 2));
+        types.add(new GrievanceType("Non Updation of DA", 3));
+        types.add(new GrievanceType("Non Payment of Monthly Pension", 4));
+        types.add(new GrievanceType("Non Payment of Medical Allowance", 5));
+        types.add(new GrievanceType("Non Starting of Family Pension", 6));
+        types.add(new GrievanceType("Non Revision as per Latest CPC", 7));
+        types.add(new GrievanceType("Request for CGIES", 8));
+        types.add(new GrievanceType("Excess/Short Payment", 9));
+        types.add(new GrievanceType("Enhancement of Pension on Attaining 75/80", 10));
+        types.add(new GrievanceType("Other Pension Grievance", 11));
+        return types;
     }
 
-
-    public String[] getPensionGrievanceList() {
-        return PGlist;
+    public ArrayList<GrievanceType> getGPFGrievanceTypelist() {
+        ArrayList<GrievanceType> types = new ArrayList<>();
+        types.add(new GrievanceType("GPF Final Payment not received", 100));
+        types.add(new GrievanceType("Correction in the Name", 101));
+        types.add(new GrievanceType("Change of Nomination", 102));
+        types.add(new GrievanceType("GPF Account not transfered", 103));
+        types.add(new GrievanceType("Details of GPF Deposit A/C Slip", 104));
+        types.add(new GrievanceType("Non Payment of GPF Withdrawal", 105));
+        types.add(new GrievanceType("Other GPF Grievance", 106));
+        return types;
     }
 
-    public String[] getGPFGrievanceList() {
-        return GPFlist;
+    public String getGrievanceString(int id) {
+        switch (id) {
+            case 0:
+                return "Change of PDA";
+            case 1:
+                return "Correction in PPO";
+            case 2:
+                return "Wrong Fixation of Pension";
+            case 3:
+                return "Non Updation of DA";
+            case 4:
+                return "Non Payment of Monthly Pension";
+            case 5:
+                return "Non Payment of Medical Allowance";
+            case 6:
+                return "Non Starting of Family Pension";
+            case 7:
+                return "Non Revision as per Latest CPC";
+            case 8:
+                return "Request for CGIES";
+            case 9:
+                return "Excess/Short Payment";
+            case 10:
+                return "Enhancement of Pension on Attaining 75/80";
+            case 11:
+                return "Other Pension Grievance";
+            case 100:
+                return "GPF Final Payment not received";
+            case 101:
+                return "Correction in the Name";
+            case 102:
+                return "Change of Nomination";
+            case 103:
+                return "GPF Account not transfered";
+            case 104:
+                return "Details of GPF Deposit A/C Slip";
+            case 105:
+                return "Non Payment of GPF Withdrawal";
+            case 106:
+                return "Other GPF Grievance";
+        }
+        return null;
     }
 
-    public String[] submittedByList(int gtype) {
+    public String StatusString(long status) {
+        switch ((int) status) {
+            case 0:
+                return "Grievance Submitted";
+            case 1:
+                return "Grievance resolution in process";
+            case 2:
+                return "Unable to resolve";
+            case 3:
+                return "Grievance resolved";
+        }
+        return null;
+    }
+
+    public String[] submittedByList(String type) {
         String first;
-        if (gtype == 0)
+        if (type == FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION)
             first = "Pensioner";
         else
             first = "GPF Benificiary";
         return new String[]{first, "Other"};
     }
 
+    public ArrayList<LocationModel> getAllLocations() {
+        //TODO
+        //Fetch locations models from local memory here
+        return allLocationModels;
+    }
 
     class CompletionListener implements OnCompleteListener<Void> {
 
