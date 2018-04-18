@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import com.ccajk.Models.Grievance;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.PopUpWindows;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,26 +40,31 @@ public class TrackResultActivity extends AppCompatActivity {
     DatabaseReference dbref;
     String pensionerCode;
     PopupWindow progressDialog;
+    FrameLayout parent;
     final String TAG = "Track";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_result);
-        init();
+        parent = findViewById(R.id.parent_track_result);
+        PopUpWindows.getInstance().showTrackWindow(this, parent,new CustomClickListener());
+
 
     }
 
+    private class CustomClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            progressDialog.dismiss();
+            init();
+        }
+    }
+
     private void init() {
-        progressDialog = Helper.getInstance().getProgressWindow(this, "Please Wait...");
-        if(progressDialog == null)
-        {
-            Log.d(TAG, "init: null");
-        }
-        else
-        {
-            progressDialog.showAtLocation(findViewById(R.id.parent_track_result), Gravity.CENTER,0,0);
-        }
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
+        progressDialog.showAtLocation(parent, Gravity.CENTER, 0, 0);
 
         dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("pensionerCode");

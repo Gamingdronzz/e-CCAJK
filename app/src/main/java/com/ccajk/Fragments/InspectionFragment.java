@@ -199,6 +199,7 @@ public class InspectionFragment extends Fragment {
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         textLocation.setText(location.getLatitude() + " , " + location.getLongitude());
+        progressDialog.dismiss();
     }
 
     private void showImageChooser() {

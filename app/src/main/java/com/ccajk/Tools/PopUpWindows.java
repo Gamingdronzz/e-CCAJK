@@ -89,7 +89,7 @@ public class PopUpWindows {
     }
 
 
-    public void showTrackWindow(final Activity context, View parent) {
+    public void showTrackWindow(final Activity context, View parent, View.OnClickListener onClickListener) {
         final EditText editText;
         View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -97,15 +97,8 @@ public class PopUpWindows {
         editText = popupView.findViewById(R.id.edittext_pcode);
 
         Button track = popupView.findViewById(R.id.btn_check_status);
-        track.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                Intent intent = new Intent(context, TrackResultActivity.class);
-                intent.putExtra("pensionerCode", editText.getText().toString());
-                context.startActivity(intent);
-            }
-        });
+        track.setOnClickListener(onClickListener);
+
 
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);

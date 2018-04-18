@@ -215,7 +215,9 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("Upload PAN", fragment, bundle);
                 break;
             case R.id.navmenu_tracking:
-                PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
+                Intent intent = new Intent(this,TrackResultActivity.class);
+                startActivity(intent);
+
                 break;
             case R.id.navmenu_login:
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
