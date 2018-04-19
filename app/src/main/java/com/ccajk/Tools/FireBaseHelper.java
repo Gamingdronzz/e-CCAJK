@@ -1,18 +1,27 @@
 package com.ccajk.Tools;
 
+import android.content.Context;
 import android.net.Uri;
+import android.support.design.widget.NavigationView;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.State;
 import com.ccajk.Providers.DummyLocationProvider;
+import com.ccajk.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+
 
 /**
  * Created by hp on 06-03-2018.
@@ -28,9 +37,14 @@ public class FireBaseHelper {
     public final String ROOT_PENSIONERS = "Pensioners";
     public final String ROOT_ADHAAR = "Aadhaar";
     public final String ROOT_PAN = "Pan";
-    public final String ROOT_GRIEVANCES="Grievances";
+    public final String ROOT_GRIEVANCES = "Grievances";
     public final String ROOT_GRIEVANCE_PENSION = "Pension Grievance";
     public final String ROOT_GRIEVANCE_GPF = "GPF Grievance";
+    public final String ROOT_PASSWORD = "password";
+    public final String ROOT_TYPE = "type";
+    public static final String ROOT_STAFF = "Staff";
+    private final String TAG = "firebaseHelper";
+
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     //public final String ROOT_PAN_STATUS = "Pan-Status";
 
@@ -88,4 +102,48 @@ public class FireBaseHelper {
         return null;
     }
 
+    public void Login(String id, final String password, final Context context, final NavigationView navigationView) {
+        databaseReference.child(ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot == null)
+                {
+                    Toast.makeText(context,"We are getting things fixed",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
+                Log.d(TAG, "onDataChange: Password = "+dataSnapshot.child(ROOT_PASSWORD).getValue());
+                if (dataSnapshot.getValue() == null)
+                {
+                    OnLoginFailure(context, "No user found");
+                }
+                else {
+                    if (dataSnapshot.child(ROOT_PASSWORD).getValue().toString().equals(password)) {
+                        long type = (long) dataSnapshot.child(ROOT_TYPE).getValue();
+                        Log.d(TAG, "onDataChange: type: "+ type);
+                        OnLoginSuccesful(context, navigationView, type);
+                    }
+                    else{
+                        OnLoginFailure(context,"Password Mismatch");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void OnLoginSuccesful(Context context, NavigationView navigationView, long type) {
+        Log.d(TAG, "OnLoginSuccesful: ");
+        Preferences.getInstance().setSignedIn(context, true);
+        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
+        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
+    }
+
+    private void OnLoginFailure(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
 }

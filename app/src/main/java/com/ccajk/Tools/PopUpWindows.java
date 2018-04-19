@@ -1,7 +1,5 @@
 package com.ccajk.Tools;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -73,17 +71,9 @@ public class PopUpWindows {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //RequestLogin(autoCompleteTextView.getText().toString(), editText.getText().toString());
-                Preferences.getInstance().setSignedIn(context, true);
-                mProgressView.setVisibility(View.VISIBLE);
-                mProgressView.animate().setDuration(2000).alpha(1).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mProgressView.setVisibility(View.GONE);
-                        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
-                        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
-                    }
-                });
+                FireBaseHelper.getInstance().Login(autoCompleteTextView.getText().toString(),
+                        editText.getText().toString(),context,navigationView);
+
             }
         });
 
@@ -105,7 +95,6 @@ public class PopUpWindows {
             @Override
             public void onClick(View v) {
                 if (editText.getText().toString().isEmpty())
-                    //editText.setError("Pensioner code required");
                     Toast.makeText(context, "Empty code!", Toast.LENGTH_LONG).show();
                 else {
                     Intent intent = new Intent(context, TrackResultActivity.class);
@@ -131,6 +120,8 @@ public class PopUpWindows {
         confirmDialog.setTitle("Confirm Input Before Submission");
         return confirmDialog;
     }
+
+
 
     /*@Override
     public void RequestLogin(final String pensionerCode, final String password) {

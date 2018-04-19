@@ -13,12 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.ccajk.Activity.MainActivity;
-import com.ccajk.Interfaces.ILoginProcessor;
 import com.ccajk.R;
-import com.ccajk.Tools.Preferences;
-import com.google.firebase.database.DataSnapshot;
 
-public class LoginActivity extends AppCompatActivity implements ILoginProcessor {
+public class LoginActivity extends AppCompatActivity  {
 
     private static final String TAG = "Login";
     private AutoCompleteTextView mPensionerCode;
@@ -70,58 +67,14 @@ public class LoginActivity extends AppCompatActivity implements ILoginProcessor 
     private void populateAutoComplete() {
     }
 
-    @Override
-    public void RequestLogin(String PensionerCode, final String password) {
-        OnLoginSuccesful(null);
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-//        DatabaseReference dbref = databaseReference.child("user").child(PensionerCode);
-//        Log.d(TAG, "RequestLogin: ");
-//        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-//                if (dataSnapshot == null) {
-//                    OnUserNotExist();
-//                }
-//                if (dataSnapshot != null) {
-//                    String dbpassword = dataSnapshot.child("password").getValue().toString();
-//                    if (dbpassword.equals(password)) {
-//                        OnLoginSuccesful(dataSnapshot);
-//                    } else {
-//                        OnLoginFailure();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d(TAG, "Error");
-//                OnUserNotExist();
-//            }
-//        });
-    }
 
-    @Override
-    public void OnLoginSuccesful(DataSnapshot dataSnapshot) {
-        Preferences.getInstance().setSignedIn(this,true);
-    }
-
-    @Override
-    public void OnLoginFailure() {
-
-    }
-
-    @Override
-    public void OnUserNotExist() {
-
-    }
 
     class LoginTask extends AsyncTask<String, String, String> {
 
         @Override
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: ");
-            RequestLogin(mPensionerCode.getText().toString(), mPasswordView.getText().toString());
+            //RequestLogin(mPensionerCode.getText().toString(), mPasswordView.getText().toString());
             return null;
         }
 
