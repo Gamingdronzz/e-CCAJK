@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.view.Gravity;
@@ -42,7 +43,7 @@ public class PopUpWindows {
     }
 
 
-    public void showLoginPopup(final Activity context, View parent) {
+    public void showLoginPopup(final Activity context, View parent, final NavigationView navigationView) {
         ImageView ppo, pwd;
         ImageButton close;
         final AutoCompleteTextView autoCompleteTextView;
@@ -78,6 +79,8 @@ public class PopUpWindows {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mProgressView.setVisibility(View.GONE);
+                        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
+                        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
                     }
                 });
             }
@@ -89,7 +92,7 @@ public class PopUpWindows {
     }
 
 
-    public void showTrackWindow(final Activity context, View parent, View.OnClickListener onClickListener) {
+    public void showTrackWindow(final Activity context, View parent) {
         final EditText editText;
         View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -97,7 +100,15 @@ public class PopUpWindows {
         editText = popupView.findViewById(R.id.edittext_pcode);
 
         Button track = popupView.findViewById(R.id.btn_check_status);
-        track.setOnClickListener(onClickListener);
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, TrackResultActivity.class);
+                intent.putExtra("pensionerCode", editText.getText().toString());
+                context.startActivity(intent);
+
+            }
+        });
 
 
         popupWindow.setFocusable(true);

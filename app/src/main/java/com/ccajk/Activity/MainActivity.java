@@ -52,9 +52,21 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
-
         ShowFragment("Home", new HomeFragment(), null);
 
+    }
+
+    private void setupToolbar()
+    {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void bindViews()
+    {
+        frameLayout = findViewById(R.id.fragmentPlaceholder);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
     }
 
     private void init()
@@ -91,19 +103,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void bindViews()
-    {
-        frameLayout = findViewById(R.id.fragmentPlaceholder);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-    }
-
-    private void setupToolbar()
-    {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
 
     @Override
     protected void onStop() {
@@ -215,12 +214,10 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("Upload PAN", fragment, bundle);
                 break;
             case R.id.navmenu_tracking:
-                Intent intent = new Intent(this,TrackResultActivity.class);
-                startActivity(intent);
-
+               PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_login:
-                PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
+                PopUpWindows.getInstance().showLoginPopup(this, frameLayout,navigationView);
                 break;
             case R.id.navmenu_logout:
                 logout();

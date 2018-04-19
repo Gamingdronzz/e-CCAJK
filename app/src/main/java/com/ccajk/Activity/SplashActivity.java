@@ -3,16 +3,18 @@ package com.ccajk.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ccajk.R;
-import com.sdsmdg.harjot.vectormaster.VectorMasterView;
 
 public class SplashActivity extends AppCompatActivity {
 
-    VectorMasterView imageView;
+    ImageView imageView;
+    AppCompatImageButton imageButton;
     TextView gd;
 
     @Override
@@ -26,8 +28,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private void bindVIews() {
         imageView = findViewById(R.id.logo);
-        //gd = findViewById(R.id.designedBy);
-
     }
 
     private void StartAnimations() {

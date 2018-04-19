@@ -1,12 +1,12 @@
 package com.ccajk.Fragments;
 
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
@@ -48,6 +48,7 @@ import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment
 public class PanAdhaarUploadFragment extends Fragment {
 
     TextView textViewFileName;
+    TextInputLayout textInputLayout;
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
     PopupWindow progressDialog;
@@ -81,14 +82,13 @@ public class PanAdhaarUploadFragment extends Fragment {
         ImageView imageAttach = view.findViewById(R.id.image_attach);
         imageAttach.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_attach_file_black_24dp));
 
-
+        textInputLayout = view.findViewById(R.id.text_number);
+        textInputLayout.setHint(root + " Number");
         inputNumber = view.findViewById(R.id.autocomplete_number);
         if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
-            //inputNumber.setHint("Aadhaar");
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
         } else {
-            //inputNumber.setHint("PAN");
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         }
 
@@ -155,7 +155,8 @@ public class PanAdhaarUploadFragment extends Fragment {
         }
         //If Aadhar Number is not complete
         else if ((root == FireBaseHelper.getInstance().ROOT_ADHAAR) && (trimmed.length() < 16)) {
-            Toast.makeText(getContext(), "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getContext(), "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
+            inputNumber.setError("Invalid Aadhaar Number");
             inputNumber.requestFocus();
             return false;
         }
@@ -210,7 +211,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void uploadAdhaarOrPan() {
 
-        progressDialog.showAtLocation(getView(), Gravity.CENTER,0,0);
+        progressDialog.showAtLocation(getView(), Gravity.CENTER, 0, 0);
         dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
 

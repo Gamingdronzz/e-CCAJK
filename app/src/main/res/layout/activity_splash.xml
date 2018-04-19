@@ -7,30 +7,22 @@
     android:background="@drawable/splash_background"
     tools:context="com.ccajk.Activity.SplashActivity">
 
-    <!--<android.support.v7.widget.AppCompatImageView-->
-        <!---->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_margin="@dimen/margin_large"-->
-         <!--/>-->
-
-    <com.sdsmdg.harjot.vectormaster.VectorMasterView
+    <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        app:vector_src="@drawable/ic_drawable_satyamev_jayate_new"/>
+        android:layout_margin="@dimen/margin_xxxlarge"
+        android:src="@drawable/satyamev_jayate" />
 
-   <!-- <TextView
-        android:id="@+id/designedBy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:drawableBottom="@mipmap/gdlogo"
-        android:text="Designed and Developed by"
-        android:textAlignment="center"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/text_10" />-->
+    <!-- <TextView
+         android:id="@+id/designedBy"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:drawableBottom="@mipmap/gdlogo"
+         android:text="Designed and Developed by"
+         android:textAlignment="center"
+         android:textColor="@color/colorBlack"
+         android:textSize="@dimen/text_10" />-->
 
 </RelativeLayout>

@@ -89,10 +89,10 @@
                 android:id="@+id/navmenu_inspection"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Inspection" />
-            <item
-                android:id="@+id/navmenu_UpdateStatus"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Update Information" />
+            <!--<item-->
+                <!--android:id="@+id/navmenu_UpdateStatus"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="Update Information" />-->
             <!--<item-->
                 <!--android:id="@+id/navmenu_payment_update"-->
                 <!--android:icon="@drawable/ic_menu_send"-->

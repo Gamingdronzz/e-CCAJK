@@ -9,11 +9,12 @@
     android:paddingTop="@dimen/padding_xlarge"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.sdsmdg.harjot.vectormaster.VectorMasterView
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:foregroundGravity="center"
         android:padding="@dimen/padding_medium"
-        app:vector_src="@drawable/ic_drawable_satyamev_jayate_new" />
+        android:src="@drawable/satyamev_jayate" />
+
 </LinearLayout>

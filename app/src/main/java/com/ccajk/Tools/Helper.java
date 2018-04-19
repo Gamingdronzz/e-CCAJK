@@ -1,32 +1,18 @@
 
 package com.ccajk.Tools;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
@@ -153,54 +139,14 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
-    public ArrayList<LocationModel> getAllLocations() {
-        //TODO
-        //Fetch locations models from local memory here
-        return allLocationModels;
-    }
-
-    class CompletionListener implements OnCompleteListener<Void> {
-
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
-            if (task.isSuccessful()) {
-                Log.d("Completion", task.toString());
-            }
-        }
-    }
-
-    /**
-     * calculates the distance between two locations in MILES
-     */
-    public static double distance(double lat1, double lng1, double lat2, double lng2) {
-
-        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
-
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
-
-        double sindLat = Math.sin(dLat / 2);
-        double sindLng = Math.sin(dLng / 2);
-
-        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        double dist = earthRadius * c;
-        Log.v("Helper", "Distance between coordinates = " + dist);
-
-        return dist; // output distance, in MILES
-    }
 
     public PopupWindow getProgressWindow(final Activity context,String message) {
         TextView textViewMessage;
-
         View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
         textViewMessage.setText(message);
-        popupWindow.setFocusable(true);
+        //popupWindow.setFocusable(true);
         popupWindow.update();
         return  popupWindow;
     }
@@ -225,7 +171,7 @@ public class Helper {
             double randomLongitude = minLatitude + random.nextDouble() * (maxLatitude - minLatitude);
             double randomLatitude = minLongitude + random.nextDouble() * (maxLongitude - minLongitude);
             DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
-            databaseReference.child("Locations").child("Location" + "-" + i).child("Latitude").setValue(randomLatitude).addOnCompleteListener(new CompletionListener());
+            databaseReference.child("Locations").child("Location" + "-" + i).child("Latitude").setValue(randomLatitude);
             databaseReference.child("Locations").child("Location" + "-" + i).child("Longitude").setValue(randomLongitude);
             databaseReference.child("Locations").child("Location" + "-" + i).child("StateID").setValue("jnk");
             databaseReference.child("Locations").child("Location" + "-" + i).child("District").setValue("jammu");
@@ -237,6 +183,37 @@ public class Helper {
     public void remove() {
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child("Locations").removeValue();
+    }
+
+    public ArrayList<LocationModel> getAllLocations() {
+        //TODO
+        //Fetch locations models from local memory here
+        return allLocationModels;
+    }
+
+
+    /**
+     * calculates the distance between two locations in MILES
+     */
+    public static double distance(double lat1, double lng1, double lat2, double lng2) {
+
+        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double dist = earthRadius * c;
+        Log.v("Helper", "Distance between coordinates = " + dist);
+
+        return dist; // output distance, in MILES
     }
 }
 
