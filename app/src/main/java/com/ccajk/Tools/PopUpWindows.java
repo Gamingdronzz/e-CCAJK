@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.ccajk.Activity.TrackResultActivity;
 import com.ccajk.R;
@@ -103,9 +104,14 @@ public class PopUpWindows {
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, TrackResultActivity.class);
-                intent.putExtra("pensionerCode", editText.getText().toString());
-                context.startActivity(intent);
+                if (editText.getText().toString().isEmpty())
+                    //editText.setError("Pensioner code required");
+                    Toast.makeText(context, "Empty code!", Toast.LENGTH_LONG).show();
+                else {
+                    Intent intent = new Intent(context, TrackResultActivity.class);
+                    intent.putExtra("pensionerCode", editText.getText().toString());
+                    context.startActivity(intent);
+                }
 
             }
         });

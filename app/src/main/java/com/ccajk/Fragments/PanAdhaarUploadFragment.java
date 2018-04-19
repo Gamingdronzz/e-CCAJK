@@ -55,7 +55,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     DatabaseReference dbref;
     private static final String TAG = "PanAdhaarUpload";
-    String pensionerCode, fileChosed, fileChosedPath, root;
+    String pensionerCode, number, fileChosed, fileChosedPath, root;
 
 
     public PanAdhaarUploadFragment() {
@@ -128,12 +128,14 @@ public class PanAdhaarUploadFragment extends Fragment {
                     public void onFileSelected(List<File> list) {
                         for (File file : list) {
                             if (file.length() / 1048576 > 1) {
-                                Toast.makeText(getContext(), "Please Choose a file of 5mb or less", Toast.LENGTH_SHORT).show();
+                                textViewFileName.setError("");
+                                textViewFileName.setText("File size greater than 1mb");
                                 fileChosed = null;
                                 fileChosedPath = null;
                             } else {
                                 fileChosedPath = file.getAbsolutePath();
                                 fileChosed = file.getName();
+                                textViewFileName.setError(null);
                                 textViewFileName.setText(fileChosed);
                             }
                         }
@@ -145,30 +147,29 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private boolean checkInput() {
         pensionerCode = inputPCode.getText().toString();
-        String trimmed = inputNumber.getText().toString().replaceAll("\\s", "");
-
+        number = inputNumber.getText().toString();
         //If Pensioner imagePensionerCode is empty
         if (pensionerCode.trim().isEmpty()) {
-            Toast.makeText(getContext(), "Pensioner Code required", Toast.LENGTH_SHORT).show();
+            inputPCode.setError("Pensioner Code required");
             inputPCode.requestFocus();
             return false;
         }
         //If Aadhar Number is not complete
-        else if ((root == FireBaseHelper.getInstance().ROOT_ADHAAR) && (trimmed.length() < 16)) {
-            // Toast.makeText(getContext(), "Enter a Valid Aadhaar Number", Toast.LENGTH_SHORT).show();
+        else if ((root == FireBaseHelper.getInstance().ROOT_ADHAAR) && (number.length() < 16)) {
             inputNumber.setError("Invalid Aadhaar Number");
             inputNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
-        else if ((root == FireBaseHelper.getInstance().ROOT_PAN) && (trimmed.length() < 10)) {
-            Toast.makeText(getContext(), "Enter a Valid Pan Number", Toast.LENGTH_SHORT).show();
+        else if ((root == FireBaseHelper.getInstance().ROOT_PAN) && (number.length() < 10)) {
+            inputNumber.setError("Invalid Pan Number");
             inputNumber.requestFocus();
             return false;
         }
         //if no file selected
         else if (fileChosed == null) {
-            Toast.makeText(getContext(), "Select a file", Toast.LENGTH_SHORT).show();
+            textViewFileName.setError("");
+            textViewFileName.setText("Select a file");
             return false;
         }
         return true;
@@ -215,7 +216,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
 
-        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode, inputNumber.getText().toString(), fileChosed, Preferences.getInstance().getPrefState(getContext()));
+        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode, number, fileChosed, Preferences.getInstance().getPrefState(getContext()));
 
         dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

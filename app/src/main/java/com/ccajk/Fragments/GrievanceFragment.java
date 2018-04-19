@@ -1,7 +1,6 @@
 package com.ccajk.Fragments;
 
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -181,16 +180,16 @@ public class GrievanceFragment extends Fragment {
         pcode = inputPCode.getText().toString();
         grievanceType = (GrievanceType) inputType.getSelectedItem();
 
-        if (pcode.trim().isEmpty()) {
-            Toast.makeText(this.getContext(), "Pensioner Code required", Toast.LENGTH_SHORT).show();
+        if (pcode.isEmpty()) {
+            inputPCode.setError("Pensioner Code required");
             inputPCode.requestFocus();
             return false;
-        } else if (inputMobile.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this.getContext(), "Mobile No required", Toast.LENGTH_SHORT).show();
+        } else if (inputMobile.getText().toString().isEmpty()) {
+            inputMobile.setError("Mobile No required");
             inputMobile.requestFocus();
             return false;
         } else if (inputDetails.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this.getContext(), "Please add some detail", Toast.LENGTH_SHORT).show();
+           inputDetails.setError( "Add details");
             inputDetails.requestFocus();
             return false;
         }
@@ -229,7 +228,7 @@ public class GrievanceFragment extends Fragment {
         TextView gr_by = v.findViewById(R.id.textview_grievance_by);
         gr_by.setText(gr_by.getText() + " " + inputSubmittedBy.getSelectedItem());
         TextView details = v.findViewById(R.id.textview_grievance_details);
-        details.setText(inputDetails.getText());
+        details.setText(inputDetails.getText().toString().trim());
         TextView fileName = v.findViewById(R.id.textview_file_name);
         fileName.setText(fileChosed == null ? Helper.getInstance().Nil : fileChosed);
     }
@@ -244,7 +243,7 @@ public class GrievanceFragment extends Fragment {
                 pcode,
                 inputMobile.getText().toString(),
                 grievanceType.getId(),
-                inputDetails.getText().toString(),
+                inputDetails.getText().toString().trim(),
                 inputSubmittedBy.getSelectedItem().toString(),
                 fileChosed,
                 null,
