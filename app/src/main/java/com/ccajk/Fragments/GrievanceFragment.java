@@ -65,6 +65,13 @@ public class GrievanceFragment extends Fragment {
     String fileChosed, fileChosedPath, pcode, root;
     GrievanceType grievanceType;
 
+    ImageView imagePensionerCode;
+    ImageView imageMobile;
+    ImageView imageDetails;
+    ImageView imageType;
+    ImageView imageSubmittedBy;
+    //ImageView imageAttach;
+
     public GrievanceFragment() {
 
     }
@@ -76,27 +83,39 @@ public class GrievanceFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_grievance, container, false);
         Bundle bundle = this.getArguments();
         root = bundle.getString("Root");
+        bindViews(view);
         init(view);
+        removeSelectedFile();
         return view;
+    }
+
+    private void bindViews(View view) {
+        imagePensionerCode = view.findViewById(R.id.image_pcode);
+        imageMobile = view.findViewById(R.id.image_mobile);
+        imageDetails = view.findViewById(R.id.image_details);
+        imageType = view.findViewById(R.id.image_type);
+        imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
+        //imageAttach = view.findViewById(R.id.image_attach);
+        inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
+        inputPCode = view.findViewById(R.id.autocomplete_pcode);
+        inputMobile = view.findViewById(R.id.autocomplete_mobile);
+        inputDetails = view.findViewById(R.id.edittext_details);
+        textViewFileName = view.findViewById(R.id.textview_file_name);
+
+        buttonChooseFile = view.findViewById(R.id.button_attach);
+        buttonRemove = view.findViewById(R.id.btn_remove);
+        submit = view.findViewById(R.id.button_submit);
     }
 
     private void init(View view) {
 
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
-
-        ImageView imagePensionerCode = view.findViewById(R.id.image_pcode);
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
-        ImageView imageMobile = view.findViewById(R.id.image_mobile);
         imageMobile.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_phone_android_black_24dp));
-        ImageView imageDetails = view.findViewById(R.id.image_details);
         imageDetails.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_details_black_24dp));
-        ImageView imageType = view.findViewById(R.id.image_type);
         imageType.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_sentiment_dissatisfied_black_24dp));
-        ImageView imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
         imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
-        ImageView imageAttach = view.findViewById(R.id.image_attach);
-        imageAttach.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_attach_file_black_24dp));
-
+        //imageAttach.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_attach_file_black_24dp));
         inputType = view.findViewById(R.id.spinner_type);
         if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION))
             list = Helper.getInstance().getPensionGrievanceTypelist();
@@ -105,35 +124,26 @@ public class GrievanceFragment extends Fragment {
         GrievancAdapter adapter = new GrievancAdapter(getContext(), list);
         inputType.setAdapter(adapter);
 
-        inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
+
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(root));
         inputSubmittedBy.setAdapter(arrayAdapter1);
-
-        inputPCode = view.findViewById(R.id.autocomplete_pcode);
-        inputMobile = view.findViewById(R.id.autocomplete_mobile);
-        inputDetails = view.findViewById(R.id.edittext_details);
-        textViewFileName = view.findViewById(R.id.textview_file_name);
-
-        buttonChooseFile = view.findViewById(R.id.button_attach);
+        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp,0,0,0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showFileChooser();
             }
         });
-
-        buttonRemove = view.findViewById(R.id.btn_remove);
+        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_close_black_24dp));
         buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fileChosed = null;
-                fileChosedPath = null;
-                textViewFileName.setText("");
-                buttonRemove.setVisibility(View.GONE);
+                removeSelectedFile();
+
             }
         });
 
-        submit = view.findViewById(R.id.button_submit);
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +151,15 @@ public class GrievanceFragment extends Fragment {
                     confirmSubmission();
             }
         });
+
+        removeSelectedFile();
+    }
+
+    private void removeSelectedFile() {
+        fileChosed = null;
+        fileChosedPath = null;
+        textViewFileName.setText("");
+        buttonRemove.setVisibility(View.GONE);
     }
 
     private void showFileChooser() {
@@ -159,9 +178,7 @@ public class GrievanceFragment extends Fragment {
                         for (File file : list) {
                             if (file.length() / 1048576 > 1) {
                                 Toast.makeText(getContext(), "Please Choose a file of 1mb or less", Toast.LENGTH_SHORT).show();
-                                fileChosed = null;
-                                fileChosedPath = null;
-                                buttonRemove.setVisibility(View.GONE);
+                               removeSelectedFile();
                             } else {
                                 fileChosedPath = file.getAbsolutePath();
                                 fileChosed = file.getName();
@@ -189,7 +206,7 @@ public class GrievanceFragment extends Fragment {
             inputMobile.requestFocus();
             return false;
         } else if (inputDetails.getText().toString().trim().isEmpty()) {
-           inputDetails.setError( "Add details");
+            inputDetails.setError("Add details");
             inputDetails.requestFocus();
             return false;
         }
@@ -235,7 +252,7 @@ public class GrievanceFragment extends Fragment {
 
 
     private void submitGrievance() {
-        progressDialog.showAtLocation(getView(), Gravity.CENTER,0,0);
+        progressDialog.showAtLocation(getView(), Gravity.CENTER, 0, 0);
         final DatabaseReference dbref;
         dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
 
@@ -251,22 +268,22 @@ public class GrievanceFragment extends Fragment {
                 0, new Date());
 
         dbref.child(pcode).child(String.valueOf(grievanceType.getId())).setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                if (fileChosed != null) {
-                                    uploadFile();
-                                } else {
-                                    Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
-                                    progressDialog.dismiss();
-                                }
-                            } else {
-                                Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
-                                progressDialog.dismiss();
-                            }
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    if (fileChosed != null) {
+                        uploadFile();
+                    } else {
+                        Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
 
-                        }
-                    });
+            }
+        });
     }
 
     private void uploadFile() {

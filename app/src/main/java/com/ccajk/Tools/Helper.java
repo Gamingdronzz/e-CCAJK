@@ -215,5 +215,19 @@ public class Helper {
 
         return dist; // output distance, in MILES
     }
+
+    public boolean checkInput(String input) {
+
+        Log.d(TAG, "checkInput: = " + input);
+        boolean result;
+        if (input == null || input.trim().isEmpty()) {
+            result= false;
+        }
+        else {
+            result = true;
+        }
+        Log.d(TAG, "checkInput: result = " + result);
+        return result;
+    }
 }
 

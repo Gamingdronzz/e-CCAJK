@@ -73,27 +73,32 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_xxlarge"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_medium">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/margin_xxlarge"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="@dimen/padding_medium">-->
 
-            <ImageView
-                android:id="@+id/image_attach"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:tint="@color/colorAccent" />
+            <!--<ImageView-->
+                <!--android:id="@+id/image_attach"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:tint="@color/colorAccent" />-->
 
             <Button
                 android:id="@+id/button_attach"
-                android:layout_width="match_parent"
+                android:layout_margin="@dimen/margin_large"
+                android:layout_width="wrap_content"
+                android:paddingLeft="@dimen/padding_medium"
+                android:paddingRight="@dimen/padding_medium"
+                android:background="@drawable/custom_button_rounded"
+                android:drawableTint="@color/colorPrimary"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite" />
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <TextView
             android:id="@+id/textview_file_name"

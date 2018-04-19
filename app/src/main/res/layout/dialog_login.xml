@@ -26,12 +26,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="@dimen/margin_small"
-                android:background="@android:drawable/ic_menu_close_clear_cancel" />
+                android:tint="@color/colorAccent"
+                android:layout_margin="@dimen/margin_small" />
 
             <ProgressBar
                 android:id="@+id/login_progress"
-                style="?android:attr/progressBarStyleSmall"
+                style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -60,7 +60,7 @@
                         android:id="@+id/ppo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="PPO Number"
+                        android:hint="User ID"
                         android:maxLines="1"
                         android:textColor="@color/colorBlack"
                         android:singleLine="true"

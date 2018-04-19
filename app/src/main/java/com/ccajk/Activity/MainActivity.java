@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.ccajk.CustomObjects.CardDrawerLayout;
 import com.ccajk.Fragments.BrowserFragment;
@@ -56,21 +57,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void setupToolbar()
-    {
+    private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
-    private void bindViews()
-    {
+    private void bindViews() {
         frameLayout = findViewById(R.id.fragmentPlaceholder);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
     }
 
-    private void init()
-    {
+    private void init() {
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -90,7 +88,6 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setRadius(Gravity.START, 35);
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
-
 
 
         if (Preferences.getInstance().getSignedIn(this)) {
@@ -121,6 +118,7 @@ public class MainActivity extends AppCompatActivity
             if (((BrowserFragment) f).canGoBack()) {
                 ((BrowserFragment) f).goBack();
             } else {
+                ((BrowserFragment) f).stopLoading();
                 ShowFragment("Home", new HomeFragment(), null);
             }
         } else {
@@ -214,10 +212,10 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("Upload PAN", fragment, bundle);
                 break;
             case R.id.navmenu_tracking:
-               PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
+                PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_login:
-                PopUpWindows.getInstance().showLoginPopup(this, frameLayout,navigationView);
+                PopUpWindows.getInstance().showLoginPopup(this, frameLayout, navigationView);
                 break;
             case R.id.navmenu_logout:
                 logout();
@@ -271,5 +269,22 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    public void OnLoginFailure(String message)
+
+    {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void OnLoginSuccesful(long type) {
+        Log.d(TAG, "OnLoginSuccesful: ");
+        Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
+        Preferences.getInstance().setSignedIn(this, true);
+        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
+        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
+
+        //TODO
+        //implement admin or staff type based code here
     }
 }

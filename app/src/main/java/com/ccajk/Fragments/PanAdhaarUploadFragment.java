@@ -65,7 +65,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pan_adhaar_upload, container, false);
+        View view = inflater.inflate(R.layout.fragment_adhaar_pan_upload, container, false);
         root = this.getArguments().getString("Root");
         init(view);
         return view;
@@ -79,8 +79,8 @@ public class PanAdhaarUploadFragment extends Fragment {
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         ImageView imageNumber = view.findViewById(R.id.image_number);
         imageNumber.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
-        ImageView imageAttach = view.findViewById(R.id.image_attach);
-        imageAttach.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_attach_file_black_24dp));
+//        ImageView imageAttach = view.findViewById(R.id.image_attach);
+//        imageAttach.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_attach_file_black_24dp));
 
         textInputLayout = view.findViewById(R.id.text_number);
         textInputLayout.setHint(root + " Number");
@@ -96,6 +96,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         textViewFileName = view.findViewById(R.id.textview_file_name);
         buttonChooseFile = view.findViewById(R.id.button_attach);
         buttonChooseFile.setText("Select " + root + " File");
+        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp,0,0,0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

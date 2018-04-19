@@ -47,10 +47,11 @@ import static android.content.ContentValues.TAG;
 public class BrowserFragment extends Fragment {
 
 
-        WebView webView;
-        ProgressBar progressBar;
-        String url;
-    ActionBar actionBar ;
+    WebView webView;
+    ProgressBar progressBar;
+    String url;
+    ActionBar actionBar;
+    private boolean hasStopped = false;
 
     public BrowserFragment() {
         // Required empty public constructor
@@ -64,13 +65,14 @@ public class BrowserFragment extends Fragment {
         setHasOptionsMenu(true);
         init(view);
         setupWebview();
+        hasStopped = false;
         webView.loadUrl(url);
         return view;
     }
 
     private void init(View view) {
         Bundle args = getArguments();
-        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setMax(100);
         progressBar.setVisibility(View.GONE);
@@ -82,8 +84,8 @@ public class BrowserFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh_link:
-                if(progressBar.getVisibility()== View.GONE)
-                webView.reload();
+                if (progressBar.getVisibility() == View.GONE)
+                    webView.reload();
                 break;
             default:
                 break;
@@ -95,7 +97,7 @@ public class BrowserFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_browser,menu);
+        inflater.inflate(R.menu.menu_browser, menu);
     }
 
     private void setupWebview() {
@@ -158,6 +160,7 @@ public class BrowserFragment extends Fragment {
                 super.onProgressChanged(view, newProgress);
                 progressBar.setProgress(newProgress);
             }
+
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
@@ -166,19 +169,25 @@ public class BrowserFragment extends Fragment {
                 }
             }
         });
+
     }
 
-    void setSubtitle(String subtitle)
-    {
-        actionBar.setSubtitle(Html.fromHtml("<font color='#000000'>"+subtitle+"</font>"));
+    void setSubtitle(String subtitle) {
+        if (!hasStopped)
+            actionBar.setSubtitle(Html.fromHtml("<font color='#000000'>" + subtitle + "</font>"));
     }
 
-    public boolean canGoBack(){
+    public boolean canGoBack() {
         return webView.canGoBack();
     }
 
-    public  void goBack(){
+    public void goBack() {
         webView.goBack();
-        Log.v(TAG,"Going back");
+        Log.v(TAG, "Going back");
+    }
+
+    public void stopLoading() {
+        webView.stopLoading();
+        hasStopped = true;
     }
 }

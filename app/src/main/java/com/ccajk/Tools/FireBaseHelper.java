@@ -102,48 +102,5 @@ public class FireBaseHelper {
         return null;
     }
 
-    public void Login(String id, final String password, final Context context, final NavigationView navigationView) {
-        databaseReference.child(ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot == null)
-                {
-                    Toast.makeText(context,"We are getting things fixed",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
-                Log.d(TAG, "onDataChange: Password = "+dataSnapshot.child(ROOT_PASSWORD).getValue());
-                if (dataSnapshot.getValue() == null)
-                {
-                    OnLoginFailure(context, "No user found");
-                }
-                else {
-                    if (dataSnapshot.child(ROOT_PASSWORD).getValue().toString().equals(password)) {
-                        long type = (long) dataSnapshot.child(ROOT_TYPE).getValue();
-                        Log.d(TAG, "onDataChange: type: "+ type);
-                        OnLoginSuccesful(context, navigationView, type);
-                    }
-                    else{
-                        OnLoginFailure(context,"Password Mismatch");
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void OnLoginSuccesful(Context context, NavigationView navigationView, long type) {
-        Log.d(TAG, "OnLoginSuccesful: ");
-        Preferences.getInstance().setSignedIn(context, true);
-        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
-        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
-    }
-
-    private void OnLoginFailure(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 }
