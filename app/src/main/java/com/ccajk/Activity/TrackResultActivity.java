@@ -5,14 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.Grievance;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Helper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,7 +32,7 @@ public class TrackResultActivity extends AppCompatActivity {
     RecyclerViewAdapterTracking adapterTracking;
     DatabaseReference dbref;
     String pensionerCode;
-    PopupWindow progressDialog;
+    ProgressDialog progressDialog;
     View parent;
     final String TAG = "Track";
 
@@ -42,8 +45,8 @@ public class TrackResultActivity extends AppCompatActivity {
     }
 
    private void init() {
-       //progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
-       //progressDialog.showAtLocation(parent, Gravity.CENTER, 0, 0);
+       progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
+       progressDialog.show();
 
        dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("pensionerCode");
@@ -92,6 +95,7 @@ public class TrackResultActivity extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        progressDialog.dismiss();
                         if (grievances.size() == 0)
                             textView.setText("No Grievances Registered");
                     }

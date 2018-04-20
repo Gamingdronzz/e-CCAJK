@@ -12,6 +12,8 @@
             <item
                 android:id="@+id/navmenu_pension"
                 android:title="Pension Grievance"
+                android:iconTintMode="multiply"
+                android:iconTint="@color/colorAccent"
                 android:icon="@drawable/ic_drawable_pension"/>
             <item
                 android:id="@+id/navmenu_gpf"

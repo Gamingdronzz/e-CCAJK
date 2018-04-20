@@ -6,10 +6,12 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
@@ -140,15 +142,38 @@ public class Helper {
     }
 
 
-    public PopupWindow getProgressWindow(final Activity context,String message) {
-        TextView textViewMessage;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
-        textViewMessage.setText(message);
-        //popupWindow.setFocusable(true);
-        popupWindow.update();
-        return  popupWindow;
+    public ProgressDialog getProgressWindow(final Activity context,String message,int res) {
+//        TextView textViewMessage;
+//        ViewGroup viewGroup =(ViewGroup)context.getLayoutInflater().inflate(res,null);
+//        View popupView = context.getLayoutInflater().inflate(R.layout.custom_progress_dialog,viewGroup);
+//        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
+//        textViewMessage.setText(message);
+//        //popupWindow.setFocusable(true);
+//        popupWindow.update();
+//        return  popupWindow;
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(message);
+        return progressDialog;
+    }
+
+    public ProgressDialog getProgressWindow(final Activity context, String message) {
+////        ProgressDialog progressDialog = new ProgressDialog(context);
+////        progressDialog.setMessage(message);
+////        return progressDialog;
+//        TextView textViewMessage;
+//        View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog,null);
+//        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
+//        textViewMessage.setText(message);
+//        //popupWindow.setFocusable(true);
+//        popupWindow.update();
+//        return  popupWindow;
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(message);
+        return progressDialog;
     }
 
     public void showSnackBar(CharSequence message, View view) {

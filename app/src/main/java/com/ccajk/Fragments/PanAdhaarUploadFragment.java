@@ -24,6 +24,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.PanAdhaar;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
@@ -51,7 +52,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     TextInputLayout textInputLayout;
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
-    PopupWindow progressDialog;
+    ProgressDialog progressDialog;
 
     DatabaseReference dbref;
     private static final String TAG = "PanAdhaarUpload";
@@ -213,7 +214,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void uploadAdhaarOrPan() {
 
-        progressDialog.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+        progressDialog.show();
         dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         //statusref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS);
 

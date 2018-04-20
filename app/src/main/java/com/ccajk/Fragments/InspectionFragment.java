@@ -59,8 +59,9 @@ public class InspectionFragment extends Fragment {
     FusedLocationProviderClient mFusedLocationClient;
     LocationCallback mLocationCallback;
     LocationRequest mLocationRequest;
-    PopupWindow progressDialog;
+    com.ccajk.CustomObjects.ProgressDialog progressDialog;
     boolean isCurrentLocationFound = false;
+    View.OnClickListener getCoordinatesListener;
 
     public InspectionFragment() {
 
@@ -76,6 +77,12 @@ public class InspectionFragment extends Fragment {
     }
 
     private void init(View view) {
+        getCoordinatesListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
         textChoose = view.findViewById(R.id.textview_choose);
         textChoose.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp,0,0);
         textChoose.setOnClickListener(new View.OnClickListener() {
@@ -87,12 +94,8 @@ public class InspectionFragment extends Fragment {
 
         textLocation = view.findViewById(R.id.textview_location);
         textLocation.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_add_location_black_24dp,0,R.drawable.ic_refresh_black_24dp,0);
-        textLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getLocationCoordinates();
-            }
-        });
+        textLocation.setOnClickListener(getCoordinatesListener);
+
 
         upload = view.findViewById(R.id.button_upload);
         upload.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_file_upload_black_24dp, 0, 0);
@@ -140,7 +143,7 @@ public class InspectionFragment extends Fragment {
         }
         else
         {
-            progressDialog.showAtLocation(getView(), Gravity.START,0,0);
+            progressDialog.show();
         }
     }
 

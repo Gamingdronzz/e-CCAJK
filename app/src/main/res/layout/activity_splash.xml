@@ -11,18 +11,16 @@
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_xxxlarge"
+        android:layout_margin="@dimen/margin_xxxxxlarge"
         android:src="@drawable/satyamev_jayate" />
 
-    <!-- <TextView
-         android:id="@+id/designedBy"
+     <TextView
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_alignParentBottom="true"
-         android:drawableBottom="@mipmap/gdlogo"
-         android:text="Designed and Developed by"
+         android:text="Office of CCA, J&amp;K Circle\nJAMMU\nDepartment of Telecommunications"
          android:textAlignment="center"
          android:textColor="@color/colorBlack"
-         android:textSize="@dimen/text_10" />-->
+         android:textSize="@dimen/text_18" />
 
 </RelativeLayout>

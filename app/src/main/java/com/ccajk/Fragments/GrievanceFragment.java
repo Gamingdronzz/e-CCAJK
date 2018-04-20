@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.GrievancAdapter;
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.Grievance;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.R;
@@ -58,7 +59,7 @@ public class GrievanceFragment extends Fragment {
     Spinner inputType, inputSubmittedBy;
     Button submit, buttonChooseFile;
     ImageButton buttonRemove;
-    PopupWindow progressDialog;
+    ProgressDialog progressDialog;
 
     ArrayList<GrievanceType> list = new ArrayList<>();
     String TAG = "Grievance";
@@ -252,7 +253,7 @@ public class GrievanceFragment extends Fragment {
 
 
     private void submitGrievance() {
-        progressDialog.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+        progressDialog.show();
         final DatabaseReference dbref;
         dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
 
