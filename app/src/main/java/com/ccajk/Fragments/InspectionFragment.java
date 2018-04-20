@@ -3,7 +3,6 @@ package com.ccajk.Fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,23 +12,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
-import com.ccajk.Tools.LocationManager;
+import com.ccajk.Tools.MyLocationManager;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,8 +34,8 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
-import static com.ccajk.Tools.LocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
-import static com.ccajk.Tools.LocationManager.LOCATION_REQUEST_CODE;
+import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
+import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,11 +50,9 @@ public class InspectionFragment extends Fragment {
 
     Double latitude, longitude;
     Location mLastLocation;
-    LocationManager locationManager;
-    FusedLocationProviderClient mFusedLocationClient;
+    MyLocationManager myLocationManager;
     LocationCallback mLocationCallback;
-    LocationRequest mLocationRequest;
-    com.ccajk.CustomObjects.ProgressDialog progressDialog;
+    ProgressDialog progressDialog;
     boolean isCurrentLocationFound = false;
     View.OnClickListener getCoordinatesListener;
 
@@ -73,6 +66,7 @@ public class InspectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
         init(view);
+        getLocationCoordinates();
         return view;
     }
 
@@ -80,7 +74,7 @@ public class InspectionFragment extends Fragment {
         getCoordinatesListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getLocationCoordinates();
             }
         };
         textChoose = view.findViewById(R.id.textview_choose);
@@ -121,12 +115,13 @@ public class InspectionFragment extends Fragment {
                 }
             }
         };
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(2000); // two minute interval
-        mLocationRequest.setFastestInterval(2000);
+//        mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(2000); // two minute interval
+//        mLocationRequest.setFastestInterval(2000);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        locationManager = new LocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
+        //myLocationManager = new MyLocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
+        myLocationManager = new MyLocationManager(this, mLocationCallback);
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(),
                 "Getting Current Location Coordinates\nPlease Wait...");
     }
@@ -135,23 +130,23 @@ public class InspectionFragment extends Fragment {
     {
 
     }
-    private void manageProgressDialog()
-    {
-        if(progressDialog.isShowing())
-        {
-            progressDialog.dismiss();
-        }
-        else
-        {
-            progressDialog.show();
-        }
-    }
+//    private void manageProgressDialog()
+//    {
+//        if(progressDialog.isShowing())
+//        {
+//            progressDialog.dismiss();
+//        }
+//        else
+//        {
+//            progressDialog.show();
+//        }
+//    }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
-        manageProgressDialog();
-        if (locationManager.checkForLocationPermission()) {
-            Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+        showProgressDialog();
+//        if (myLocationManager.checkForLocationPermission()) {
+            Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
             if (task != null) {
                 task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
                     @Override
@@ -159,11 +154,12 @@ public class InspectionFragment extends Fragment {
                         Log.v(TAG, "On Task Complete");
                         if (task.isSuccessful()) {
                             Log.v(TAG, "Task is Successful");
-                            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                            locationManager.requestLocationUpdates();
+
+                            myLocationManager.requestLocationUpdates();
 
                         } else {
                             Log.v(TAG, "Task is not Successful");
+                            dismissProgressDialog();
                         }
                     }
                 });
@@ -179,28 +175,30 @@ public class InspectionFragment extends Fragment {
                     public void onFailure(@NonNull Exception e) {
                         Log.v(TAG, "On Task Failed");
                         if (e instanceof ResolvableApiException) {
-                            locationManager.onLocationAcccessRequestFailure(e);
+                            myLocationManager.onLocationAcccessRequestFailure(e);
+                            dismissProgressDialog();
                         }
                     }
                 });
 
             }
-        } else {
-            locationManager.requestLocationPermission(this, LOCATION_REQUEST_CODE);
-        }
+//        } else {
+//            myLocationManager.requestLocationPermission(this, LOCATION_REQUEST_CODE);
+//        }
 //        if (mLastLocation == null)
 //            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
     private void showCoordinates(Location location) {
         isCurrentLocationFound = true;
-        manageProgressDialog();
+        dismissProgressDialog();
         mLastLocation = location;
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+        myLocationManager.cleanUp();
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+
         textLocation.setText(location.getLatitude() + " , " + location.getLongitude());
         progressDialog.dismiss();
     }
@@ -241,6 +239,20 @@ public class InspectionFragment extends Fragment {
 
     }
 
+    private void dismissProgressDialog()
+    {
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    private void showProgressDialog()
+    {
+        if(!progressDialog.isShowing())
+        {
+            progressDialog.show();
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
@@ -254,16 +266,19 @@ public class InspectionFragment extends Fragment {
                 switch (resultCode) {
                     case Activity.RESULT_OK: {
                         Log.v(TAG, "Resolution success");
-                        locationManager.requestLocationUpdates();
+                        myLocationManager.requestLocationUpdates();
+                        showProgressDialog();
                         break;
                     }
                     case Activity.RESULT_CANCELED: {
                         Log.v(TAG, "Resolution denied");
-                        locationManager.ShowDialogOnLocationOff("Location not turned on! Inspection will not show nearby locations without location access. Do you want to turn location on ?");
+                        myLocationManager.ShowDialogOnLocationOff("Location not turned on! Inspection will not show nearby locations without location access\nTurn Location on and Refresh");
+                        progressDialog.dismiss();
                         break;
                     }
                     default: {
                         Log.v(TAG, "User unable to do anything");
+                        dismissProgressDialog();
                         break;
                     }
                 }
@@ -285,7 +300,8 @@ public class InspectionFragment extends Fragment {
                     getLocationCoordinates();
 
                 } else {
-                    locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nInspection will not work without location access.\n\nDo you want to grant location acces ?");
+                    myLocationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nInspection will not work without location access.");
+                    dismissProgressDialog();
                 }
                 break;
             }

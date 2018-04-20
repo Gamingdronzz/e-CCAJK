@@ -5,44 +5,44 @@ package com.ccajk.CustomObjects;
  */
 
 
-        import android.annotation.SuppressLint;
-        import android.app.Activity;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.content.IntentSender;
-        import android.graphics.drawable.Drawable;
-        import android.location.Address;
-        import android.location.Geocoder;
-        import android.location.Location;
-        import android.location.LocationListener;
-        import android.location.LocationManager;
-        import android.os.Bundle;
-        import android.os.Parcel;
-        import android.os.Parcelable;
-        import android.provider.Settings;
-        import android.support.annotation.NonNull;
-        import android.support.annotation.Nullable;
-        import android.support.v7.app.AlertDialog;
-        import android.widget.Toast;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
-        import com.ccajk.Listeners.EasyLocationListener;
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.api.GoogleApiClient;
-        import com.google.android.gms.common.api.PendingResult;
-        import com.google.android.gms.common.api.ResultCallback;
-        import com.google.android.gms.common.api.Status;
-        import com.google.android.gms.location.LocationRequest;
-        import com.google.android.gms.location.LocationServices;
-        import com.google.android.gms.location.LocationSettingsRequest;
-        import com.google.android.gms.location.LocationSettingsResult;
-        import com.google.android.gms.location.LocationSettingsStates;
-        import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.ccajk.Listeners.EasyLocationListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
-        import java.io.IOException;
-        import java.util.List;
-        import java.util.Locale;
-        import java.util.Random;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * Utility class for easy access to the device location on Android
@@ -98,7 +98,7 @@ public class EasyLocation implements GoogleApiClient.OnConnectionFailedListener,
      */
     private static Location mCachedPosition;
     /**
-     * The LocationManager instance used to query the device location
+     * The MyLocationManager instance used to query the device location
      */
     private final LocationManager mLocationManager;
     /**
@@ -393,6 +393,7 @@ public class EasyLocation implements GoogleApiClient.OnConnectionFailedListener,
         }
 
         mLocationListener = createLocationListener();
+        createLocationRequest();
         mLocationManager.requestLocationUpdates(getProviderName(), mInterval, 25, mLocationListener);
     }
 
@@ -630,7 +631,41 @@ public class EasyLocation implements GoogleApiClient.OnConnectionFailedListener,
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
+//        LocationRequest mLocationRequest = new LocationRequest();
+//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
+//        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+//
+//        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+//            @Override
+//            public void onResult(@NonNull LocationSettingsResult result1) {
+//                Status status = result1.getStatus();
+//                final LocationSettingsStates states = result1.getLocationSettingsStates();
+//                switch (status.getStatusCode()) {
+//                    case LocationSettingsStatusCodes.SUCCESS:
+//                        mListener.locationOn();
+//                        break;
+//                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+//                        try {
+//
+//                            status.startResolutionForResult((Activity) context, LOCATION_SETTING_REQUEST_CODE);
+//
+//                        } catch (IntentSender.SendIntentException e) {
+//
+//                        }
+//                        break;
+//                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+//                        locationReturn = false;
+//                        break;
+//                }
+//
+//            }
+//        });
+    }
+
+    private void createLocationRequest()
+    {
         LocationRequest mLocationRequest = new LocationRequest();
+
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
 
@@ -660,7 +695,6 @@ public class EasyLocation implements GoogleApiClient.OnConnectionFailedListener,
             }
         });
     }
-
     @Override
     public void onConnectionSuspended(int i) {
     }
