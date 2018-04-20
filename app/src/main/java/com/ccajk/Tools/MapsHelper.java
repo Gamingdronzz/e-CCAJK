@@ -30,20 +30,33 @@ public class MapsHelper {
         this.context = context;
     }
 
-    public void AnimateCamera(LatLng focussedLocation, ArrayList<LocationModel> allLocations, int zoom, GoogleMap mMap, Location mLastLocation, Context context, int value) {
 
+    private void placeMarkerOnMyLocation(Location location, ArrayList<LocationModel> allLocations, GoogleMap mMap, int value) {
+        Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        AnimateCamera(allLocations, getZoomValue(0), mMap, location, value);
+        Log.v(TAG, "Animating through Callback ");
+
+    }
+
+    public void AnimateCamera(ArrayList<LocationModel> allLocations, int zoom, GoogleMap mMap, Location mLastLocation, int value) {
+
+        LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         /*if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }*/
         Log.v(TAG, "In function");
         mMap.clear();
         Log.v(TAG, "Map Cleared");
-        Circle circle = mMap.addCircle(new CircleOptions().center(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).radius(getRadius(value) * 1000).strokeColor(Color.RED));
+        Circle circle = mMap.addCircle(new CircleOptions().center(latLng).radius(getRadius(value) * 1000).strokeColor(Color.RED));
         circle.setVisible(true);
         getZoomLevel(circle);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(focussedLocation)
+                .target(latLng)
                 .zoom(zoom)                   // Sets the zoom
                 .bearing(0)                // Sets the orientation of the camera to east
                 .tilt(0)                   // Sets the tilt of the camera to 30 degrees
@@ -52,7 +65,7 @@ public class MapsHelper {
         Log.v(TAG, "Animation Done");
 
         int i = 0;
-        ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations,value,mLastLocation);
+        ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations, value, mLastLocation);
         if (filteredMarkers.size() == 0) {
             Toast.makeText(context, "No Locations nearby\nIncrease Radius", Toast.LENGTH_LONG).show();
             return;
@@ -70,8 +83,11 @@ public class MapsHelper {
         */
     }
 
+    private int getZoomValue(int seekBarValue) {
+        return 14 - seekBarValue;
+    }
 
-    private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels,int value,Location mLastLocation) {
+    private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels, int value, Location mLastLocation) {
         if (locationModels == null) {
             return null;
         }

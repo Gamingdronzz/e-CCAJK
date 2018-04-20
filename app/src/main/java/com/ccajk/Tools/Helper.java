@@ -132,7 +132,7 @@ public class Helper {
 
     public String[] submittedByList(String type) {
         String first;
-        if (type == FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION)
+        if (type == FireBaseHelper.getInstance().GRIEVANCE_PENSION)
             first = "Pensioner";
         else
             first = "GPF Benificiary";

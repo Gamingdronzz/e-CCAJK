@@ -25,8 +25,8 @@ import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
-import com.ccajk.Fragments.HotspotLocationFragment;
 import com.ccajk.Fragments.InspectionFragment;
+import com.ccajk.Fragments.LocatorFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
@@ -146,7 +146,9 @@ public class MainActivity extends AppCompatActivity
     }*/
     @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi, shortLabel = "HotSpot Locations")
     public void ShowHotSpotLocations() {
-        ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment(), null);
+        Bundle bundle = new Bundle();
+        bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
+        ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
     }
 
     public void ShowFragment(String title, Fragment fragment, Bundle bundle) {
@@ -171,14 +173,16 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;
             case R.id.navmenu_hotspot_locator:
-                ShowFragment("Wifi Hotspot Locations", new HotspotLocationFragment(), null);
+                bundle = new Bundle();
+                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
+                ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
+                break;
+            case R.id.navmenu_gp_locator:
+                bundle = new Bundle();
+                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_GP);
+                ShowFragment("GP Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_rti:
-                /*Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
-                intent.putExtra("url", "https://rtionline.gov.in/");
-                intent.putExtra("title", "RTI");
-                startActivity(intent);
-                */
                 fragment = new BrowserFragment();
                 bundle = new Bundle();
                 bundle.putString("url", "https://rtionline.gov.in/");
@@ -190,13 +194,13 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_pension:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION);
+                bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_PENSION);
                 ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF);
+                bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
                 ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_aadhaar:

@@ -2,41 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:tag="alllocationsfragment"
+    android:orientation="vertical"
     android:padding="@dimen/padding_medium"
-    android:orientation="vertical">
+    android:tag="alllocationsfragment">
 
     <Button
         android:id="@+id/btn_search_loc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_medium"
-        android:textSize="@dimen/text_15"
+        android:text="Search Location"
         android:textColor="@color/colorBlack"
-        android:text="Search Location"/>
+        android:textSize="@dimen/text_15" />
 
-   <!-- <RadioGroup
-        android:id="@+id/search"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!-- <RadioGroup
+         android:id="@+id/search"
+         android:orientation="horizontal"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
 
-            <RadioButton
-                android:id="@+id/radioButtonName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Name" />
+             <RadioButton
+                 android:id="@+id/radioButtonName"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+                 android:text="Name" />
 
-            <RadioButton
-                android:id="@+id/radioButtonState"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="State" />
+             <RadioButton
+                 android:id="@+id/radioButtonState"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+                 android:text="State" />
 
-    </RadioGroup>
--->
+     </RadioGroup>
+ -->
 
 
     <android.support.v7.widget.RecyclerView
@@ -52,6 +52,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"/>
+
 </LinearLayout>

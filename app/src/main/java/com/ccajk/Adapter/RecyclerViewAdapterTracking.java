@@ -60,9 +60,9 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
 
     public String getGrievanceType(long value) {
         if (value < 100)
-            return FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION;
+            return FireBaseHelper.getInstance().GRIEVANCE_PENSION;
         else
-            return FireBaseHelper.getInstance().ROOT_GRIEVANCE_GPF;
+            return FireBaseHelper.getInstance().GRIEVANCE_GPF;
     }
 
     public class TrackViewHolder extends RecyclerView.ViewHolder {

@@ -61,10 +61,10 @@
                 android:icon="@drawable/ic_wifi"
                 android:title="WIFI Hotspot Locator" />
 
-            <!--<item
-                android:id="@+id/navmenu_statistics"
+            <item
+                android:id="@+id/navmenu_gp_locator"
                 android:icon="@drawable/ic_menu_slideshow"
-                android:title="Statistics" />-->
+                android:title="GP Locator" />
         </menu>
 
     </item>

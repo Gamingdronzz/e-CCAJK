@@ -1,20 +1,12 @@
 package com.ccajk.Tools;
 
-import android.content.Context;
 import android.net.Uri;
-import android.support.design.widget.NavigationView;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.State;
 import com.ccajk.Providers.DummyLocationProvider;
-import com.ccajk.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -38,13 +30,16 @@ public class FireBaseHelper {
     public final String ROOT_ADHAAR = "Aadhaar";
     public final String ROOT_PAN = "Pan";
     public final String ROOT_GRIEVANCES = "Grievances";
-    public final String ROOT_GRIEVANCE_PENSION = "Pension Grievance";
-    public final String ROOT_GRIEVANCE_GPF = "GPF Grievance";
+    public final String ROOT_HOTSPOTS = "Hotspots";
+    public final String ROOT_GP = "GP Locations";
     public final String ROOT_PASSWORD = "password";
     public final String ROOT_TYPE = "type";
     public static final String ROOT_STAFF = "Staff";
-    private final String TAG = "firebaseHelper";
 
+    public final String GRIEVANCE_PENSION = "Pension Grievance";
+    public final String GRIEVANCE_GPF = "GPF Grievance";
+
+    private final String TAG = "firebaseHelper";
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     //public final String ROOT_PAN_STATUS = "Pan-Status";
 

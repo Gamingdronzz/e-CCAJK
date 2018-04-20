@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,10 @@ public class LocatorFragment extends Fragment {
 
     public TabLayout tabLayout;
     public ViewPager viewPager;
-    Bundle args;
-    public LocatorFragment()
-    {
+    public static int int_items = 2;
+    String TAG = "locator";
+
+    public LocatorFragment() {
 
     }
 
@@ -33,15 +35,15 @@ public class LocatorFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locator_layout, container, false);
         bindViews(view);
-        args = getArguments();
+        String locatorType = getArguments().getString("Locator");
+        Log.d(TAG, "onCreateView: " + locatorType);
         return view;
 
     }
 
-    private void bindViews(View view)
-    {
-        tabLayout = view.findViewById(R.id.tabs);
-        viewPager = view.findViewById(R.id.viewpager);
+    private void bindViews(View view) {
+        tabLayout = view.findViewById(R.id.tab_locator);
+        viewPager = view.findViewById(R.id.viewpager_locator);
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -56,27 +58,28 @@ public class LocatorFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    TabNearby tabNearby = new TabNearby();
-                    return tabNearby;
-                case 1:
                     TabAllLocations tabAllLocations = new TabAllLocations();
                     return tabAllLocations;
+                case 1:
+                    TabNearby tabNearby = new TabNearby();
+                    return tabNearby;
+
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            return tabLayout.getTabCount();
+            return int_items;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
 
             switch (position) {
-                case 0:
-                    return "NEARBY";
                 case 1:
+                    return "NEARBY";
+                case 0:
                     return "ALL LOCATIONS";
             }
             return null;

@@ -62,7 +62,7 @@ public class GrievanceFragment extends Fragment {
 
     ArrayList<GrievanceType> list = new ArrayList<>();
     String TAG = "Grievance";
-    String fileChosed, fileChosedPath, pcode, root;
+    String fileChosed, fileChosedPath, pcode, type;
     GrievanceType grievanceType;
 
     ImageView imagePensionerCode;
@@ -82,7 +82,7 @@ public class GrievanceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_grievance, container, false);
         Bundle bundle = this.getArguments();
-        root = bundle.getString("Root");
+        type = bundle.getString("Type");
         bindViews(view);
         init(view);
         removeSelectedFile();
@@ -117,7 +117,7 @@ public class GrievanceFragment extends Fragment {
         imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
         //imageAttach.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_attach_file_black_24dp));
         inputType = view.findViewById(R.id.spinner_type);
-        if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCE_PENSION))
+        if (type.equals(FireBaseHelper.getInstance().GRIEVANCE_PENSION))
             list = Helper.getInstance().getPensionGrievanceTypelist();
         else
             list = Helper.getInstance().getGPFGrievanceTypelist();
@@ -125,16 +125,16 @@ public class GrievanceFragment extends Fragment {
         inputType.setAdapter(adapter);
 
 
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(root));
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(type));
         inputSubmittedBy.setAdapter(arrayAdapter1);
-        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp,0,0,0);
+        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showFileChooser();
             }
         });
-        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_close_black_24dp));
+        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
         buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,7 +178,7 @@ public class GrievanceFragment extends Fragment {
                         for (File file : list) {
                             if (file.length() / 1048576 > 1) {
                                 Toast.makeText(getContext(), "Please Choose a file of 1mb or less", Toast.LENGTH_SHORT).show();
-                               removeSelectedFile();
+                                removeSelectedFile();
                             } else {
                                 fileChosedPath = file.getAbsolutePath();
                                 fileChosed = file.getName();
@@ -289,7 +289,10 @@ public class GrievanceFragment extends Fragment {
     private void uploadFile() {
         UploadTask uploadTask;
 
-        uploadTask = FireBaseHelper.getInstance().uploadFile(root, pcode, fileChosedPath, String.valueOf(grievanceType.getId()));
+        uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                pcode,
+                fileChosedPath,
+                String.valueOf(grievanceType.getId()));
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(new OnFailureListener() {
