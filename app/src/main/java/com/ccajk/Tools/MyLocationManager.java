@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.RequiresApi;
@@ -19,6 +20,7 @@ import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
@@ -31,6 +33,10 @@ import com.google.android.gms.tasks.Task;
  */
 
 public class MyLocationManager {
+
+    public interface LocationCallBack{
+
+    }
     final String TAG = "MyLocationManager";
     public static final int LOCATION_REQUEST_CODE = 101;
     public static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 102;
@@ -54,7 +60,6 @@ public class MyLocationManager {
         this.mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(2000); // two minute interval
         mLocationRequest.setFastestInterval(2000);
-
     }
 
     public MyLocationManager(Fragment context) {

@@ -1,0 +1,85 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="com.ccajk.Fragments.ContactUsFragment">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight=".5"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_heading_office_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/artifika"
+
+            android:padding="@dimen/padding_large"
+            android:text="Office Address"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_20"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorBlack"></View>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_office_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/imprima"
+            android:padding="@dimen/padding_large"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15"></android.support.v7.widget.AppCompatTextView>
+    </LinearLayout><View
+    android:layout_width="2dp"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"></View>
+    <LinearLayout
+
+        android:layout_width="0dp"
+        android:layout_weight=".5"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="3dp"-->
+        <!--android:background="@color/colorBlack"></View>-->
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/artifika"
+            android:padding="@dimen/padding_large"
+            android:text="Contact Persons"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_20"
+            android:textStyle="bold"></android.support.v7.widget.AppCompatTextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorBlack"></View>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_office_address"
+            android:padding="@dimen/padding_medium"
+            android:paddingBottom="8dp"></android.support.v7.widget.RecyclerView>
+
+
+    </LinearLayout>
+</LinearLayout>

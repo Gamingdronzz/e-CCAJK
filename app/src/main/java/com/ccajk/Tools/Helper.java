@@ -2,6 +2,8 @@
 package com.ccajk.Tools;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +45,14 @@ public class Helper {
         } else {
             return _instance;
         }
+    }
+
+    public boolean isTab(Context context) {
+        boolean isTab = (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+        Log.d(TAG, "Tab = " + isTab);
+        return isTab;
     }
 
     public ArrayList<GrievanceType> getPensionGrievanceTypelist() {

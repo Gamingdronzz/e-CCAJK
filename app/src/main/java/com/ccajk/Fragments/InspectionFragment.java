@@ -107,6 +107,7 @@ public class InspectionFragment extends Fragment {
             }
         });
 
+
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {

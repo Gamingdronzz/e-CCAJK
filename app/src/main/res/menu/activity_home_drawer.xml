@@ -4,40 +4,60 @@
     tools:showIn="navigation_view">
     <item
         android:id="@+id/navmenu_home"
-        android:title="Home"
-        android:icon="@drawable/ic_drawable_home"/>
+        android:icon="@drawable/ic_drawable_home"
+        android:title="Home" />
 
+    <item
+        android:id="@+id/navmenu_visit_cca_website"
+        android:icon="@drawable/ic_drawable_web"
+        android:title="Visit CCA JK Website" />
     <item android:title="Functions">
         <menu>
             <item
                 android:id="@+id/navmenu_pension"
-                android:title="Pension Grievance"
-                android:iconTintMode="multiply"
+                android:icon="@drawable/ic_drawable_pension"
                 android:iconTint="@color/colorAccent"
-                android:icon="@drawable/ic_drawable_pension"/>
+                android:iconTintMode="multiply"
+                android:title="Pension Grievance" />
             <item
                 android:id="@+id/navmenu_gpf"
-                android:title="GPF Grievance"
-                android:icon="@drawable/ic_drawable_gpf"/>
-            <item
-                android:id="@+id/navmenu_rti"
-                android:title="RTI"
-                android:icon="@drawable/ic_drawable_rti"/>
+                android:icon="@drawable/ic_drawable_gpf"
+                android:title="GPF Grievance" />
+
 
             <!--<item
                 android:id="@+id/navmenu_payment_status"
                 android:icon="@drawable/ic_action_payment"
                 android:title="Payment Status" />-->
 
+        </menu>
+    </item>
+    <item android:title="Update Information">
+        <menu>
             <item
                 android:id="@+id/navmenu_aadhaar"
-                android:title="Upload AADHAAR"
-                android:icon="@drawable/ic_drawable_aadhaar"/>
+                android:icon="@drawable/ic_drawable_aadhaar"
+                android:title="Upload AADHAAR" />
 
             <item
                 android:id="@+id/navmenu_pan"
                 android:icon="@drawable/ic_drawable_pancard"
                 android:title="Upload PAN" />
+            <item
+                android:id="@+id/navmenu_life_certificate"
+                android:icon="@drawable/ic_drawable_aadhaar"
+                android:title="Upload Life Certificate" />
+
+            <item
+                android:id="@+id/navmenu_remarriage_certificate"
+                android:icon="@drawable/ic_drawable_pancard"
+                android:title="Upload Remarriage Certificate" />
+            <item
+                android:id="@+id/navmenu_reemployment"
+                android:icon="@drawable/ic_drawable_aadhaar"
+                android:title="Upload Reemployment Certificate" />
+
+
         </menu>
     </item>
 
@@ -47,6 +67,11 @@
                 android:id="@+id/navmenu_tracking"
                 android:icon="@drawable/ic_drawable_tracking"
                 android:title="Track Grievance" />
+
+            <item
+                android:id="@+id/navmenu_rti"
+                android:icon="@drawable/ic_drawable_rti"
+                android:title="Track RTI" />
 
         </menu>
     </item>
@@ -76,9 +101,8 @@
         <menu>
             <item
                 android:id="@+id/navmenu_login"
-                android:title="Log in"
                 android:icon="@drawable/ic_drawbale_login_24dp"
-                />
+                android:title="Log in" />
 
         </menu>
 
@@ -92,13 +116,13 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="Inspection" />
             <!--<item-->
-                <!--android:id="@+id/navmenu_UpdateStatus"-->
-                <!--android:icon="@drawable/ic_menu_send"-->
-                <!--android:title="Update Information" />-->
+            <!--android:id="@+id/navmenu_UpdateStatus"-->
+            <!--android:icon="@drawable/ic_menu_send"-->
+            <!--android:title="Update Information" />-->
             <!--<item-->
-                <!--android:id="@+id/navmenu_payment_update"-->
-                <!--android:icon="@drawable/ic_menu_send"-->
-                <!--android:title="Update Payment Status" />-->
+            <!--android:id="@+id/navmenu_payment_update"-->
+            <!--android:icon="@drawable/ic_menu_send"-->
+            <!--android:title="Update Payment Status" />-->
             <item
                 android:id="@+id/navmenu_logout"
 

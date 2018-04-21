@@ -1,11 +1,13 @@
 package com.ccajk.Fragments;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,12 @@ import com.ccajk.Adapter.RecyclerViewAdapterContacts;
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +33,7 @@ public class ContactUsFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
-
+    boolean isTab;
     public ContactUsFragment() {
         // Required empty public constructor
     }
@@ -37,14 +42,45 @@ public class ContactUsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: done");
         View view = inflater.inflate(R.layout.fragment_contact_us, container, false);
-
+        isTab = Helper.getInstance().isTab(this.getContext());
         bindViews(view);
-        init();
+        if(isTab)
+        init(true);
+        else
+        {
+            init(false);
+        }
+
         return view;
+
     }
 
-    private void init()
+//    @Override
+//    public void onConfigurationChanged(Configuration config) {
+//        Log.d(TAG, "onConfigurationChanged: " + config.orientation);
+//        super.onConfigurationChanged(config);
+//        // Check for the rotation
+//        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            init(true);
+//        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            if (isTab) {
+//                init(true);
+//            } else {
+//                init(false);
+//            }
+//
+//
+//        }
+//    }
+
+    private void setupFragment()
+    {
+
+    }
+
+    private void init(boolean isMultiColumn)
     {
         getContactsList(Preferences.getInstance().getPrefState(getContext()));
 
@@ -52,14 +88,15 @@ public class ContactUsFragment extends Fragment {
         recyclerView.setAdapter(adapterContacts);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-
-        textviewHeadingOfficeAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ManageOfficeAddress();
-            }
-        });
-        ManageOfficeAddress();
+        if(!isMultiColumn) {
+            textviewHeadingOfficeAddress.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ManageOfficeAddress();
+                }
+            });
+            ManageOfficeAddress();
+        }
         /*recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -93,7 +130,6 @@ public class ContactUsFragment extends Fragment {
     {
         if(textViewOfficeAddress.getVisibility() == View.GONE)
         {
-
             textViewOfficeAddress.setVisibility(View.VISIBLE);
             textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
             return false;

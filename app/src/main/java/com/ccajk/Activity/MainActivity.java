@@ -169,6 +169,12 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_home:
                 ShowFragment("Home", new HomeFragment(), null);
                 break;
+            case R.id.navmenu_visit_cca_website:
+                fragment = new BrowserFragment();
+                bundle = new Bundle();
+                bundle.putString("url", "http://ccajk.gov.in");
+                ShowFragment("CCA J&K", fragment, bundle);
+                break;
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;

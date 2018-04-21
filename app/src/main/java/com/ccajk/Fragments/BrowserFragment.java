@@ -135,7 +135,7 @@ public class BrowserFragment extends Fragment {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 //Toast.makeText(getContext(), "We are getting things fixed..", Toast.LENGTH_SHORT).show();
                 setSubtitle("Some Error Occured. Please Refresh");
-                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
