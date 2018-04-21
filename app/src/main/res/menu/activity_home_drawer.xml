@@ -51,11 +51,11 @@
             <item
                 android:id="@+id/navmenu_remarriage_certificate"
                 android:icon="@drawable/ic_drawable_pancard"
-                android:title="Upload Remarriage Certificate" />
+                android:title="Upload Re-Marriage Certificate" />
             <item
                 android:id="@+id/navmenu_reemployment"
                 android:icon="@drawable/ic_drawable_aadhaar"
-                android:title="Upload Reemployment Certificate" />
+                android:title="Upload Re-Employment Certificate" />
 
 
         </menu>
@@ -115,17 +115,15 @@
                 android:id="@+id/navmenu_inspection"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Inspection" />
-            <!--<item-->
-            <!--android:id="@+id/navmenu_UpdateStatus"-->
-            <!--android:icon="@drawable/ic_menu_send"-->
-            <!--android:title="Update Information" />-->
-            <!--<item-->
-            <!--android:id="@+id/navmenu_payment_update"-->
-            <!--android:icon="@drawable/ic_menu_send"-->
-            <!--android:title="Update Payment Status" />-->
+
+            <item
+                android:id="@+id/navmenu_update"
+                android:icon="@drawable/ic_menu_send"
+                android:visible="false"
+                android:title="Update Grievance Status" />
+
             <item
                 android:id="@+id/navmenu_logout"
-
                 android:title="Logout" />
         </menu>
 

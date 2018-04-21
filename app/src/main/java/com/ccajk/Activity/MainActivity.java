@@ -221,6 +221,24 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("Root", FireBaseHelper.getInstance().ROOT_PAN);
                 ShowFragment("Upload PAN", fragment, bundle);
                 break;
+            case R.id.navmenu_life_certificate:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_LIFE);
+                ShowFragment("Upload Life Certificate", fragment, bundle);
+                break;
+            case R.id.navmenu_remarriage_certificate:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_RE_MARRIAGE);
+                ShowFragment("Upload Re-Marriage Certificate", fragment, bundle);
+                break;
+            case R.id.navmenu_reemployment:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_RE_EMPLOYMENT);
+                ShowFragment("Upload Re-Employment Certificate", fragment, bundle);
+                break;
             case R.id.navmenu_tracking:
                 PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
                 break;

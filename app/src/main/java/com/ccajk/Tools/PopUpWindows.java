@@ -1,8 +1,6 @@
 package com.ccajk.Tools;
 
 import android.app.Activity;
-
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.NavigationView;
@@ -24,12 +22,11 @@ import android.widget.Toast;
 import com.ccajk.Activity.MainActivity;
 import com.ccajk.Activity.TrackResultActivity;
 import com.ccajk.R;
-import com.google.firebase.FirebaseApiNotAvailableException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.ccajk.Tools.FireBaseHelper.ROOT_STAFF;
+
 
 /**
  * Created by hp on 18-04-2018.
@@ -95,7 +92,7 @@ public class PopUpWindows {
                     Toast.makeText(context,"Please input Password",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                FireBaseHelper.getInstance().databaseReference.child(ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot == null) {

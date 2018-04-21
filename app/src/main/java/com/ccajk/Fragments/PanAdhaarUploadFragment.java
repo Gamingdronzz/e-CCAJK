@@ -13,14 +13,14 @@ import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +49,11 @@ import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment
 public class PanAdhaarUploadFragment extends Fragment {
 
     TextView textViewFileName;
-    TextInputLayout textInputLayout;
+    TextInputLayout textInputIdentifier, textInputNumber;
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
+    RadioGroup radioGroup;
+    RadioButton pcode, hrcode;
     ProgressDialog progressDialog;
 
     DatabaseReference dbref;
@@ -80,24 +82,41 @@ public class PanAdhaarUploadFragment extends Fragment {
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         ImageView imageNumber = view.findViewById(R.id.image_number);
         imageNumber.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
-//        ImageView imageAttach = view.findViewById(R.id.image_attach);
-//        imageAttach.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_attach_file_black_24dp));
 
-        textInputLayout = view.findViewById(R.id.text_number);
-        textInputLayout.setHint(root + " Number");
+        textInputIdentifier = view.findViewById(R.id.text_input_code);
+
+        radioGroup = view.findViewById(R.id.groupNumberType);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonPensioner:
+                        textInputIdentifier.setHint("Pensioner Code");
+                        break;
+                        //TODO
+                        //set place holder format
+                    case R.id.radioButtonHR:
+                        textInputIdentifier.setHint("HR Number");
+                }
+            }
+        });
+
+        textInputNumber = view.findViewById(R.id.text_number);
+        textInputNumber.setHint(root + " Number");
         inputNumber = view.findViewById(R.id.autocomplete_number);
         if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
-            inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
-        } else {
+            inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
+        } else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         }
 
         inputPCode = view.findViewById(R.id.autocomplete_pcode);
         textViewFileName = view.findViewById(R.id.textview_file_name);
+
         buttonChooseFile = view.findViewById(R.id.button_attach);
         buttonChooseFile.setText("Select " + root + " File");
-        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp,0,0,0);
+        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
