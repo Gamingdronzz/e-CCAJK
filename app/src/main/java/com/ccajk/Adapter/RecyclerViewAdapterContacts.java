@@ -130,7 +130,10 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                         Intent intent = new Intent(Intent.ACTION_SENDTO);
                         intent.setData(Uri.parse("mailto:"));
                         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
-                        v.getContext().startActivity(intent);
+                        if (intent.resolveActivity(context.getPackageManager()) != null) {
+                            v.getContext().startActivity(intent);
+                        }
+
                     }
                 }
             });

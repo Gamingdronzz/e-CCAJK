@@ -18,6 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="@dimen/elevation_medium"
             android:orientation="vertical">
 
             <TextView
@@ -29,12 +30,12 @@
                 android:textSize="@dimen/text_20"
                 android:textStyle="bold"
                 android:elevation="@dimen/elevation_large"
-                android:textColor="@color/colorBlack"/>
+                android:textColor="@color/colorWhite"/>
 
             <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="2dp"-->
-                <!--android:background="@color/colorBlack"></View>-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="2dp"-->
+            <!--android:background="@color/colorBlack"></View>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,8 +66,8 @@
                     android:id="@+id/btn_check_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_large"
                     android:layout_gravity="center"
+                    android:textColor="@color/colorWhite"
                     android:layout_marginTop="@dimen/margin_large"
                     android:background="@drawable/custom_button"
                     android:text="Track"

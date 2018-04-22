@@ -26,6 +26,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.github.warkiz.widget:indicatorseekbar:1.2.9'
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
@@ -48,7 +49,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     compile 'com.github.matthiasrobbers:shortbread:1.0.2'
     annotationProcessor 'com.github.matthiasrobbers:shortbread-compiler:1.0.2'
-    compile 'com.sdsmdg.harjot:vectormaster:1.1.2'
+    compile 'com.stephentuso:welcome:1.4.1'
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -16,6 +16,7 @@ public class SplashActivity extends AppCompatActivity {
     ImageView imageView;
     AppCompatImageButton imageButton;
     TextView gd;
+    boolean showWelcomeScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +65,20 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
+        if(showWelcomeScreen)
+        {
+            //intent.setClass(getApplicationContext(), WelcomeScreen.class);
+        }
+        else
+        {
+            intent.setClass(getApplicationContext(), MainActivity.class);
+        }
+
         /*if (Preferences.getInstance().getSignedIn(this))
             intent.setClass(getApplicationContext(), MainActivity.class);
         else
             intent.setClass(getApplicationContext(), RegOrLoginActivity.class);*/
-        intent.setClass(getApplicationContext(), MainActivity.class);
+
         startActivity(intent);
         finish();
     }

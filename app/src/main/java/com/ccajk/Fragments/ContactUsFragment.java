@@ -1,8 +1,11 @@
 package com.ccajk.Fragments;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterContacts;
 import com.ccajk.Models.Contact;
@@ -28,6 +33,8 @@ import static android.content.ContentValues.TAG;
 public class ContactUsFragment extends Fragment {
 
     AppCompatTextView textViewOfficeAddress, textviewHeadingOfficeAddress;
+    LinearLayout officeAddressLayout;
+    AppCompatButton compatButtonLocateOnMap;
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
@@ -56,8 +63,28 @@ public class ContactUsFragment extends Fragment {
     private void bindViews(View view) {
         recyclerView = view.findViewById(R.id.recyclerview_contacts);
         textViewOfficeAddress = view.findViewById(R.id.textview_office_address);
+        officeAddressLayout = view.findViewById(R.id.linear_layout_office_Address_Area);
         textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
         textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getPrefState(getContext())));
+        compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
+        compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location,0,0,0);
+        compatButtonLocateOnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String location = "32.707500,74.874217";
+                Uri gmmIntentUri = Uri.parse("geo:"+location);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
+                else
+                {
+                    Toast.makeText(getContext(),"No Map Application Installed",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
 //    @Override
@@ -124,12 +151,12 @@ public class ContactUsFragment extends Fragment {
     }
 
     private boolean ManageOfficeAddress() {
-        if (textViewOfficeAddress.getVisibility() == View.GONE) {
-            textViewOfficeAddress.setVisibility(View.VISIBLE);
+        if (officeAddressLayout.getVisibility() == View.GONE) {
+            officeAddressLayout.setVisibility(View.VISIBLE);
             textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
             return false;
         } else {
-            textViewOfficeAddress.setVisibility(View.GONE);
+            officeAddressLayout.setVisibility(View.GONE);
             textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
             return true;
         }

@@ -3,11 +3,14 @@ package com.ccajk.Tools;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
+import com.ccajk.Activity.MainActivity;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
@@ -49,6 +52,58 @@ public class Helper {
         Log.d(TAG, "Tab = " + isTab);
         return isTab;
     }
+
+    public void showAlertDialog
+            (Context context,
+             String message,
+             String title,
+             String positiveButtonText,
+             DialogInterface.OnClickListener positiveButtonOnClickListener,
+             String negativeButtonText) {
+        if(title == null)
+        {
+            title = "CCA JK";
+        }
+        if(message == null)
+        {
+            Log.d(TAG, "showAlertDialog: Message cant be null");
+            return;
+        }
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                context, R.style.MyAlertDialogStyle);
+        alertDialog.setPositiveButton(positiveButtonText,positiveButtonOnClickListener)
+                .setNegativeButton(negativeButtonText, null)
+                .setMessage(message)
+                .setTitle(title)
+                .show();
+    }
+
+    public void showAlertDialog
+            (Context context,
+             String message,
+             String title,
+             String neutralButtonText) {
+        if(title == null)
+        {
+            title = "CCA JK";
+        }
+        if(message == null)
+        {
+            Log.d(TAG, "showAlertDialog: Message cant be null");
+            return;
+        }
+        if(neutralButtonText == null)
+        {
+            neutralButtonText = "OK";
+        }
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                context, R.style.MyAlertDialogStyle);
+        alertDialog.setNeutralButton(neutralButtonText,null)
+                .setMessage(message)
+                .setTitle(title)
+                .show();
+    }
+
 
     public boolean checkInput(String input) {
 
@@ -161,15 +216,6 @@ public class Helper {
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
 
-        /* TextView textViewMessage;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog,null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
-        textViewMessage.setText(message);
-        //popupWindow.setFocusable(true);
-        popupWindow.update();
-        return  popupWindow;*/
-
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
         return progressDialog;
@@ -215,7 +261,7 @@ public class Helper {
         return allLocationModels;
     }
 
-     public static double distance(double lat1, double lng1, double lat2, double lng2) {
+    public static double distance(double lat1, double lng1, double lat2, double lng2) {
 
         double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
 

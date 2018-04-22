@@ -30,6 +30,7 @@ import com.ccajk.Fragments.LocatorFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
 
@@ -262,18 +263,18 @@ public class MainActivity extends AppCompatActivity
 
 
     private void doExit() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                MainActivity.this, R.style.MyAlertDialogStyle);
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        })
-                .setNegativeButton("No", null)
-                .setMessage("Do you want to exit?")
-                .setTitle("CCA JK")
-                .show();
+        Helper.getInstance().showAlertDialog(
+                this,
+                "Do you want to exit?",
+                null,
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                },
+        "No");
     }
 
 

@@ -62,7 +62,8 @@
         <activity android:name=".Unused.RegisterActivity" />
         <activity android:name=".Unused.PanAdhaarHistoryActivity" />
         <activity android:name=".Activity.AboutUsActivity" />
-        <activity android:name=".Activity.TrackResultActivity"></activity>
+        <activity android:name=".Activity.TrackResultActivity" />
+        <activity android:name=".Activity.WelcomeScreen"></activity>
     </application>
 
 </manifest>

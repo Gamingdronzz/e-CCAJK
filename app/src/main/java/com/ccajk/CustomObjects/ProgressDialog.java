@@ -45,24 +45,24 @@ public class ProgressDialog {
         builder = new AlertDialog.Builder(view.getContext());
     }
 
-    public void light(String message) {
-        setBackgroundColor(view.getResources().getColor(R.color.colorWhite));
-        setProgressColor(view.getResources().getColor(R.color.colorBlack));
-        setMessageColor(view.getResources().getColor(R.color.colorBlack));
-        setMessage(message);
-        show();
-    }
-
-    public void dark(String message) {
-        setBackgroundColor(view.getResources().getColor(R.color.colorBlack));
-        setProgressColor(view.getResources().getColor(R.color.colorWhite));
-        setMessageColor(view.getResources().getColor(R.color.colorWhite));
-        setMessage(message);
-        show();
-    }
+//    public void light(String message) {
+//        setBackgroundColor(view.getResources().getColor(R.color.colorWhite));
+//        setProgressColor(view.getResources().getColor(R.color.colorBlack));
+//        setMessageColor(view.getResources().getColor(R.color.colorBlack));
+//        setMessage(message);
+//        show();
+//    }
+//
+//    public void dark(String message) {
+//        setBackgroundColor(view.getResources().getColor(R.color.colorBlack));
+//        setProgressColor(view.getResources().getColor(R.color.colorWhite));
+//        setMessageColor(view.getResources().getColor(R.color.colorWhite));
+//        setMessage(message);
+//        show();
+//    }
 
     public ProgressDialog setBackgroundDrawable(Drawable drawable) {
-        parent.setBackgroundDrawable(drawable);
+        parent.setBackground(drawable);
         parent.setPadding(30, 30, 30, 30);
         return this;
     }
@@ -93,7 +93,10 @@ public class ProgressDialog {
     }
 
     public void show() {
-
+//        if(isVisible)
+//        {
+//            return;
+//        }
         if (view.getParent() == null)
             builder.setView(view);
         dialog = builder.create();
@@ -103,6 +106,10 @@ public class ProgressDialog {
     }
 
     public void dismiss() {
+//        if(!isVisible)
+//        {
+//            return;
+//        }
         dialog.dismiss();
         isVisible = false;
         if (view.getParent() != null)
