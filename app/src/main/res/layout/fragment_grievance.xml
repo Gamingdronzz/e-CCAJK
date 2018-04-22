@@ -19,6 +19,47 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/layout_radio"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:paddingLeft="@dimen/padding_large"
+                    android:text="Upload Using"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_12" />
+
+                <RadioGroup
+                    android:id="@+id/groupNumberType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_medium">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonPensioner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="Pensioner Code" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonHR"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="HR Number" />
+
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorOffWhite"
@@ -33,6 +74,7 @@
                     android:tint="@color/colorAccent" />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -180,51 +222,51 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorWhite"
-                android:layout_marginTop="@dimen/padding_medium">
+                android:layout_marginTop="@dimen/padding_medium"
+                android:background="@color/colorWhite">
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/image_attach"-->
-                    <!--android:layout_alignParentLeft="true"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:layout_alignParentStart="true"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:tint="@color/colorAccent" />-->
+                <!--android:id="@+id/image_attach"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:tint="@color/colorAccent" />-->
 
                 <Button
                     android:id="@+id/button_attach"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
-                    android:layout_centerVertical="true"
                     android:layout_height="wrap_content"
-                    android:drawableTint="@color/colorPrimary"
-                    android:background="@drawable/custom_button_rounded"
-                    android:text="Add File"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/margin_medium"
+                    android:background="@drawable/custom_button_rounded"
+                    android:drawableTint="@color/colorPrimary"
+                    android:text="Add File"
                     android:textColor="@color/colorWhite" />
 
                 <TextView
                     android:id="@+id/textview_file_name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/button_attach"
+                    android:gravity="center"
                     android:paddingEnd="@dimen/padding_large"
                     android:paddingStart="@dimen/padding_large"
-                    android:layout_toRightOf="@id/button_attach"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/text_12" />
 
                 <ImageButton
                     android:id="@+id/btn_remove"
                     android:layout_width="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:background="@null"
                     android:tint="@color/colorAccent" />

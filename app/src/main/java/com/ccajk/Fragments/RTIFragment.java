@@ -17,13 +17,13 @@ import com.ccajk.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StatisticsFragment extends Fragment {
+public class RTIFragment extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerViewAdapterHotspotLocation adapter;
     View view;
 
-    public StatisticsFragment() {
+    public RTIFragment() {
         // Required empty public constructor
     }
 
@@ -31,7 +31,7 @@ public class StatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_statistics, container, false);
+        view = inflater.inflate(R.layout.fragment_rti, container, false);
 
 
         //adapter = new RecyclerViewAdapterHotspotLocation(allLocations);

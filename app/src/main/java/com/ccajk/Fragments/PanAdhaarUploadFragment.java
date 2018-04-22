@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +52,6 @@ public class PanAdhaarUploadFragment extends Fragment {
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
     RadioGroup radioGroup;
-    RadioButton pcode, hrcode;
     ProgressDialog progressDialog;
 
     DatabaseReference dbref;

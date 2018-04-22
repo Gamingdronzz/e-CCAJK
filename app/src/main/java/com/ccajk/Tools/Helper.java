@@ -6,12 +6,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceType;
@@ -53,6 +48,19 @@ public class Helper {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
         Log.d(TAG, "Tab = " + isTab);
         return isTab;
+    }
+
+    public boolean checkInput(String input) {
+
+        Log.d(TAG, "checkInput: = " + input);
+        boolean result;
+        if (input == null || input.trim().isEmpty()) {
+            result = false;
+        } else {
+            result = true;
+        }
+        Log.d(TAG, "checkInput: result = " + result);
+        return result;
     }
 
     public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
@@ -151,35 +159,16 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
-
-    public ProgressDialog getProgressWindow(final Activity context,String message,int res) {
-//        TextView textViewMessage;
-//        ViewGroup viewGroup =(ViewGroup)context.getLayoutInflater().inflate(res,null);
-//        View popupView = context.getLayoutInflater().inflate(R.layout.custom_progress_dialog,viewGroup);
-//        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-//        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
-//        textViewMessage.setText(message);
-//        //popupWindow.setFocusable(true);
-//        popupWindow.update();
-//        return  popupWindow;
-
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage(message);
-        return progressDialog;
-    }
-
     public ProgressDialog getProgressWindow(final Activity context, String message) {
-////        ProgressDialog progressDialog = new ProgressDialog(context);
-////        progressDialog.setMessage(message);
-////        return progressDialog;
-//        TextView textViewMessage;
-//        View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog,null);
-//        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-//        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
-//        textViewMessage.setText(message);
-//        //popupWindow.setFocusable(true);
-//        popupWindow.update();
-//        return  popupWindow;
+
+        /* TextView textViewMessage;
+        View popupView = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog,null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        textViewMessage = popupView.findViewById(R.id.textView_Progress_Message);
+        textViewMessage.setText(message);
+        //popupWindow.setFocusable(true);
+        popupWindow.update();
+        return  popupWindow;*/
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
@@ -226,11 +215,7 @@ public class Helper {
         return allLocationModels;
     }
 
-
-    /**
-     * calculates the distance between two locations in MILES
-     */
-    public static double distance(double lat1, double lng1, double lat2, double lng2) {
+     public static double distance(double lat1, double lng1, double lat2, double lng2) {
 
         double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
 
@@ -251,18 +236,6 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public boolean checkInput(String input) {
 
-        Log.d(TAG, "checkInput: = " + input);
-        boolean result;
-        if (input == null || input.trim().isEmpty()) {
-            result= false;
-        }
-        else {
-            result = true;
-        }
-        Log.d(TAG, "checkInput: result = " + result);
-        return result;
-    }
 }
 

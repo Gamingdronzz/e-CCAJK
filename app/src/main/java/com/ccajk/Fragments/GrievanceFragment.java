@@ -6,11 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,11 +55,14 @@ import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment
 public class GrievanceFragment extends Fragment {
 
     TextView textViewFileName;
-    AutoCompleteTextView inputPCode, inputMobile;
+    AutoCompleteTextView inputIdentifier, inputMobile;
+    TextInputLayout textInputIdentifier;
+    RadioGroup radioGroup;
     EditText inputDetails;
     Spinner inputType, inputSubmittedBy;
     Button submit, buttonChooseFile;
     ImageButton buttonRemove;
+    LinearLayout radioLayout;
     ProgressDialog progressDialog;
 
     ArrayList<GrievanceType> list = new ArrayList<>();
@@ -71,7 +75,7 @@ public class GrievanceFragment extends Fragment {
     ImageView imageDetails;
     ImageView imageType;
     ImageView imageSubmittedBy;
-    //ImageView imageAttach;
+
 
     public GrievanceFragment() {
 
@@ -86,7 +90,6 @@ public class GrievanceFragment extends Fragment {
         type = bundle.getString("Type");
         bindViews(view);
         init(view);
-        removeSelectedFile();
         return view;
     }
 
@@ -96,13 +99,17 @@ public class GrievanceFragment extends Fragment {
         imageDetails = view.findViewById(R.id.image_details);
         imageType = view.findViewById(R.id.image_type);
         imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
-        //imageAttach = view.findViewById(R.id.image_attach);
-        inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
-        inputPCode = view.findViewById(R.id.autocomplete_pcode);
+
+        radioLayout = view.findViewById(R.id.layout_radio);
+        textInputIdentifier = view.findViewById(R.id.text_input_code);
+        inputIdentifier = view.findViewById(R.id.autocomplete_pcode);
         inputMobile = view.findViewById(R.id.autocomplete_mobile);
+        inputType = view.findViewById(R.id.spinner_type);
         inputDetails = view.findViewById(R.id.edittext_details);
+        inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
         textViewFileName = view.findViewById(R.id.textview_file_name);
 
+        radioGroup = view.findViewById(R.id.groupNumberType);
         buttonChooseFile = view.findViewById(R.id.button_attach);
         buttonRemove = view.findViewById(R.id.btn_remove);
         submit = view.findViewById(R.id.button_submit);
@@ -116,18 +123,36 @@ public class GrievanceFragment extends Fragment {
         imageDetails.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_details_black_24dp));
         imageType.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_sentiment_dissatisfied_black_24dp));
         imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
-        //imageAttach.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_attach_file_black_24dp));
-        inputType = view.findViewById(R.id.spinner_type);
-        if (type.equals(FireBaseHelper.getInstance().GRIEVANCE_PENSION))
+
+        if (type.equals(FireBaseHelper.getInstance().GRIEVANCE_PENSION)) {
             list = Helper.getInstance().getPensionGrievanceTypelist();
-        else
+            radioLayout.setVisibility(View.GONE);
+        } else {
+            radioLayout.setVisibility(View.VISIBLE);
             list = Helper.getInstance().getGPFGrievanceTypelist();
+        }
+
         GrievancAdapter adapter = new GrievancAdapter(getContext(), list);
         inputType.setAdapter(adapter);
 
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonPensioner:
+                        textInputIdentifier.setHint("Pensioner Code");
+                        break;
+                    //TODO
+                    //set place holder format
+                    case R.id.radioButtonHR:
+                        textInputIdentifier.setHint("HR Number");
+                }
+            }
+        });
 
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(type));
         inputSubmittedBy.setAdapter(arrayAdapter1);
+
         buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +161,7 @@ public class GrievanceFragment extends Fragment {
             }
         });
         buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
+
         buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,12 +221,12 @@ public class GrievanceFragment extends Fragment {
     }
 
     private boolean checkInput() {
-        pcode = inputPCode.getText().toString();
+        pcode = inputIdentifier.getText().toString();
         grievanceType = (GrievanceType) inputType.getSelectedItem();
 
         if (pcode.isEmpty()) {
-            inputPCode.setError("Pensioner Code required");
-            inputPCode.requestFocus();
+            inputIdentifier.setError("Pensioner Code required");
+            inputIdentifier.requestFocus();
             return false;
         } else if (inputMobile.getText().toString().isEmpty()) {
             inputMobile.setError("Mobile No required");

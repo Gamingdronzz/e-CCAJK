@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity
                 PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_login:
-                PopUpWindows.getInstance().showLoginPopup(this, frameLayout, navigationView);
+                PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
                 break;
             case R.id.navmenu_logout:
                 logout();

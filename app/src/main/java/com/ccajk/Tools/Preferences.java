@@ -12,7 +12,7 @@ public class Preferences {
     private static Preferences _instance;
 
     static final String PREF_SIGNED_IN = "signedIn";
-    static final String PREF_PPO = "ppo";
+    static final String PREF_STAFF_TYPE = "staffType";
     static final String PREF_STATE = "state";
 
     public Preferences() {
@@ -41,14 +41,14 @@ public class Preferences {
         return getSharedPreferences(context).getBoolean(PREF_SIGNED_IN, false);
     }
 
-    public void setPpo(Context context, String ppo) {
+    public void setStaffType(Context context, int type) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(PREF_PPO, ppo);
+        editor.putInt(PREF_STAFF_TYPE, type);
         editor.commit();
     }
 
-    public String getPpo(Context context) {
-        return getSharedPreferences(context).getString(PREF_PPO, null);
+    public int getStaffType(Context context) {
+        return getSharedPreferences(context).getInt(PREF_STAFF_TYPE, -1);
     }
 
     public void setPrefState(Context context, String state) {
@@ -64,7 +64,7 @@ public class Preferences {
     public void clearPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.remove(PREF_SIGNED_IN);
-        editor.remove(PREF_PPO);
+        editor.remove(PREF_STAFF_TYPE);
         editor.commit();
     }
 

@@ -3,7 +3,6 @@ package com.ccajk.Tools;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
@@ -50,12 +49,11 @@ public class PopUpWindows {
     }
 
 
-    public void showLoginPopup(final MainActivity context, View parent, final NavigationView navigationView) {
+    public void showLoginPopup(final MainActivity context, View parent) {
         final ImageView ppo, pwd;
         ImageButton close;
         final AutoCompleteTextView autoCompleteTextView;
         final EditText editText;
-
 
         View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_login, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -122,13 +120,10 @@ public class PopUpWindows {
                 });
             }
         });
-
         popupWindow.setFocusable(true);
         popupWindow.update();
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
     }
-
-
 
 
     public void showTrackWindow(final Activity context, View parent) {
@@ -152,7 +147,6 @@ public class PopUpWindows {
             }
         });
 
-
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -167,4 +161,5 @@ public class PopUpWindows {
         confirmDialog.setTitle("Confirm Input Before Submission");
         return confirmDialog;
     }
+
 }

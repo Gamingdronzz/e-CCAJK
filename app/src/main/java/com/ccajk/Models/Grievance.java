@@ -7,7 +7,7 @@ import java.util.Date;
  */
 
 public class Grievance {
-    String pcode;
+    String pensionerIdentifier;
     String mobile;
     long grievanceType;
     String details;
@@ -18,8 +18,8 @@ public class Grievance {
     long grievanceStatus;
     Date date;
 
-    public Grievance(String pcode, String mobile, long grievanceType, String details, String submittedBy, String filename, String message, String state, long grievanceStatus, Date date) {
-        this.pcode = pcode;
+    public Grievance(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String filename, String message, String state, long grievanceStatus, Date date) {
+        this.pensionerIdentifier = pensionerIdentifier;
         this.mobile = mobile;
         this.grievanceType = grievanceType;
         this.details = details;
@@ -35,12 +35,12 @@ public class Grievance {
 
     }
 
-    public String getPcode() {
-        return pcode;
+    public String getPensionerIdentifier() {
+        return pensionerIdentifier;
     }
 
-    public void setPcode(String pcode) {
-        this.pcode = pcode;
+    public void setPensionerIdentifier(String pensionerIdentifier) {
+        this.pensionerIdentifier = pensionerIdentifier;
     }
 
     public String getMobile() {

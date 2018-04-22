@@ -5,7 +5,7 @@ package com.ccajk.Models;
  */
 
 public class PanAdhaar {
-    String pcode;
+    String pensionerIdentifier;
     String number;
     String filename;
     String state;
@@ -13,12 +13,12 @@ public class PanAdhaar {
     //Date uploadDate;
     //long status;
 
-    public String getPcode() {
-        return pcode;
+    public String getPensionerIdentifier() {
+        return pensionerIdentifier;
     }
 
-    public void setPcode(String pcode) {
-        this.pcode = pcode;
+    public void setPensionerIdentifier(String pensionerIdentifier) {
+        this.pensionerIdentifier = pensionerIdentifier;
     }
 
     public String getNumber() {
@@ -69,8 +69,8 @@ public class PanAdhaar {
         this.uploadDate = uploadDate;
     }
 */
-    public PanAdhaar(String pcode, String number, String filename, String state) {
-        this.pcode = pcode;
+    public PanAdhaar(String pensionerIdentifier, String number, String filename, String state) {
+        this.pensionerIdentifier = pensionerIdentifier;
         this.number = number;
         this.filename = filename;
         this.state = state;
