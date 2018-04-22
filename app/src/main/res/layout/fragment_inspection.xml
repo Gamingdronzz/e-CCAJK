@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_medium"
     android:id="@+id/inspection_root"
     tools:context="com.ccajk.Fragments.InspectionFragment">
 
@@ -33,11 +32,9 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_upload"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:background="@drawable/custom_button"
-       android:paddingBottom="@dimen/padding_medium"
-        android:paddingTop="@dimen/padding_medium"
         android:text="UPLOAD"
         android:textColor="@color/colorOffWhite"
         android:textSize="@dimen/text_20" />

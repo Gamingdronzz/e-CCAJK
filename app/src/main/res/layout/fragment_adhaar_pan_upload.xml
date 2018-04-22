@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_medium"
     tools:context="com.ccajk.Fragments.PanAdhaarUploadFragment">
 
     <LinearLayout
@@ -148,7 +147,7 @@
     <Button
         android:id="@+id/button_upload"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/custom_button"
         android:text="UPLOAD"

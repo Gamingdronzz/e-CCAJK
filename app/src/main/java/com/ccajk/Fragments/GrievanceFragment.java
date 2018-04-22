@@ -235,9 +235,6 @@ public class GrievanceFragment extends Fragment {
             fileChosed = file.getName();
             Log.d(TAG, "onFileSelected: " + fileChosedPath);
             buttonRemove.setVisibility(View.VISIBLE);
-            Picasso.with(getContext()).load(file).into(imageviewSelectedImage);
-
-
         }
         textViewFileName.setText(fileChosed);
     }
@@ -249,7 +246,10 @@ public class GrievanceFragment extends Fragment {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
                 File file = new File(imageUri.getPath());
                 Log.d(TAG, "onPickImage: " + file.getAbsolutePath());
+                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
                 setupSelectedFile(file);
+
+
 
             }
 
