@@ -12,15 +12,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_medium"
+        android:paddingTop="@dimen/padding_large"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/textview_name"
             android:layout_width="match_parent"
             android:paddingRight="@dimen/padding_medium"
+            android:paddingEnd="@dimen/padding_medium"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/padding_medium"
+            android:paddingLeft="@dimen/padding_medium"
             android:layout_marginTop="@dimen/margin_medium"
             android:text="TextView"
             android:textStyle="bold"
@@ -34,8 +36,9 @@
             android:paddingStart="@dimen/padding_medium"
             android:text="TextView"
             android:textStyle="italic"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_15" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,9 +52,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:drawableTint="@color/colorPrimaryLight"
+                android:drawablePadding="@dimen/padding_medium"
                 android:layout_marginBottom="@dimen/margin_medium"
                 android:background="@drawable/custom_button_rounded"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_15"
                 />
@@ -68,8 +73,10 @@
                     android:layout_weight="1"
                     android:text="TextView"
                     android:layout_marginRight="@dimen/margin_medium"
+                    android:drawableTint="@color/colorPrimaryLight"
+                    android:drawablePadding="@dimen/padding_medium"
                     android:background="@drawable/custom_button_rounded"
-                    android:textAlignment="textStart"
+                    android:textAlignment="center"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_15"
                     />
@@ -81,8 +88,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/custom_button_rounded"
+                    android:drawableTint="@color/colorPrimaryLight"
+                    android:drawablePadding="@dimen/padding_medium"
                     android:text="TextView"
-                    android:textAlignment="textStart"
+                    android:textAlignment="center"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_15"
                     />

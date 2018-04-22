@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:drawablePadding="@dimen/padding_medium"
         android:textAlignment="center"
         android:text="Office Address"
         android:fontFamily="@font/artifika"
@@ -84,10 +85,12 @@
             <!--android:background="@color/colorBlack"></View>-->
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_contact_person_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/artifika"
+            android:drawablePadding="@dimen/padding_medium"
             android:text="Contact Persons"
             android:padding="@dimen/padding_large"
             android:textColor="@color/colorBlack"

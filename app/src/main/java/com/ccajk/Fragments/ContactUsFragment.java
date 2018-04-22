@@ -32,7 +32,7 @@ import static android.content.ContentValues.TAG;
  */
 public class ContactUsFragment extends Fragment {
 
-    AppCompatTextView textViewOfficeAddress, textviewHeadingOfficeAddress;
+    AppCompatTextView textViewOfficeAddress, textviewHeadingOfficeAddress,textviewContactPersonHeading;
     LinearLayout officeAddressLayout;
     AppCompatButton compatButtonLocateOnMap;
     RecyclerView recyclerView;
@@ -65,6 +65,10 @@ public class ContactUsFragment extends Fragment {
         textViewOfficeAddress = view.findViewById(R.id.textview_office_address);
         officeAddressLayout = view.findViewById(R.id.linear_layout_office_Address_Area);
         textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
+        textviewContactPersonHeading = view.findViewById(R.id.textview_contact_person_heading);
+
+        textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp,0,0,0);
+
         textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getPrefState(getContext())));
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
         compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location,0,0,0);
@@ -72,9 +76,10 @@ public class ContactUsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String location = "32.707500,74.874217";
-                Uri gmmIntentUri = Uri.parse("geo:"+location);
+                //Uri gmmIntentUri = Uri.parse("geo:"+location+"?q="+location+"(Office of\nController of Communication Accounts,\nJammu and Kashmir)");
+                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q="+location+"(Office of CCA, JK)");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
+                //mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(mapIntent);
                 }
@@ -153,11 +158,11 @@ public class ContactUsFragment extends Fragment {
     private boolean ManageOfficeAddress() {
         if (officeAddressLayout.getVisibility() == View.GONE) {
             officeAddressLayout.setVisibility(View.VISIBLE);
-            textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
+            textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_office, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
             return false;
         } else {
             officeAddressLayout.setVisibility(View.GONE);
-            textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+            textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_office, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
             return true;
         }
     }

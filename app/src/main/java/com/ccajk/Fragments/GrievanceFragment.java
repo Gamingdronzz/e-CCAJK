@@ -2,6 +2,8 @@ package com.ccajk.Fragments;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,6 +43,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.UploadTask;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,6 +56,8 @@ import java.util.List;
 import easyfilepickerdialog.kingfisher.com.library.model.DialogConfig;
 import easyfilepickerdialog.kingfisher.com.library.model.SupportFile;
 import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment;
+
+import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
 
 public class GrievanceFragment extends Fragment {
@@ -64,6 +72,7 @@ public class GrievanceFragment extends Fragment {
     ImageButton buttonRemove;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
+    ImagePicker imagePicker;
 
     ArrayList<GrievanceType> list = new ArrayList<>();
     String TAG = "Grievance";
@@ -75,6 +84,7 @@ public class GrievanceFragment extends Fragment {
     ImageView imageDetails;
     ImageView imageType;
     ImageView imageSubmittedBy;
+    ImageView imageviewSelectedImage;
 
 
     public GrievanceFragment() {
@@ -99,6 +109,7 @@ public class GrievanceFragment extends Fragment {
         imageDetails = view.findViewById(R.id.image_details);
         imageType = view.findViewById(R.id.image_type);
         imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
+        imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
 
         radioLayout = view.findViewById(R.id.layout_radio);
         textInputIdentifier = view.findViewById(R.id.text_input_code);
@@ -157,7 +168,8 @@ public class GrievanceFragment extends Fragment {
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+//                showFileChooser();
+                showImageChooser();
             }
         });
         buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
@@ -187,6 +199,7 @@ public class GrievanceFragment extends Fragment {
         fileChosedPath = null;
         textViewFileName.setText("");
         buttonRemove.setVisibility(View.GONE);
+        imageviewSelectedImage.setImageDrawable(null);
     }
 
     private void showFileChooser() {
@@ -203,21 +216,66 @@ public class GrievanceFragment extends Fragment {
                     @Override
                     public void onFileSelected(List<File> list) {
                         for (File file : list) {
-                            if (file.length() / 1048576 > 1) {
-                                Toast.makeText(getContext(), "Please Choose a file of 1mb or less", Toast.LENGTH_SHORT).show();
-                                removeSelectedFile();
-                            } else {
-                                fileChosedPath = file.getAbsolutePath();
-                                fileChosed = file.getName();
-                                Log.d(TAG, "onFileSelected: " + fileChosedPath);
-                                buttonRemove.setVisibility(View.VISIBLE);
-                            }
-                            textViewFileName.setText(fileChosed);
+                            setupSelectedFile(file);
                         }
                     }
                 })
                 .build()
                 .show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    private void setupSelectedFile(File file)
+    {
+        if (file.length() / 1048576 > 1) {
+            Helper.getInstance().showAlertDialog(getContext(),"You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed","Choose File","OK");
+            //Toast.makeText(getContext(), "Please Choose a file of 1mb or less", Toast.LENGTH_SHORT).show();
+            removeSelectedFile();
+        } else {
+            fileChosedPath = file.getAbsolutePath();
+            fileChosed = file.getName();
+            Log.d(TAG, "onFileSelected: " + fileChosedPath);
+            buttonRemove.setVisibility(View.VISIBLE);
+            Picasso.with(getContext()).load(file).into(imageviewSelectedImage);
+
+
+        }
+        textViewFileName.setText(fileChosed);
+    }
+
+    private void showImageChooser() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(),false, new ImagePicker.Callback() {
+            @Override
+            public void onPickImage(Uri imageUri) {
+                Log.d(TAG, "onPickImage: " + imageUri.getPath());
+                File file = new File(imageUri.getPath());
+                Log.d(TAG, "onPickImage: " + file.getAbsolutePath());
+                setupSelectedFile(file);
+
+            }
+
+            @Override
+            public void onCropImage(Uri imageUri) {
+                Log.d(TAG, "onCropImage: " + imageUri.getPath());
+
+            }
+
+            @Override
+            public void cropConfig(CropImage.ActivityBuilder builder) {
+                builder
+                        .setMultiTouchEnabled(false)
+                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setRequestedSize(540, 960)
+                        .setAspectRatio(9, 16);
+            }
+
+            @Override
+            public void onPermissionDenied(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+                Log.d(TAG, "onPermissionDenied: Permission not given to choose message");
+            }
+        });
+
     }
 
     private boolean checkInput() {
@@ -341,4 +399,27 @@ public class GrievanceFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (imagePicker != null)
+            imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "onRequestPermissionsResult: " + "Inspection");
+
+        switch (requestCode) {
+            default: {
+                if (imagePicker != null)
+                    imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
+            }
+
+        }
+
+    }
 }

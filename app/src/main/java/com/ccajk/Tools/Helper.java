@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -16,6 +17,9 @@ import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -43,6 +47,16 @@ public class Helper {
         } else {
             return _instance;
         }
+    }
+
+    public ImagePicker showImageChooser(ImagePicker imagePicker,Activity activity,boolean cropimage,ImagePicker.Callback callback){
+        if(imagePicker == null) {
+            imagePicker = new ImagePicker();
+        }
+        imagePicker.setTitle("Select Image");
+        imagePicker.setCropImage(cropimage);
+        imagePicker.startChooser(activity,callback);
+        return imagePicker;
     }
 
     public boolean isTab(Context context) {

@@ -216,7 +216,10 @@
                         android:id="@+id/spinner_submitted_by"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"></Spinner>
+
+
                 </LinearLayout>
+
             </LinearLayout>
 
             <RelativeLayout
@@ -224,6 +227,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_medium"
                 android:background="@color/colorWhite">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:id="@+id/infotext"
+                    android:layout_height="wrap_content"
+                    android:text="File is optional and should be less than 1mb"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/text_15" />
 
                 <!--<ImageView-->
                 <!--android:id="@+id/image_attach"-->
@@ -239,7 +250,9 @@
                     android:id="@+id/button_attach"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/infotext"
                     android:layout_alignParentLeft="true"
+                    android:layout_marginTop="@dimen/margin_large"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/margin_medium"
@@ -273,13 +286,15 @@
 
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="File is optional and should be less than 1mb"
-                android:textAlignment="center"
-                android:textSize="@dimen/text_15" />
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/imageview_selected_image"/>
+
         </LinearLayout>
+
+
 
     </ScrollView>
 

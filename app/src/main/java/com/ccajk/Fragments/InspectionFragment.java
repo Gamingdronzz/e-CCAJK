@@ -78,7 +78,7 @@ public class InspectionFragment extends Fragment {
             }
         };
         textChoose = view.findViewById(R.id.textview_choose);
-        textChoose.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp,0,0);
+        textChoose.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
         textChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +87,7 @@ public class InspectionFragment extends Fragment {
         });
 
         textLocation = view.findViewById(R.id.textview_location);
-        textLocation.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_add_location_black_24dp,0,R.drawable.ic_refresh_black_24dp,0);
+        textLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_location_black_24dp, 0, R.drawable.ic_refresh_black_24dp, 0);
         textLocation.setOnClickListener(getCoordinatesListener);
 
 
@@ -96,12 +96,9 @@ public class InspectionFragment extends Fragment {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isCurrentLocationFound)
-                {
+                if (isCurrentLocationFound) {
                     uploadInspectionDataToCloud();
-                }
-                else
-                {
+                } else {
                     Log.d(TAG, "onClick: Please set current location coordinates first");
                 }
             }
@@ -127,8 +124,7 @@ public class InspectionFragment extends Fragment {
                 "Getting Current Location Coordinates\nPlease Wait...");
     }
 
-    private void uploadInspectionDataToCloud()
-    {
+    private void uploadInspectionDataToCloud() {
 
     }
 //    private void manageProgressDialog()
@@ -147,42 +143,42 @@ public class InspectionFragment extends Fragment {
     private void getLocationCoordinates() {
         showProgressDialog();
 //        if (myLocationManager.checkForLocationPermission()) {
-            Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
-            if (task != null) {
-                task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                        Log.v(TAG, "On Task Complete");
-                        if (task.isSuccessful()) {
-                            Log.v(TAG, "Task is Successful");
+        Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
+        if (task != null) {
+            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                    Log.v(TAG, "On Task Complete");
+                    if (task.isSuccessful()) {
+                        Log.v(TAG, "Task is Successful");
 
-                            myLocationManager.requestLocationUpdates();
+                        myLocationManager.requestLocationUpdates();
 
-                        } else {
-                            Log.v(TAG, "Task is not Successful");
-                            dismissProgressDialog();
-                        }
+                    } else {
+                        Log.v(TAG, "Task is not Successful");
+                        dismissProgressDialog();
                     }
-                });
-                task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-                    @Override
-                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        Log.v(TAG, "On Task Success");
-                    }
-                });
+                }
+            });
+            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                    Log.v(TAG, "On Task Success");
+                }
+            });
 
-                task.addOnFailureListener(getActivity(), new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.v(TAG, "On Task Failed");
-                        if (e instanceof ResolvableApiException) {
-                            myLocationManager.onLocationAcccessRequestFailure(e);
-                            dismissProgressDialog();
-                        }
+            task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.v(TAG, "On Task Failed");
+                    if (e instanceof ResolvableApiException) {
+                        myLocationManager.onLocationAcccessRequestFailure(e);
+                        dismissProgressDialog();
                     }
-                });
+                }
+            });
 
-            }
+        }
 //        } else {
 //            myLocationManager.requestLocationPermission(this, LOCATION_REQUEST_CODE);
 //        }
@@ -205,11 +201,7 @@ public class InspectionFragment extends Fragment {
     }
 
     private void showImageChooser() {
-
-        imagePicker = new ImagePicker();
-        imagePicker.setTitle("Select Image");
-        imagePicker.setCropImage(false);
-        imagePicker.startChooser(this.getActivity(), new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(),false, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
@@ -240,16 +232,13 @@ public class InspectionFragment extends Fragment {
 
     }
 
-    private void dismissProgressDialog()
-    {
-        if(progressDialog.isShowing())
+    private void dismissProgressDialog() {
+        if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
-    private void showProgressDialog()
-    {
-        if(!progressDialog.isShowing())
-        {
+    private void showProgressDialog() {
+        if (!progressDialog.isShowing()) {
             progressDialog.show();
         }
     }
