@@ -55,7 +55,7 @@ public class RTIFragment extends Fragment {
         inputName = view.findViewById(R.id.edittext_name);
         inputPhone = view.findViewById(R.id.edittext_phone);
         inputSubject = view.findViewById(R.id.edittext_subject_matter);
-        textViewFilename = view.findViewById(R.id.textview_file_name);
+        textViewFilename = view.findViewById(R.id.textview_selected_file_count_grievance);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
         attach = view.findViewById(R.id.button_attach);
         submit = view.findViewById(R.id.button_submit);

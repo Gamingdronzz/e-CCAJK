@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.MyLocationManager;
@@ -34,6 +38,8 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
+import java.util.ArrayList;
+
 import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
@@ -44,7 +50,7 @@ public class InspectionFragment extends Fragment {
 
     private static final String TAG = "Inspection";
     //    ImageButton choose, location;
-    TextView textChoose, textLocation;
+    TextView textChoose, textLocation,textViewSelectedFileCount;
     Button upload;
     ImagePicker imagePicker;
 
@@ -55,6 +61,10 @@ public class InspectionFragment extends Fragment {
     ProgressDialog progressDialog;
     boolean isCurrentLocationFound = false;
     View.OnClickListener getCoordinatesListener;
+
+    RecyclerView recyclerViewSelectedImages;
+    RecyclerViewAdapterSelectedImages adapterSelectedImages;
+    ArrayList<SelectedImageModel> selectedImageModelArrayList;
 
     public InspectionFragment() {
 
@@ -77,7 +87,7 @@ public class InspectionFragment extends Fragment {
                 getLocationCoordinates();
             }
         };
-        textChoose = view.findViewById(R.id.textview_choose);
+        textChoose = view.findViewById(R.id.textview_add_inspection_image);
         textChoose.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
         textChoose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,9 +96,13 @@ public class InspectionFragment extends Fragment {
             }
         });
 
-        textLocation = view.findViewById(R.id.textview_location);
+        textLocation = view.findViewById(R.id.textview_current_location);
         textLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_location_black_24dp, 0, R.drawable.ic_refresh_black_24dp, 0);
         textLocation.setOnClickListener(getCoordinatesListener);
+        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
+
+
+        recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
 
 
         upload = view.findViewById(R.id.button_upload);
@@ -122,6 +136,11 @@ public class InspectionFragment extends Fragment {
         myLocationManager = new MyLocationManager(this, mLocationCallback);
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(),
                 "Getting Current Location Coordinates\nPlease Wait...");
+
+        selectedImageModelArrayList = new ArrayList<>();
+        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList,this);
+        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
+        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(),3));
     }
 
     private void uploadInspectionDataToCloud() {
@@ -201,7 +220,7 @@ public class InspectionFragment extends Fragment {
     }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(),false, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(),true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
@@ -210,6 +229,12 @@ public class InspectionFragment extends Fragment {
             @Override
             public void onCropImage(Uri imageUri) {
                 Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                int currentPosition = selectedImageModelArrayList.size();
+                selectedImageModelArrayList.add(currentPosition,new SelectedImageModel(imageUri));
+                adapterSelectedImages.notifyItemInserted(currentPosition);
+                adapterSelectedImages.notifyDataSetChanged();
+                setSelectedFileCount(currentPosition+1);
+                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition );
 
             }
 
@@ -219,7 +244,7 @@ public class InspectionFragment extends Fragment {
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(540, 960)
+                        .setRequestedSize(720, 1280)
                         .setAspectRatio(9, 16);
             }
 
@@ -302,6 +327,11 @@ public class InspectionFragment extends Fragment {
 
         }
 
+    }
+
+    public void setSelectedFileCount(int count)
+    {
+        textViewSelectedFileCount.setText("Selected Files = " + count);
     }
 
 }

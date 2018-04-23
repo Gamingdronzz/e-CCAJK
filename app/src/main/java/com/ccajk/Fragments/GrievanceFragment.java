@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -27,9 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.GrievancAdapter;
+import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.Grievance;
 import com.ccajk.Models.GrievanceType;
+import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -52,18 +56,17 @@ import java.util.Date;
 
 
 public class GrievanceFragment extends Fragment {
-
-    TextView textViewFileName;
     AutoCompleteTextView inputIdentifier, inputMobile, inputEmail;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     EditText inputDetails;
     Spinner inputType, inputSubmittedBy;
     Button submit, buttonChooseFile;
-    ImageButton buttonRemove;
+    //ImageButton buttonRemove;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
+    TextView textViewSelectedFileCount;
 
     ArrayList<GrievanceType> list = new ArrayList<>();
     String TAG = "Grievance";
@@ -76,7 +79,11 @@ public class GrievanceFragment extends Fragment {
     ImageView imageDetails;
     ImageView imageType;
     ImageView imageSubmittedBy;
-    ImageView imageviewSelectedImage;
+    //ImageView imageviewSelectedImage;
+
+    RecyclerView recyclerViewSelectedImages;
+    RecyclerViewAdapterSelectedImages adapterSelectedImages;
+    ArrayList<SelectedImageModel> selectedImageModelArrayList;
 
 
     public GrievanceFragment() {
@@ -102,7 +109,8 @@ public class GrievanceFragment extends Fragment {
         imageDetails = view.findViewById(R.id.image_details);
         imageType = view.findViewById(R.id.image_type);
         imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
-        imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
+        //imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
+        recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
 
         radioLayout = view.findViewById(R.id.layout_radio);
         textInputIdentifier = view.findViewById(R.id.text_input_code);
@@ -112,11 +120,13 @@ public class GrievanceFragment extends Fragment {
         inputType = view.findViewById(R.id.spinner_type);
         inputDetails = view.findViewById(R.id.edittext_details);
         inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
-        textViewFileName = view.findViewById(R.id.textview_file_name);
+        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_file_count_grievance);
+
+        //textViewFileName = view.findViewById(R.id.textview_file_name);
 
         radioGroup = view.findViewById(R.id.groupNumberType);
         buttonChooseFile = view.findViewById(R.id.button_attach);
-        buttonRemove = view.findViewById(R.id.btn_remove);
+        //buttonRemove = view.findViewById(R.id.btn_remove);
         submit = view.findViewById(R.id.button_submit);
     }
 
@@ -176,14 +186,14 @@ public class GrievanceFragment extends Fragment {
             }
         });
 
-        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeSelectedFile();
-
-            }
-        });
+//        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
+//        buttonRemove.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                removeSelectedFile();
+//
+//            }
+//        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,44 +203,57 @@ public class GrievanceFragment extends Fragment {
             }
         });
 
-        removeSelectedFile();
+        //removeSelectedFile();
+
+        selectedImageModelArrayList = new ArrayList<>();
+        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList,this);
+        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
+        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(),4));
+
+
     }
 
-    private void removeSelectedFile() {
-        fileChosed = null;
-        fileChosedPath = null;
-        textViewFileName.setText("");
-        buttonRemove.setVisibility(View.GONE);
-        imageviewSelectedImage.setImageDrawable(null);
-    }
+//    private void removeSelectedFile() {
+//        fileChosed = null;
+//        fileChosedPath = null;
+//        textViewFileName.setText("");
+//        buttonRemove.setVisibility(View.GONE);
+//        imageviewSelectedImage.setImageDrawable(null);
+//    }
 
-    private void setupSelectedFile(File file) {
-        if (file.length() / 1048576 > 1) {
-            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
-            removeSelectedFile();
-        } else {
-            fileChosedPath = file.getAbsolutePath();
-            fileChosed = file.getName();
-            Log.d(TAG, "onFileSelected: " + fileChosedPath);
-            buttonRemove.setVisibility(View.VISIBLE);
-            textViewFileName.setText(fileChosed);
-        }
-    }
+//    private void setupSelectedFile(File file) {
+//        if (file.length() / 1048576 > 1) {
+//            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
+//            removeSelectedFile();
+//        } else {
+//            fileChosedPath = file.getAbsolutePath();
+//            fileChosed = file.getName();
+//            Log.d(TAG, "onFileSelected: " + fileChosedPath);
+//            buttonRemove.setVisibility(View.VISIBLE);
+//            textViewFileName.setText(fileChosed);
+//        }
+//    }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), false, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
-                File file = new File(imageUri.getPath());
-                Log.d(TAG, "onPickImage: " + file.getAbsolutePath());
-                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
-                setupSelectedFile(file);
+
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
                 Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                int currentPosition = selectedImageModelArrayList.size();
+                selectedImageModelArrayList.add(currentPosition,new SelectedImageModel(imageUri));
+                adapterSelectedImages.notifyItemInserted(currentPosition);
+                adapterSelectedImages.notifyDataSetChanged();
+                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition );
+                setSelectedFileCount(currentPosition+1);
+//                File file = new File(imageUri.getPath());
+//                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+//                setupSelectedFile(file);
             }
 
             @Override
@@ -239,7 +262,7 @@ public class GrievanceFragment extends Fragment {
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(540, 960)
+                        .setRequestedSize(720, 1280)
                         .setAspectRatio(9, 16);
             }
 
@@ -400,6 +423,11 @@ public class GrievanceFragment extends Fragment {
 
         }
 
+    }
+
+    public void setSelectedFileCount(int count)
+    {
+        textViewSelectedFileCount.setText("Selected Files = " + count);
     }
 }
 

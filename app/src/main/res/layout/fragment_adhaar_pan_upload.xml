@@ -125,7 +125,7 @@
 
 
                 <TextView
-                    android:id="@+id/textview_file_name"
+                    android:id="@+id/textview_selected_file_count_grievance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

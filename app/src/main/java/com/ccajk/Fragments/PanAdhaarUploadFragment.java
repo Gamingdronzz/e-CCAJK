@@ -82,7 +82,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         textInputNumber = view.findViewById(R.id.text_number);
         inputPCode = view.findViewById(R.id.autocomplete_pcode);
         inputNumber = view.findViewById(R.id.autocomplete_number);
-        textViewFileName = view.findViewById(R.id.textview_file_name);
+        textViewFileName = view.findViewById(R.id.textview_selected_file_count_grievance);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
         buttonChooseFile = view.findViewById(R.id.button_attach);
         buttonUpload = view.findViewById(R.id.button_upload);
