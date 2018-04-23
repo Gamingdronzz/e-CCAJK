@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -57,6 +56,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private static final String TAG = "PanAdhaarUpload";
     String pensionerCode, number, fileChosed, fileChosedPath, root;
+    int identifierType = 0;
     ImagePicker imagePicker;
     DatabaseReference dbref;
 
@@ -100,35 +100,36 @@ public class PanAdhaarUploadFragment extends Fragment {
                 switch (checkedId) {
                     case R.id.radioButtonPensioner:
                         textInputIdentifier.setHint("Pensioner Code");
+                        inputPCode.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(15)});
+                        identifierType = 0;
                         break;
                     //TODO
                     //set place holder format
                     case R.id.radioButtonHR:
                         textInputIdentifier.setHint("HR Number");
+                        inputPCode.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(10)});
+                        identifierType = 1;
                 }
             }
         });
 
 
         if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
-
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
-            inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
+            inputNumber.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(12)});
             textInputNumber.setHint(root + " Number");
-        } else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
-            inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
+        }
+        else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
+            inputNumber.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(10), new InputFilter() {
                 @Override
                 public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    try {
-                        Character c = source.charAt(0);
-                        if (Character.isLetterOrDigit(c)) {
-                            return "" + Character.toUpperCase(c);
-                        } else {
-                            return "";
-                        }
-                    } catch (Exception e) {
+                    if(source.equals("")){ // for backspace
+                        return source;
                     }
-                    return null;
+                    if(source.toString().matches("[a-zA-Z0-9]+")){
+                        return source;
+                    }
+                    return "";
                 }
             }});
             textInputNumber.setHint(root + " Number");
@@ -159,8 +160,8 @@ public class PanAdhaarUploadFragment extends Fragment {
             @Override
             public void onPickImage(Uri imageUri) {
                 File file = new File(imageUri.getPath());
-                setupSelectedFile(file);
                 Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+                setupSelectedFile(file);
             }
 
             @Override
@@ -190,9 +191,10 @@ public class PanAdhaarUploadFragment extends Fragment {
         if (file.length() / 1048576 > 1) {
             Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
         } else {
+            Log.d(TAG, "setupSelectedFile: " + file.getName());
             fileChosedPath = file.getAbsolutePath();
             fileChosed = file.getName();
-            textViewFileName.setError("");
+            textViewFileName.setError(null);
             textViewFileName.setText(fileChosed);
         }
     }
@@ -201,8 +203,12 @@ public class PanAdhaarUploadFragment extends Fragment {
         pensionerCode = inputPCode.getText().toString();
         number = inputNumber.getText().toString();
         //If Pensioner code is empty
-        if (pensionerCode.trim().isEmpty()) {
-            inputPCode.setError("Pensioner Code required");
+        if (pensionerCode.trim().length() < 15 && identifierType == 0) {
+            inputPCode.setError("Enter Valid Pensioner Code");
+            inputPCode.requestFocus();
+            return false;
+        } else if (pensionerCode.trim().length() < 10 && identifierType == 1) {
+            inputPCode.setError("Enter Valid HR Code");
             inputPCode.requestFocus();
             return false;
         }
@@ -215,6 +221,10 @@ public class PanAdhaarUploadFragment extends Fragment {
         //If PAN Number is not complete
         else if ((root == FireBaseHelper.getInstance().ROOT_PAN) && (number.length() < 10)) {
             inputNumber.setError("Invalid Pan Number");
+            inputNumber.requestFocus();
+            return false;
+        } else if (number.isEmpty()) {
+            inputNumber.setError("Invalid Name");
             inputNumber.requestFocus();
             return false;
         }
@@ -230,23 +240,14 @@ public class PanAdhaarUploadFragment extends Fragment {
     private void confirmSubmission() {
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
-
-        AlertDialog.Builder confirmDialog = PopUpWindows.getInstance().getConfirmationDialog(getActivity(), v);
         loadValues(v);
-
-        confirmDialog.setPositiveButton("UPLOAD", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                uploadAdhaarOrPan();
-            }
-        });
-        confirmDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        confirmDialog.show();
+        PopUpWindows.getInstance().getConfirmationDialog(getActivity(), v,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        uploadAdhaarOrPan();
+                    }
+                });
     }
 
     private void loadValues(View v) {
@@ -273,27 +274,6 @@ public class PanAdhaarUploadFragment extends Fragment {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     uploadFile();
-                    /* statusref.child(imagePensionerCode).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            count = dataSnapshot.getChildrenCount();
-                            PanAdhaarStatus panAdhaarStatus = new PanAdhaarStatus(new Date(), null, null, 0);
-                            statusref.child(imagePensionerCode).child(String.valueOf(count + 1)).setValue(panAdhaarStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(PanAdhaarUploadActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                    } else
-                                        Toast.makeText(PanAdhaarUploadActivity.this, "Failure", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });*/
                 } else {
                     progressDialog.dismiss();
                     Toast.makeText(getContext(), "Unable to Upload", Toast.LENGTH_SHORT).show();
@@ -359,3 +339,25 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     }
 }
+
+ /*statusref.child(imagePensionerCode).addListenerForSingleValueEvent(new ValueEventListener(){
+@Override
+public void onDataChange(DataSnapshot dataSnapshot){
+        count=dataSnapshot.getChildrenCount();
+        PanAdhaarStatus panAdhaarStatus=new PanAdhaarStatus(new Date(),null,null,0);
+        statusref.child(imagePensionerCode).child(String.valueOf(count+1)).setValue(panAdhaarStatus).addOnCompleteListener(new OnCompleteListener<Void>(){
+@Override
+public void onComplete(@NonNull Task<Void> task){
+        if(task.isSuccessful()){
+        Toast.makeText(PanAdhaarUploadActivity.this,"Success",Toast.LENGTH_SHORT).show();
+        }else
+        Toast.makeText(PanAdhaarUploadActivity.this,"Failure",Toast.LENGTH_SHORT).show();
+        }
+        });
+        }
+
+@Override
+public void onCancelled(DatabaseError databaseError){
+
+        }
+        });*/

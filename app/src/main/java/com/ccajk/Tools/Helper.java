@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 
@@ -63,13 +64,9 @@ public class Helper {
         return isTab;
     }
 
-    public void showAlertDialog
-            (Context context,
-             String message,
-             String title,
-             String positiveButtonText,
-             DialogInterface.OnClickListener positiveButtonOnClickListener,
-             String negativeButtonText) {
+    public void showAlertDialog(Context context, String message, String title, String positiveButtonText,
+                                DialogInterface.OnClickListener positiveButtonOnClickListener,
+                                String negativeButtonText) {
         if (title == null) {
             title = "CCA JK";
         }
@@ -86,11 +83,7 @@ public class Helper {
                 .show();
     }
 
-    public void showAlertDialog
-            (Context context,
-             String message,
-             String title,
-             String neutralButtonText) {
+    public void showAlertDialog(Context context, String message, String title, String neutralButtonText) {
         if (title == null) {
             title = "CCA JK";
         }
@@ -220,10 +213,13 @@ public class Helper {
     }
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
-
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
         return progressDialog;
+    }
+
+    public InputFilter limitInputLength(int length) {
+        return new InputFilter.LengthFilter(length);
     }
 
     public void showSnackBar(CharSequence message, View view) {

@@ -91,6 +91,7 @@
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/edittext_subject_matter"
+                    android:singleLine="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

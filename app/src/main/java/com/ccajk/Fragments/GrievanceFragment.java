@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
+import android.text.InputFilter;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class GrievanceFragment extends Fragment {
     ArrayList<GrievanceType> list = new ArrayList<>();
     String TAG = "Grievance";
     String fileChosed, fileChosedPath, pcode, type;
+    int identifierType = 0;
     GrievanceType grievanceType;
 
     ImageView imagePensionerCode;
@@ -107,7 +109,7 @@ public class GrievanceFragment extends Fragment {
         textInputIdentifier = view.findViewById(R.id.text_input_code);
         inputIdentifier = view.findViewById(R.id.autocomplete_pcode);
         inputMobile = view.findViewById(R.id.autocomplete_mobile);
-        inputEmail=view.findViewById(R.id.autocomplete_email);
+        inputEmail = view.findViewById(R.id.autocomplete_email);
         inputType = view.findViewById(R.id.spinner_type);
         inputDetails = view.findViewById(R.id.edittext_details);
         inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
@@ -146,14 +148,21 @@ public class GrievanceFragment extends Fragment {
                 switch (checkedId) {
                     case R.id.radioButtonPensioner:
                         textInputIdentifier.setHint("Pensioner Code");
+                        inputIdentifier.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(15)});
+                        identifierType = 0;
                         break;
                     //TODO
                     //set place holder format
                     case R.id.radioButtonHR:
                         textInputIdentifier.setHint("HR Number");
+                        inputIdentifier.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(10)});
+
+                        identifierType = 1;
                         break;
                     case R.id.radioButtonStaff:
                         textInputIdentifier.setHint("Staff Number");
+                        inputIdentifier.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(12)});
+                        identifierType = 2;
                 }
             }
         });
@@ -247,19 +256,28 @@ public class GrievanceFragment extends Fragment {
 
     private boolean checkInput() {
         pcode = inputIdentifier.getText().toString();
+        String email = inputEmail.getText().toString();
         grievanceType = (GrievanceType) inputType.getSelectedItem();
 
-        if (pcode.isEmpty()) {
-            inputIdentifier.setError("Pensioner Code required");
+        if (pcode.length() < 15 && identifierType == 0) {
+            inputIdentifier.setError("Enter Valid Pensioner Code");
             inputIdentifier.requestFocus();
             return false;
-        } else if (inputMobile.getText().toString().isEmpty()) {
-            inputMobile.setError("Mobile No required");
+        } else if (pcode.trim().length() < 10 && identifierType == 1) {
+            inputIdentifier.setError("Enter Valid HR Number");
+            inputIdentifier.requestFocus();
+            return false;
+        } else if (pcode.trim().length() < 12 && identifierType == 2) {
+            inputIdentifier.setError("Enter Valid Staff Number");
+            inputIdentifier.requestFocus();
+            return false;
+        } else if (inputMobile.getText().toString().length() < 10) {
+            inputMobile.setError("Enter Valid Mobile No");
             inputMobile.requestFocus();
             return false;
-        } else if (inputEmail.getText().toString().isEmpty()) {
-            inputMobile.setError("E mail required");
-            inputMobile.requestFocus();
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            inputEmail.setError("Enter Valid Email");
+            inputEmail.requestFocus();
             return false;
         } else if (inputDetails.getText().toString().trim().isEmpty()) {
             inputDetails.setError("Add details");
@@ -272,23 +290,14 @@ public class GrievanceFragment extends Fragment {
     private void confirmSubmission() {
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
-
-        AlertDialog.Builder confirmDialog = PopUpWindows.getInstance().getConfirmationDialog(getActivity(), v);
         loadValues(v);
-
-        confirmDialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                submitGrievance();
-            }
-        });
-        confirmDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        confirmDialog.show();
+        PopUpWindows.getInstance().getConfirmationDialog(getActivity(), v,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        submitGrievance();
+                    }
+                });
     }
 
     private void loadValues(View v) {

@@ -1,6 +1,7 @@
 package com.ccajk.Tools;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +24,6 @@ import com.ccajk.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
 
 
 /**
@@ -49,7 +49,7 @@ public class PopUpWindows {
 
 
     public void showLoginPopup(final MainActivity context, View parent) {
-        final ImageView ppo, pwd,close;
+        final ImageView ppo, pwd, close;
 
         final AutoCompleteTextView autoCompleteTextView;
         final EditText editText;
@@ -65,7 +65,7 @@ public class PopUpWindows {
         editText = popupView.findViewById(R.id.password);
 
         close = popupView.findViewById(R.id.close);
-        close.setImageDrawable(AppCompatResources.getDrawable(context,R.drawable.ic_close_black_24dp));
+        close.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_close_black_24dp));
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,11 +82,11 @@ public class PopUpWindows {
                 final String id = autoCompleteTextView.getText().toString();
                 final String password = editText.getText().toString();
                 if (!Helper.getInstance().checkInput(id)) {
-                    Toast.makeText(context,"Please input User ID",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please input User ID", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!Helper.getInstance().checkInput(password)) {
-                    Toast.makeText(context,"Please input Password",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please input Password", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -135,8 +135,8 @@ public class PopUpWindows {
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editText.getText().toString().isEmpty())
-                    Toast.makeText(context, "Empty code!", Toast.LENGTH_LONG).show();
+                if (editText.getText().toString().trim().length() < 15)
+                    Toast.makeText(context, "Invalid code!", Toast.LENGTH_LONG).show();
                 else {
                     Intent intent = new Intent(context, TrackResultActivity.class);
                     intent.putExtra("pensionerCode", editText.getText().toString());
@@ -154,10 +154,18 @@ public class PopUpWindows {
     }
 
 
-    public AlertDialog.Builder getConfirmationDialog(Activity context, View view) {
+    public AlertDialog.Builder getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
         confirmDialog.setView(view);
         confirmDialog.setTitle("Confirm Input Before Submission");
+        confirmDialog.setPositiveButton("Upload", yes);
+        confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        confirmDialog.show();
         return confirmDialog;
     }
 

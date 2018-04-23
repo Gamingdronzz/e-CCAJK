@@ -30,7 +30,7 @@ public class RTIFragment extends Fragment {
     ImageView imageName, imageSubject, imagePhone, imageviewSelectedImage;
     TextInputEditText inputName, inputSubject, inputPhone;
     TextView textViewFilename;
-    Button attach;
+    Button attach, submit;
 
     String fileChosed, fileChosedPath, root;
     ImagePicker imagePicker;
@@ -58,6 +58,7 @@ public class RTIFragment extends Fragment {
         textViewFilename = view.findViewById(R.id.textview_file_name);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
         attach = view.findViewById(R.id.button_attach);
+        submit = view.findViewById(R.id.button_submit);
     }
 
     private void init() {
@@ -73,6 +74,36 @@ public class RTIFragment extends Fragment {
                 showImageChooser();
             }
         });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkInput()) {
+                    confirmSubmission();
+                }
+            }
+        });
+    }
+
+    private boolean checkInput() {
+        if (inputName.getText().toString().isEmpty()) {
+            inputName.setError("Enter Valid Name");
+            inputName.requestFocus();
+            return false;
+        } else if (inputPhone.getText().toString().length() < 10) {
+            inputPhone.setError("Invalid Phone No.");
+            inputPhone.requestFocus();
+            return false;
+        }else if(inputSubject.getText().toString().isEmpty()){
+            inputSubject.setError("Add Subject");
+            inputSubject.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private void confirmSubmission() {
+
     }
 
     private void showImageChooser() {
