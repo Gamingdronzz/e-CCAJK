@@ -9,7 +9,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,6 +27,7 @@ import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.LocatorFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
+import com.ccajk.Fragments.RTIFragment;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -41,6 +41,8 @@ import shortbread.Shortcut;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    final int TYPE_ADMIN = 1;
+    final int TYPE_STAFF = 2;
     String TAG = "MainActivity";
     FrameLayout frameLayout;
     NavigationView navigationView;
@@ -90,13 +92,13 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
-
         if (Preferences.getInstance().getSignedIn(this)) {
-            navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
-            navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
+            if (Preferences.getInstance().getStaffType(this) == TYPE_ADMIN)
+                ManageNavigationView(true, true);
+            else
+                ManageNavigationView(true, false);
         } else {
-            navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
-            navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
+            ManageNavigationView(false, false);
         }
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -190,10 +192,8 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("GP Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_rti:
-                fragment = new BrowserFragment();
-                bundle = new Bundle();
-                bundle.putString("url", "https://rtionline.gov.in/");
-                ShowFragment("RTI", fragment, bundle);
+                fragment = new RTIFragment();
+                ShowFragment("RTI", fragment, null);
                 break;
             case R.id.navmenu_inspection:
                 ShowFragment("Inspection", new InspectionFragment(), null);
@@ -256,8 +256,8 @@ public class MainActivity extends AppCompatActivity
 
     private void logout() {
         Preferences.getInstance().clearPrefs(this);
-        navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
-        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(false);
+        Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show();
+        ManageNavigationView(false, false);
         ShowFragment("Home", new HomeFragment(), null);
     }
 
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity
                         finish();
                     }
                 },
-        "No");
+                "No");
     }
 
 
@@ -310,10 +310,28 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "OnLoginSuccesful: ");
         Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
         Preferences.getInstance().setSignedIn(this, true);
-        navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
-        navigationView.getMenu().findItem(R.id.staff_panel).setVisible(true);
+        if (type == TYPE_ADMIN) {
+            ManageNavigationView(true, true);
+            Preferences.getInstance().setStaffType(this, TYPE_ADMIN);
+        } else {
+            ManageNavigationView(true, false);
+            Preferences.getInstance().setStaffType(this, TYPE_STAFF);
+        }
+    }
 
-        //TODO
-        //implement admin or staff type based code here
+    public void ManageNavigationView(boolean signedIn, boolean admin) {
+        MenuItem menuItem = navigationView.getMenu().findItem(R.id.staff_panel);
+        if (signedIn) {
+            navigationView.getMenu().findItem(R.id.staff_login).setVisible(false);
+            menuItem.setVisible(true);
+            if (admin) {
+                menuItem.getSubMenu().findItem(R.id.navmenu_inspection).setVisible(true);
+            } else {
+                menuItem.getSubMenu().findItem(R.id.navmenu_inspection).setVisible(false);
+            }
+        } else {
+            navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
+            menuItem.setVisible(false);
+        }
     }
 }

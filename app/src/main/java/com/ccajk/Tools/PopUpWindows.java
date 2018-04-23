@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -50,8 +49,8 @@ public class PopUpWindows {
 
 
     public void showLoginPopup(final MainActivity context, View parent) {
-        final ImageView ppo, pwd;
-        ImageButton close;
+        final ImageView ppo, pwd,close;
+
         final AutoCompleteTextView autoCompleteTextView;
         final EditText editText;
 

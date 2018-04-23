@@ -12,19 +12,19 @@ public class Grievance {
     long grievanceType;
     String details;
     String submittedBy;
-    String filename;
+    String email;
     String message;
     String state;
     long grievanceStatus;
     Date date;
 
-    public Grievance(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String filename, String message, String state, long grievanceStatus, Date date) {
+    public Grievance(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
         this.pensionerIdentifier = pensionerIdentifier;
         this.mobile = mobile;
         this.grievanceType = grievanceType;
         this.details = details;
         this.submittedBy = submittedBy;
-        this.filename = filename;
+        this.email = email;
         this.message = message;
         this.state = state;
         this.grievanceStatus = grievanceStatus;
@@ -75,12 +75,12 @@ public class Grievance {
         this.submittedBy = submittedBy;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getMessage() {

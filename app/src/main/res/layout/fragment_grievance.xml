@@ -20,10 +20,10 @@
 
             <LinearLayout
                 android:id="@+id/layout_radio"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -56,7 +56,15 @@
                         android:layout_weight="1"
                         android:text="HR Number" />
 
+                    <RadioButton
+                        android:id="@+id/radioButtonStaff"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Staff Number" />
+
                 </RadioGroup>
+
             </LinearLayout>
 
             <LinearLayout
@@ -118,6 +126,36 @@
                         android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_medium">
+
+                <ImageView
+                    android:id="@+id/image_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:tint="@color/colorAccent" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autocomplete_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="E-Mail"
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true" />
+
+                </android.support.design.widget.TextInputLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -228,34 +266,15 @@
                 android:layout_marginTop="@dimen/padding_medium"
                 android:background="@color/colorWhite">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:id="@+id/infotext"
-                    android:layout_height="wrap_content"
-                    android:text="File is optional and should be less than 1mb"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/text_15" />
-
-                <!--<ImageView-->
-                <!--android:id="@+id/image_attach"-->
-                <!--android:layout_alignParentLeft="true"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:layout_alignParentStart="true"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:tint="@color/colorAccent" />-->
-
                 <Button
                     android:id="@+id/button_attach"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/infotext"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginTop="@dimen/margin_large"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_large"
                     android:background="@drawable/custom_button_rounded"
                     android:drawableTint="@color/colorPrimary"
                     android:text="Add File"
@@ -287,16 +306,14 @@
             </RelativeLayout>
 
             <ImageView
+                android:id="@+id/imageview_selected_image"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_gravity="center_horizontal"
-                android:padding="@dimen/padding_medium"
-                android:src="@mipmap/ic_launcher"
-                android:layout_marginBottom="@dimen/margin_xxlarge"
-                android:id="@+id/imageview_selected_image"/>
+                android:layout_marginBottom="@dimen/margin_large"
+                android:src="@mipmap/ic_launcher" />
 
         </LinearLayout>
-
 
 
     </ScrollView>

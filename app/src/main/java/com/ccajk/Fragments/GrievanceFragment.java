@@ -3,10 +3,8 @@ package com.ccajk.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -51,19 +49,12 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import easyfilepickerdialog.kingfisher.com.library.model.DialogConfig;
-import easyfilepickerdialog.kingfisher.com.library.model.SupportFile;
-import easyfilepickerdialog.kingfisher.com.library.view.FilePickerDialogFragment;
-
-import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
 
 public class GrievanceFragment extends Fragment {
 
     TextView textViewFileName;
-    AutoCompleteTextView inputIdentifier, inputMobile;
+    AutoCompleteTextView inputIdentifier, inputMobile, inputEmail;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     EditText inputDetails;
@@ -80,7 +71,7 @@ public class GrievanceFragment extends Fragment {
     GrievanceType grievanceType;
 
     ImageView imagePensionerCode;
-    ImageView imageMobile;
+    ImageView imageMobile, imageEmail;
     ImageView imageDetails;
     ImageView imageType;
     ImageView imageSubmittedBy;
@@ -99,13 +90,14 @@ public class GrievanceFragment extends Fragment {
         Bundle bundle = this.getArguments();
         type = bundle.getString("Type");
         bindViews(view);
-        init(view);
+        init();
         return view;
     }
 
     private void bindViews(View view) {
         imagePensionerCode = view.findViewById(R.id.image_pcode);
         imageMobile = view.findViewById(R.id.image_mobile);
+        imageEmail = view.findViewById(R.id.image_email);
         imageDetails = view.findViewById(R.id.image_details);
         imageType = view.findViewById(R.id.image_type);
         imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
@@ -115,6 +107,7 @@ public class GrievanceFragment extends Fragment {
         textInputIdentifier = view.findViewById(R.id.text_input_code);
         inputIdentifier = view.findViewById(R.id.autocomplete_pcode);
         inputMobile = view.findViewById(R.id.autocomplete_mobile);
+        inputEmail=view.findViewById(R.id.autocomplete_email);
         inputType = view.findViewById(R.id.spinner_type);
         inputDetails = view.findViewById(R.id.edittext_details);
         inputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
@@ -126,11 +119,12 @@ public class GrievanceFragment extends Fragment {
         submit = view.findViewById(R.id.button_submit);
     }
 
-    private void init(View view) {
+    private void init() {
 
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
         imageMobile.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_phone_android_black_24dp));
+        imageEmail.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_email_black_24dp));
         imageDetails.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_details_black_24dp));
         imageType.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_sentiment_dissatisfied_black_24dp));
         imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
@@ -157,6 +151,9 @@ public class GrievanceFragment extends Fragment {
                     //set place holder format
                     case R.id.radioButtonHR:
                         textInputIdentifier.setHint("HR Number");
+                        break;
+                    case R.id.radioButtonStaff:
+                        textInputIdentifier.setHint("Staff Number");
                 }
             }
         });
@@ -168,12 +165,11 @@ public class GrievanceFragment extends Fragment {
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                showFileChooser();
                 showImageChooser();
             }
         });
-        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
 
+        buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
         buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +177,6 @@ public class GrievanceFragment extends Fragment {
 
             }
         });
-
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,45 +197,21 @@ public class GrievanceFragment extends Fragment {
         imageviewSelectedImage.setImageDrawable(null);
     }
 
-    private void showFileChooser() {
-        DialogConfig dialogConfig = new DialogConfig.Builder()
-                .enableMultipleSelect(false) // default is false
-                .enableFolderSelect(false) // default is false
-                .initialDirectory(Environment.getExternalStorageDirectory().getAbsolutePath()) // default is sdcard
-                .supportFiles(new SupportFile(".jpeg", 0), new SupportFile(".jpg", 0), new SupportFile(".pdf", 0)) // default is showing all file types.
-                .build();
-
-        new FilePickerDialogFragment.Builder()
-                .configs(dialogConfig)
-                .onFilesSelected(new FilePickerDialogFragment.OnFilesSelectedListener() {
-                    @Override
-                    public void onFileSelected(List<File> list) {
-                        for (File file : list) {
-                            setupSelectedFile(file);
-                        }
-                    }
-                })
-                .build()
-                .show(getActivity().getSupportFragmentManager(), null);
-    }
-
-    private void setupSelectedFile(File file)
-    {
+    private void setupSelectedFile(File file) {
         if (file.length() / 1048576 > 1) {
-            Helper.getInstance().showAlertDialog(getContext(),"You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed","Choose File","OK");
-            //Toast.makeText(getContext(), "Please Choose a file of 1mb or less", Toast.LENGTH_SHORT).show();
+            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
             removeSelectedFile();
         } else {
             fileChosedPath = file.getAbsolutePath();
             fileChosed = file.getName();
             Log.d(TAG, "onFileSelected: " + fileChosedPath);
             buttonRemove.setVisibility(View.VISIBLE);
+            textViewFileName.setText(fileChosed);
         }
-        textViewFileName.setText(fileChosed);
     }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(),false, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), false, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
@@ -248,15 +219,11 @@ public class GrievanceFragment extends Fragment {
                 Log.d(TAG, "onPickImage: " + file.getAbsolutePath());
                 Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
                 setupSelectedFile(file);
-
-
-
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
                 Log.d(TAG, "onCropImage: " + imageUri.getPath());
-
             }
 
             @Override
@@ -288,6 +255,10 @@ public class GrievanceFragment extends Fragment {
             return false;
         } else if (inputMobile.getText().toString().isEmpty()) {
             inputMobile.setError("Mobile No required");
+            inputMobile.requestFocus();
+            return false;
+        } else if (inputEmail.getText().toString().isEmpty()) {
+            inputMobile.setError("E mail required");
             inputMobile.requestFocus();
             return false;
         } else if (inputDetails.getText().toString().trim().isEmpty()) {
@@ -325,14 +296,14 @@ public class GrievanceFragment extends Fragment {
         ppoNo.setText(ppoNo.getText() + " " + pcode);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
         mobNo.setText(mobNo.getText() + " " + inputMobile.getText());
+        TextView email = v.findViewById(R.id.textview_email);
+        email.setText(email.getText() + " " + inputEmail.getText());
         TextView grievance = v.findViewById(R.id.textview_grievance_type);
         grievance.setText(grievance.getText() + " " + grievanceType.getName());
         TextView gr_by = v.findViewById(R.id.textview_grievance_by);
         gr_by.setText(gr_by.getText() + " " + inputSubmittedBy.getSelectedItem());
         TextView details = v.findViewById(R.id.textview_grievance_details);
         details.setText(inputDetails.getText().toString().trim());
-        TextView fileName = v.findViewById(R.id.textview_file_name);
-        fileName.setText(fileChosed == null ? Helper.getInstance().Nil : fileChosed);
     }
 
 
@@ -347,7 +318,7 @@ public class GrievanceFragment extends Fragment {
                 grievanceType.getId(),
                 inputDetails.getText().toString().trim(),
                 inputSubmittedBy.getSelectedItem().toString(),
-                fileChosed,
+                inputEmail.getText().toString(),
                 null,
                 Preferences.getInstance().getPrefState(getContext()),
                 0, new Date());
@@ -376,8 +347,9 @@ public class GrievanceFragment extends Fragment {
 
         uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_GRIEVANCES,
                 pcode,
+                String.valueOf(grievanceType.getId()),
                 fileChosedPath,
-                String.valueOf(grievanceType.getId()));
+                fileChosed);
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -423,3 +395,25 @@ public class GrievanceFragment extends Fragment {
 
     }
 }
+
+/*    private void showFileChooser() {
+        DialogConfig dialogConfig = new DialogConfig.Builder()
+                .enableMultipleSelect(false) // default is false
+                .enableFolderSelect(false) // default is false
+                .initialDirectory(Environment.getExternalStorageDirectory().getAbsolutePath()) // default is sdcard
+                .supportFiles(new SupportFile(".jpeg", 0), new SupportFile(".jpg", 0), new SupportFile(".pdf", 0)) // default is showing all file types.
+                .build();
+
+        new FilePickerDialogFragment.Builder()
+                .configs(dialogConfig)
+                .onFilesSelected(new FilePickerDialogFragment.OnFilesSelectedListener() {
+                    @Override
+                    public void onFileSelected(List<File> list) {
+                        for (File file : list) {
+                            setupSelectedFile(file);
+                        }
+                    }
+                })
+                .build()
+                .show(getActivity().getSupportFragmentManager(), null);
+    }*/

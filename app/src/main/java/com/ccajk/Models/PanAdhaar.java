@@ -6,12 +6,9 @@ package com.ccajk.Models;
 
 public class PanAdhaar {
     String pensionerIdentifier;
-    String number;
+    String cardNumOrUserName;
     String filename;
     String state;
-    //String msg;
-    //Date uploadDate;
-    //long status;
 
     public String getPensionerIdentifier() {
         return pensionerIdentifier;
@@ -21,12 +18,12 @@ public class PanAdhaar {
         this.pensionerIdentifier = pensionerIdentifier;
     }
 
-    public String getNumber() {
-        return number;
+    public String getCardNumOrUserName() {
+        return cardNumOrUserName;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setCardNumOrUserName(String cardNumOrUserName) {
+        this.cardNumOrUserName = cardNumOrUserName;
     }
 
     public String getFilename() {
@@ -45,33 +42,9 @@ public class PanAdhaar {
         this.state = state;
     }
 
-   /* public long getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Date getUploadDate() {
-        return uploadDate;
-    }
-
-    public void setUploadDate(Date uploadDate) {
-        this.uploadDate = uploadDate;
-    }
-*/
-    public PanAdhaar(String pensionerIdentifier, String number, String filename, String state) {
+    public PanAdhaar(String pensionerIdentifier, String cardNumOrUserName, String filename, String state) {
         this.pensionerIdentifier = pensionerIdentifier;
-        this.number = number;
+        this.cardNumOrUserName = cardNumOrUserName;
         this.filename = filename;
         this.state = state;
     }

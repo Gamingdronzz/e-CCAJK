@@ -31,8 +31,8 @@ public class FireBaseHelper {
     public final String ROOT_ADHAAR = "Aadhaar";
     public final String ROOT_PAN = "Pan";
     public final String ROOT_LIFE = "Life Certificate";
-    public final String ROOT_RE_MARRIAGE = "ReMarriage Certificate";
-    public final String ROOT_RE_EMPLOYMENT = "ReEmployment Certificate";
+    public final String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
+    public final String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
     public final String ROOT_GRIEVANCES = "Grievances";
     public final String ROOT_HOTSPOTS = "Hotspots";
     public final String ROOT_GP = "GP Locations";
@@ -64,10 +64,10 @@ public class FireBaseHelper {
         }
     }
 
-    public UploadTask uploadFile(String rootFolder, String subFolder, String filePath, String subType) {
+    public UploadTask uploadFile(String rootFolder, String subFolder, String subType, String filePath, String filename) {
         StorageReference sref;
         if (subType != null) {
-            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType);
+            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType + "/" + filename);
         } else {
             sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder);
         }

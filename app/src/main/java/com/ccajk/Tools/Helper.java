@@ -5,21 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
-import com.ccajk.Activity.MainActivity;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
 import com.linchaolong.android.imagepicker.ImagePicker;
-import com.linchaolong.android.imagepicker.cropper.CropImage;
-import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -49,13 +45,13 @@ public class Helper {
         }
     }
 
-    public ImagePicker showImageChooser(ImagePicker imagePicker,Activity activity,boolean cropimage,ImagePicker.Callback callback){
-        if(imagePicker == null) {
+    public ImagePicker showImageChooser(ImagePicker imagePicker, Activity activity, boolean cropimage, ImagePicker.Callback callback) {
+        if (imagePicker == null) {
             imagePicker = new ImagePicker();
         }
         imagePicker.setTitle("Select Image");
         imagePicker.setCropImage(cropimage);
-        imagePicker.startChooser(activity,callback);
+        imagePicker.startChooser(activity, callback);
         return imagePicker;
     }
 
@@ -74,18 +70,16 @@ public class Helper {
              String positiveButtonText,
              DialogInterface.OnClickListener positiveButtonOnClickListener,
              String negativeButtonText) {
-        if(title == null)
-        {
+        if (title == null) {
             title = "CCA JK";
         }
-        if(message == null)
-        {
+        if (message == null) {
             Log.d(TAG, "showAlertDialog: Message cant be null");
             return;
         }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 context, R.style.MyAlertDialogStyle);
-        alertDialog.setPositiveButton(positiveButtonText,positiveButtonOnClickListener)
+        alertDialog.setPositiveButton(positiveButtonText, positiveButtonOnClickListener)
                 .setNegativeButton(negativeButtonText, null)
                 .setMessage(message)
                 .setTitle(title)
@@ -97,22 +91,19 @@ public class Helper {
              String message,
              String title,
              String neutralButtonText) {
-        if(title == null)
-        {
+        if (title == null) {
             title = "CCA JK";
         }
-        if(message == null)
-        {
+        if (message == null) {
             Log.d(TAG, "showAlertDialog: Message cant be null");
             return;
         }
-        if(neutralButtonText == null)
-        {
+        if (neutralButtonText == null) {
             neutralButtonText = "OK";
         }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 context, R.style.MyAlertDialogStyle);
-        alertDialog.setNeutralButton(neutralButtonText,null)
+        alertDialog.setNeutralButton(neutralButtonText, null)
                 .setMessage(message)
                 .setTitle(title)
                 .show();

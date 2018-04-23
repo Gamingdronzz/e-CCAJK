@@ -1,83 +1,140 @@
 package com.ccajk.Fragments;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
+import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+import java.io.File;
+
+
 public class RTIFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    RecyclerViewAdapterHotspotLocation adapter;
-    View view;
+    ImageView imageName, imageSubject, imagePhone, imageviewSelectedImage;
+    TextInputEditText inputName, inputSubject, inputPhone;
+    TextView textViewFilename;
+    Button attach;
+
+    String fileChosed, fileChosedPath, root;
+    ImagePicker imagePicker;
 
     public RTIFragment() {
-        // Required empty public constructor
-    }
 
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_rti, container, false);
-
-
-        //adapter = new RecyclerViewAdapterHotspotLocation(allLocations);
-
-        recyclerView = view.findViewById(R.id.recyclerview_statistics);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.getItemAnimator().setAddDuration(1000);
-
-        //recyclerView.setAdapter(adapter);
-        /*getLocationList();*/
-
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-
-            GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-            });
-
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View child = rv.findChildViewUnder(e.getX(), e.getY());
-                if (child != null && gestureDetector.onTouchEvent(e)) {
-
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        });
+        View view = inflater.inflate(R.layout.fragment_rti, container, false);
+        bindViews(view);
+        init();
         return view;
     }
 
-    @Override
-    public void onStop() {
-
-        super.onStop();
+    void bindViews(View view) {
+        imageName = view.findViewById(R.id.image_name);
+        imageSubject = view.findViewById(R.id.image_subject);
+        imagePhone = view.findViewById(R.id.image_phone);
+        inputName = view.findViewById(R.id.edittext_name);
+        inputPhone = view.findViewById(R.id.edittext_phone);
+        inputSubject = view.findViewById(R.id.edittext_subject_matter);
+        textViewFilename = view.findViewById(R.id.textview_file_name);
+        imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
+        attach = view.findViewById(R.id.button_attach);
     }
 
+    private void init() {
 
+        imageName.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
+        imagePhone.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_phone_android_black_24dp));
+        imageSubject.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_subject_black_24dp));
+
+        attach.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
+        attach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageChooser();
+            }
+        });
+    }
+
+    private void showImageChooser() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), false, new ImagePicker.Callback() {
+            @Override
+            public void onPickImage(Uri imageUri) {
+                File file = new File(imageUri.getPath());
+                setupSelectedFile(file);
+                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+            }
+
+            @Override
+            public void onCropImage(Uri imageUri) {
+
+            }
+
+            @Override
+            public void cropConfig(CropImage.ActivityBuilder builder) {
+                builder
+                        .setMultiTouchEnabled(false)
+                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setRequestedSize(540, 960)
+                        .setAspectRatio(9, 16);
+            }
+
+            @Override
+            public void onPermissionDenied(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+            }
+        });
+    }
+
+    private void setupSelectedFile(File file) {
+        if (file.length() / 1048576 > 1) {
+            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
+        } else {
+            fileChosedPath = file.getAbsolutePath();
+            fileChosed = file.getName();
+            textViewFilename.setText(fileChosed);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (imagePicker != null)
+            imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            default: {
+                if (imagePicker != null)
+                    imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
+            }
+
+        }
+
+    }
 }
