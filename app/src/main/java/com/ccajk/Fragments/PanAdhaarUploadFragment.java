@@ -100,14 +100,14 @@ public class PanAdhaarUploadFragment extends Fragment {
                 switch (checkedId) {
                     case R.id.radioButtonPensioner:
                         textInputIdentifier.setHint("Pensioner Code");
-                        inputPCode.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(15)});
+                        inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
                         identifierType = 0;
                         break;
                     //TODO
                     //set place holder format
                     case R.id.radioButtonHR:
                         textInputIdentifier.setHint("HR Number");
-                        inputPCode.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(10)});
+                        inputPCode.setFilters(Helper.getInstance().limitInputLength(10));
                         identifierType = 1;
                 }
             }
@@ -116,11 +116,11 @@ public class PanAdhaarUploadFragment extends Fragment {
 
         if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
-            inputNumber.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(12)});
+            inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
             textInputNumber.setHint(root + " Number");
         }
         else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
-            inputNumber.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(10), new InputFilter() {
+            inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
                 @Override
                 public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                     if(source.equals("")){ // for backspace

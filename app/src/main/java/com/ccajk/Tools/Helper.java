@@ -218,8 +218,8 @@ public class Helper {
         return progressDialog;
     }
 
-    public InputFilter limitInputLength(int length) {
-        return new InputFilter.LengthFilter(length);
+    public InputFilter[] limitInputLength(int length) {
+        return new InputFilter[]{ new InputFilter.LengthFilter(length)};
     }
 
     public void showSnackBar(CharSequence message, View view) {

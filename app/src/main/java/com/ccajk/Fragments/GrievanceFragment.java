@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.content.res.AppCompatResources;
-import android.text.InputFilter;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -148,20 +147,19 @@ public class GrievanceFragment extends Fragment {
                 switch (checkedId) {
                     case R.id.radioButtonPensioner:
                         textInputIdentifier.setHint("Pensioner Code");
-                        inputIdentifier.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(15)});
+                        inputIdentifier.setFilters(Helper.getInstance().limitInputLength(15));
                         identifierType = 0;
                         break;
                     //TODO
                     //set place holder format
                     case R.id.radioButtonHR:
                         textInputIdentifier.setHint("HR Number");
-                        inputIdentifier.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(10)});
-
+                        inputIdentifier.setFilters(Helper.getInstance().limitInputLength(10));
                         identifierType = 1;
                         break;
                     case R.id.radioButtonStaff:
                         textInputIdentifier.setHint("Staff Number");
-                        inputIdentifier.setFilters(new InputFilter[]{Helper.getInstance().limitInputLength(12)});
+                        inputIdentifier.setFilters(Helper.getInstance().limitInputLength(12));
                         identifierType = 2;
                 }
             }
