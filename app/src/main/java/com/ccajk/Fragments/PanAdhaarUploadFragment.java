@@ -140,7 +140,7 @@ public class PanAdhaarUploadFragment extends Fragment {
             textInputNumber.setHint("Applicant's Name");
         }
 
-        buttonChooseFile.setText("Select " + root + " File");
+        buttonChooseFile.setText("Select " + root + " Image");
         buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override

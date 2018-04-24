@@ -429,7 +429,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 //import android.widget.ImageButton;
 //import android.widget.TextView;
 //
-//import com.ccajk.CustomObjects.EasyLocation;
+//import com.ccajk.Unused.EasyLocation;
 //import com.ccajk.Models.LocationModel;
 //import com.ccajk.R;
 //import com.ccajk.Tools.MyLocationManager;
@@ -440,7 +440,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 //
 //import java.util.ArrayList;
 //
-//import static com.ccajk.CustomObjects.EasyLocation.LOCATION_SETTING_REQUEST_CODE;
+//import static com.ccajk.Unused.EasyLocation.LOCATION_SETTING_REQUEST_CODE;
 //
 //public class TabNearby extends Fragment {
 //

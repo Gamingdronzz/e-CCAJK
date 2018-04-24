@@ -26,17 +26,20 @@ public class FireBaseHelper {
 
     public DatabaseReference databaseReference;
     public StorageReference storageReference;
+
+    public final String ROOT_GRIEVANCES = "Grievances";
     public final String ROOT_ADHAAR = "Aadhaar";
     public final String ROOT_PAN = "Pan";
     public final String ROOT_LIFE = "Life Certificate";
     public final String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
     public final String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
-    public final String ROOT_GRIEVANCES = "Grievances";
     public final String ROOT_HOTSPOTS = "Hotspots";
     public final String ROOT_GP = "GP Locations";
+    public final String ROOT_STAFF = "Staff";
     public final String ROOT_PASSWORD = "password";
     public final String ROOT_TYPE = "type";
-    public final String ROOT_STAFF = "Staff";
+    public final String ROOT_INSPECTION="Inspection";
+
 
     public final String GRIEVANCE_PENSION = "Pension Grievance";
     public final String GRIEVANCE_GPF = "GPF Grievance";

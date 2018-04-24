@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
-        if (Preferences.getInstance().getSignedIn(this)) {
+        if (Preferences.getInstance().getStaffId(this) != null) {
             if (Preferences.getInstance().getStaffType(this) == TYPE_ADMIN)
                 ManageNavigationView(true, true);
             else
@@ -271,15 +271,14 @@ public class MainActivity extends AppCompatActivity
                 "No");
     }
 
-    public void OnLoginFailure(String message)
-    {
+    public void OnLoginFailure(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void OnLoginSuccesful(long type) {
+    public void OnLoginSuccesful(String staffId,long type) {
         Log.d(TAG, "OnLoginSuccesful: ");
         Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
-        Preferences.getInstance().setSignedIn(this, true);
+        Preferences.getInstance().setStaffId(this, staffId);
         if (type == TYPE_ADMIN) {
             ManageNavigationView(true, true);
             Preferences.getInstance().setStaffType(this, TYPE_ADMIN);

@@ -11,7 +11,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
     private static Preferences _instance;
 
-    static final String PREF_SIGNED_IN = "signedIn";
+    static final String PREF_STAFF_ID = "staffId";
     static final String PREF_STAFF_TYPE = "staffType";
     static final String PREF_STATE = "state";
 
@@ -31,14 +31,14 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public void setSignedIn(Context context, boolean signedin) {
+    public void setStaffId(Context context, String staffId) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putBoolean(PREF_SIGNED_IN, signedin);
+        editor.putString(PREF_STAFF_ID, staffId);
         editor.commit();
     }
 
-    public Boolean getSignedIn(Context context) {
-        return getSharedPreferences(context).getBoolean(PREF_SIGNED_IN, false);
+    public String getStaffId(Context context) {
+        return getSharedPreferences(context).getString(PREF_STAFF_ID, null);
     }
 
     public void setStaffType(Context context, int type) {
@@ -63,7 +63,7 @@ public class Preferences {
 
     public void clearPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.remove(PREF_SIGNED_IN);
+        editor.remove(PREF_STAFF_ID);
         editor.remove(PREF_STAFF_TYPE);
         editor.commit();
     }

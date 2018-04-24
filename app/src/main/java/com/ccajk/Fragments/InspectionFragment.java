@@ -5,6 +5,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -19,13 +21,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Models.InspectionModel;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
+import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.MyLocationManager;
+import com.ccajk.Tools.Preferences;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -34,11 +40,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.UploadTask;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
@@ -49,18 +61,20 @@ import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment {
 
     private static final String TAG = "Inspection";
-    //    ImageButton choose, location;
-    TextView textChoose, textLocation,textViewSelectedFileCount;
+    String staffId, date;
+    int count;
+    boolean isCurrentLocationFound = false;
+    Double latitude, longitude;
+
+    TextView textChoose, textLocation, textViewSelectedFileCount;
     Button upload;
     ImagePicker imagePicker;
+    ProgressDialog progressDialog;
+    View.OnClickListener getCoordinatesListener;
 
-    Double latitude, longitude;
     Location mLastLocation;
     MyLocationManager myLocationManager;
     LocationCallback mLocationCallback;
-    ProgressDialog progressDialog;
-    boolean isCurrentLocationFound = false;
-    View.OnClickListener getCoordinatesListener;
 
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
@@ -111,9 +125,12 @@ public class InspectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (isCurrentLocationFound) {
-                    uploadInspectionDataToCloud();
+                    if (selectedImageModelArrayList.size() != 0)
+                        uploadInspectionData();
+                    else
+                        Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
                 } else {
-                    Log.d(TAG, "onClick: Please set current location coordinates first");
+                    Toast.makeText(getContext(),"Please set current location coordinates first",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -138,25 +155,10 @@ public class InspectionFragment extends Fragment {
                 "Getting Current Location Coordinates\nPlease Wait...");
 
         selectedImageModelArrayList = new ArrayList<>();
-        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList,this);
+        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(),3));
+        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 3));
     }
-
-    private void uploadInspectionDataToCloud() {
-
-    }
-//    private void manageProgressDialog()
-//    {
-//        if(progressDialog.isShowing())
-//        {
-//            progressDialog.dismiss();
-//        }
-//        else
-//        {
-//            progressDialog.show();
-//        }
-//    }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
@@ -217,10 +219,31 @@ public class InspectionFragment extends Fragment {
 
         textLocation.setText(location.getLatitude() + " , " + location.getLongitude());
         progressDialog.dismiss();
+
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        StringBuilder _homeAddress = null;
+        try {
+            _homeAddress = new StringBuilder();
+            Address address = null;
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 3);
+            Log.d(TAG, "showCoordinates: " + addresses.size());
+            for (int index = 0; index < addresses.size(); ++index) {
+                address = addresses.get(index);
+                _homeAddress.append("Name: " + address.getLocality() + "\n");
+                _homeAddress.append("Sub-Admin Ares: " + address.getSubAdminArea() + "\n");
+                _homeAddress.append("Admin Area: " + address.getAdminArea() + "\n");
+                _homeAddress.append("Country: " + address.getCountryName() + "\n");
+                _homeAddress.append("Country Code: " + address.getCountryCode() + "\n");
+                Log.d(TAG, "showCoordinates: " + _homeAddress);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(),true, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
@@ -230,11 +253,11 @@ public class InspectionFragment extends Fragment {
             public void onCropImage(Uri imageUri) {
                 Log.d(TAG, "onCropImage: " + imageUri.getPath());
                 int currentPosition = selectedImageModelArrayList.size();
-                selectedImageModelArrayList.add(currentPosition,new SelectedImageModel(imageUri));
+                selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
                 adapterSelectedImages.notifyItemInserted(currentPosition);
                 adapterSelectedImages.notifyDataSetChanged();
-                setSelectedFileCount(currentPosition+1);
-                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition );
+                setSelectedFileCount(currentPosition + 1);
+                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition);
 
             }
 
@@ -257,6 +280,58 @@ public class InspectionFragment extends Fragment {
 
     }
 
+    private void uploadInspectionData() {
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.show();
+        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_INSPECTION);
+        date = new SimpleDateFormat("dd-MM-yy").format(new Date());
+        staffId = Preferences.getInstance().getStaffId(getContext());
+        InspectionModel inspectionModel = new InspectionModel(staffId, null, latitude, longitude, new Date());
+        dbref.child(staffId).child(date).setValue(inspectionModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    uploadInspectionFiles();
+                }
+            }
+        });
+
+    }
+
+    private void uploadInspectionFiles() {
+        UploadTask uploadTask;
+        count = 0;
+        for (SelectedImageModel imageModel : selectedImageModelArrayList) {
+            uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_INSPECTION,
+                    staffId,
+                    date,
+                    imageModel,
+                    count++);
+
+            if (uploadTask != null) {
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(getContext(), "Unable to Upload file", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onFailure: " + exception.getMessage());
+                        dismissProgressDialog();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        Log.d(TAG, "onSuccess: " + downloadUrl);
+                        progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
+                        if (count == selectedImageModelArrayList.size()) {
+                            Toast.makeText(getActivity(), "Inspection data Submitted", Toast.LENGTH_SHORT).show();
+                            dismissProgressDialog();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
     private void dismissProgressDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
@@ -266,6 +341,10 @@ public class InspectionFragment extends Fragment {
         if (!progressDialog.isShowing()) {
             progressDialog.show();
         }
+    }
+
+    public void setSelectedFileCount(int count) {
+        textViewSelectedFileCount.setText("Selected Files = " + count);
     }
 
     @Override
@@ -329,10 +408,6 @@ public class InspectionFragment extends Fragment {
 
     }
 
-    public void setSelectedFileCount(int count)
-    {
-        textViewSelectedFileCount.setText("Selected Files = " + count);
-    }
 
 }
 

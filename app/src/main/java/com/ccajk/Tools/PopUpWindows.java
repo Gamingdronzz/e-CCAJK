@@ -107,7 +107,7 @@ public class PopUpWindows {
                             if (dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue().toString().equals(password)) {
                                 long type = (long) dataSnapshot.child(FireBaseHelper.getInstance().ROOT_TYPE).getValue();
                                 Log.d(TAG, "onDataChange: type: " + type);
-                                context.OnLoginSuccesful(type);
+                                context.OnLoginSuccesful(id,type);
                                 popupWindow.dismiss();
                             } else {
                                 context.OnLoginFailure("Password Mismatch");
