@@ -5,9 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
@@ -49,7 +47,7 @@ public class TrackResultActivity extends AppCompatActivity {
        progressDialog.show();
 
        dbref = FireBaseHelper.getInstance().databaseReference;
-        pensionerCode = getIntent().getStringExtra("pensionerCode");
+        pensionerCode = getIntent().getStringExtra("Code");
         Log.d(TAG, "init: pcode = " + pensionerCode);
         grievances = new ArrayList<>();
         getGrievances();

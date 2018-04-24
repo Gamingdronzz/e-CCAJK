@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.PanAdhaar;
+import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -55,8 +56,9 @@ public class PanAdhaarUploadFragment extends Fragment {
     ProgressDialog progressDialog;
 
     private static final String TAG = "PanAdhaarUpload";
-    String pensionerCode, number, fileChosed, fileChosedPath, root;
-    int identifierType = 0;
+    String pensionerCode, number, fileChosedPath, root;
+    SelectedImageModel imageModel;
+    String hint = "Pensioner Code";
     ImagePicker imagePicker;
     DatabaseReference dbref;
 
@@ -99,17 +101,19 @@ public class PanAdhaarUploadFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radioButtonPensioner:
-                        textInputIdentifier.setHint("Pensioner Code");
+                        hint = "Pensioner Code";
                         inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
-                        identifierType = 0;
                         break;
                     //TODO
                     //set place holder format
                     case R.id.radioButtonHR:
-                        textInputIdentifier.setHint("HR Number");
+                        hint = "HR Number";
                         inputPCode.setFilters(Helper.getInstance().limitInputLength(10));
-                        identifierType = 1;
+                        break;
                 }
+                inputPCode.setText("");
+                inputPCode.setError(null);
+                textInputIdentifier.setHint(hint);
             }
         });
 
@@ -118,15 +122,14 @@ public class PanAdhaarUploadFragment extends Fragment {
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
             textInputNumber.setHint(root + " Number");
-        }
-        else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
+        } else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
                 @Override
                 public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    if(source.equals("")){ // for backspace
+                    if (source.equals("")) { // for backspace
                         return source;
                     }
-                    if(source.toString().matches("[a-zA-Z0-9]+")){
+                    if (source.toString().matches("[a-zA-Z0-9]+")) {
                         return source;
                     }
                     return "";
@@ -156,17 +159,19 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), false, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                File file = new File(imageUri.getPath());
-                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
-                setupSelectedFile(file);
+
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-                Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                File file = new File(imageUri.getPath());
+                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+                imageModel = new SelectedImageModel(imageUri);
+                textViewFileName.setError(null);
+                textViewFileName.setText(root + ".jpg");
             }
 
             @Override
@@ -175,7 +180,7 @@ public class PanAdhaarUploadFragment extends Fragment {
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(540, 960)
+                        .setRequestedSize(720, 1280)
                         .setAspectRatio(9, 16);
             }
 
@@ -187,27 +192,15 @@ public class PanAdhaarUploadFragment extends Fragment {
         });
     }
 
-    private void setupSelectedFile(File file) {
-        if (file.length() / 1048576 > 1) {
-            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
-        } else {
-            Log.d(TAG, "setupSelectedFile: " + file.getName());
-            fileChosedPath = file.getAbsolutePath();
-            fileChosed = file.getName();
-            textViewFileName.setError(null);
-            textViewFileName.setText(fileChosed);
-        }
-    }
-
     private boolean checkInput() {
         pensionerCode = inputPCode.getText().toString();
         number = inputNumber.getText().toString();
         //If Pensioner code is empty
-        if (pensionerCode.trim().length() < 15 && identifierType == 0) {
+        if (pensionerCode.trim().length() < 15 && hint.equals("Pensioner Code")) {
             inputPCode.setError("Enter Valid Pensioner Code");
             inputPCode.requestFocus();
             return false;
-        } else if (pensionerCode.trim().length() < 10 && identifierType == 1) {
+        } else if (pensionerCode.trim().length() < 10 && hint.equals("HR Number")) {
             inputPCode.setError("Enter Valid HR Code");
             inputPCode.requestFocus();
             return false;
@@ -229,7 +222,7 @@ public class PanAdhaarUploadFragment extends Fragment {
             return false;
         }
         //if no file selected
-        else if (fileChosed == null) {
+        else if (imageModel == null) {
             textViewFileName.setError("");
             textViewFileName.setText("Select a file");
             return false;
@@ -252,9 +245,12 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void loadValues(View v) {
         TextView pNo = v.findViewById(R.id.textview_ppo_no);
-        pNo.setText(pNo.getText() + " " + pensionerCode);
+        pNo.setText(hint + ": " + pensionerCode);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
-        mobNo.setText(root + " No: " + inputNumber.getText());
+        if (root.equals(FireBaseHelper.getInstance().ROOT_PAN) || root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR))
+            mobNo.setText(root + " No: " + inputNumber.getText());
+        else
+            mobNo.setText("Applicant's Name: " + inputNumber.getText());
         v.findViewById(R.id.textview_email).setVisibility(View.GONE);
         v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
         v.findViewById(R.id.textview_grievance_by).setVisibility(View.GONE);
@@ -267,7 +263,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         progressDialog.show();
         dbref = FireBaseHelper.getInstance().databaseReference.child(root);
 
-        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode, number, fileChosed, Preferences.getInstance().getPrefState(getContext()));
+        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode, number, null, Preferences.getInstance().getPrefState(getContext()));
 
         dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -291,9 +287,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void uploadFile() {
-        UploadTask uploadTask;
-
-        uploadTask = FireBaseHelper.getInstance().uploadFile(root, pensionerCode, null, fileChosedPath, fileChosed);
+        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFile(root, pensionerCode, null, imageModel, 0);
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(new OnFailureListener() {

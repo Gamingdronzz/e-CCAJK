@@ -103,12 +103,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
@@ -277,31 +271,7 @@ public class MainActivity extends AppCompatActivity
                 "No");
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult()", Integer.toString(resultCode));
-        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
-        for (Fragment frag : allFragments) {
-            frag.onActivityResult(requestCode, resultCode, data);
-        }
-        return;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
-
-        for (Fragment frag : allFragments) {
-            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
-            frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
     public void OnLoginFailure(String message)
-
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -333,5 +303,62 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);
             menuItem.setVisible(false);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult()", Integer.toString(resultCode));
+        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
+        for (Fragment frag : allFragments) {
+            frag.onActivityResult(requestCode, resultCode, data);
+        }
+        return;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
+
+        for (Fragment frag : allFragments) {
+            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
     }
 }

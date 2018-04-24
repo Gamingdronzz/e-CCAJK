@@ -1,6 +1,7 @@
 package com.ccajk.Models;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 
@@ -11,6 +12,8 @@ import java.io.File;
 public class SelectedImageModel {
 
     private Uri imageURI;
+    private File file;
+    private String selectedImageName;
 
     public File getFile() {
         return file;
@@ -19,9 +22,6 @@ public class SelectedImageModel {
     public void setFile(File file) {
         this.file = file;
     }
-
-    private File file;
-    private String selectedImageName;
 
     public String getSelectedImageName() {
         return selectedImageName;
@@ -43,6 +43,7 @@ public class SelectedImageModel {
     public SelectedImageModel(Uri imageURI) {
         this.imageURI = imageURI;
         file = new File(imageURI.getPath());
+        Log.d("IMage", "SelectedImageModel: "+file.length()/1024.0f);
         //this.selectedImageName = file.getName();
 
     }

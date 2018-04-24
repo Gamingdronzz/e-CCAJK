@@ -1,10 +1,9 @@
 package com.ccajk.Tools;
 
-import android.net.Uri;
-
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.Models.State;
 import com.ccajk.Providers.DummyLocationProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -13,7 +12,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.ArrayList;
 
 
@@ -64,16 +62,14 @@ public class FireBaseHelper {
         }
     }
 
-    public UploadTask uploadFile(String rootFolder, String subFolder, String subType, String filePath, String filename) {
+    public UploadTask uploadFile(String rootFolder, String subFolder, String subType, SelectedImageModel imageFile, int count) {
         StorageReference sref;
         if (subType != null) {
-            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType + "/" + filename);
+            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType + "/File" + count);
         } else {
             sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder);
         }
-
-        Uri file = Uri.fromFile(new File(filePath));
-        UploadTask uploadTask = sref.putFile(file);
+        UploadTask uploadTask = sref.putFile(imageFile.getImageURI());
         return uploadTask;
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
@@ -34,6 +36,7 @@ public class PopUpWindows {
 
     private static PopUpWindows _instance;
     final String TAG = "Popup";
+    String hint = "Pensioner Code";
 
     public PopUpWindows() {
         _instance = this;
@@ -127,22 +130,54 @@ public class PopUpWindows {
 
     public void showTrackWindow(final Activity context, View parent) {
         final EditText editText;
+        final TextInputLayout textInputLayout;
         View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         editText = popupView.findViewById(R.id.edittext_pcode);
+        textInputLayout = popupView.findViewById(R.id.text_input_layout);
+
+        RadioGroup radioGroup = popupView.findViewById(R.id.groupNumberType);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonPensioner:
+                        hint = "Pensioner Code";
+                        editText.setFilters(Helper.getInstance().limitInputLength(15));
+                        break;
+                    //TODO
+                    //set place holder format
+                    case R.id.radioButtonHR:
+                        hint = "HR Number";
+                        editText.setFilters(Helper.getInstance().limitInputLength(10));
+                        break;
+                    case R.id.radioButtonStaff:
+                        hint = "Staff Number";
+                        editText.setFilters(Helper.getInstance().limitInputLength(12));
+                }
+                editText.setText("");
+                textInputLayout.setHint(hint);
+            }
+        });
+
         Button track = popupView.findViewById(R.id.btn_check_status);
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editText.getText().toString().trim().length() < 15)
-                    Toast.makeText(context, "Invalid code!", Toast.LENGTH_LONG).show();
-                else {
+                String code = editText.getText().toString().trim();
+                if (code.length() < 15 && hint.equals("Pensioner Code")) {
+                    Toast.makeText(context, "Invalid Pensioner code!", Toast.LENGTH_LONG).show();
+                } else if (code.length() < 10 && hint.equals("HR Number")) {
+                    Toast.makeText(context, "Invalid HR Number!", Toast.LENGTH_LONG).show();
+                } else if (code.length() < 12 && hint.equals("Staff Number")) {
+                    Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
+                } else {
                     Intent intent = new Intent(context, TrackResultActivity.class);
-                    intent.putExtra("pensionerCode", editText.getText().toString());
+                    intent.putExtra("Code", editText.getText().toString());
                     context.startActivity(intent);
                 }
-
+                editText.requestFocus();
             }
         });
 
