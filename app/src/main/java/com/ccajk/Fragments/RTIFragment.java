@@ -1,6 +1,7 @@
 package com.ccajk.Fragments;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,32 +9,53 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
+import com.ccajk.Models.RtiModel;
+import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
+import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.PopUpWindows;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.UploadTask;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class RTIFragment extends Fragment {
 
     ImageView imageName, imageSubject, imagePhone, imageviewSelectedImage;
     TextInputEditText inputName, inputSubject, inputPhone;
-    TextView textViewFilename;
+    TextView textViewSelectedFileCount;
     Button attach, submit;
 
-    String fileChosed, fileChosedPath, root;
+    String TAG = "RTI";
+    String name, mobile, subject, root;
+    int count;
     ImagePicker imagePicker;
+
+    RecyclerView recyclerViewSelectedImages;
+    RecyclerViewAdapterSelectedImages adapterSelectedImages;
+    ArrayList<SelectedImageModel> selectedImageModelArrayList;
 
     public RTIFragment() {
 
@@ -55,8 +77,8 @@ public class RTIFragment extends Fragment {
         inputName = view.findViewById(R.id.edittext_name);
         inputPhone = view.findViewById(R.id.edittext_phone);
         inputSubject = view.findViewById(R.id.edittext_subject_matter);
-        textViewFilename = view.findViewById(R.id.textview_selected_file_count_grievance);
-        imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
+        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_file_count_grievance);
+        recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
         attach = view.findViewById(R.id.button_attach);
         submit = view.findViewById(R.id.button_submit);
     }
@@ -83,18 +105,28 @@ public class RTIFragment extends Fragment {
                 }
             }
         });
+
+        selectedImageModelArrayList = new ArrayList<>();
+        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
+        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
+        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 4));
+
     }
 
     private boolean checkInput() {
-        if (inputName.getText().toString().isEmpty()) {
+        name = inputName.getText().toString().trim();
+        mobile = inputPhone.getText().toString();
+        subject = inputSubject.getText().toString().trim();
+
+        if (name.isEmpty()) {
             inputName.setError("Enter Valid Name");
             inputName.requestFocus();
             return false;
-        } else if (inputPhone.getText().toString().length() < 10) {
+        } else if (mobile.length() < 10) {
             inputPhone.setError("Invalid Phone No.");
             inputPhone.requestFocus();
             return false;
-        }else if(inputSubject.getText().toString().isEmpty()){
+        } else if (subject.isEmpty()) {
             inputSubject.setError("Add Subject");
             inputSubject.requestFocus();
             return false;
@@ -103,21 +135,112 @@ public class RTIFragment extends Fragment {
     }
 
     private void confirmSubmission() {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
+        loadValues(v);
+        PopUpWindows.getInstance().getConfirmationDialog(getActivity(), v,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        submitRTI();
+                    }
+                });
+    }
 
+    private void loadValues(View v) {
+        TextView ppoNo = v.findViewById(R.id.textview_ppo_no);
+        ppoNo.setText("Name" + ": " + name);
+        TextView mobNo = v.findViewById(R.id.textview_mobile_no);
+        mobNo.setText(mobNo.getText() + " " + mobile);
+        TextView details = v.findViewById(R.id.textview_grievance_details);
+        details.setText(subject);
+
+        v.findViewById(R.id.textview_email).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_grievance_by).setVisibility(View.GONE);
+    }
+
+    private void submitRTI() {
+        //progressDialog.show();
+        final DatabaseReference dbref;
+        dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_RTI);
+
+        final RtiModel rtiModel = new RtiModel(
+                name,
+                mobile,
+                subject,
+                new Date());
+
+        final String key = name.replaceAll("\\s", "-") + "-" + mobile;
+        dbref.child(key).setValue(rtiModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    if (selectedImageModelArrayList.size() != 0) {
+                        uploadFile(key);
+                    } else {
+                        Toast.makeText(getActivity(), "RTI application Submitted", Toast.LENGTH_SHORT).show();
+                        //progressDialog.dismiss();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
+                    //progressDialog.dismiss();
+                }
+
+            }
+        });
+    }
+
+    private void uploadFile(String key) {
+        UploadTask uploadTask;
+        count = 0;
+        for (SelectedImageModel imageModel : selectedImageModelArrayList) {
+            uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                    key,
+                    null,
+                    imageModel,
+                    count++);
+
+            if (uploadTask != null) {
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(getContext(), "Unable to Upload files", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onFailure: " + exception.getMessage());
+                       // progressDialog.dismiss();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        Log.d(TAG, "onSuccess: " + downloadUrl);
+                        //progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
+                        if (count == selectedImageModelArrayList.size()) {
+                            Toast.makeText(getActivity(), "RTI Application Submitted", Toast.LENGTH_SHORT).show();
+                            //progressDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        }
     }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), false, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                File file = new File(imageUri.getPath());
-                setupSelectedFile(file);
-                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+                Log.d(TAG, "onPickImage: " + imageUri.getPath());
+
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-
+                Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                int currentPosition = selectedImageModelArrayList.size();
+                selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
+                adapterSelectedImages.notifyItemInserted(currentPosition);
+                adapterSelectedImages.notifyDataSetChanged();
+                textViewSelectedFileCount.setText("Selected Files = " + (currentPosition + 1));
             }
 
             @Override
@@ -126,26 +249,19 @@ public class RTIFragment extends Fragment {
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(540, 960)
+                        .setRequestedSize(720, 1280)
                         .setAspectRatio(9, 16);
             }
 
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
+                Log.d(TAG, "onPermissionDenied: Permission not given to choose message");
             }
         });
+
     }
 
-    private void setupSelectedFile(File file) {
-        if (file.length() / 1048576 > 1) {
-            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
-        } else {
-            fileChosedPath = file.getAbsolutePath();
-            fileChosed = file.getName();
-            textViewFilename.setText(fileChosed);
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

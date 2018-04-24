@@ -269,7 +269,7 @@
                 android:padding="@dimen/padding_medium"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/text_15"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <!--<ImageView-->
             <!--android:id="@+id/imageview_selected_image"-->

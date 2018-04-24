@@ -5,8 +5,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -46,11 +44,8 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
@@ -130,7 +125,7 @@ public class InspectionFragment extends Fragment {
                     else
                         Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getContext(),"Please set current location coordinates first",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -216,30 +211,9 @@ public class InspectionFragment extends Fragment {
         myLocationManager.cleanUp();
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
-
         textLocation.setText(location.getLatitude() + " , " + location.getLongitude());
         progressDialog.dismiss();
 
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        StringBuilder _homeAddress = null;
-        try {
-            _homeAddress = new StringBuilder();
-            Address address = null;
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 3);
-            Log.d(TAG, "showCoordinates: " + addresses.size());
-            for (int index = 0; index < addresses.size(); ++index) {
-                address = addresses.get(index);
-                _homeAddress.append("Name: " + address.getLocality() + "\n");
-                _homeAddress.append("Sub-Admin Ares: " + address.getSubAdminArea() + "\n");
-                _homeAddress.append("Admin Area: " + address.getAdminArea() + "\n");
-                _homeAddress.append("Country: " + address.getCountryName() + "\n");
-                _homeAddress.append("Country Code: " + address.getCountryCode() + "\n");
-                Log.d(TAG, "showCoordinates: " + _homeAddress);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void showImageChooser() {
@@ -283,28 +257,33 @@ public class InspectionFragment extends Fragment {
     private void uploadInspectionData() {
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
-        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_INSPECTION);
-        date = new SimpleDateFormat("dd-MM-yy").format(new Date());
+
         staffId = Preferences.getInstance().getStaffId(getContext());
         InspectionModel inspectionModel = new InspectionModel(staffId, null, latitude, longitude, new Date());
-        dbref.child(staffId).child(date).setValue(inspectionModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference
+                .child(FireBaseHelper.getInstance().ROOT_INSPECTION)
+                .child(staffId)
+                .push();
+        final String key = dbref.getKey();
+        inspectionModel.setKey(key);
+        dbref.setValue(inspectionModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    uploadInspectionFiles();
+                    uploadInspectionFiles(key);
                 }
             }
         });
-
     }
 
-    private void uploadInspectionFiles() {
+    private void uploadInspectionFiles(String key) {
         UploadTask uploadTask;
         count = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
             uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_INSPECTION,
                     staffId,
-                    date,
+                    key,
                     imageModel,
                     count++);
 

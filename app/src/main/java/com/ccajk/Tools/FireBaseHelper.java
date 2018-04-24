@@ -39,7 +39,7 @@ public class FireBaseHelper {
     public final String ROOT_PASSWORD = "password";
     public final String ROOT_TYPE = "type";
     public final String ROOT_INSPECTION="Inspection";
-
+    public final String ROOT_RTI="RTI";
 
     public final String GRIEVANCE_PENSION = "Pension Grievance";
     public final String GRIEVANCE_GPF = "GPF Grievance";

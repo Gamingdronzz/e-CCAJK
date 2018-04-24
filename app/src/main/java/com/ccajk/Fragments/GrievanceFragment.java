@@ -176,6 +176,7 @@ public class GrievanceFragment extends Fragment {
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(type));
         inputSubmittedBy.setAdapter(arrayAdapter1);
 
+
         buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +184,6 @@ public class GrievanceFragment extends Fragment {
                 showImageChooser();
             }
         });
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
