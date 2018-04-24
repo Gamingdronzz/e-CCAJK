@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:padding="@dimen/padding_medium">
+        android:layout_marginBottom="?attr/actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -116,14 +116,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <AutoCompleteTextView
+                    <com.ccajk.CustomObjects.CustomTextWatcher.MaskedEditText
                         android:id="@+id/autocomplete_mobile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Mobile Number"
                         android:inputType="number"
-                        android:maxLength="10"
-                        android:singleLine="true" />
+                        android:hint="Mobile Number"
+                        app:mask="+91-**********"
+                        app:format = "[1][2][3] [4][5][6]-[7][8]-[10][9]"
+                        app:maskIconColor="@color/colorAccent"
+                        app:notMaskedSymbol="*" />
+
+                    <!--<AutoCompleteTextView-->
+                    <!--android:id="@+id/autocomplete_mobile"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="Mobile Number"-->
+                    <!--android:inputType="number"-->
+                    <!--android:maxLength="10"-->
+                    <!--android:singleLine="true" />-->
 
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -260,12 +271,12 @@
 
             </LinearLayout>
 
-
             <TextView
                 android:id="@+id/textview_selected_file_count_grievance"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:background="@color/colorPrimaryLight"
                 android:padding="@dimen/padding_medium"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/text_15"

@@ -4,6 +4,7 @@ package com.ccajk.Adapter;
 
 
 import android.support.v4.app.Fragment;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,17 +61,19 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
     public class SelectedImageViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView selectedImageTitle;
+        private TextView selectedImageTitle,overlayRemoveImage;
         private ImageView selectedImage;
         private RemoveClickListener removeClickListener;
 
         public SelectedImageViewHolder(View itemView,RemoveClickListener removeClickListener) {
             super(itemView);
             selectedImageTitle = itemView.findViewById(R.id.textview_selected_image_name);
-            selectedImageTitle.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_close_black_24dp,0);
+            //selectedImageTitle.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_close_black_24dp,0);
             selectedImage = itemView.findViewById(R.id.imageview_selected_image);
+            overlayRemoveImage = itemView.findViewById(R.id.imageview_overlay_remove_button);
+            //overlayRemoveImage.setImageDrawable(AppCompatResources.getDrawable(fragment.getContext(),R.drawable.ic_close_black_24dp));
             this.removeClickListener = removeClickListener;
-            selectedImageTitle.setOnClickListener(removeClickListener);
+            overlayRemoveImage.setOnClickListener(removeClickListener);
         }
     }
 

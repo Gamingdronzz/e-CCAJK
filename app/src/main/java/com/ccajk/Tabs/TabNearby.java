@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,9 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     ProgressDialog progressDialog;
     MyLocationManager locationManager;
     MapsHelper mapsHelper;
+    ImageButton buttonRefresh;
+
+    RelativeLayout relativeLayoutNoLocation;
 
    // private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
@@ -88,9 +93,26 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         return view;
     }
 
+    private void manageNoLocationLayout(boolean show)
+    {
+        if(show)
+            relativeLayoutNoLocation.setVisibility(View.VISIBLE);
+        else
+            relativeLayoutNoLocation.setVisibility(View.GONE);
+    }
 
     private void init(View view) {
         kilometres = view.findViewById(R.id.textview_range);
+        relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location);
+        buttonRefresh = view.findViewById(R.id.image_btn_refresh);
+        buttonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: managing");
+                locationManager.ManageLocation();
+            }
+        });
+        manageNoLocationLayout(true);
 
 //        mLocationRequest = new LocationRequest();
 //        mLocationRequest.setInterval(2000); // two minute interval
@@ -176,6 +198,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     if (task.isSuccessful()) {
                         Log.v(TAG, "Task is Successful");
                         locationManager.requestLocationUpdates(mMap);
+                        manageNoLocationLayout(false);
+
 
                     } else {
                         Log.v(TAG, "Task is not Successful");
@@ -345,7 +369,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, Integer.toString(resultCode));
-
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
@@ -353,12 +376,17 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     case Activity.RESULT_OK: {
                         Log.v(TAG, "Resolution success");
                         locationManager.requestLocationUpdates(mMap);
+                        manageNoLocationLayout(false);
                         break;
                     }
                     case Activity.RESULT_CANCELED: {
                         // The user was asked to change settings, but chose not to
                         Log.v(TAG, "Resolution denied");
-                        locationManager.ShowDialogOnLocationOff("Location not turned on! Hotspot Locator will not show nearby locations without location access. Do you want to turn location on ?");
+                        Helper.getInstance().showAlertDialog(
+                                getContext(),
+                                "Location not turned on! Hotspot Locator will not show nearby locations without location access.",
+                                "CCA JK",
+                                "OK");
                         break;
                     }
                     default: {

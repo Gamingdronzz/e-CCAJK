@@ -1,6 +1,11 @@
 package com.ccajk.Fragments;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +23,10 @@ import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tools.FireBaseHelper;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
+import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
 /**
  * Created by balpreet on 4/20/2018.
@@ -39,6 +48,14 @@ public class LocatorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locator_layout, container, false);
+        if(savedInstanceState == null)
+        {
+            Log.d(TAG, "onCreateView: first time");
+        }
+        else
+        {
+            Log.d(TAG, "onCreateView: from restart");
+        }
         String locatorType = getArguments().getString("Locator");
         locationModelArrayList = getLocations(locatorType);
         bindViews(view);
@@ -98,5 +115,48 @@ public class LocatorFragment extends Fragment {
             }
             return null;
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> allFragments = getChildFragmentManager().getFragments();
+
+        for (Fragment frag : allFragments) {
+            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        List<Fragment> allFragments = getChildFragmentManager().getFragments();
+
+        for (Fragment frag : allFragments) {
+            Log.d(TAG, "onActivityResult: " + frag.toString());
+            frag.onActivityResult(requestCode, resultCode, data);
+        }
+
+
+
     }
 }

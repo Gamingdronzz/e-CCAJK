@@ -189,9 +189,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new RTIFragment();
                 ShowFragment("RTI", fragment, null);
                 break;
-            case R.id.navmenu_inspection:
-                ShowFragment("Inspection", new InspectionFragment(), null);
-                break;
+
             case R.id.navmenu_pension:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
@@ -239,6 +237,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_login:
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
+                break;
+            case R.id.navmenu_inspection:
+                ShowFragment("Inspection", new InspectionFragment(), null);
                 break;
             case R.id.navmenu_logout:
                 logout();

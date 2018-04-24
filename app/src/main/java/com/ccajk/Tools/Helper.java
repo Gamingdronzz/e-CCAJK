@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceType;
@@ -44,6 +45,11 @@ public class Helper {
         } else {
             return _instance;
         }
+    }
+
+    public  void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public ImagePicker showImageChooser(ImagePicker imagePicker, Activity activity, boolean cropimage, ImagePicker.Callback callback) {

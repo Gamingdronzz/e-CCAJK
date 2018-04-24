@@ -26,7 +26,7 @@ public class TrackResultActivity extends AppCompatActivity {
 
     RecyclerView recyclerViewTrack;
     TextView textView;
-    ArrayList<Grievance> grievances;
+    ArrayList<Grievance> grievanceArrayList;
     RecyclerViewAdapterTracking adapterTracking;
     DatabaseReference dbref;
     String pensionerCode;
@@ -49,9 +49,9 @@ public class TrackResultActivity extends AppCompatActivity {
        dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("Code");
         Log.d(TAG, "init: pcode = " + pensionerCode);
-        grievances = new ArrayList<>();
+        grievanceArrayList = new ArrayList<>();
         getGrievances();
-        adapterTracking = new RecyclerViewAdapterTracking(grievances);
+        adapterTracking = new RecyclerViewAdapterTracking(grievanceArrayList);
         textView = findViewById(R.id.textview_tracking);
         recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -65,8 +65,9 @@ public class TrackResultActivity extends AppCompatActivity {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        grievances.add(dataSnapshot.getValue(Grievance.class));
-                        adapterTracking.notifyDataSetChanged();
+                        int size = grievanceArrayList.size();
+                        grievanceArrayList.add(size,dataSnapshot.getValue(Grievance.class));
+                        adapterTracking.notifyItemInserted(size);
                     }
 
                     @Override
@@ -94,7 +95,7 @@ public class TrackResultActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         progressDialog.dismiss();
-                        if (grievances.size() == 0)
+                        if (grievanceArrayList.size() == 0)
                             textView.setText("No Grievances Registered");
                     }
 

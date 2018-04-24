@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
 import com.ccajk.Activity.TrackResultActivity;
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,7 +52,7 @@ public class PopUpWindows {
     }
 
 
-    public void showLoginPopup(final MainActivity context, View parent) {
+    public void showLoginPopup(final MainActivity context, final View parent) {
         final ImageView ppo, pwd, close;
 
         final AutoCompleteTextView autoCompleteTextView;
@@ -80,8 +81,8 @@ public class PopUpWindows {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                //Show Progress bar before making the call to firebase
+
+                Helper.getInstance().hideKeyboardFrom(context,parent);
                 final String id = autoCompleteTextView.getText().toString();
                 final String password = editText.getText().toString();
                 if (!Helper.getInstance().checkInput(id)) {
@@ -92,22 +93,28 @@ public class PopUpWindows {
                     Toast.makeText(context, "Please input Password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context,"Logging In...");
+                progressDialog.show();
                 FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot == null) {
                             Toast.makeText(context, "We are getting things fixed", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                             return;
                         }
                         Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
                         Log.d(TAG, "onDataChange: Password = " + dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue());
                         if (dataSnapshot.getValue() == null) {
                             context.OnLoginFailure("No user found");
+                            progressDialog.dismiss();
                         } else {
                             if (dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue().toString().equals(password)) {
                                 long type = (long) dataSnapshot.child(FireBaseHelper.getInstance().ROOT_TYPE).getValue();
                                 Log.d(TAG, "onDataChange: type: " + type);
                                 context.OnLoginSuccesful(id,type);
+                                progressDialog.dismiss();
                                 popupWindow.dismiss();
                             } else {
                                 context.OnLoginFailure("Password Mismatch");

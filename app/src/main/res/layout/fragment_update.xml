@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/margin_medium"
+    tools:context="com.ccajk.Fragments.UpdateFragment">
+
+    <TextView
+        android:id="@+id/update_pension_grievance"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_20"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/custom_button"
+        android:text="Update\nPension Grievances"
+        android:layout_weight=".3"/>
+
+    <TextView
+        android:id="@+id/update_gpf_grievance"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_20"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/custom_button"
+        android:text="Update\nGPF Grievances"
+        android:layout_weight=".3"/>
+
+    <TextView
+        android:id="@+id/update_rti_status"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_20"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/custom_button"
+        android:text="Update\nRTI Status"
+        android:layout_weight=".3"/>
+
+</LinearLayout>

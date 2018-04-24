@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.ccajk.Adapter.GrievancAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
+import com.ccajk.CustomObjects.CustomTextWatcher.MaskedEditText;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.Grievance;
 import com.ccajk.Models.GrievanceType;
@@ -53,7 +54,9 @@ import java.util.Date;
 
 
 public class GrievanceFragment extends Fragment {
-    AutoCompleteTextView inputIdentifier, inputMobile, inputEmail;
+    AutoCompleteTextView inputIdentifier, inputEmail;
+//    AutoCompleteTextView  inputMobile;
+    MaskedEditText inputMobile;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     EditText inputDetails;
@@ -264,7 +267,7 @@ public class GrievanceFragment extends Fragment {
             inputIdentifier.setError("Enter Valid Staff Number");
             inputIdentifier.requestFocus();
             return false;
-        } else if (inputMobile.getText().toString().length() < 10) {
+        } else if (inputMobile.getUnmaskedText().toString().length() < 10) {
             inputMobile.setError("Enter Valid Mobile No");
             inputMobile.requestFocus();
             return false;
@@ -297,7 +300,7 @@ public class GrievanceFragment extends Fragment {
         TextView ppoNo = v.findViewById(R.id.textview_ppo_no);
         ppoNo.setText(hint + ": " + code);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
-        mobNo.setText(mobNo.getText() + " " + inputMobile.getText());
+        mobNo.setText(mobNo.getText() + " " + inputMobile.getUnmaskedText());
         TextView email = v.findViewById(R.id.textview_email);
         email.setText(email.getText() + " " + inputEmail.getText());
         TextView grievance = v.findViewById(R.id.textview_grievance_type);

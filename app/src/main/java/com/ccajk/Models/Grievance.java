@@ -1,5 +1,7 @@
 package com.ccajk.Models;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.Date;
 
 /**
