@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.ccajk.CustomObjects.CardDrawerLayout;
+import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.GrievanceFragment;
@@ -61,6 +63,17 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void showDrawer()
+    {
+        drawerLayout.openDrawer(Gravity.START);
+        Helper.getInstance().showGuide(this, navigationView, "Navigation Menu", "This is Navigation Menu\nOpen this to perform various functions", new GuideView.GuideListener() {
+            @Override
+            public void onDismiss(View view) {
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
+    }
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

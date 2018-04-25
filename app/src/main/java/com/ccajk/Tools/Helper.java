@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
@@ -45,6 +46,35 @@ public class Helper {
         } else {
             return _instance;
         }
+    }
+
+    public void showGuide(Context context,View view,String title,String message)
+    {
+        new GuideView.Builder(context)
+                .setTitle(title)
+                .setContentText(message)
+                .setGravity(GuideView.Gravity.auto) //optional
+                .setDismissType(GuideView.DismissType.anywhere) //optional - default GuideView.DismissType.targetView
+                .setTargetView(view)
+                .setContentTextSize(14)//optional
+                .setTitleTextSize(16)//optional
+                .build()
+                .show();
+    }
+
+    public void showGuide(Context context, View view, String title, String message, GuideView.GuideListener guideListener)
+    {
+        new GuideView.Builder(context)
+                .setTitle(title)
+                .setContentText(message)
+                .setGravity(GuideView.Gravity.auto) //optional
+                .setDismissType(GuideView.DismissType.anywhere) //optional - default GuideView.DismissType.targetView
+                .setTargetView(view)
+                .setContentTextSize(14)//optional
+                .setTitleTextSize(16)//optional
+                .setGuideListener(guideListener)
+                .build()
+                .show();
     }
 
     public  void hideKeyboardFrom(Context context, View view) {

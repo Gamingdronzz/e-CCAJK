@@ -10,6 +10,9 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -17,7 +20,9 @@ import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
 import com.ccajk.Activity.MainActivity;
+import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
@@ -33,7 +38,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private SliderLayout mDemoSlider;
     private TextView welcomeText, ccaDeskText;
     View view;
-    private ImageButton imageButtonLogout;
+    final String TAG = "HomeFragment";
+    MenuItem item;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -43,18 +49,36 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        bindViews(view);
+        init();
+        setHasOptionsMenu(true);
+
         //imageButtonLogout = view.findViewById(R.id.logout);
         //imageButtonLogout.setBackground(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_logout_24dp));
 
         // Helper.getInstance().addLocations(300);
+
+
+        return view;
+    }
+
+    private void bindViews(View view)
+    {
+        welcomeText = view.findViewById(R.id.textview_welcome_short);
+        ccaDeskText = view.findViewById(R.id.textview_cca_desk);
+    }
+
+    private void init()
+    {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
         builder.append(str1);
         SpannableString str2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
         str2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, str2.length(), 0);
         builder.append(str2);
-        welcomeText = view.findViewById(R.id.textview_welcome_short);
+
         welcomeText.setText(builder, TextView.BufferType.SPANNABLE);
         welcomeText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +97,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         SpannableString string2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
         string2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, string2.length(), 0);
         builder2.append(string2);
-        ccaDeskText = view.findViewById(R.id.textview_cca_desk);
+
         ccaDeskText.setText(builder2, TextView.BufferType.SPANNABLE);
         ccaDeskText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +110,40 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         });
 
         setupSlider();
-        return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Log.d(TAG, "onOptionsItemSelected: Showing Settings");
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_home, menu);
+        item = menu.findItem(R.id.action_settings);
+        Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
+            @Override
+            public void onDismiss(View view) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.showDrawer();
+            }
+        });
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+
     }
 
     @Override

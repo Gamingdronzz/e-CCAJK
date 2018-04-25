@@ -31,6 +31,7 @@ import com.ccajk.Adapter.GrievancAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.CustomTextWatcher.MaskedEditText;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Models.Grievance;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.SelectedImageModel;
@@ -100,6 +101,7 @@ public class GrievanceFragment extends Fragment {
         type = bundle.getString("Type");
         bindViews(view);
         init();
+Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","Click this button to attach images to your grievance\nYou can select multiple files as well");
         return view;
     }
 
