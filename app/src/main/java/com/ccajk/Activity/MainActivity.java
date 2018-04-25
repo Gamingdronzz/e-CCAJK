@@ -28,6 +28,7 @@ import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.LocatorFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.Fragments.RTIFragment;
+import com.ccajk.Fragments.UpdateFragment;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -240,6 +241,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_login:
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
+                break;
+            case R.id.navmenu_update:
+                ShowFragment("Update Information", new UpdateFragment(), null);
                 break;
             case R.id.navmenu_inspection:
                 ShowFragment("Inspection", new InspectionFragment(), null);
