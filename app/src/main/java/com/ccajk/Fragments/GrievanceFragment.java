@@ -351,11 +351,13 @@ public class GrievanceFragment extends Fragment {
         UploadTask uploadTask;
         count = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_GRIEVANCES,
-                    code,
-                    String.valueOf(grievanceType.getId()),
+            uploadTask = FireBaseHelper.getInstance().uploadFiles(
                     imageModel,
-                    count++);
+                    true,
+                    count++,
+                    FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                    code,
+                    String.valueOf(grievanceType.getId()));
 
             if (uploadTask != null) {
                 uploadTask.addOnFailureListener(new OnFailureListener() {

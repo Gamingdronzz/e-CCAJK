@@ -10,15 +10,17 @@ public class RtiModel {
     String name;
     String mobile;
     String subjectMatter;
+    String state;
     Date date;
 
     public RtiModel() {
     }
 
-    public RtiModel(String name, String mobile, String subjectMatter, Date date) {
+    public RtiModel(String name, String mobile, String subjectMatter, String state, Date date) {
         this.name = name;
         this.mobile = mobile;
         this.subjectMatter = subjectMatter;
+        this.state = state;
         this.date = date;
     }
 
@@ -44,6 +46,14 @@ public class RtiModel {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getSubjectMatter() {

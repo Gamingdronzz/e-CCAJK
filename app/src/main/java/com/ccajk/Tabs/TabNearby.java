@@ -54,21 +54,20 @@ import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
-    private TextView kilometres;
+
     private int seekBarValue;
     private final String TAG = "Nearby";
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
+
+    TextView kilometres;
     IndicatorSeekBar seekBar;
     ProgressDialog progressDialog;
     MyLocationManager locationManager;
     MapsHelper mapsHelper;
     ImageButton buttonRefresh;
-
     RelativeLayout relativeLayoutNoLocation;
 
-   // private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
-    //private LocationRequest mLocationRequest;
     private Location mLastLocation;
     private LatLng latLng;
     LocationCallback mLocationCallback = new LocationCallback() {
@@ -79,9 +78,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 progressDialog.dismiss();
             }
             for (Location location : locationResult.getLocations()) {
-                mLastLocation=location;
+                mLastLocation = location;
                 placeMarkerOnMyLocation(location);
                 locationManager.cleanUp();
+                manageNoLocationLayout(false);
             }
         }
     };
@@ -93,34 +93,23 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         return view;
     }
 
-    private void manageNoLocationLayout(boolean show)
-    {
-        if(show)
-            relativeLayoutNoLocation.setVisibility(View.VISIBLE);
-        else
-            relativeLayoutNoLocation.setVisibility(View.GONE);
-    }
-
     private void init(View view) {
+
         kilometres = view.findViewById(R.id.textview_range);
         relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location);
+
         buttonRefresh = view.findViewById(R.id.image_btn_refresh);
         buttonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: managing");
-                locationManager.ManageLocation();
+                //locationManager.ManageLocation();
+                onMapReady(mMap);
             }
         });
         manageNoLocationLayout(true);
 
-//        mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(2000); // two minute interval
-//        mLocationRequest.setFastestInterval(2000);
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-
-        locationManager = new MyLocationManager(this,mLocationCallback);
+        locationManager = new MyLocationManager(this, mLocationCallback);
         mapsHelper = new MapsHelper(view.getContext());
         locationModels = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getPrefState(getContext()));
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
@@ -158,9 +147,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 seekBarValue = seekBar.getProgress();
                 kilometres.setText("WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM");
                 if (mLastLocation != null) {
-                    mapsHelper.AnimateCamera( locationModels, getZoomValue(seekBarValue), mMap, mLastLocation,  seekBarValue);
-                }
-                else{
+                    mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
+                } else {
                     locationManager.ManageLocation();
                 }
             }
@@ -171,16 +159,11 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
+    private void manageNoLocationLayout(boolean show) {
+        if (show)
+            relativeLayoutNoLocation.setVisibility(View.VISIBLE);
+        else
+            relativeLayoutNoLocation.setVisibility(View.GONE);
     }
 
     @SuppressLint("MissingPermission")
@@ -190,7 +173,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         setMyMap(googleMap);
 
         Task<LocationSettingsResponse> task = locationManager.ManageLocation();
-        if(task!=null) {
+        if (task != null) {
             task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
                 @Override
                 public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
@@ -245,8 +228,96 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Log.v(TAG, "Maps Set");
     }
 
+    private void placeMarkerOnMyLocation(Location location) {
+        Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
+        mLastLocation = location;
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        mapsHelper.AnimateCamera(locationModels, getZoomValue(0), mMap, mLastLocation, seekBarValue);
+        Log.v(TAG, "Animating through Callback ");
+    }
 
-    /*@TargetApi(Build.VERSION_CODES.M)
+    private int getZoomValue(int seekBarValue) {
+        return 14 - seekBarValue;
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        if (mLastLocation == null) {
+            Toast.makeText(this.getActivity(), "Please Enable Location and Internet", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this.getActivity(), "You are here", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        for (String s : permissions) {
+            Log.v(TAG, "Premissions = " + s);
+        }
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.ManageLocation();
+                    mMap.setMyLocationEnabled(true);
+                } else {
+                    locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nHotspot Locator will not work without location access.\n\nDo you want to grant location acces ?");
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, Integer.toString(resultCode));
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode) {
+            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
+                switch (resultCode) {
+                    case Activity.RESULT_OK: {
+                        Log.v(TAG, "Resolution success");
+                        locationManager.requestLocationUpdates(mMap);
+                        manageNoLocationLayout(false);
+                        break;
+                    }
+                    case Activity.RESULT_CANCELED: {
+                        // The user was asked to change settings, but chose not to
+                        Log.v(TAG, "Resolution denied");
+                        Helper.getInstance().showAlertDialog(
+                                getContext(),
+                                "Location not turned on! Hotspot Locator will not show nearby locations without location access.",
+                                "CCA JK",
+                                "OK");
+                        break;
+                    }
+                    default: {
+                        Log.v(TAG, "User unable to do anything");
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+
+}
+
+     /*@TargetApi(Build.VERSION_CODES.M)
     private void ManageLocation() {
         Log.v(TAG, "Checking for location permission");
         if (locationManager.checkForLocationPermission()) {
@@ -317,87 +388,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         }
     }
 */
-    private void placeMarkerOnMyLocation(Location location) {
-        Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
-        mLastLocation = location;
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        mapsHelper.AnimateCamera(locationModels, getZoomValue(0), mMap, mLastLocation, seekBarValue);
-        Log.v(TAG, "Animating through Callback ");
-    }
-
-    private int getZoomValue(int seekBarValue) {
-        return 14 - seekBarValue;
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        if (mLastLocation == null) {
-            Toast.makeText(this.getActivity(), "Please Enable Location and Internet", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return false;
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this.getActivity(), "You are here", Toast.LENGTH_SHORT).show();
-    }
-
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        for (String s : permissions) {
-            Log.v(TAG, "Premissions = " + s);
-        }
-        switch (requestCode) {
-            case LOCATION_REQUEST_CODE: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.ManageLocation();
-                    mMap.setMyLocationEnabled(true);
-                } else {
-                    locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nHotspot Locator will not work without location access.\n\nDo you want to grant location acces ?");
-                }
-                return;
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, Integer.toString(resultCode));
-        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
-        switch (requestCode) {
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-                switch (resultCode) {
-                    case Activity.RESULT_OK: {
-                        Log.v(TAG, "Resolution success");
-                        locationManager.requestLocationUpdates(mMap);
-                        manageNoLocationLayout(false);
-                        break;
-                    }
-                    case Activity.RESULT_CANCELED: {
-                        // The user was asked to change settings, but chose not to
-                        Log.v(TAG, "Resolution denied");
-                        Helper.getInstance().showAlertDialog(
-                                getContext(),
-                                "Location not turned on! Hotspot Locator will not show nearby locations without location access.",
-                                "CCA JK",
-                                "OK");
-                        break;
-                    }
-                    default: {
-                        Log.v(TAG, "User unable to do anything");
-                        break;
-                    }
-                }
-                break;
-        }
-    }
-
    /* private void ShowDialogOnPermissionDenied() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 this.getActivity(), R.style.MyAlertDialogStyle);
@@ -437,171 +427,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 .setTitle("CCA JK")
                 .show();
     }*/
-}
 
 
-//package com.ccajk.Tabs;
-//
-//
-//import android.annotation.SuppressLint;
-//import android.content.Intent;
-//import android.location.Location;
-//import android.os.Build;
-//import android.os.Bundle;
-//import android.support.annotation.RequiresApi;
-//import android.support.v4.app.Fragment;
-//import android.util.Log;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.ImageButton;
-//import android.widget.TextView;
-//
-//import com.ccajk.Unused.EasyLocation;
-//import com.ccajk.Models.LocationModel;
-//import com.ccajk.R;
-//import com.ccajk.Tools.MyLocationManager;
-//import com.warkiz.widget.IndicatorSeekBar;
-//import com.warkiz.widget.IndicatorSeekBarType;
-//import com.warkiz.widget.IndicatorType;
-//import com.warkiz.widget.TickType;
-//
-//import java.util.ArrayList;
-//
-//import static com.ccajk.Unused.EasyLocation.LOCATION_SETTING_REQUEST_CODE;
-//
-//public class TabNearby extends Fragment {
-//
-//    private final String TAG = "Nearby";
-//    private TextView kilometres, msg;
-//    ImageButton refresh;
-//    IndicatorSeekBar seekBar;
-//
-//    private int seekBarValue;
-//    private ArrayList<LocationModel> allLocations = new ArrayList<>();
-//
-//    EasyLocation easyLocation;
-//    Double latitude, longitude;
-//    Location mLocation;
-//    MyLocationManager myLocationManager;
-//
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
-//        init(view);
-//        //getLocationUpdates();
-//        return view;
-//    }
-//
-//
-//    private void init(View view) {
-//        Log.d(TAG, "init: ");
-//        myLocationManager = new MyLocationManager(this);
-//        easyLocation = new EasyLocation(getContext());
-//        //easyLocation.setListener(this);
-//
-//        kilometres = view.findViewById(R.id.textview_range);
-//        msg = view.findViewById(R.id.textview_location_msg);
-//        refresh = view.findViewById(R.id.image_btn_refresh);
-//
-//        seekBar = view.findViewById(R.id.seekBar);
-//        seekBar.getBuilder()
-//                .setMax(3)
-//                .setMin(0)
-//                .setProgress(0)
-//                .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
-//                .setTickType(TickType.OVAL)
-//                .setTickNum(1)
-//                .setBackgroundTrackSize(2)//dp size
-//                .setProgressTrackSize(3)//dp size
-//                .setIndicatorType(IndicatorType.CIRCULAR_BUBBLE)
-//                .setIndicatorColor(getResources().getColor(R.color.colorAccent))
-//                .build();
-//
-//        seekBar.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
-//            }
-//
-//            @Override
-//            public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
-//            }
-//
-//            @SuppressLint("MissingPermission")
-//            @Override
-//            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
-//
-//            }
-//        });
-//
-//
-//    }
-//
-////
-////    @RequiresApi(api = Build.VERSION_CODES.M)
-////   @Override
-////    public void locationOn() {
-////        Log.d(TAG, "locationOn: ");
-////        Toast.makeText(getContext(), "Location ON", Toast.LENGTH_SHORT).show();
-////        //getLocationUpdates();
-////        latitude = easyLocation.getLatitude();
-////        longitude = easyLocation.getLongitude();
-////    }
-////
-////    @Override
-////    public void onPositionChanged() {
-////        Toast.makeText(getContext(), String.valueOf(easyLocation.getLongitude()) + "," + String.valueOf(easyLocation.getLatitude()), Toast.LENGTH_SHORT).show();
-////    }
-////
-////    @Override
-////    public void locationCancelled() {
-////        easyLocation.showAlertDialog("Location Cancelled", "Location message", null);
-////    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        Log.d(TAG, "onActivityResult: ");
-//        super.onActivityResult(requestCode, resultCode, data);
-//        switch (requestCode) {
-//            case LOCATION_SETTING_REQUEST_CODE:
-//                easyLocation.onActivityResult(resultCode);
-//                break;
-//        }
-//    }
-//
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        Log.d(TAG, "onResume: ");
-//        // make the device update igetLocationUpdates();ts location
-////       getLocationUpdates();
-//    }
-//
-////    @RequiresApi(api = Build.VERSION_CODES.M)
-////    private  void getLocationUpdates() {
-////        Log.d(TAG, "getLocationUpdates: inside loc upd");
-////        if (myLocationManager.checkForLocationPermission())
-////        {       Log.d(TAG, "getLocationUpdates: perm avail");
-////        easyLocation.beginUpdates();
-////    }
-////        else
-////        {
-////            Log.d(TAG, "getLocationUpdates: perm not avail");
-////            myLocationManager.requestLocationPermission(this, MyLocationManager.LOCATION_REQUEST_CODE);
-////        }
-////    }
-////    @Override
-////    public void onPause() {
-////        Log.d(TAG, "onPause: ");
-////        // stop location updates (saves battery)
-////        easyLocation.endUpdates();
-////        super.onPause();
-////    }
-//}
 

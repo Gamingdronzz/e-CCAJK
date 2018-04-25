@@ -52,22 +52,14 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".Unused.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".Unused.RegOrLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar.RegOrLogin"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".Unused.RegisterActivity" />
         <activity android:name=".Unused.PanAdhaarHistoryActivity" />
         <activity android:name=".Activity.AboutUsActivity" />
         <activity android:name=".Activity.TrackResultActivity" />
         <activity android:name=".Activity.WelcomeScreen" />
-        <activity android:name=".Activity.GrievanceUpdateActivity"></activity>
+        <activity android:name=".Activity.GrievanceUpdateActivity" />
+        <activity android:name=".Activity.RtiResultActivity"></activity>
     </application>
 
 </manifest>

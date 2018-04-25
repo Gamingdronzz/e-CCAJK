@@ -21,12 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.RtiModel;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
+import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,6 +49,7 @@ public class RTIFragment extends Fragment {
     TextInputEditText inputName, inputSubject, inputPhone;
     TextView textViewSelectedFileCount;
     Button attach, submit;
+    ProgressDialog progressDialog;
 
     String TAG = "RTI";
     String name, mobile, subject, root;
@@ -84,6 +87,8 @@ public class RTIFragment extends Fragment {
     }
 
     private void init() {
+
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
 
         imageName.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         imagePhone.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_phone_android_black_24dp));
@@ -152,6 +157,7 @@ public class RTIFragment extends Fragment {
         ppoNo.setText("Name" + ": " + name);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
         mobNo.setText(mobNo.getText() + " " + mobile);
+        ((TextView)v.findViewById(R.id.detail)).setText("Subject:");
         TextView details = v.findViewById(R.id.textview_grievance_details);
         details.setText(subject);
 
@@ -161,7 +167,7 @@ public class RTIFragment extends Fragment {
     }
 
     private void submitRTI() {
-        //progressDialog.show();
+        progressDialog.show();
         final DatabaseReference dbref;
         dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_RTI);
 
@@ -169,6 +175,7 @@ public class RTIFragment extends Fragment {
                 name,
                 mobile,
                 subject,
+                Preferences.getInstance().getPrefState(getContext()),
                 new Date());
 
         final String key = name.replaceAll("\\s", "-") + "-" + mobile;
@@ -180,11 +187,11 @@ public class RTIFragment extends Fragment {
                         uploadFile(key);
                     } else {
                         Toast.makeText(getActivity(), "RTI application Submitted", Toast.LENGTH_SHORT).show();
-                        //progressDialog.dismiss();
+                        progressDialog.dismiss();
                     }
                 } else {
                     Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
-                    //progressDialog.dismiss();
+                    progressDialog.dismiss();
                 }
 
             }
@@ -192,32 +199,30 @@ public class RTIFragment extends Fragment {
     }
 
     private void uploadFile(String key) {
-        UploadTask uploadTask;
         count = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_GRIEVANCES,
-                    key,
-                    null,
-                    imageModel,
-                    count++);
+            UploadTask  uploadTask = FireBaseHelper.getInstance().uploadFiles(imageModel,
+                    true,
+                    count++,
+                    FireBaseHelper.getInstance().ROOT_RTI,
+                    key
+            );
 
             if (uploadTask != null) {
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         Toast.makeText(getContext(), "Unable to Upload files", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onFailure: " + exception.getMessage());
-                       // progressDialog.dismiss();
+                        progressDialog.dismiss();
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        Log.d(TAG, "onSuccess: " + downloadUrl);
-                        //progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
+                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
                         if (count == selectedImageModelArrayList.size()) {
                             Toast.makeText(getActivity(), "RTI Application Submitted", Toast.LENGTH_SHORT).show();
-                            //progressDialog.dismiss();
+                            progressDialog.dismiss();
                         }
                     }
                 });

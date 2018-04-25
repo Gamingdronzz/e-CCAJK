@@ -172,24 +172,6 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("url", "http://ccajk.gov.in");
                 ShowFragment("CCA J&K", fragment, bundle);
                 break;
-            case R.id.navmenu_contact_us:
-                ShowFragment("Contact Us", new ContactUsFragment(), null);
-                break;
-            case R.id.navmenu_hotspot_locator:
-                bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
-                ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
-                break;
-            case R.id.navmenu_gp_locator:
-                bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_GP);
-                ShowFragment("GP Locations", new LocatorFragment(), bundle);
-                break;
-            case R.id.navmenu_rti:
-                fragment = new RTIFragment();
-                ShowFragment("RTI", fragment, null);
-                break;
-
             case R.id.navmenu_pension:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
@@ -202,6 +184,11 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
                 ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 break;
+            case R.id.navmenu_rti:
+                fragment = new RTIFragment();
+                ShowFragment("RTI", fragment, null);
+                break;
+
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
@@ -234,6 +221,22 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_tracking:
                 PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
+                break;
+            case R.id.navmenu_track_rti:
+                PopUpWindows.getInstance().showRtiTrackWindow(this, frameLayout);
+                break;
+            case R.id.navmenu_contact_us:
+                ShowFragment("Contact Us", new ContactUsFragment(), null);
+                break;
+            case R.id.navmenu_hotspot_locator:
+                bundle = new Bundle();
+                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
+                ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
+                break;
+            case R.id.navmenu_gp_locator:
+                bundle = new Bundle();
+                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_GP);
+                ShowFragment("GP Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
@@ -276,7 +279,7 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void OnLoginSuccesful(String staffId,long type) {
+    public void OnLoginSuccesful(String staffId, long type) {
         Log.d(TAG, "OnLoginSuccesful: ");
         Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
         Preferences.getInstance().setStaffId(this, staffId);

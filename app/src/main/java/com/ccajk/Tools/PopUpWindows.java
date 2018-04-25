@@ -21,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
+import com.ccajk.Activity.RtiResultActivity;
 import com.ccajk.Activity.TrackResultActivity;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.R;
@@ -82,7 +83,7 @@ public class PopUpWindows {
             @Override
             public void onClick(View v) {
 
-                Helper.getInstance().hideKeyboardFrom(context,parent);
+                Helper.getInstance().hideKeyboardFrom(context, parent);
                 final String id = autoCompleteTextView.getText().toString();
                 final String password = editText.getText().toString();
                 if (!Helper.getInstance().checkInput(id)) {
@@ -94,7 +95,7 @@ public class PopUpWindows {
                     return;
                 }
 
-                final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context,"Logging In...");
+                final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, "Logging In...");
                 progressDialog.show();
                 FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -113,7 +114,7 @@ public class PopUpWindows {
                             if (dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue().toString().equals(password)) {
                                 long type = (long) dataSnapshot.child(FireBaseHelper.getInstance().ROOT_TYPE).getValue();
                                 Log.d(TAG, "onDataChange: type: " + type);
-                                context.OnLoginSuccesful(id,type);
+                                context.OnLoginSuccesful(id, type);
                                 progressDialog.dismiss();
                                 popupWindow.dismiss();
                             } else {
@@ -138,7 +139,7 @@ public class PopUpWindows {
     public void showTrackWindow(final Activity context, View parent) {
         final EditText editText;
         final TextInputLayout textInputLayout;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track, null);
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         editText = popupView.findViewById(R.id.edittext_pcode);
@@ -195,6 +196,41 @@ public class PopUpWindows {
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
     }
 
+    public void showRtiTrackWindow(final Activity context, View parent) {
+        final EditText editText1, editText2;
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_rti, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        editText1 = popupView.findViewById(R.id.edittext_name);
+        editText2 = popupView.findViewById(R.id.edittext_mobile);
+
+        Button track = popupView.findViewById(R.id.btn_check_status);
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = editText1.getText().toString().trim();
+                String mobile = editText2.getText().toString();
+                if (mobile.length() < 10) {
+                    Toast.makeText(context, "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
+                    editText2.requestFocus();
+                } else if (name.isEmpty()) {
+                    Toast.makeText(context, "Enter Name", Toast.LENGTH_LONG).show();
+                    editText1.requestFocus();
+                } else {
+                    Intent intent = new Intent(context, RtiResultActivity.class);
+                    intent.putExtra("Key", name.replaceAll("\\s", "-") + "-" + mobile);
+                    context.startActivity(intent);
+                }
+
+            }
+        });
+
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.update();
+        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
+    }
 
     public AlertDialog.Builder getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);

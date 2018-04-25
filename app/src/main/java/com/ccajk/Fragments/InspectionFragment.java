@@ -281,11 +281,13 @@ public class InspectionFragment extends Fragment {
         UploadTask uploadTask;
         count = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFile(FireBaseHelper.getInstance().ROOT_INSPECTION,
-                    staffId,
-                    key,
+            uploadTask = FireBaseHelper.getInstance().uploadFiles(
                     imageModel,
-                    count++);
+                    true,
+                    count++,
+                    FireBaseHelper.getInstance().ROOT_INSPECTION,
+                    staffId,
+                    key);
 
             if (uploadTask != null) {
                 uploadTask.addOnFailureListener(new OnFailureListener() {

@@ -38,8 +38,8 @@ public class FireBaseHelper {
     public final String ROOT_STAFF = "Staff";
     public final String ROOT_PASSWORD = "password";
     public final String ROOT_TYPE = "type";
-    public final String ROOT_INSPECTION="Inspection";
-    public final String ROOT_RTI="RTI";
+    public final String ROOT_INSPECTION = "Inspection";
+    public final String ROOT_RTI = "RTI";
 
     public final String GRIEVANCE_PENSION = "Pension Grievance";
     public final String GRIEVANCE_GPF = "GPF Grievance";
@@ -65,12 +65,15 @@ public class FireBaseHelper {
         }
     }
 
-    public UploadTask uploadFile(String rootFolder, String subFolder, String subType, SelectedImageModel imageFile, int count) {
+    public UploadTask uploadFiles(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
         StorageReference sref;
-        if (subType != null) {
-            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder + "/" + subType + "/File" + count);
+        StringBuilder sb=new StringBuilder();
+        for (String param : params)
+            sb.append(param + "/");
+        if (multiple) {
+            sref = FireBaseHelper.getInstance().storageReference.child(sb + "File" + count);
         } else {
-            sref = FireBaseHelper.getInstance().storageReference.child(rootFolder + "/" + subFolder);
+            sref = FireBaseHelper.getInstance().storageReference.child(sb.toString());
         }
         UploadTask uploadTask = sref.putFile(imageFile.getImageURI());
         return uploadTask;

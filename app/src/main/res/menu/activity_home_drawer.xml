@@ -11,6 +11,7 @@
         android:id="@+id/navmenu_visit_cca_website"
         android:icon="@drawable/ic_drawable_web"
         android:title="Visit CCA JK Website" />
+
     <item android:title="Functions">
         <menu>
             <item
@@ -19,16 +20,16 @@
                 android:iconTint="@color/colorAccent"
                 android:iconTintMode="multiply"
                 android:title="Pension Grievance" />
+
             <item
                 android:id="@+id/navmenu_gpf"
                 android:icon="@drawable/ic_drawable_gpf"
                 android:title="GPF Grievance" />
 
-
-            <!--<item
-                android:id="@+id/navmenu_payment_status"
-                android:icon="@drawable/ic_action_payment"
-                android:title="Payment Status" />-->
+            <item
+                android:id="@+id/navmenu_rti"
+                android:icon="@drawable/ic_drawable_rti"
+                android:title="RTI Application" />
 
         </menu>
     </item>
@@ -70,8 +71,8 @@
                 android:title="Track Grievance" />
 
             <item
-                android:id="@+id/navmenu_rti"
-                android:icon="@drawable/ic_drawable_rti"
+                android:id="@+id/navmenu_track_rti"
+                android:icon="@drawable/ic_drawable_tracking"
                 android:title="Track RTI" />
 
         </menu>

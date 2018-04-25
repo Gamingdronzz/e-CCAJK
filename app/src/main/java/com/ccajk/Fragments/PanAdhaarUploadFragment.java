@@ -287,7 +287,12 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void uploadFile() {
-        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFile(root, pensionerCode, null, imageModel, 0);
+        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
+                imageModel,
+                false,
+                0,
+                root,
+                pensionerCode);
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(new OnFailureListener() {

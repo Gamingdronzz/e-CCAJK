@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.RequiresApi;
@@ -20,7 +19,6 @@ import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
@@ -34,9 +32,10 @@ import com.google.android.gms.tasks.Task;
 
 public class MyLocationManager {
 
-    public interface LocationCallBack{
+    public interface LocationCallBack {
 
     }
+
     final String TAG = "MyLocationManager";
     public static final int LOCATION_REQUEST_CODE = 101;
     public static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 102;
@@ -45,13 +44,6 @@ public class MyLocationManager {
     LocationRequest mLocationRequest;
     LocationCallback mLocationCallback;
     FusedLocationProviderClient mFusedLocationClient;
-
-//    public MyLocationManager(Fragment context, LocationCallback locationCallback, FusedLocationProviderClient mFusedLocationClient, LocationRequest mLocationRequest) {
-//        this.context = context;
-//        this.mLocationCallback = locationCallback;
-//        this.mFusedLocationClient = mFusedLocationClient;
-//        this.mLocationRequest = mLocationRequest;
-//    }
 
     public MyLocationManager(Fragment context, LocationCallback locationCallback) {
         this.context = context;
@@ -62,9 +54,22 @@ public class MyLocationManager {
         mLocationRequest.setFastestInterval(2000);
     }
 
-    public MyLocationManager(Fragment context) {
-        this.context = context;
-
+    @SuppressLint("NewApi")
+    public Task<LocationSettingsResponse> ManageLocation() {
+        Log.v(TAG, "Checking for location permission");
+        if (checkForLocationPermission()) {
+            Log.v(TAG, "Permission Available\nChecking for location on or off");
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            Task<LocationSettingsResponse> task = createLocationRequest();
+            return task;
+        } else {
+            Log.v(TAG, "Permission not Available");
+            if (context.getParentFragment() != null)
+                requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
+            else
+                requestLocationPermission(context, LOCATION_REQUEST_CODE);
+            return null;
+        }
     }
 
     private boolean checkForLocationPermission() {
@@ -103,26 +108,6 @@ public class MyLocationManager {
         return task;
     }
 
-
-    @SuppressLint("NewApi")
-    public Task<LocationSettingsResponse> ManageLocation() {
-        Log.v(TAG, "Checking for location permission");
-        if (checkForLocationPermission()) {
-            Log.v(TAG, "Permission Available\nChecking for location on or off");
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            Task<LocationSettingsResponse> task = createLocationRequest();
-            return task;
-        } else {
-            Log.v(TAG, "Permission not Available");
-            if (context.getParentFragment() != null)
-                requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
-            else
-                requestLocationPermission(context, LOCATION_REQUEST_CODE);
-            return null;
-        }
-    }
-
-
     @SuppressLint("MissingPermission")
     public void requestLocationUpdates(GoogleMap mMap) {
         //progressDialog.setMessage("Getting Current Location");
@@ -140,7 +125,6 @@ public class MyLocationManager {
 
     }
 
-
     public void onLocationAcccessRequestFailure(Exception e) {
         Log.v(TAG, "Request Failure Further process");
         try {
@@ -154,21 +138,13 @@ public class MyLocationManager {
         }
     }
 
+    public void cleanUp() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
     public void ShowDialogOnPermissionDenied(String message) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 context.getActivity(), R.style.MyAlertDialogStyle);
-//        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                //ManageLocation();
-//            }
-//        })
-//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                })
         alertDialog.setMessage(message)
                 .setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -184,32 +160,16 @@ public class MyLocationManager {
     public void ShowDialogOnLocationOff(String message) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 context.getActivity(), R.style.MyAlertDialogStyle);
-//        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                //ManageLocation();
-//            }
-//        })
-//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                })
-                alertDialog.setMessage(message)
-                        .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+        alertDialog.setMessage(message)
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                            }
-                        })
+                    }
+                })
                 .setTitle("CCA JK")
                 .show();
     }
 
-    public void cleanUp()
-    {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-    }
 
 }

@@ -30,18 +30,6 @@ public class MapsHelper {
         this.context = context;
     }
 
-
-    private void placeMarkerOnMyLocation(Location location, ArrayList<LocationModel> allLocations, GoogleMap mMap, int value) {
-        Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        AnimateCamera(allLocations, getZoomValue(0), mMap, location, value);
-        Log.v(TAG, "Animating through Callback ");
-
-    }
-
     public void AnimateCamera(ArrayList<LocationModel> allLocations, int zoom, GoogleMap mMap, Location mLastLocation, int value) {
 
         LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -81,10 +69,6 @@ public class MapsHelper {
             progressDialog.dismiss();
         }
         */
-    }
-
-    private int getZoomValue(int seekBarValue) {
-        return 14 - seekBarValue;
     }
 
     private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels, int value, Location mLastLocation) {

@@ -74,11 +74,6 @@ public class SplashActivity extends AppCompatActivity {
             intent.setClass(getApplicationContext(), MainActivity.class);
         }
 
-        /*if (Preferences.getInstance().getSignedIn(this))
-            intent.setClass(getApplicationContext(), MainActivity.class);
-        else
-            intent.setClass(getApplicationContext(), RegOrLoginActivity.class);*/
-
         startActivity(intent);
         finish();
     }
