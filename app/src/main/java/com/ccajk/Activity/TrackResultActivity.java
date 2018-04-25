@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
@@ -31,14 +30,12 @@ public class TrackResultActivity extends AppCompatActivity {
     DatabaseReference dbref;
     String pensionerCode;
     ProgressDialog progressDialog;
-    View parent;
     final String TAG = "Track";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_result);
-        parent = findViewById(R.id.parent_track_result);
         init();
     }
 

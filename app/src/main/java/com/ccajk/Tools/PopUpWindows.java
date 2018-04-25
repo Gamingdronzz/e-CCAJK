@@ -210,12 +210,12 @@ public class PopUpWindows {
             public void onClick(View v) {
                 String name = editText1.getText().toString().trim();
                 String mobile = editText2.getText().toString();
-                if (mobile.length() < 10) {
-                    Toast.makeText(context, "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
-                    editText2.requestFocus();
-                } else if (name.isEmpty()) {
+                if (name.isEmpty()) {
                     Toast.makeText(context, "Enter Name", Toast.LENGTH_LONG).show();
                     editText1.requestFocus();
+                } else if (mobile.length() < 10) {
+                    Toast.makeText(context, "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
+                    editText2.requestFocus();
                 } else {
                     Intent intent = new Intent(context, RtiResultActivity.class);
                     intent.putExtra("Key", name.replaceAll("\\s", "-") + "-" + mobile);

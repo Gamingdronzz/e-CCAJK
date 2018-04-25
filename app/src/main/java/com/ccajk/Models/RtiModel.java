@@ -11,16 +11,21 @@ public class RtiModel {
     String mobile;
     String subjectMatter;
     String state;
+    long status;
+    String message;
     Date date;
 
     public RtiModel() {
     }
 
-    public RtiModel(String name, String mobile, String subjectMatter, String state, Date date) {
+    public RtiModel(String name, String mobile, String subjectMatter, String state, long status, String message, Date date) {
+
         this.name = name;
         this.mobile = mobile;
         this.subjectMatter = subjectMatter;
         this.state = state;
+        this.status = status;
+        this.message = message;
         this.date = date;
     }
 
@@ -63,4 +68,21 @@ public class RtiModel {
     public void setSubjectMatter(String subjectMatter) {
         this.subjectMatter = subjectMatter;
     }
+
+    public long getStatus() {
+        return status;
+    }
+
+    public void setStatus(long status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }

@@ -259,7 +259,6 @@ public class MainActivity extends AppCompatActivity
         ShowFragment("Home", new HomeFragment(), null);
     }
 
-
     private void doExit() {
         Helper.getInstance().showAlertDialog(
                 this,

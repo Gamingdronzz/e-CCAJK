@@ -195,16 +195,16 @@ public class Helper {
         return null;
     }
 
-    public String StatusString(long status) {
+    public String getStatusString(long status) {
         switch ((int) status) {
             case 0:
-                return "Grievance Submitted";
+                return "Submitted";
             case 1:
-                return "Grievance resolution in process";
+                return "In process";
             case 2:
                 return "Unable to resolve";
             case 3:
-                return "Grievance resolved";
+                return "Resolved";
         }
         return null;
     }
