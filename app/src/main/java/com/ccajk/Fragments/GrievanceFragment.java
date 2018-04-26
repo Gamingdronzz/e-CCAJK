@@ -191,6 +191,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helper.getInstance().hideKeyboardFrom(getContext(),v);
                 if (checkInput())
                     confirmSubmission();
             }

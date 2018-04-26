@@ -16,8 +16,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
-
 public class TrackRtiResultActivity extends AppCompatActivity {
 
     TextView textView, textViewName, textViewDate, textViewStatus, textViewSubject;
@@ -77,12 +75,12 @@ public class TrackRtiResultActivity extends AppCompatActivity {
     }
 
     private void showInfo() {
-        SimpleDateFormat dt = new SimpleDateFormat("MMM d, yyyy");
+
         linearLayout.setVisibility(View.VISIBLE);
         textViewName.setText(rtiModel.getName());
-        textViewDate.setText(dt.format(rtiModel.getDate()));
+        textViewDate.setText(Helper.getInstance().formatDate(rtiModel.getDate()));
         textViewSubject.setText(rtiModel.getSubjectMatter());
-        textViewStatus.setText(Helper.getInstance().getStatusString(rtiModel.getStatus()));
+        textViewStatus.setText(Helper.getInstance().getStatusList()[(int)rtiModel.getStatus()]);
     }
 
 }

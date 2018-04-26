@@ -53,14 +53,27 @@
 
         <activity
             android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Unused.PanAdhaarHistoryActivity" />
-        <activity android:name=".Activity.AboutUsActivity" />
-        <activity android:name=".Activity.TrackGrievanceResultActivity" />
-        <activity android:name=".Activity.WelcomeScreen" />
-        <activity android:name=".Activity.UpdateGrievanceActivity" />
-        <activity android:name=".Activity.TrackRtiResultActivity" />
-        <activity android:name=".Activity.UpdateRtiActivity"></activity>
+        <activity
+            android:name=".Activity.AboutUsActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Activity.TrackGrievanceResultActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Activity.WelcomeScreen"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Activity.UpdateGrievanceActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Activity.TrackRtiResultActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Activity.UpdateRtiActivity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

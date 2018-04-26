@@ -33,13 +33,15 @@ public class FireBaseHelper {
     public final String ROOT_LIFE = "Life Certificate";
     public final String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
     public final String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
-    public final String ROOT_HOTSPOTS = "Hotspots";
+    public final String ROOT_HOTSPOTS = "Locations";
     public final String ROOT_GP = "GP Locations";
     public final String ROOT_STAFF = "Staff";
     public final String ROOT_PASSWORD = "password";
     public final String ROOT_TYPE = "type";
     public final String ROOT_INSPECTION = "Inspection";
     public final String ROOT_RTI = "RTI";
+
+
 
     public final String GRIEVANCE_PENSION = "Pension Grievance";
     public final String GRIEVANCE_GPF = "GPF Grievance";
@@ -67,7 +69,7 @@ public class FireBaseHelper {
 
     public UploadTask uploadFiles(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
         StorageReference sref;
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (String param : params)
             sb.append(param + "/");
         if (multiple) {

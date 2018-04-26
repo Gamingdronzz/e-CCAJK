@@ -1,9 +1,7 @@
 package com.ccajk.Fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -21,12 +19,14 @@ import com.ccajk.R;
 import com.ccajk.Tabs.TabAllLocations;
 import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Preferences;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
-import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
 /**
  * Created by balpreet on 4/20/2018.
@@ -36,9 +36,11 @@ public class LocatorFragment extends Fragment {
 
     public TabLayout tabLayout;
     public ViewPager viewPager;
-    ArrayList<LocationModel> locationModelArrayList = new ArrayList<>();
+    public ArrayList<LocationModel> locationModelArrayList = new ArrayList<>();
+
     public static int int_items = 2;
     String TAG = "locator";
+    String locatorType;
 
     public LocatorFragment() {
 
@@ -48,24 +50,18 @@ public class LocatorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locator_layout, container, false);
-        if(savedInstanceState == null)
-        {
+        if (savedInstanceState == null) {
             Log.d(TAG, "onCreateView: first time");
-        }
-        else
-        {
+        } else {
             Log.d(TAG, "onCreateView: from restart");
         }
-        String locatorType = getArguments().getString("Locator");
-        locationModelArrayList = getLocations(locatorType);
+
+        locatorType = getArguments().getString("Locator");
+        getLocations();
+
         bindViews(view);
-        Log.d(TAG, "onCreateView: " + locatorType);
         return view;
 
-    }
-
-    private ArrayList<LocationModel> getLocations(String locatorType) {
-        return FireBaseHelper.getInstance().getLocationModels("jnk");
     }
 
     private void bindViews(View view) {
@@ -83,16 +79,12 @@ public class LocatorFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            //Bundle bundle = new Bundle();
-            //bundle.putStringArray("AllLocations", (String[]) locationModelArrayList.toArray());
             switch (position) {
                 case 0:
                     TabAllLocations tabAllLocations = new TabAllLocations();
-                    //tabAllLocations.setArguments(bundle);
                     return tabAllLocations;
                 case 1:
                     TabNearby tabNearby = new TabNearby();
-                    //tabNearby.setArguments(bundle);
                     return tabNearby;
 
             }
@@ -116,6 +108,44 @@ public class LocatorFragment extends Fragment {
             return null;
         }
     }
+
+    private void getLocations() {
+
+        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+        databaseReference.child(locatorType)
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        if (dataSnapshot.getValue() != null) {
+                            LocationModel location = dataSnapshot.getValue(LocationModel.class);
+                            locationModelArrayList.add(location);
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -155,7 +185,6 @@ public class LocatorFragment extends Fragment {
             Log.d(TAG, "onActivityResult: " + frag.toString());
             frag.onActivityResult(requestCode, resultCode, data);
         }
-
 
 
     }

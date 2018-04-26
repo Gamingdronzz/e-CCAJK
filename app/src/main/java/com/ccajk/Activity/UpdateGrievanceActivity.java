@@ -182,9 +182,11 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     }
 
     private void updateData(String message, int status) {
+
         HashMap<String,Object> hashMap=new HashMap<>();
         hashMap.put("grievanceStatus",status);
         hashMap.put("message",message);
+
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievance.getPensionerIdentifier())
                 .child(String.valueOf(grievance.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
