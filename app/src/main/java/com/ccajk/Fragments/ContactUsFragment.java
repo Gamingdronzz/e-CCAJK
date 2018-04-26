@@ -69,7 +69,7 @@ public class ContactUsFragment extends Fragment {
 
         textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp,0,0,0);
 
-        textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getPrefState(getContext())));
+        textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE)));
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
         compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location,0,0,0);
         compatButtonLocateOnMap.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +112,7 @@ public class ContactUsFragment extends Fragment {
 
     private void init(boolean isMultiColumn) {
 
-        contactArrayList = FireBaseHelper.getInstance().getContactsList(Preferences.getInstance().getPrefState(getContext()));
+        contactArrayList = FireBaseHelper.getInstance().getContactsList(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE));
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

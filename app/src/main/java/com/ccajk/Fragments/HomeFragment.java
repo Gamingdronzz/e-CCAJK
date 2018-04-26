@@ -15,14 +15,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ccajk.Activity.AboutUsActivity;
 import com.ccajk.Activity.MainActivity;
-import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.R;
-import com.ccajk.Tools.Helper;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
@@ -130,13 +127,13 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_home, menu);
         item = menu.findItem(R.id.action_settings);
-        Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
+       /* Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
             @Override
             public void onDismiss(View view) {
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.showDrawer();
             }
-        });
+        });*/
     }
 
     @Override

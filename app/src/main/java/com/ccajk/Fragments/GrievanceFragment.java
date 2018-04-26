@@ -31,7 +31,6 @@ import com.ccajk.Adapter.GrievancAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.CustomTextWatcher.MaskedEditText;
 import com.ccajk.CustomObjects.ProgressDialog;
-import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Models.Grievance;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.SelectedImageModel;
@@ -192,6 +191,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helper.getInstance().hideKeyboardFrom(getActivity());
                 if (checkInput())
                     confirmSubmission();
             }
@@ -327,7 +327,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
                 inputSubmittedBy.getSelectedItem().toString(),
                 inputEmail.getText().toString(),
                 null,
-                Preferences.getInstance().getPrefState(getContext()),
+                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE),
                 0, new Date());
 
         dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {

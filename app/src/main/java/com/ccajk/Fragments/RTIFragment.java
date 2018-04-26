@@ -175,7 +175,7 @@ public class RTIFragment extends Fragment {
                 name,
                 mobile,
                 subject,
-                Preferences.getInstance().getPrefState(getContext()),
+                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE),
                 0,null,
                 new Date());
 

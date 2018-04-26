@@ -20,7 +20,9 @@ import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
 import com.linchaolong.android.imagepicker.ImagePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 /*
@@ -32,6 +34,7 @@ public class Helper {
     private static Helper _instance;
 
     public final String Nil = "Nil";
+    String[] statuslist = {"Submitted", "Under Process", "Unable to resolve", "Resolved"};
     private final String TAG = "Helper";
 
     public ArrayList<LocationModel> allLocationModels;
@@ -53,8 +56,7 @@ public class Helper {
         }
     }
 
-    public void showGuide(Context context,View view,String title,String message)
-    {
+    public void showGuide(Context context, View view, String title, String message) {
         new GuideView.Builder(context)
                 .setTitle(title)
                 .setContentText(message)
@@ -67,8 +69,7 @@ public class Helper {
                 .show();
     }
 
-    public void showGuide(Context context, View view, String title, String message, GuideView.GuideListener guideListener)
-    {
+    public void showGuide(Context context, View view, String title, String message, GuideView.GuideListener guideListener) {
         new GuideView.Builder(context)
                 .setTitle(title)
                 .setContentText(message)
@@ -82,9 +83,16 @@ public class Helper {
                 .show();
     }
 
-    public  void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    /*public void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }*/
+
+    public void hideKeyboardFrom(Activity context) {
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
     }
 
     public ImagePicker showImageChooser(ImagePicker imagePicker, Activity activity, boolean cropimage, ImagePicker.Callback callback) {
@@ -186,8 +194,8 @@ public class Helper {
         return types;
     }
 
-    public String getGrievanceString(int id) {
-        switch (id) {
+    public String getGrievanceString(long id) {
+        switch ((int) id) {
             case 0:
                 return "Change of PDA";
             case 1:
@@ -230,18 +238,30 @@ public class Helper {
         return null;
     }
 
+    public String getGrievanceCategory(long id) {
+        if (id < 100)
+            return FireBaseHelper.getInstance().GRIEVANCE_PENSION;
+        else
+            return FireBaseHelper.getInstance().GRIEVANCE_GPF;
+    }
+
+    public String[] getStatusList() {
+        return statuslist;
+    }
+
     public String getStatusString(long status) {
-        switch ((int) status) {
+
+       /* switch ((int) status) {
             case 0:
                 return "Submitted";
             case 1:
-                return "In process";
+                return "Under process";
             case 2:
                 return "Unable to resolve";
             case 3:
                 return "Resolved";
-        }
-        return null;
+        }*/
+        return getStatusList()[(int) status];
     }
 
     public String[] submittedByList(String type) {
@@ -253,6 +273,11 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
+    public String formatDate(Date date) {
+        SimpleDateFormat dt = new SimpleDateFormat("MMM d, yyyy");
+        return dt.format(date);
+    }
+
     public ProgressDialog getProgressWindow(final Activity context, String message) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
@@ -260,7 +285,7 @@ public class Helper {
     }
 
     public InputFilter[] limitInputLength(int length) {
-        return new InputFilter[]{ new InputFilter.LengthFilter(length)};
+        return new InputFilter[]{new InputFilter.LengthFilter(length)};
     }
 
     public void showSnackBar(CharSequence message, View view) {

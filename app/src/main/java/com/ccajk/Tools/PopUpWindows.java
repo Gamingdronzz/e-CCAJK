@@ -21,8 +21,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
-import com.ccajk.Activity.RtiResultActivity;
-import com.ccajk.Activity.TrackResultActivity;
+import com.ccajk.Activity.TrackRtiResultActivity;
+import com.ccajk.Activity.TrackGrievanceResultActivity;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.R;
 import com.google.firebase.database.DataSnapshot;
@@ -54,85 +54,85 @@ public class PopUpWindows {
 
 
     public void showLoginPopup(final MainActivity context, final View parent) {
-//        final ImageView ppo, pwd, close;
-//
-//        final AutoCompleteTextView autoCompleteTextView;
-//        final EditText editText;
-//
-//        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_login, null);
-//        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-//
-//        ppo = popupView.findViewById(R.id.image_ppo);
-//        ppo.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_person_black_24dp));
-//        pwd = popupView.findViewById(R.id.image_pwd);
-//        pwd.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_password));
-//        autoCompleteTextView = popupView.findViewById(R.id.ppo);
-//        editText = popupView.findViewById(R.id.password);
-//
-//        close = popupView.findViewById(R.id.imageview_close_login);
-//        close.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_close_black_24dp));
-//        close.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                popupWindow.dismiss();
-//            }
-//        });
-//
-//        Button signin = popupView.findViewById(R.id.sign_in_button);
-//        signin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Helper.getInstance().hideKeyboardFrom(context, parent);
-//                final String id = autoCompleteTextView.getText().toString();
-//                final String password = editText.getText().toString();
-//                if (!Helper.getInstance().checkInput(id)) {
-//                    Toast.makeText(context, "Please input User ID", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                if (!Helper.getInstance().checkInput(password)) {
-//                    Toast.makeText(context, "Please input Password", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, "Logging In...");
-//                progressDialog.show();
-//                FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot == null) {
-//                            Toast.makeText(context, "We are getting things fixed", Toast.LENGTH_SHORT).show();
-//                            progressDialog.dismiss();
-//                            return;
-//                        }
-//                        Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
-//                        Log.d(TAG, "onDataChange: Password = " + dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue());
-//                        if (dataSnapshot.getValue() == null) {
-//                            context.OnLoginFailure("No user found");
-//                            progressDialog.dismiss();
-//                        } else {
-//                            if (dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue().toString().equals(password)) {
-//                                long type = (long) dataSnapshot.child(FireBaseHelper.getInstance().ROOT_TYPE).getValue();
-//                                Log.d(TAG, "onDataChange: type: " + type);
-//                                context.OnLoginSuccesful(id, type);
-//                                progressDialog.dismiss();
-//                                popupWindow.dismiss();
-//                            } else {
-//                                context.OnLoginFailure("Password Mismatch");
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-//            }
-//        });
-//        popupWindow.setFocusable(true);
-//        popupWindow.update();
-//        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
+        final ImageView ppo, pwd, close;
+
+        final AutoCompleteTextView autoCompleteTextView;
+        final EditText editText;
+
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_login, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ppo = popupView.findViewById(R.id.image_ppo);
+        ppo.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_person_black_24dp));
+        pwd = popupView.findViewById(R.id.image_pwd);
+        pwd.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_password));
+        autoCompleteTextView = popupView.findViewById(R.id.ppo);
+        editText = popupView.findViewById(R.id.password);
+
+        close = popupView.findViewById(R.id.close);
+        close.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_close_black_24dp));
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        Button signin = popupView.findViewById(R.id.sign_in_button);
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Helper.getInstance().hideKeyboardFrom(context);
+                final String id = autoCompleteTextView.getText().toString();
+                final String password = editText.getText().toString();
+                if (!Helper.getInstance().checkInput(id)) {
+                    Toast.makeText(context, "Please input User ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!Helper.getInstance().checkInput(password)) {
+                    Toast.makeText(context, "Please input Password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, "Logging In...");
+                progressDialog.show();
+                FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot == null) {
+                            Toast.makeText(context, "We are getting things fixed", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            return;
+                        }
+                        Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
+                        Log.d(TAG, "onDataChange: Password = " + dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue());
+                        if (dataSnapshot.getValue() == null) {
+                            context.OnLoginFailure("No user found");
+                            progressDialog.dismiss();
+                        } else {
+                            if (dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue().toString().equals(password)) {
+                                long type = (long) dataSnapshot.child(FireBaseHelper.getInstance().ROOT_TYPE).getValue();
+                                Log.d(TAG, "onDataChange: type: " + type);
+                                context.OnLoginSuccesful(id, type);
+                                progressDialog.dismiss();
+                                popupWindow.dismiss();
+                            } else {
+                                context.OnLoginFailure("Password Mismatch");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
     }
 
 
@@ -181,7 +181,7 @@ public class PopUpWindows {
                 } else if (code.length() < 12 && hint.equals("Staff Number")) {
                     Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
                 } else {
-                    Intent intent = new Intent(context, TrackResultActivity.class);
+                    Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
                     intent.putExtra("Code", editText.getText().toString());
                     context.startActivity(intent);
                 }
@@ -217,7 +217,7 @@ public class PopUpWindows {
                     Toast.makeText(context, "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
                     editText2.requestFocus();
                 } else {
-                    Intent intent = new Intent(context, RtiResultActivity.class);
+                    Intent intent = new Intent(context, TrackRtiResultActivity.class);
                     intent.putExtra("Key", name.replaceAll("\\s", "-") + "-" + mobile);
                     context.startActivity(intent);
                 }

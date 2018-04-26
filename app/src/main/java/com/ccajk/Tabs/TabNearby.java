@@ -111,7 +111,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
         locationManager = new MyLocationManager(this, mLocationCallback);
         mapsHelper = new MapsHelper(view.getContext());
-        locationModels = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getPrefState(getContext()));
+        locationModels = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE));
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
 
         seekBar = view.findViewById(R.id.seekBar);
