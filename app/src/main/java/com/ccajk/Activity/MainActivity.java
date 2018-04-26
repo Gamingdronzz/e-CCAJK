@@ -28,6 +28,7 @@ import com.ccajk.Fragments.GrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.LocatorFragment;
+import com.ccajk.Fragments.LoginFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
 import com.ccajk.Fragments.RTIFragment;
 import com.ccajk.Fragments.UpdateFragment;
@@ -253,6 +254,7 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("GP Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
+                ShowFragment("CCA JK", new LoginFragment(), null);
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
                 break;
             case R.id.navmenu_update:
@@ -306,6 +308,8 @@ public class MainActivity extends AppCompatActivity
             ManageNavigationView(true, false);
             Preferences.getInstance().setStaffType(this, TYPE_STAFF);
         }
+
+        ShowFragment("Home",new HomeFragment(),null);
     }
 
     public void ManageNavigationView(boolean signedIn, boolean admin) {

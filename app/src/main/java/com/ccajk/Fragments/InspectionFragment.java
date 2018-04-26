@@ -23,9 +23,11 @@ import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.InspectionModel;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.MyLocationManager;
@@ -158,48 +160,60 @@ public class InspectionFragment extends Fragment {
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
         showProgressDialog();
-//        if (myLocationManager.checkForLocationPermission()) {
-        Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
-        if (task != null) {
-            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                    Log.v(TAG, "On Task Complete");
-                    if (task.isSuccessful()) {
-                        Log.v(TAG, "Task is Successful");
 
-                        myLocationManager.requestLocationUpdates();
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
 
-                    } else {
-                        Log.v(TAG, "Task is not Successful");
-                        dismissProgressDialog();
-                    }
+
+                Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
+                if (task != null) {
+                    task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                            Log.v(TAG, "On Task Complete");
+                            if (task.isSuccessful()) {
+                                Log.v(TAG, "Task is Successful");
+
+                                myLocationManager.requestLocationUpdates();
+
+                            } else {
+                                Log.v(TAG, "Task is not Successful");
+                                dismissProgressDialog();
+                            }
+                        }
+                    });
+                    task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                        @Override
+                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                            Log.v(TAG, "On Task Success");
+                        }
+                    });
+
+                    task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.v(TAG, "On Task Failed");
+                            if (e instanceof ResolvableApiException) {
+                                myLocationManager.onLocationAcccessRequestFailure(e);
+                                dismissProgressDialog();
+                            }
+                        }
+                    });
                 }
-            });
-            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-                @Override
-                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                    Log.v(TAG, "On Task Success");
-                }
-            });
+            }
 
-            task.addOnFailureListener(getActivity(), new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.v(TAG, "On Task Failed");
-                    if (e instanceof ResolvableApiException) {
-                        myLocationManager.onLocationAcccessRequestFailure(e);
-                        dismissProgressDialog();
-                    }
-                }
-            });
-
-        }
-//        } else {
-//            myLocationManager.requestLocationPermission(this, LOCATION_REQUEST_CODE);
-//        }
-//        if (mLastLocation == null)
-//            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Internet Connection not available\nTurn on your internet before getting location",
+                        "Inspection",
+                        "OK");
+                dismissProgressDialog();
+            }
+        });
+        connectionUtility.CheckURLAvailability();
     }
 
     private void showCoordinates(Location location) {

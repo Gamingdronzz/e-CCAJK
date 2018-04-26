@@ -36,6 +36,11 @@ public class Helper {
 
     public ArrayList<LocationModel> allLocationModels;
 
+    public String getBaseURL()
+    {
+        return "https://www.google.co.in/";
+    }
+
     public Helper() {
         _instance = this;
     }
