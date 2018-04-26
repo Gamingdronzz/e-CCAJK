@@ -83,7 +83,7 @@ public class PopUpWindows {
             @Override
             public void onClick(View v) {
 
-                Helper.getInstance().hideKeyboardFrom(context, parent.getRootView());
+                Helper.getInstance().hideKeyboardFrom(context);
                 final String id = autoCompleteTextView.getText().toString();
                 final String password = editText.getText().toString();
                 if (!Helper.getInstance().checkInput(id)) {

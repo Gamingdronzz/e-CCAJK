@@ -14,16 +14,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tabs.TabAllLocations;
 import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,7 @@ public class LocatorFragment extends Fragment {
 
     public TabLayout tabLayout;
     public ViewPager viewPager;
+    ProgressDialog progressDialog;
     public ArrayList<LocationModel> locationModelArrayList = new ArrayList<>();
 
     public static int int_items = 2;
@@ -57,16 +61,69 @@ public class LocatorFragment extends Fragment {
         }
 
         locatorType = getArguments().getString("Locator");
-        getLocations();
-
         bindViews(view);
+        getLocations();
         return view;
-
     }
 
     private void bindViews(View view) {
         tabLayout = view.findViewById(R.id.tab_locator);
         viewPager = view.findViewById(R.id.viewpager_locator);
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Getting Locations...");
+        progressDialog.show();
+    }
+
+    private void getLocations() {
+
+        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+        databaseReference.child(locatorType)
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        if (dataSnapshot.getValue() != null) {
+                            Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
+                            LocationModel location = dataSnapshot.getValue(LocationModel.class);
+                            locationModelArrayList.add(location);
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setTabLayout();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setTabLayout() {
+        Log.d(TAG, "setTabLayout: " + locationModelArrayList.size());
+        progressDialog.dismiss();
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -108,44 +165,6 @@ public class LocatorFragment extends Fragment {
             return null;
         }
     }
-
-    private void getLocations() {
-
-        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
-        databaseReference.child(locatorType)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue() != null) {
-                            LocationModel location = dataSnapshot.getValue(LocationModel.class);
-                            locationModelArrayList.add(location);
-                        }
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-    }
-
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

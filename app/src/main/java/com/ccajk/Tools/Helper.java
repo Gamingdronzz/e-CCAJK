@@ -34,7 +34,7 @@ public class Helper {
     private static Helper _instance;
 
     public final String Nil = "Nil";
-    String[] statuslist = {"Submitted","Under Process","Unable to resolve","Resolved"};
+    String[] statuslist = {"Submitted", "Under Process", "Unable to resolve", "Resolved"};
     private final String TAG = "Helper";
 
     public ArrayList<LocationModel> allLocationModels;
@@ -78,9 +78,16 @@ public class Helper {
                 .show();
     }
 
-    public void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    /*public void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }*/
+
+    public void hideKeyboardFrom(Activity context) {
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
     }
 
     public ImagePicker showImageChooser(ImagePicker imagePicker, Activity activity, boolean cropimage, ImagePicker.Callback callback) {
@@ -233,7 +240,7 @@ public class Helper {
             return FireBaseHelper.getInstance().GRIEVANCE_GPF;
     }
 
-    public String[] getStatusList(){
+    public String[] getStatusList() {
         return statuslist;
     }
 
@@ -249,7 +256,7 @@ public class Helper {
             case 3:
                 return "Resolved";
         }*/
-        return getStatusList()[(int)status];
+        return getStatusList()[(int) status];
     }
 
     public String[] submittedByList(String type) {
@@ -261,10 +268,11 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
-    public String formatDate(Date date){
+    public String formatDate(Date date) {
         SimpleDateFormat dt = new SimpleDateFormat("MMM d, yyyy");
         return dt.format(date);
     }
+
     public ProgressDialog getProgressWindow(final Activity context, String message) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
