@@ -21,8 +21,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
-import com.ccajk.Activity.RtiResultActivity;
-import com.ccajk.Activity.TrackResultActivity;
+import com.ccajk.Activity.TrackRtiResultActivity;
+import com.ccajk.Activity.TrackGrievanceResultActivity;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.R;
 import com.google.firebase.database.DataSnapshot;
@@ -181,7 +181,7 @@ public class PopUpWindows {
                 } else if (code.length() < 12 && hint.equals("Staff Number")) {
                     Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
                 } else {
-                    Intent intent = new Intent(context, TrackResultActivity.class);
+                    Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
                     intent.putExtra("Code", editText.getText().toString());
                     context.startActivity(intent);
                 }
@@ -217,7 +217,7 @@ public class PopUpWindows {
                     Toast.makeText(context, "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
                     editText2.requestFocus();
                 } else {
-                    Intent intent = new Intent(context, RtiResultActivity.class);
+                    Intent intent = new Intent(context, TrackRtiResultActivity.class);
                     intent.putExtra("Key", name.replaceAll("\\s", "-") + "-" + mobile);
                     context.startActivity(intent);
                 }

@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class TrackResultActivity extends AppCompatActivity {
+public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     RecyclerView recyclerViewTrack;
     TextView textView;
@@ -35,7 +35,7 @@ public class TrackResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_track_result);
+        setContentView(R.layout.activity_track_grievance_result);
         init();
     }
 

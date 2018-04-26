@@ -11,9 +11,9 @@ import android.preference.PreferenceManager;
 public class Preferences {
     private static Preferences _instance;
 
-    static final String PREF_STAFF_ID = "staffId";
-    static final String PREF_STAFF_TYPE = "staffType";
-    static final String PREF_STATE = "state";
+    public static final String PREF_STAFF_ID = "staffId";
+    public static final String PREF_STAFF_TYPE = "staffType";
+    public static final String PREF_STATE = "state";
 
     public Preferences() {
         _instance = this;
@@ -31,34 +31,36 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public void setStaffId(Context context, String staffId) {
+
+    public String getStringPref(Context context,String key)
+    {
+
+        String res = getSharedPreferences(context).getString(key,null);
+        if(res == null)
+        {
+            if(key.equals(PREF_STATE))
+            {
+                return "jnk";
+            }
+        }
+        return res;
+    }
+
+    public int getIntPref(Context context,String key)
+    {
+        return getSharedPreferences(context).getInt(key,-1);
+    }
+
+    public void setStringPref(Context context,String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(PREF_STAFF_ID, staffId);
+        editor.putString(key, value);
         editor.commit();
     }
 
-    public String getStaffId(Context context) {
-        return getSharedPreferences(context).getString(PREF_STAFF_ID, null);
-    }
-
-    public void setStaffType(Context context, int type) {
+    public void setIntPref(Context context,String key, int value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putInt(PREF_STAFF_TYPE, type);
+        editor.putInt(key, value);
         editor.commit();
-    }
-
-    public int getStaffType(Context context) {
-        return getSharedPreferences(context).getInt(PREF_STAFF_TYPE, -1);
-    }
-
-    public void setPrefState(Context context, String state) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(PREF_STATE, state);
-        editor.commit();
-    }
-
-    public String getPrefState(Context context) {
-        return getSharedPreferences(context).getString(PREF_STATE, "jnk");
     }
 
     public void clearPrefs(Context context) {

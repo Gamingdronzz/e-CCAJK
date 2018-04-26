@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -106,8 +105,8 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
-        if (Preferences.getInstance().getStaffId(this) != null) {
-            if (Preferences.getInstance().getStaffType(this) == TYPE_ADMIN)
+        if (Preferences.getInstance().getStringPref(this,Preferences.PREF_STAFF_ID) != null) {
+            if (Preferences.getInstance().getIntPref(this,Preferences.PREF_STAFF_TYPE) == TYPE_ADMIN)
                 ManageNavigationView(true, true);
             else
                 ManageNavigationView(true, false);
@@ -298,13 +297,13 @@ public class MainActivity extends AppCompatActivity
     public void OnLoginSuccesful(String staffId, long type) {
         Log.d(TAG, "OnLoginSuccesful: ");
         Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
-        Preferences.getInstance().setStaffId(this, staffId);
+        Preferences.getInstance().setStringPref(this,Preferences.PREF_STAFF_ID, staffId);
         if (type == TYPE_ADMIN) {
             ManageNavigationView(true, true);
-            Preferences.getInstance().setStaffType(this, TYPE_ADMIN);
+            Preferences.getInstance().setIntPref(this, Preferences.PREF_STAFF_TYPE,TYPE_ADMIN);
         } else {
             ManageNavigationView(true, false);
-            Preferences.getInstance().setStaffType(this, TYPE_STAFF);
+            Preferences.getInstance().setIntPref(this,Preferences.PREF_STAFF_TYPE, TYPE_STAFF);
         }
     }
 

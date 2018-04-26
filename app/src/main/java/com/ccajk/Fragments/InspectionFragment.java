@@ -258,7 +258,7 @@ public class InspectionFragment extends Fragment {
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
 
-        staffId = Preferences.getInstance().getStaffId(getContext());
+        staffId = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STAFF_ID);
         InspectionModel inspectionModel = new InspectionModel(staffId, null, latitude, longitude, new Date());
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference

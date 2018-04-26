@@ -56,10 +56,11 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Unused.PanAdhaarHistoryActivity" />
         <activity android:name=".Activity.AboutUsActivity" />
-        <activity android:name=".Activity.TrackResultActivity" />
+        <activity android:name=".Activity.TrackGrievanceResultActivity" />
         <activity android:name=".Activity.WelcomeScreen" />
-        <activity android:name=".Activity.GrievanceUpdateActivity" />
-        <activity android:name=".Activity.RtiResultActivity"></activity>
+        <activity android:name=".Activity.UpdateGrievanceActivity" />
+        <activity android:name=".Activity.TrackRtiResultActivity" />
+        <activity android:name=".Activity.UpdateRtiActivity"></activity>
     </application>
 
 </manifest>

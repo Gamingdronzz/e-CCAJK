@@ -263,7 +263,10 @@ public class PanAdhaarUploadFragment extends Fragment {
         progressDialog.show();
         dbref = FireBaseHelper.getInstance().databaseReference.child(root);
 
-        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode, number, null, Preferences.getInstance().getPrefState(getContext()));
+        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
+                number,
+                null,
+                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE));
 
         dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

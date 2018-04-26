@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 
-public class RtiResultActivity extends AppCompatActivity {
+public class TrackRtiResultActivity extends AppCompatActivity {
 
     TextView textView, textViewName, textViewDate, textViewStatus, textViewSubject;
     LinearLayout linearLayout;
@@ -32,7 +32,7 @@ public class RtiResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rti_result);
+        setContentView(R.layout.activity_track_rti_result);
         init();
     }
 

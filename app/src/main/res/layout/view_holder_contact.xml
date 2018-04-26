@@ -1,65 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="@dimen/elevation_medium"
-    android:orientation="vertical"
     android:animateLayoutChanges="true"
-    >
-
+    android:elevation="@dimen/elevation_medium"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_large"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/padding_large">
 
         <TextView
             android:id="@+id/textview_name"
             android:layout_width="match_parent"
-            android:paddingRight="@dimen/padding_medium"
-            android:paddingEnd="@dimen/padding_medium"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/padding_medium"
-            android:paddingLeft="@dimen/padding_medium"
             android:layout_marginTop="@dimen/margin_medium"
+            android:paddingEnd="@dimen/padding_medium"
+            android:paddingLeft="@dimen/padding_medium"
+            android:paddingRight="@dimen/padding_medium"
+            android:paddingStart="@dimen/padding_medium"
             android:text="TextView"
-            android:textStyle="bold"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
-            />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/textview_designation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:paddingStart="@dimen/padding_medium"
             android:text="TextView"
-            android:textStyle="italic"
-            android:layout_marginBottom="@dimen/margin_medium"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textSize="@dimen/text_15"
+            android:textStyle="italic" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
             android:id="@+id/expandable_area_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:padding="@dimen/padding_medium"
-            android:layout_height="wrap_content">
+            android:orientation="vertical"
+            android:padding="@dimen/padding_medium">
+
             <Button
                 android:id="@+id/button_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:drawableTint="@color/colorPrimaryLight"
-                android:drawablePadding="@dimen/padding_medium"
                 android:layout_marginBottom="@dimen/margin_medium"
                 android:background="@drawable/custom_button_rounded"
+                android:drawablePadding="@dimen/padding_medium"
+                android:drawableTint="@color/colorPrimaryLight"
+                android:text="TextView"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_15"
-                />
+                android:textSize="@dimen/text_15" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,44 +67,43 @@
                     android:id="@+id/button_office"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView"
                     android:layout_marginRight="@dimen/margin_medium"
-                    android:drawableTint="@color/colorPrimaryLight"
-                    android:drawablePadding="@dimen/padding_medium"
+                    android:layout_weight="1"
                     android:background="@drawable/custom_button_rounded"
+                    android:drawablePadding="@dimen/padding_medium"
+                    android:drawableTint="@color/colorPrimaryLight"
+                    android:text="TextView"
                     android:textAlignment="center"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_15"
-                    />
+                    android:textSize="@dimen/text_15" />
 
                 <Button
                     android:id="@+id/textview_mobile"
                     android:layout_width="0dp"
-                    android:layout_marginLeft="@dimen/margin_medium"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_medium"
                     android:layout_weight="1"
                     android:background="@drawable/custom_button_rounded"
-                    android:drawableTint="@color/colorPrimaryLight"
                     android:drawablePadding="@dimen/padding_medium"
+                    android:drawableTint="@color/colorPrimaryLight"
                     android:text="TextView"
                     android:textAlignment="center"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_15"
-                    />
+                    android:textSize="@dimen/text_15" />
 
             </LinearLayout>
         </LinearLayout>
 
-<!--<View
-    android:layout_width="match_parent"
-    android:layout_height="2dp"
-    android:layout_marginTop="@dimen/margin_large"
-    android:layout_marginBottom="@dimen/margin_large"
-    android:layout_marginStart="@dimen/margin_large"
-    android:layout_marginEnd="@dimen/margin_large"
-    android:background="@color/colorLightGray"></View>-->
+        <!--<View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:background="@color/colorLightGray"></View>-->
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
