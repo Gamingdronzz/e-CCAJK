@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Providers.LocationDataProvider;
 
 import java.util.ArrayList;
+
+
 
 
 //Our class extending fragment
@@ -54,7 +57,6 @@ public class TabAllLocations extends Fragment {
         locatorType = getArguments().getString("Locator");
         Log.d(TAG, "onCreateView: locator type = " + locatorType);
         init(view);
-
         return view;
     }
 
@@ -159,6 +161,7 @@ public class TabAllLocations extends Fragment {
 //        });
 
     }
+
 
 
     private void ShowSearchByNameDialog() {

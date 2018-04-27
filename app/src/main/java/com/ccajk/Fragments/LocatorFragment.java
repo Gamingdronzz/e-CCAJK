@@ -14,6 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
@@ -48,8 +52,11 @@ public class LocatorFragment extends Fragment {
 
     public static int int_items = 2;
     String TAG = "locator";
+    TextView textViewLocatorInfo;
     String locatorType;
-
+    RelativeLayout relativeLayoutNoLocation;
+    LinearLayout linearLayoutTab;
+    ImageButton imageButtonRefresh;
     public LocatorFragment() {
 
     }
@@ -66,7 +73,7 @@ public class LocatorFragment extends Fragment {
 
         locatorType = getArguments().getString("Locator");
         bindViews(view);
-
+        manageNoLocationLayout(true);
         getLocations();
         return view;
     }
@@ -74,7 +81,32 @@ public class LocatorFragment extends Fragment {
     private void bindViews(View view) {
         tabLayout = view.findViewById(R.id.tab_locator);
         viewPager = view.findViewById(R.id.viewpager_locator);
+        relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location_lcoator_fragment);
+        linearLayoutTab = view.findViewById(R.id.linear_layout_locator_fragment);
+        textViewLocatorInfo = view.findViewById(R.id.textview_locator_info);
+        imageButtonRefresh = view.findViewById(R.id.image_btn_refresh_tab_all);
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Getting Locations...");
+
+        imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLocations();
+            }
+        });
+        textViewLocatorInfo.setText(textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh");
+    }
+
+    private void manageNoLocationLayout(boolean show) {
+        if (show)
+        {
+            relativeLayoutNoLocation.setVisibility(View.VISIBLE);
+            linearLayoutTab.setVisibility(View.GONE);
+        }
+        else
+        {
+            relativeLayoutNoLocation.setVisibility(View.GONE);
+            linearLayoutTab.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getLocations() {
@@ -88,17 +120,17 @@ public class LocatorFragment extends Fragment {
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Internet Connection Not Available\nTo make full use of " + locatorType + " locator, please turn on your internet connection\n\nPress Ok after you turn on the location\nPress Cancel to go back",
-                        locatorType + " Locator", "OK",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getLocations();
-                            }
-                        },
-                        "Cancel");
+//                Helper.getInstance().showAlertDialog(
+//                        getContext(),
+//                        "Internet Connection Not Available\nTo make full use of " + locatorType + " locator, please turn on your internet connection\n\nPress Ok after you turn on the location\nPress Cancel to go back",
+//                        locatorType + " Locator", "OK",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                getLocations();
+//                            }
+//                        },
+//                        "Cancel");
             }
         });
         connectionUtility.CheckConnectionAvailability();
@@ -165,7 +197,9 @@ public class LocatorFragment extends Fragment {
 
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
+        manageNoLocationLayout(false);
         progressDialog.dismiss();
+
     }
 
     class MyAdapter extends FragmentPagerAdapter {

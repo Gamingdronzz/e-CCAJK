@@ -69,6 +69,7 @@
             android:id="@+id/image_btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="@dimen/padding_large"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/ic_refresh_black_24dp" />
 
