@@ -43,8 +43,8 @@ public class FireBaseHelper {
 
 
 
-    public final String GRIEVANCE_PENSION = "Pension GrievanceModel";
-    public final String GRIEVANCE_GPF = "GPF GrievanceModel";
+    public final String GRIEVANCE_PENSION = "Pension";
+    public final String GRIEVANCE_GPF = "GPF";
 
     private final String TAG = "firebaseHelper";
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";

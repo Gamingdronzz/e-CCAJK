@@ -133,7 +133,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         });
 
         grievanceModelArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, this);
+        //adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

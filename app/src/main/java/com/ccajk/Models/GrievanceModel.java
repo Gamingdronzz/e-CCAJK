@@ -20,6 +20,7 @@ public class GrievanceModel {
     long grievanceStatus;
     Date date;
 
+    boolean isExpanded = false;
     public GrievanceModel(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
         this.pensionerIdentifier = pensionerIdentifier;
         this.mobile = mobile;
@@ -31,6 +32,14 @@ public class GrievanceModel {
         this.state = state;
         this.grievanceStatus = grievanceStatus;
         this.date = date;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 
     public GrievanceModel() {

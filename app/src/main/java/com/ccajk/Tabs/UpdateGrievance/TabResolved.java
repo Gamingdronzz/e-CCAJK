@@ -11,9 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
+import com.ccajk.Listeners.ClickListener;
+import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
@@ -58,6 +61,20 @@ public class TabResolved extends Fragment {
         adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+//        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
+//            @Override
+//            public void onClick(View view, int position) {
+//                Log.d(TAG, "onClick: setting expanded" );
+//                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
+//                adapter.notifyItemChanged(position);
+//            }
+//
+//            @Override
+//            public void onLongClick(View view, int position) {
+//
+//            }
+//        }));
     }
 
     private void fromFirebase() {

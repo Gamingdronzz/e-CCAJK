@@ -27,8 +27,8 @@ public class RecyclerViewAdapterRTIUpdate extends RecyclerView.Adapter<RecyclerV
 
     @Override
     public RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder viewHolder = new RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_updation_item, parent, false));
-        return viewHolder;
+        //RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder viewHolder = new RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_grievance_item, parent, false));
+        return null;
     }
 
     @Override
