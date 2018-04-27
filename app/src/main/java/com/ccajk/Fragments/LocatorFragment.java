@@ -24,7 +24,7 @@ import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
-import com.ccajk.Tools.LocationDataProvider;
+import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -66,6 +66,7 @@ public class LocatorFragment extends Fragment {
 
         locatorType = getArguments().getString("Locator");
         bindViews(view);
+
         getLocations();
         return view;
     }
@@ -113,8 +114,9 @@ public class LocatorFragment extends Fragment {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
-                            Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
                             LocationModel location = dataSnapshot.getValue(LocationModel.class);
+                            Log.d(TAG, "onChildAdded: " + location.getLocationName());
+                            Log.d(TAG, "onChildAdded: " + location.getLatitude() + ":" + location.getLongitude());
                             locationModelArrayList.add(location);
                         }
                     }
@@ -154,17 +156,15 @@ public class LocatorFragment extends Fragment {
 
     private void setTabLayout() {
         Log.d(TAG, "setTabLayout: " + locatorType + " - " + locationModelArrayList.size());
+
         if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
-            Log.d(TAG, "setTabLayout: GP");
             LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
         } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
-            Log.d(TAG, "setTabLayout: Hotspot");
             LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
         }
+
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
-
-
         progressDialog.dismiss();
     }
 

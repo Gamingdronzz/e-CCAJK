@@ -6,28 +6,20 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.content.res.AppCompatResources;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
-import com.ccajk.Activity.TrackRtiResultActivity;
 import com.ccajk.Activity.TrackGrievanceResultActivity;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Activity.TrackRtiResultActivity;
 import com.ccajk.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 
 /**
@@ -53,7 +45,7 @@ public class PopUpWindows {
     }
 
 
-    public void showLoginPopup(final MainActivity context, final View parent) {
+    public void showLoginPopup(final MainActivity context, final View parent)    {
 //        final ImageView ppo, pwd, close;
 //
 //        final AutoCompleteTextView autoCompleteTextView;

@@ -12,9 +12,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,8 +28,7 @@ import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
-import com.ccajk.Tools.LocationDataProvider;
-import com.ccajk.Tools.Preferences;
+import com.ccajk.Providers.LocationDataProvider;
 
 import java.util.ArrayList;
 
@@ -93,10 +90,6 @@ public class TabAllLocations extends Fragment {
                 ShowSortDialog();
             }
         });
-
-//        stateLocations = FireBaseHelper.getInstance().getLocationModels
-//                (Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
-
 
         if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
             Log.d(TAG, "init: GP");

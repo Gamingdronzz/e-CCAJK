@@ -20,7 +20,7 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     ArrayList<LocationModel> locationArray;
 
     public RecyclerViewAdapterHotspotLocation(ArrayList<LocationModel> locationArray) {
-        setHasStableIds(true);
+        //setHasStableIds(true);
         this.locationArray = locationArray;
     }
 

@@ -34,6 +34,9 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.security.ProviderInstaller;
 
 import java.util.List;
 
@@ -111,6 +114,17 @@ public class MainActivity extends AppCompatActivity
             ManageNavigationView(false, false);
         }
         navigationView.setNavigationItemSelectedListener(this);
+
+        try
+        {
+
+            ProviderInstaller.installIfNeeded(getApplicationContext());
+        }
+        catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

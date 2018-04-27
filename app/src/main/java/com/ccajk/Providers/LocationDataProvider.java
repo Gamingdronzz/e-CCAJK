@@ -1,4 +1,4 @@
-package com.ccajk.Tools;
+package com.ccajk.Providers;
 
 import com.ccajk.Models.LocationModel;
 
@@ -13,6 +13,9 @@ import java.util.Comparator;
 public class LocationDataProvider {
 
     private static LocationDataProvider _instance;
+    private ArrayList<LocationModel> hotspotLocationModelArrayList;
+    private ArrayList<LocationModel> gpLocationModelArrayList;
+
     public LocationDataProvider() {
         _instance = this;
     }
@@ -25,16 +28,13 @@ public class LocationDataProvider {
         }
     }
 
-    private ArrayList<LocationModel> hotspotLocationModelArrayList;
-
     public ArrayList<LocationModel> getHotspotLocationModelArrayList() {
         return hotspotLocationModelArrayList;
     }
 
     public void setHotspotLocationModelArrayList(ArrayList<LocationModel> hotspotLocationModelArrayList) {
         this.hotspotLocationModelArrayList = hotspotLocationModelArrayList;
-        sort();
-
+        sort(hotspotLocationModelArrayList);
     }
 
     public ArrayList<LocationModel> getGpLocationModelArrayList() {
@@ -43,17 +43,15 @@ public class LocationDataProvider {
 
     public void setGpLocationModelArrayList(ArrayList<LocationModel> gpLocationModelArrayList) {
         this.gpLocationModelArrayList = gpLocationModelArrayList;
-        sort();
+        sort(gpLocationModelArrayList);
     }
 
-    private ArrayList<LocationModel> gpLocationModelArrayList;
 
-    private void sort()
-    {
-        Collections.sort(this.hotspotLocationModelArrayList, new Comparator<LocationModel>() {
+    private void sort(ArrayList<LocationModel> arrayList) {
+        Collections.sort(arrayList, new Comparator<LocationModel>() {
             @Override
             public int compare(LocationModel o1, LocationModel o2) {
-                return o1.getLocationName().compareToIgnoreCase(o2.getLocationName());
+                return (o1.getLocationName().toLowerCase().compareTo(o2.getLocationName().toLowerCase()));
             }
         });
     }

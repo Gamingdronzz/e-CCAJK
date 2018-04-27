@@ -1,13 +1,15 @@
 package com.ccajk.Tools;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import com.ccajk.Interfaces.IConnectivityProcessor;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by balpreet on 3/23/2018.
@@ -42,11 +44,18 @@ public class ConnectionUtility implements IConnectivityProcessor {
         protected Boolean doInBackground(String... params) {
 
             try {
-                HttpURLConnection.setFollowRedirects(false);
-                HttpURLConnection con =  (HttpURLConnection) new URL(params[0]).openConnection();
-                con.setRequestMethod("HEAD");
-                System.out.println(con.getResponseCode());
-                return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+
+                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+                    HttpsURLConnection.setFollowRedirects(false);
+                    HttpsURLConnection con = (HttpsURLConnection) new URL(params[0]).openConnection();
+                    con.setRequestMethod("HEAD");
+                    //System.out.println(con.getResponseCode());
+                    return (con.getResponseCode() == HttpsURLConnection.HTTP_OK);
+                }
+                else
+                {
+                    return true;
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
