@@ -30,15 +30,11 @@ public class MapsHelper {
         this.context = context;
     }
 
+
     public void AnimateCamera(ArrayList<LocationModel> allLocations, int zoom, GoogleMap mMap, Location mLastLocation, int value) {
 
         LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        /*if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }*/
-        Log.v(TAG, "In function");
         mMap.clear();
-        Log.v(TAG, "Map Cleared");
         Circle circle = mMap.addCircle(new CircleOptions().center(latLng).radius(getRadius(value) * 1000).strokeColor(Color.RED));
         circle.setVisible(true);
         getZoomLevel(circle);
@@ -52,30 +48,25 @@ public class MapsHelper {
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         Log.v(TAG, "Animation Done");
 
-        int i = 0;
-        ArrayList<LatLng> filteredMarkers = filterMarkers(allLocations, value, mLastLocation);
-        if (filteredMarkers.size() == 0) {
+        ArrayList<LocationModel> filteredLocations = filterLocations(allLocations, value, mLastLocation);
+        if (filteredLocations.size() == 0) {
             Toast.makeText(context, "No Locations nearby\nIncrease Radius", Toast.LENGTH_LONG).show();
             return;
         }
 
-        for (LatLng latlng :
-                filteredMarkers) {
-            mMap.addMarker(new MarkerOptions().position(latlng).title(allLocations.get(i++).getLocationName()));
+        for (LocationModel locationModel : filteredLocations) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(locationModel.getLatitude(), locationModel.getLongitude()))
+                    .title(locationModel.getLocationName()));
         }
-
-        /*
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-        */
     }
 
-    private ArrayList<LatLng> filterMarkers(ArrayList<LocationModel> locationModels, int value, Location mLastLocation) {
+
+    private ArrayList<LocationModel> filterLocations(ArrayList<LocationModel> locationModels, int value, Location mLastLocation) {
         if (locationModels == null) {
             return null;
         }
-        ArrayList<LatLng> filteredLocations = new ArrayList<>();
+        ArrayList<LocationModel> filteredLocations = new ArrayList<>();
         int length = locationModels.size();
         float[] results = new float[1];
         double radius = getRadius(value) * 1000;
@@ -84,17 +75,19 @@ public class MapsHelper {
             LocationModel locationModel = locationModels.get(i);
             Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude()), results);
             if (results[0] <= radius) {
-                filteredLocations.add(new LatLng(Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude())));
+                filteredLocations.add(locationModel);
             }
         }
         return filteredLocations;
     }
 
+
     public double getRadius(int value) {
-        double radius = Math.pow((value + 1), 2);
+        double radius = Math.pow(value + 5, 2);
         Log.v(TAG, "Radius = " + radius);
         return radius;
     }
+
 
     private int getZoomLevel(Circle circle) {
         int zoomLevel = 1;
