@@ -3,7 +3,6 @@ package com.ccajk.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,32 +49,15 @@ public class LoginFragment extends Fragment {
     }
 
     private void init(View view) {
-
-
-//        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_login, null);
-//        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        //ppo.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
-//        pwd = view.findViewById(R.id.image_pwd);
-//        pwd.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_password));
         completeTextViewUserID = view.findViewById(R.id.autocomplete_user_id);
-        completeTextViewUserID.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp,0,0,0);
+        completeTextViewUserID.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         editTextPassword = view.findViewById(R.id.edittext_password);
-        editTextPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password,0,0,0);
-
-//        close = view.findViewById(R.id.imageview_close_login);
-//        close.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_close_black_24dp));
-//        close.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        editTextPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password, 0, 0, 0);
 
         Button signin = view.findViewById(R.id.sign_in_button);
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 tryLogin();
             }
         });

@@ -18,9 +18,11 @@ import android.widget.Toast;
 import com.ccajk.Adapter.RecyclerViewAdapterRTIUpdate;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.ClickListener;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.RtiModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +31,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +40,7 @@ public class UpdateRtiActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayout linearLayout;
-    TextView tvName, tvMobile, tvDate;
+    TextView tvName, tvMobile, tvDate, tvNoData;
     Spinner statusSpinner;
     EditText editTextMessage;
     Button update;
@@ -69,10 +72,12 @@ public class UpdateRtiActivity extends AppCompatActivity {
     public void setRecyclerVisiblity(boolean visible) {
         if (visible) {
             recyclerView.setVisibility(View.VISIBLE);
+            tvNoData.setVisibility(View.VISIBLE);
             recyclerVisible = true;
             linearLayout.setVisibility(View.GONE);
         } else {
             recyclerView.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.GONE);
             recyclerVisible = false;
             linearLayout.setVisibility(View.VISIBLE);
         }
@@ -84,6 +89,7 @@ public class UpdateRtiActivity extends AppCompatActivity {
         tvName = findViewById(R.id.textview_name);
         tvMobile = findViewById(R.id.textview_mobile);
         tvDate = findViewById(R.id.textview_date);
+        tvNoData = findViewById(R.id.textview_no_data_msg);
         statusSpinner = findViewById(R.id.spinner_status);
         editTextMessage = findViewById(R.id.edittext_message);
         update = findViewById(R.id.button_update);
@@ -137,6 +143,21 @@ public class UpdateRtiActivity extends AppCompatActivity {
     }
 
     private void getRtiData() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                fromFirebase();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                tvNoData.setText("Internet Connection Not Available");
+            }
+        });
+        connectionUtility.CheckConnectionAvailability();
+    }
+
+    private void fromFirebase() {
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_RTI).addChildEventListener(new ChildEventListener() {
@@ -155,22 +176,32 @@ public class UpdateRtiActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
+        dbref.child(FireBaseHelper.getInstance().ROOT_RTI).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (rtiModelArrayList.size() == 0)
+                    tvNoData.setText("ALL GRIEVANCES RESOLVED");
+                else
+                    tvNoData.setText("");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }

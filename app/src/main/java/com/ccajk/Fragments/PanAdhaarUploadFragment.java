@@ -231,6 +231,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void confirmSubmission() {
+        Helper.getInstance().hideKeyboardFrom(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         loadValues(v);

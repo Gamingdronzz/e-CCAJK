@@ -191,7 +191,6 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.getInstance().hideKeyboardFrom(getActivity());
                 if (checkInput())
                     confirmSubmission();
             }
@@ -286,6 +285,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
     }
 
     private void confirmSubmission() {
+        Helper.getInstance().hideKeyboardFrom(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         loadValues(v);

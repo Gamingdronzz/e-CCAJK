@@ -18,9 +18,11 @@ import android.widget.Toast;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.ClickListener;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.Grievance;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +31,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +40,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayout linearLayout;
-    TextView tvPensioner, tvGrievance, tvDate;
+    TextView tvPensioner, tvGrievance, tvDate, tvNoData;
     Spinner statusSpinner;
     EditText editTextMessage;
     Button update;
@@ -56,7 +59,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_grievance);
         bindViews();
         init();
-        //getData();
     }
 
     @Override
@@ -70,10 +72,12 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     public void setRecyclerVisiblity(boolean visible) {
         if (visible) {
             recyclerView.setVisibility(View.VISIBLE);
+            tvNoData.setVisibility(View.VISIBLE);
             recyclerVisible = true;
             linearLayout.setVisibility(View.GONE);
         } else {
             recyclerView.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.GONE);
             recyclerVisible = false;
             linearLayout.setVisibility(View.VISIBLE);
         }
@@ -82,6 +86,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     private void bindViews() {
         linearLayout = findViewById(R.id.layout_grievance_update);
         recyclerView = findViewById(R.id.recyclerview_grievance);
+        tvNoData = findViewById(R.id.textview_no_data_msg);
         tvPensioner = findViewById(R.id.textview_pensioner);
         tvGrievance = findViewById(R.id.textview_grievance_type);
         tvDate = findViewById(R.id.textview_date);
@@ -94,6 +99,9 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
         setRecyclerVisiblity(true);
 
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
+        progressDialog.show();
+
         ArrayAdapter arrayAdapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 Helper.getInstance().getStatusList());
@@ -103,7 +111,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                 new RecyclerViewTouchListeners(this, recyclerView, new ClickListener() {
                     @Override
                     public void onClick(View view, int position) {
-                         grievance = grievanceArrayList.get(position);
+                        grievance = grievanceArrayList.get(position);
                         setRecyclerVisiblity(false);
                         setLayoutData();
                     }
@@ -117,13 +125,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message=editTextMessage.getText().toString().trim();
-                int status=statusSpinner.getSelectedItemPosition();
-                updateData(message,status);
+                String message = editTextMessage.getText().toString().trim();
+                int status = statusSpinner.getSelectedItemPosition();
+                updateData(message, status);
+                progressDialog.show();
             }
         });
-        //progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
-        //progressDialog.show();
+
         grievanceArrayList = new ArrayList<>();
         adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceArrayList, this);
         recyclerView.setAdapter(adapter);
@@ -142,6 +150,23 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     private void getData() {
 
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                fromFirebase();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                tvNoData.setText("Internet Connection Not Available");
+                progressDialog.dismiss();
+            }
+        });
+        connectionUtility.CheckConnectionAvailability();
+
+    }
+
+    private void fromFirebase() {
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
             @Override
@@ -161,17 +186,28 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                if (grievanceArrayList.size() == 0)
+                    tvNoData.setText("ALL GRIEVANCES RESOLVED");
+                else
+                    tvNoData.setText("");
             }
 
             @Override
@@ -179,21 +215,23 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void updateData(String message, int status) {
 
-        HashMap<String,Object> hashMap=new HashMap<>();
-        hashMap.put("grievanceStatus",status);
-        hashMap.put("message",message);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("grievanceStatus", status);
+        hashMap.put("message", message);
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievance.getPensionerIdentifier())
                 .child(String.valueOf(grievance.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                    Toast.makeText(UpdateGrievanceActivity.this,"Successfully Updated",Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                if (task.isSuccessful())
+                    Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
             }
         });
     }
