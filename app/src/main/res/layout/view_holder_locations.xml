@@ -26,10 +26,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/margin_small"
                 app:srcCompat="@drawable/ic_drawable_location"
-                android:tint="@color/colorBlack" />
+                android:tint="@color/colorAccent" />
 
             <TextView
-                android:id="@+id/loc"
+                android:id="@+id/textview_location_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/activity_horizontal_margin"

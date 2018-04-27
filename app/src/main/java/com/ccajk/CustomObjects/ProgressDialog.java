@@ -93,10 +93,10 @@ public class ProgressDialog {
     }
 
     public void show() {
-//        if(isVisible)
-//        {
-//            return;
-//        }
+        if(isVisible)
+        {
+            return;
+        }
         if (view.getParent() == null)
             builder.setView(view);
         dialog = builder.create();
@@ -106,10 +106,10 @@ public class ProgressDialog {
     }
 
     public void dismiss() {
-//        if(!isVisible)
-//        {
-//            return;
-//        }
+        if(!isVisible)
+        {
+            return;
+        }
         dialog.dismiss();
         isVisible = false;
         if (view.getParent() != null)

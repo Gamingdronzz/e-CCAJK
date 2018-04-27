@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void showDrawer()
-    {
+    public void showDrawer() {
         drawerLayout.openDrawer(Gravity.START);
         Helper.getInstance().showGuide(this, navigationView, "Navigation Menu", "This is Navigation Menu\nOpen this to perform various functions", new GuideView.GuideListener() {
             @Override
@@ -72,6 +71,7 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
+
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
-        if (Preferences.getInstance().getStringPref(this,Preferences.PREF_STAFF_ID) != null) {
-            if (Preferences.getInstance().getIntPref(this,Preferences.PREF_STAFF_TYPE) == TYPE_ADMIN)
+        if (Preferences.getInstance().getStringPref(this, Preferences.PREF_STAFF_ID) != null) {
+            if (Preferences.getInstance().getIntPref(this, Preferences.PREF_STAFF_TYPE) == TYPE_ADMIN)
                 ManageNavigationView(true, true);
             else
                 ManageNavigationView(true, false);
@@ -267,10 +267,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logout() {
+        ShowFragment("Home", new HomeFragment(), null);
         Preferences.getInstance().clearPrefs(this);
         Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show();
         ManageNavigationView(false, false);
-        ShowFragment("Home", new HomeFragment(), null);
+
     }
 
     private void doExit() {
@@ -295,16 +296,16 @@ public class MainActivity extends AppCompatActivity
     public void OnLoginSuccesful(String staffId, long type) {
         Log.d(TAG, "OnLoginSuccesful: ");
         Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
-        Preferences.getInstance().setStringPref(this,Preferences.PREF_STAFF_ID, staffId);
+        Preferences.getInstance().setStringPref(this, Preferences.PREF_STAFF_ID, staffId);
         if (type == TYPE_ADMIN) {
             ManageNavigationView(true, true);
-            Preferences.getInstance().setIntPref(this, Preferences.PREF_STAFF_TYPE,TYPE_ADMIN);
+            Preferences.getInstance().setIntPref(this, Preferences.PREF_STAFF_TYPE, TYPE_ADMIN);
         } else {
             ManageNavigationView(true, false);
-            Preferences.getInstance().setIntPref(this,Preferences.PREF_STAFF_TYPE, TYPE_STAFF);
+            Preferences.getInstance().setIntPref(this, Preferences.PREF_STAFF_TYPE, TYPE_STAFF);
         }
 
-        ShowFragment("Home",new HomeFragment(),null);
+        ShowFragment("Home", new HomeFragment(), null);
     }
 
     public void ManageNavigationView(boolean signedIn, boolean admin) {

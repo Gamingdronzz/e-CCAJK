@@ -213,7 +213,7 @@ public class InspectionFragment extends Fragment {
                 dismissProgressDialog();
             }
         });
-        connectionUtility.CheckURLAvailability();
+        connectionUtility.CheckConnectionAvailability();
     }
 
     private void showCoordinates(Location location) {

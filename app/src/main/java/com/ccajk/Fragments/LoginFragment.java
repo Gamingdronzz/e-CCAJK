@@ -83,7 +83,7 @@ public class LoginFragment extends Fragment {
 
 
     private void tryLogin() {
-        Helper.getInstance().hideKeyboardFrom(getContext(), getView());
+        Helper.getInstance().hideKeyboardFrom(getActivity());
         final String id = completeTextViewUserID.getText().toString();
         final String password = editTextPassword.getText().toString();
         if (!Helper.getInstance().checkInput(id)) {

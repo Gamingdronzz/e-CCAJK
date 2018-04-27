@@ -11,7 +11,7 @@
         android:id="@+id/tab_locator"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimaryLight"
         app:tabIndicatorColor="@color/colorBlack"
         app:tabIndicatorHeight="3dp"
         app:tabSelectedTextColor="@color/colorBlack"

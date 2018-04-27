@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
-import com.ccajk.Tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -35,8 +34,11 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String location = locationArray.get(position).getLocationName();
+        String district = locationArray.get(position).getDistrict();
         String stateId = locationArray.get(position).getStateID();
-        holder.tv.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
+
+        //holder.textViewLocationName.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
+        holder.textViewLocationName.setText(location+"\n"+district);
 
     }
 
@@ -46,13 +48,12 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv;
-        private TextView tv2;
+        private TextView textViewLocationName;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.tv = itemView.findViewById(R.id.loc);
-            //this.tv2 = itemView.findViewById(R.id.state);
+            this.textViewLocationName = itemView.findViewById(R.id.textview_location_name);
+            //this.textViewDistrict = itemView.findViewById(R.id.state);
         }
     }
 }

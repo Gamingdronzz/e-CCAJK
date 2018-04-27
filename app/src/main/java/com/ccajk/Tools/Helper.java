@@ -89,10 +89,10 @@ public class Helper {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }*/
 
-    public void hideKeyboardFrom(Activity context) {
+    public void hideKeyboardFrom(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)
-                context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+                activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     public ImagePicker showImageChooser(ImagePicker imagePicker, Activity activity, boolean cropimage, ImagePicker.Callback callback) {
@@ -146,6 +146,25 @@ public class Helper {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 context, R.style.MyAlertDialogStyle);
         alertDialog.setNeutralButton(neutralButtonText, null)
+                .setMessage(message)
+                .setTitle(title)
+                .show();
+    }
+
+    public void showAlertDialog(Context context, String message, String title, String neutralButtonText,DialogInterface.OnClickListener neutralButtonClickListener) {
+        if (title == null) {
+            title = "CCA JK";
+        }
+        if (message == null) {
+            Log.d(TAG, "showAlertDialog: Message cant be null");
+            return;
+        }
+        if (neutralButtonText == null) {
+            neutralButtonText = "OK";
+        }
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                context, R.style.MyAlertDialogStyle);
+        alertDialog.setNeutralButton(neutralButtonText, neutralButtonClickListener)
                 .setMessage(message)
                 .setTitle(title)
                 .show();

@@ -1,6 +1,7 @@
 package com.ccajk.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,12 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tabs.TabAllLocations;
 import com.ccajk.Tabs.TabNearby;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.LocationDataProvider;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -70,11 +74,38 @@ public class LocatorFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tab_locator);
         viewPager = view.findViewById(R.id.viewpager_locator);
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Getting Locations...");
-        progressDialog.show();
     }
 
     private void getLocations() {
+        progressDialog.show();
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                fetchLocations();
+            }
 
+            @Override
+            public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Internet Connection Not Available\nTo make full use of " + locatorType + " locator, please turn on your internet connection\n\nPress Ok after you turn on the location\nPress Cancel to go back",
+                        locatorType + " Locator", "OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getLocations();
+                            }
+                        },
+                        "Cancel");
+            }
+        });
+        connectionUtility.CheckConnectionAvailability();
+
+    }
+
+    private void fetchLocations() {
+        progressDialog.show();
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
@@ -122,10 +153,19 @@ public class LocatorFragment extends Fragment {
     }
 
     private void setTabLayout() {
-        Log.d(TAG, "setTabLayout: " + locationModelArrayList.size());
-        progressDialog.dismiss();
+        Log.d(TAG, "setTabLayout: " + locatorType + " - " + locationModelArrayList.size());
+        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+            Log.d(TAG, "setTabLayout: GP");
+            LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
+        } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
+            Log.d(TAG, "setTabLayout: Hotspot");
+            LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
+        }
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
+
+
+        progressDialog.dismiss();
     }
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -139,9 +179,11 @@ public class LocatorFragment extends Fragment {
             switch (position) {
                 case 0:
                     TabAllLocations tabAllLocations = new TabAllLocations();
+                    tabAllLocations.setArguments(getArguments());
                     return tabAllLocations;
                 case 1:
                     TabNearby tabNearby = new TabNearby();
+                    tabNearby.setArguments(getArguments());
                     return tabNearby;
 
             }
