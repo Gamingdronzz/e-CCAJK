@@ -149,11 +149,11 @@ public class PopUpWindows {
                     //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
-                        editText.setFilters(Helper.getInstance().limitInputLength(10));
+                        //editText.setFilters(Helper.getInstance().limitInputLength(10));
                         break;
                     case R.id.radioButtonStaff:
                         hint = "Staff Number";
-                        editText.setFilters(Helper.getInstance().limitInputLength(12));
+                        //editText.setFilters(Helper.getInstance().limitInputLength(12));
                 }
                 editText.setText("");
                 textInputLayout.setHint(hint);
@@ -167,9 +167,9 @@ public class PopUpWindows {
                 String code = editText.getText().toString().trim();
                 if (code.length() < 15 && hint.equals("Pensioner Code")) {
                     Toast.makeText(context, "Invalid Pensioner code!", Toast.LENGTH_LONG).show();
-                } else if (code.length() < 10 && hint.equals("HR Number")) {
+                } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
                     Toast.makeText(context, "Invalid HR Number!", Toast.LENGTH_LONG).show();
-                } else if (code.length() < 12 && hint.equals("Staff Number")) {
+                } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
                     Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
                 } else {
                     Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
