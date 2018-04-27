@@ -27,7 +27,6 @@ import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.LocatorFragment;
 import com.ccajk.Fragments.LoginFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
-import com.ccajk.Fragments.RTIFragment;
 import com.ccajk.Fragments.UpdateFragment;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
@@ -208,11 +207,6 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
                 ShowFragment("GPF GrievanceModel Registeration", fragment, bundle);
                 break;
-            case R.id.navmenu_rti:
-                fragment = new RTIFragment();
-                ShowFragment("RTI", fragment, null);
-                break;
-
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
@@ -245,9 +239,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_tracking:
                 PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
-                break;
-            case R.id.navmenu_track_rti:
-                PopUpWindows.getInstance().showRtiTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);

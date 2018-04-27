@@ -50,7 +50,7 @@
             android:layout_alignParentBottom="true"
             android:background="#66000000"
             android:paddingBottom="@dimen/padding_small"
-            android:text="WITHIN 20 KM"
+            android:text="WITHIN 36 KM"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_18"

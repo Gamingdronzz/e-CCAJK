@@ -165,11 +165,11 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
                     //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
-                        inputIdentifier.setFilters(Helper.getInstance().limitInputLength(10));
+                        //inputIdentifier.setFilters(Helper.getInstance().limitInputLength(10));
                         break;
                     case R.id.radioButtonStaff:
                         hint = "Staff Number";
-                        inputIdentifier.setFilters(Helper.getInstance().limitInputLength(12));
+                        //inputIdentifier.setFilters(Helper.getInstance().limitInputLength(12));
                 }
                 inputIdentifier.setText("");
                 inputIdentifier.setError(null);
@@ -260,11 +260,11 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
             inputIdentifier.setError("Enter Valid Pensioner Code");
             inputIdentifier.requestFocus();
             return false;
-        } else if (code.length() < 10 && hint.equals("HR Number")) {
+        } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
             inputIdentifier.setError("Enter Valid HR Number");
             inputIdentifier.requestFocus();
             return false;
-        } else if (code.length() < 12 && hint.equals("Staff Number")) {
+        } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
             inputIdentifier.setError("Enter Valid Staff Number");
             inputIdentifier.requestFocus();
             return false;

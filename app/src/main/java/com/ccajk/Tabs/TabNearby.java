@@ -248,7 +248,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     }
 
     private int getZoomValue(int seekBarValue) {
-        return 13 - seekBarValue;
+        return 12 - seekBarValue;
     }
 
     @Override

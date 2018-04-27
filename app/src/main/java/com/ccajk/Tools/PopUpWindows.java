@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
 import com.ccajk.Activity.TrackGrievanceResultActivity;
-import com.ccajk.Activity.TrackRtiResultActivity;
 import com.ccajk.R;
 
 
@@ -178,42 +177,6 @@ public class PopUpWindows {
                     context.startActivity(intent);
                 }
                 editText.requestFocus();
-            }
-        });
-
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        popupWindow.update();
-        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
-    }
-
-    public void showRtiTrackWindow(final Activity context, View parent) {
-        final EditText editText1, editText2;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_rti, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
-        editText1 = popupView.findViewById(R.id.edittext_name);
-        editText2 = popupView.findViewById(R.id.edittext_mobile);
-
-        Button track = popupView.findViewById(R.id.btn_check_status);
-        track.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = editText1.getText().toString().trim();
-                String mobile = editText2.getText().toString();
-                if (name.isEmpty()) {
-                    Toast.makeText(context, "Enter Name", Toast.LENGTH_LONG).show();
-                    editText1.requestFocus();
-                } else if (mobile.length() < 10) {
-                    Toast.makeText(context, "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
-                    editText2.requestFocus();
-                } else {
-                    Intent intent = new Intent(context, TrackRtiResultActivity.class);
-                    intent.putExtra("Key", name.replaceAll("\\s", "-") + "-" + mobile);
-                    context.startActivity(intent);
-                }
-
             }
         });
 

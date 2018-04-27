@@ -15,37 +15,44 @@
             android:layout_marginTop="@dimen/margin_xxlarge"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/layout_radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_large"
-                android:text="Upload Using"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_15" />
+                android:orientation="vertical">
 
-            <RadioGroup
-                android:id="@+id/groupNumberType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_medium">
-
-                <RadioButton
-                    android:id="@+id/radioButtonPensioner"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:text="Pensioner Code" />
+                    android:paddingLeft="@dimen/padding_large"
+                    android:text="Upload Using"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_15" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonHR"
-                    android:layout_width="wrap_content"
+                <RadioGroup
+                    android:id="@+id/groupNumberType"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="HR Number" />
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_medium">
 
-            </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/radioButtonPensioner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="Pensioner Code" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonHR"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="HR Number" />
+
+                </RadioGroup>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

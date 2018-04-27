@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
     RadioGroup radioGroup;
+    LinearLayout linearLayout;
     ProgressDialog progressDialog;
 
     private static final String TAG = "PanAdhaarUpload";
@@ -77,6 +79,7 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void bindViews(View view) {
+        linearLayout = view.findViewById(R.id.layout_radio_group);
         imagePensionerCode = view.findViewById(R.id.image_pcode);
         imageNumber = view.findViewById(R.id.image_number);
         radioGroup = view.findViewById(R.id.groupNumberType);
@@ -92,31 +95,6 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void init() {
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
-
-        imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
-        imageNumber.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioButtonPensioner:
-                        hint = "Pensioner Code";
-                        inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
-                        break;
-                    //TODO
-                    //set place holder format
-                    case R.id.radioButtonHR:
-                        hint = "HR Number";
-                        inputPCode.setFilters(Helper.getInstance().limitInputLength(10));
-                        break;
-                }
-                inputPCode.setText("");
-                inputPCode.setError(null);
-                textInputIdentifier.setHint(hint);
-            }
-        });
-
 
         if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -137,8 +115,33 @@ public class PanAdhaarUploadFragment extends Fragment {
             }});
             textInputNumber.setHint(root + " Number");
         } else {
+            linearLayout.setVisibility(View.GONE);
             textInputNumber.setHint("Applicant's Name");
         }
+
+        imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
+        imageNumber.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonPensioner:
+                        hint = "Pensioner Code";
+                        inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
+                        break;
+                    //TODO
+                    //set place holder format
+                    case R.id.radioButtonHR:
+                        hint = "HR Number";
+                        //inputPCode.setFilters(Helper.getInstance().limitInputLength(10));
+                        break;
+                }
+                inputPCode.setText("");
+                inputPCode.setError(null);
+                textInputIdentifier.setHint(hint);
+            }
+        });
 
         buttonChooseFile.setText("Select " + root + " Image");
         buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
@@ -200,7 +203,7 @@ public class PanAdhaarUploadFragment extends Fragment {
             inputPCode.setError("Enter Valid Pensioner Code");
             inputPCode.requestFocus();
             return false;
-        } else if (pensionerCode.trim().length() < 10 && hint.equals("HR Number")) {
+        } else if (pensionerCode.trim().isEmpty() && hint.equals("HR Number")) {
             inputPCode.setError("Enter Valid HR Code");
             inputPCode.requestFocus();
             return false;
@@ -267,7 +270,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
                 number,
                 null,
-                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE));
+                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
 
         dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -68,12 +68,6 @@
         <activity
             android:name=".Activity.UpdateGrievanceActivity"
             android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".Activity.TrackRtiResultActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".Activity.UpdateRtiActivity"
-            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>
