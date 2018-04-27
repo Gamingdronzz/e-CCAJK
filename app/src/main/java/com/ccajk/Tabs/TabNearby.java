@@ -23,6 +23,7 @@ import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.LocationDataProvider;
 import com.ccajk.Tools.MapsHelper;
 import com.ccajk.Tools.MyLocationManager;
 import com.ccajk.Tools.Preferences;
@@ -85,10 +86,12 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             }
         }
     };
+    String locatorType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
+        locatorType = getArguments().getString("Locator");
         init(view);
         return view;
     }
@@ -111,7 +114,13 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
         locationManager = new MyLocationManager(this, mLocationCallback);
         mapsHelper = new MapsHelper(view.getContext());
-        locationModels = FireBaseHelper.getInstance().getLocationModels(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE));
+        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+            Log.d(TAG, "init: GP");
+            locationModels = LocationDataProvider.getInstance().getGpLocationModelArrayList();
+        } else {
+            Log.d(TAG, "init: Hotspot");
+            locationModels = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
+        }
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
 
         seekBar = view.findViewById(R.id.seekBar);

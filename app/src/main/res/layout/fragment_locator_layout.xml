@@ -13,7 +13,7 @@
         app:tabMode="fixed"
         android:background="@color/colorPrimaryLight"
         app:tabIndicatorColor="@color/colorBlack"
-        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorHeight="4dp"
         app:tabSelectedTextColor="@color/colorBlack"
         app:tabTextColor="@color/colorWhite"
         android:layout_width="match_parent"

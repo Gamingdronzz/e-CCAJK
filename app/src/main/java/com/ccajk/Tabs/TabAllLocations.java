@@ -175,6 +175,7 @@ public class TabAllLocations extends Fragment {
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_name, (ViewGroup) getView(), false);
 
         final AutoCompleteTextView input = viewInflated.findViewById(R.id.input);
+        input.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location,0,0,0);
         ArrayAdapter<String> actAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, locations);
         input.setAdapter(actAdapter);

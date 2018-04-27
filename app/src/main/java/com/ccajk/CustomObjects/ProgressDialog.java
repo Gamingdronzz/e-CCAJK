@@ -15,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,7 +33,7 @@ public class ProgressDialog {
 
     public ProgressDialog(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.progress_dialog_layout, null,false);
+        view = inflater.inflate(R.layout.custom_progress_dialog_layout, null,false);
         init();
     }
 
