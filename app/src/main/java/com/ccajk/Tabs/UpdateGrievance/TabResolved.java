@@ -2,6 +2,7 @@ package com.ccajk.Tabs.UpdateGrievance;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,11 +19,13 @@ import android.widget.ProgressBar;
 
 import com.ccajk.Activity.MainActivity;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Helper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,7 +42,7 @@ public class TabResolved extends Fragment {
 
     final String TAG = "Submitted";
     RecyclerView recyclerView;
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
 
     RecyclerViewAdapterGrievanceUpdate adapter;
     ArrayList<GrievanceModel> grievanceModelArrayList;
@@ -57,21 +60,20 @@ public class TabResolved extends Fragment {
 
     private void bindViews(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_grievances);
-        progressBar  = view.findViewById(R.id.progress_grievances);
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching Resolved Grievances\nPlease Wait..");
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_browser,menu);
+        inflater.inflate(R.menu.menu_browser, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_refresh_link:
-            {
+            case R.id.action_refresh_link: {
                 refresh();
                 break;
             }
@@ -79,8 +81,8 @@ public class TabResolved extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void refresh()
-    {
+    private void refresh() {
+        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -90,18 +92,37 @@ public class TabResolved extends Fragment {
 
             @Override
             public void OnConnectionNotAvailable() {
-
+                progressDialog.dismiss();
+                Helper.getInstance().showAlertDialog(getContext(),
+                        "No Internet Connection\nPlease Turn on Internet",
+                        "Grievance",
+                        "OK");
             }
         });
         connectionUtility.checkConnectionAvailability();
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void init() {
-        grievanceModelArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, (MainActivity)getActivity());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if(grievanceModelArrayList == null)
+        {
+            grievanceModelArrayList = new ArrayList<>();
+        }
+        else
+        {
+            grievanceModelArrayList.clear();
+            adapter.notifyDataSetChanged();
+        }
+        if(adapter == null) {
+            adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, (MainActivity) getActivity());
+        }
+        if(recyclerView.getAdapter() == null)
+        {
+            recyclerView.setAdapter(adapter);
+        }
+        if(recyclerView.getLayoutManager() == null)
+        {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
 
 //        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
 //            @Override
@@ -119,6 +140,7 @@ public class TabResolved extends Fragment {
     }
 
     private void fromFirebase() {
+        progressDialog.show();
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
             @Override
@@ -129,7 +151,7 @@ public class TabResolved extends Fragment {
                             GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
                             Log.d(TAG, "onChildAdded: Model = " + grievanceModel.getDetails());
                             int pos = grievanceModelArrayList.size();
-                            grievanceModelArrayList.add(pos,grievanceModel);
+                            grievanceModelArrayList.add(pos, grievanceModel);
                             adapter.notifyItemInserted(pos);
                         }
                     }
@@ -156,11 +178,12 @@ public class TabResolved extends Fragment {
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(GONE);
-//                if (grievanceModelArrayList.size() == 0)
-//                    tvNoData.setText("ALL GRIEVANCES RESOLVED");
-//                else
-//                    tvNoData.setText("");
+                progressDialog.dismiss();
+                if (grievanceModelArrayList.size() == 0)
+                    Helper.getInstance().showAlertDialog(getContext(),
+                            "No Resolved Grievances",
+                            "Grievance",
+                            "OK");
             }
 
             @Override
@@ -186,11 +209,11 @@ public class TabResolved extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode)
-        {
-            case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE:
-            {
-                refresh();
+        switch (requestCode) {
+            case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE: {
+                if(resultCode == Activity.RESULT_OK) {
+                    refresh();
+                }
             }
         }
     }

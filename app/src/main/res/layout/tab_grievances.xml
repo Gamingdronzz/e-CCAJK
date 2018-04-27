@@ -7,14 +7,15 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_grievances"
+        android:background="@color/colorOffWhite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
-    <ProgressBar
-        android:id="@+id/progress_grievances"
-        android:layout_width="@dimen/padding_xxlarge"
-        android:layout_height="@dimen/padding_xxlarge"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/margin_medium" />
+    <!--<ProgressBar-->
+        <!--android:id="@+id/progress_grievances"-->
+        <!--android:layout_width="@dimen/padding_xxlarge"-->
+        <!--android:layout_height="@dimen/padding_xxlarge"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--android:layout_margin="@dimen/margin_medium" />-->
 
 </FrameLayout>

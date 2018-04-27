@@ -3,6 +3,7 @@ package com.ccajk.Tabs.UpdateGrievance;
 
 import android.annotation.SuppressLint;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -45,7 +46,7 @@ public class TabSubmitted extends Fragment {
 
     final String TAG = "Submitted";
     RecyclerView recyclerView;
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
 
     RecyclerViewAdapterGrievanceUpdate adapter;
     ArrayList<GrievanceModel> grievanceModelArrayList;
@@ -64,11 +65,11 @@ public class TabSubmitted extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_browser,menu);
+        inflater.inflate(R.menu.menu_browser, menu);
     }
 
-    private void refresh()
-    {
+    private void refresh() {
+        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -78,19 +79,23 @@ public class TabSubmitted extends Fragment {
 
             @Override
             public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
+                Helper.getInstance().showAlertDialog(getContext(),
+                        "No Internet Connection\nPlease Turn on Internet",
+                        "Grievance",
+                        "OK");
 
             }
         });
         connectionUtility.checkConnectionAvailability();
-        progressBar.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_refresh_link:
-            {
+            case R.id.action_refresh_link: {
                 refresh();
                 break;
             }
@@ -100,17 +105,30 @@ public class TabSubmitted extends Fragment {
 
     private void bindViews(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_grievances);
-        progressBar  = view.findViewById(R.id.progress_grievances);
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching currently submitted Grievances\nPlease Wait..");
     }
 
     private void init() {
-        grievanceModelArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList,(MainActivity)getActivity());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (grievanceModelArrayList == null) {
+            grievanceModelArrayList = new ArrayList<>();
+        } else {
+            grievanceModelArrayList.clear();
+            adapter.notifyDataSetChanged();
+        }
+
+        if (adapter == null) {
+            adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, (MainActivity) getActivity());
+        }
+        if (recyclerView.getAdapter() == null) {
+            recyclerView.setAdapter(adapter);
+        }
+        if (recyclerView.getLayoutManager() == null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
     }
 
     private void fromFirebase() {
+        progressDialog.show();
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
             @Override
@@ -121,8 +139,9 @@ public class TabSubmitted extends Fragment {
                             GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
                             Log.d(TAG, "onChildAdded: Model = " + grievanceModel.getDetails());
                             int pos = grievanceModelArrayList.size();
-                            grievanceModelArrayList.add(pos,grievanceModel);
+                            grievanceModelArrayList.add(pos, grievanceModel);
                             adapter.notifyItemInserted(pos);
+
                         }
                     }
                     Log.d(TAG, "onChildAdded: List" + grievanceModelArrayList);
@@ -148,11 +167,12 @@ public class TabSubmitted extends Fragment {
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(GONE);
-//                if (grievanceModelArrayList.size() == 0)
-//                    tvNoData.setText("ALL GRIEVANCES RESOLVED");
-//                else
-//                    tvNoData.setText("");
+                progressDialog.dismiss();
+                if (grievanceModelArrayList.size() == 0)
+                    Helper.getInstance().showAlertDialog(getContext(),
+                            "No New submitted grievances",
+                            "Grievance",
+                            "OK");
             }
 
             @Override
@@ -178,23 +198,11 @@ public class TabSubmitted extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode)
-        {
-            case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE:
-            {
-//                String pensionerCode = data.getStringExtra("pensionerCode");
-//                long grievanceStatus = data.getLongExtra("pensionerGrievanceStatus",-1);
-//                for (int i= 0; i < grievanceModelArrayList.size();i++) {
-//                    GrievanceModel grievanceModel = grievanceModelArrayList.get(i);
-//
-//                    if(grievanceModel.getPensionerIdentifier().equals(pensionerCode) && grievanceModel.getGrievanceStatus()== grievanceStatus)
-//                    {
-//                        Log.d(TAG, "onActivityResult: removing submitted " + i);
-//                        grievanceModelArrayList.remove(i);
-//                        adapter.notifyItemRemoved(i);
-//                    }
-//                }
-                refresh();
+        switch (requestCode) {
+            case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE: {
+                if (resultCode == Activity.RESULT_OK) {
+                    refresh();
+                }
             }
         }
     }

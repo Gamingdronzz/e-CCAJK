@@ -100,7 +100,7 @@ public class UpdateGrievanceFragment extends Fragment {
     private void setTabLayout() {
 
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-        viewPager.setOffscreenPageLimit(0);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
 

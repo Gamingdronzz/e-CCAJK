@@ -2,6 +2,7 @@ package com.ccajk.Tabs.UpdateGrievance;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,11 +19,13 @@ import android.widget.ProgressBar;
 
 import com.ccajk.Activity.MainActivity;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
+import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
+import com.ccajk.Tools.Helper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import javax.xml.transform.Result;
 
 import static android.view.View.GONE;
 
@@ -39,7 +44,7 @@ public class TabUnderProcess extends Fragment {
 
     final String TAG = "Submitted";
     RecyclerView recyclerView;
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
 
     RecyclerViewAdapterGrievanceUpdate adapter;
     ArrayList<GrievanceModel> grievanceModelArrayList;
@@ -57,6 +62,7 @@ public class TabUnderProcess extends Fragment {
 
     private void refresh()
     {
+        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -66,11 +72,14 @@ public class TabUnderProcess extends Fragment {
 
             @Override
             public void OnConnectionNotAvailable() {
-
+                progressDialog.dismiss();
+                Helper.getInstance().showAlertDialog(getContext(),
+                        "No Internet Connection\nPlease Turn on Internet",
+                        "Grievance",
+                        "OK");
             }
         });
         connectionUtility.checkConnectionAvailability();
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -94,17 +103,35 @@ public class TabUnderProcess extends Fragment {
 
     private void bindViews(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_grievances);
-        progressBar  = view.findViewById(R.id.progress_grievances);
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching Grievances currently bring processed\nPlease Wait..");
     }
 
     private void init() {
-        grievanceModelArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList,(MainActivity)getActivity());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if(grievanceModelArrayList == null)
+        {
+            grievanceModelArrayList = new ArrayList<>();
+        }
+        else
+        {
+            grievanceModelArrayList.clear();
+            adapter.notifyDataSetChanged();
+        }
+        if(adapter == null) {
+            adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, (MainActivity) getActivity());
+        }
+
+        if(recyclerView.getAdapter() == null)
+        {
+            recyclerView.setAdapter(adapter);
+        }
+        if(recyclerView.getLayoutManager() == null)
+        {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
     }
 
     private void fromFirebase() {
+        progressDialog.show();
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
             @Override
@@ -142,11 +169,12 @@ public class TabUnderProcess extends Fragment {
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(GONE);
-//                if (grievanceModelArrayList.size() == 0)
-//                    tvNoData.setText("ALL GRIEVANCES RESOLVED");
-//                else
-//                    tvNoData.setText("");
+                progressDialog.dismiss();
+                if (grievanceModelArrayList.size() == 0)
+                Helper.getInstance().showAlertDialog(getContext(),
+                        "No grievance is being processed currently",
+                        "Grievance",
+                        "OK");
             }
 
             @Override
@@ -176,17 +204,8 @@ public class TabUnderProcess extends Fragment {
         {
             case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE:
             {
-                String pensionerCode = data.getStringExtra("pensionerCode");
-                long grievanceStatus = data.getLongExtra("pensionerGrievanceStatus",-1);
-                for (int i= 0; i < grievanceModelArrayList.size();i++) {
-                    GrievanceModel grievanceModel = grievanceModelArrayList.get(i);
-
-                    if(grievanceModel.getPensionerIdentifier().equals(pensionerCode) && grievanceModel.getGrievanceStatus()== grievanceStatus)
-                    {
-                        Log.d(TAG, "onActivityResult: removing under " + i);
-                        grievanceModelArrayList.remove(i);
-                        adapter.notifyItemRemoved(i);
-                    }
+                if(resultCode == Activity.RESULT_OK) {
+                   refresh();
                 }
             }
         }

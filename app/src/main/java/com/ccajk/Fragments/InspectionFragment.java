@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,8 +64,9 @@ public class InspectionFragment extends Fragment {
     boolean isCurrentLocationFound = false;
     Double latitude, longitude;
 
-    TextView textChoose, textLocation, textViewSelectedFileCount;
+    TextView textViewAddImage, textLocation, textViewSelectedFileCount;
     Button upload;
+    ImageButton removeAll;
     ImagePicker imagePicker;
     ProgressDialog progressDialog;
     View.OnClickListener getCoordinatesListener;
@@ -98,9 +100,20 @@ public class InspectionFragment extends Fragment {
                 getLocationCoordinates();
             }
         };
-        textChoose = view.findViewById(R.id.textview_add_inspection_image);
-        textChoose.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
-        textChoose.setOnClickListener(new View.OnClickListener() {
+        textViewAddImage = view.findViewById(R.id.textview_add_inspection_image);
+        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_add_circle_black_24dp,0, 0, 0);
+        removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
+        removeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+                    return;
+                }
+                selectedImageModelArrayList.clear();
+                adapterSelectedImages.notifyDataSetChanged();
+            }
+        });
+        textViewAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showImageChooser();
