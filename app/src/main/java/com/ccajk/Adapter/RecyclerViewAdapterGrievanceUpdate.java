@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ccajk.Models.Grievance;
+import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 
@@ -19,12 +19,12 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder> {
 
-    ArrayList<Grievance> grievanceArrayList;
+    ArrayList<GrievanceModel> grievanceModelArrayList;
     Context context;
 
 
-    public RecyclerViewAdapterGrievanceUpdate(ArrayList<Grievance> grievanceArrayList, Context context) {
-        this.grievanceArrayList = grievanceArrayList;
+    public RecyclerViewAdapterGrievanceUpdate(ArrayList<GrievanceModel> grievanceModelArrayList, Context context) {
+        this.grievanceModelArrayList = grievanceModelArrayList;
         this.context = context;
     }
 
@@ -36,18 +36,18 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
     @Override
     public void onBindViewHolder(GrievanaceUpdateViewHolder holder, int position) {
-        Grievance grievance = grievanceArrayList.get(position);
+        GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
 
-        holder.pensioner.setText(grievance.getPensionerIdentifier());
+        holder.pensioner.setText(grievanceModel.getPensionerIdentifier());
         holder.grievanceType.setText(
-                Helper.getInstance().getGrievanceString(grievance.getGrievanceType())
-                        + "\n(" + Helper.getInstance().getGrievanceCategory(grievance.getGrievanceType())
+                Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType())
+                        + "\n(" + Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType())
                         + ")");
     }
 
     @Override
     public int getItemCount() {
-        return grievanceArrayList.size();
+        return grievanceModelArrayList.size();
     }
 
     public static class GrievanaceUpdateViewHolder extends RecyclerView.ViewHolder {

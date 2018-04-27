@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by hp on 11-04-2018.
  */
 
-public class Grievance {
+public class GrievanceModel {
     String pensionerIdentifier;
     String mobile;
     long grievanceType;
@@ -20,7 +20,7 @@ public class Grievance {
     long grievanceStatus;
     Date date;
 
-    public Grievance(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
+    public GrievanceModel(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
         this.pensionerIdentifier = pensionerIdentifier;
         this.mobile = mobile;
         this.grievanceType = grievanceType;
@@ -33,7 +33,7 @@ public class Grievance {
         this.date = date;
     }
 
-    public Grievance() {
+    public GrievanceModel() {
 
     }
 

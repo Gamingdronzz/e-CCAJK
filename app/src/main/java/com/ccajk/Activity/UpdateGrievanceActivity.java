@@ -20,7 +20,7 @@ import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.ClickListener;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Listeners.RecyclerViewTouchListeners;
-import com.ccajk.Models.Grievance;
+import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
@@ -47,10 +47,10 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
 
     RecyclerViewAdapterGrievanceUpdate adapter;
-    ArrayList<Grievance> grievanceArrayList;
+    ArrayList<GrievanceModel> grievanceModelArrayList;
 
     String TAG = "Update";
-    Grievance grievance;
+    GrievanceModel grievanceModel;
     boolean recyclerVisible = true;
 
     @Override
@@ -111,7 +111,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                 new RecyclerViewTouchListeners(this, recyclerView, new ClickListener() {
                     @Override
                     public void onClick(View view, int position) {
-                        grievance = grievanceArrayList.get(position);
+                        grievanceModel = grievanceModelArrayList.get(position);
                         setRecyclerVisiblity(false);
                         setLayoutData();
                     }
@@ -132,8 +132,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
             }
         });
 
-        grievanceArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceArrayList, this);
+        grievanceModelArrayList = new ArrayList<>();
+        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -141,10 +141,10 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     }
 
     private void setLayoutData() {
-        tvPensioner.setText(grievance.getPensionerIdentifier());
-        tvGrievance.setText(Helper.getInstance().getGrievanceString(grievance.getGrievanceType()));
-        tvDate.setText(Helper.getInstance().formatDate(grievance.getDate()));
-        statusSpinner.setSelection((int) grievance.getGrievanceStatus());
+        tvPensioner.setText(grievanceModel.getPensionerIdentifier());
+        tvGrievance.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
+        tvDate.setText(Helper.getInstance().formatDate(grievanceModel.getDate()));
+        statusSpinner.setSelection((int) grievanceModel.getGrievanceStatus());
         editTextMessage.setText("");
     }
 
@@ -174,13 +174,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() != null) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         if (Integer.valueOf(ds.child("grievanceStatus").getValue().toString()) < 2) {
-                            Grievance grievance = ds.getValue(Grievance.class);
-                            Log.d(TAG, "onChildAdded: " + grievance.getDetails());
-                            grievanceArrayList.add(grievance);
+                            GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
+                            Log.d(TAG, "onChildAdded: " + grievanceModel.getDetails());
+                            grievanceModelArrayList.add(grievanceModel);
                             adapter.notifyDataSetChanged();
                         }
                     }
-                    Log.d(TAG, "onChildAdded: " + grievanceArrayList);
+                    Log.d(TAG, "onChildAdded: " + grievanceModelArrayList);
                 }
             }
 
@@ -204,7 +204,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
-                if (grievanceArrayList.size() == 0)
+                if (grievanceModelArrayList.size() == 0)
                     tvNoData.setText("ALL GRIEVANCES RESOLVED");
                 else
                     tvNoData.setText("");
@@ -225,8 +225,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         hashMap.put("message", message);
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievance.getPensionerIdentifier())
-                .child(String.valueOf(grievance.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())
+                .child(String.valueOf(grievanceModel.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 progressDialog.dismiss();

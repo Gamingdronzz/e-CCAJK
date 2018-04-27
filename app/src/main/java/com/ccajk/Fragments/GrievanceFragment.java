@@ -31,7 +31,7 @@ import com.ccajk.Adapter.GrievancAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.CustomTextWatcher.MaskedEditText;
 import com.ccajk.CustomObjects.ProgressDialog;
-import com.ccajk.Models.Grievance;
+import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
@@ -69,7 +69,7 @@ public class GrievanceFragment extends Fragment {
     TextView textViewSelectedFileCount;
 
     ArrayList<GrievanceType> list = new ArrayList<>();
-    String TAG = "Grievance";
+    String TAG = "GrievanceModel";
     String hint = "Pensioner Code";
     String code, type;
     int count;
@@ -319,7 +319,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
         final DatabaseReference dbref;
         dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
 
-        final Grievance grievance = new Grievance(
+        final GrievanceModel grievanceModel = new GrievanceModel(
                 code,
                 inputMobile.getText().toString(),
                 grievanceType.getId(),
@@ -330,14 +330,14 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
                 Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE),
                 0, new Date());
 
-        dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievance).addOnCompleteListener(new OnCompleteListener<Void>() {
+        dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievanceModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     if (selectedImageModelArrayList.size() != 0) {
                         uploadFile();
                     } else {
-                        Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "GrievanceModel Submitted", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 } else {
@@ -376,7 +376,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
                         Log.d(TAG, "onSuccess: " + downloadUrl);
                         progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
                         if (count == selectedImageModelArrayList.size()) {
-                            Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "GrievanceModel Submitted", Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                         }
                     }

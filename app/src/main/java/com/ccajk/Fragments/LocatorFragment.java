@@ -1,7 +1,6 @@
 package com.ccajk.Fragments;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,7 +49,7 @@ public class LocatorFragment extends Fragment {
     ProgressDialog progressDialog;
     public ArrayList<LocationModel> locationModelArrayList = new ArrayList<>();
 
-    public static int int_items = 2;
+    public final static int INT_LOCATOR_TAB_ITEMS = 2;
     String TAG = "locator";
     TextView textViewLocatorInfo;
     String locatorType;
@@ -226,7 +225,7 @@ public class LocatorFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return int_items;
+            return INT_LOCATOR_TAB_ITEMS;
         }
 
         @Override

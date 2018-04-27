@@ -1,37 +1,68 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_margin="@dimen/margin_medium"
-    tools:context="com.ccajk.Fragments.UpdateFragment">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/update_grievance_status"
+    <LinearLayout
+        android:id="@+id/linear_layout_update_grievance_fragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:textColor="@color/colorWhite"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_20"
-        android:layout_margin="@dimen/margin_medium"
-        android:background="@drawable/custom_button"
-        android:text="Update\nGrievance Status"
-        android:layout_weight=".4"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/update_rti_status"
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_update_grievances"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryLight"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorBlack"
+            app:tabIndicatorHeight="4dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/colorBlack"
+            app:tabTextColor="@color/colorWhite"></android.support.design.widget.TabLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_update_grievance"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_no_internet_update_grievance_fragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:textColor="@color/colorWhite"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_20"
-        android:layout_margin="@dimen/margin_medium"
-        android:background="@drawable/custom_button"
-        android:text="Update\nRTI Status"
-        android:layout_weight=".4"/>
+        android:layout_height="match_parent"
+        android:background="#88000000"
+        android:clickable="true">
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/image_btn_refresh_update_grievance_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/custom_button_rounded"
+            android:padding="@dimen/padding_large"
+            android:tint="@color/colorOffWhite"
+            app:srcCompat="@drawable/ic_refresh_black_24dp" />
+
+        <TextView
+            android:id="@+id/textview_locator_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorOffWhite"
+            android:padding="@dimen/padding_large"
+            android:text="Grievances cannot be updated without Internet Connection."
+            android:textAlignment="center"
+            android:textSize="@dimen/text_20" />
+    </RelativeLayout>
+
+
+</FrameLayout>
+
+

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
 import com.ccajk.CustomObjects.ProgressDialog;
-import com.ccajk.Models.Grievance;
+import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -25,7 +25,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     RecyclerView recyclerViewTrack;
     TextView textView;
-    ArrayList<Grievance> grievanceArrayList;
+    ArrayList<GrievanceModel> grievanceModelArrayList;
     RecyclerViewAdapterTracking adapterTracking;
     DatabaseReference dbref;
     String pensionerCode;
@@ -46,9 +46,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
        dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("Code");
         Log.d(TAG, "init: pcode = " + pensionerCode);
-        grievanceArrayList = new ArrayList<>();
+        grievanceModelArrayList = new ArrayList<>();
         getGrievances();
-        adapterTracking = new RecyclerViewAdapterTracking(grievanceArrayList);
+        adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
         textView = findViewById(R.id.textview_tracking);
         recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -62,8 +62,8 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        int size = grievanceArrayList.size();
-                        grievanceArrayList.add(size,dataSnapshot.getValue(Grievance.class));
+                        int size = grievanceModelArrayList.size();
+                        grievanceModelArrayList.add(size,dataSnapshot.getValue(GrievanceModel.class));
                         adapterTracking.notifyItemInserted(size);
                     }
 
@@ -92,7 +92,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         progressDialog.dismiss();
-                        if (grievanceArrayList.size() == 0)
+                        if (grievanceModelArrayList.size() == 0)
                             textView.setText("No Grievances Registered");
                     }
 

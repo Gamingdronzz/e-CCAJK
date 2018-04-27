@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ccajk.Models.Grievance;
+import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
 
@@ -18,10 +18,10 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerViewAdapterTracking.TrackViewHolder> {
 
-    ArrayList<Grievance> grievances;
+    ArrayList<GrievanceModel> grievanceModels;
 
-    public RecyclerViewAdapterTracking(ArrayList<Grievance> grievances) {
-        this.grievances = grievances;
+    public RecyclerViewAdapterTracking(ArrayList<GrievanceModel> grievanceModels) {
+        this.grievanceModels = grievanceModels;
     }
 
     @Override
@@ -32,25 +32,25 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(TrackViewHolder holder, int position) {
-        Grievance grievance = grievances.get(position);
+        GrievanceModel grievanceModel = grievanceModels.get(position);
 
-        holder.grievanceType.setText(Helper.getInstance().getGrievanceCategory(grievance.getGrievanceType()));
+        holder.grievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
         holder.grievanceApplied.setText("");
-        holder.grievanceApplied.setText(Helper.getInstance().getGrievanceString((int) grievance.getGrievanceType()));
+        holder.grievanceApplied.setText(Helper.getInstance().getGrievanceString((int) grievanceModel.getGrievanceType()));
         holder.date.setText("");
-        holder.date.setText(Helper.getInstance().formatDate(grievance.getDate()));
+        holder.date.setText(Helper.getInstance().formatDate(grievanceModel.getDate()));
         holder.status.setText("");
-        holder.status.setText(Helper.getInstance().getStatusList()[(int)grievance.getGrievanceStatus()]);
+        holder.status.setText(Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]);
         holder.message.setText("");
-        if (grievance.getMessage() != null)
-            holder.message.setText(grievance.getMessage());
+        if (grievanceModel.getMessage() != null)
+            holder.message.setText(grievanceModel.getMessage());
         else
             holder.message.setText("Nil");
     }
 
     @Override
     public int getItemCount() {
-        return grievances.size();
+        return grievanceModels.size();
     }
 
     public class TrackViewHolder extends RecyclerView.ViewHolder {

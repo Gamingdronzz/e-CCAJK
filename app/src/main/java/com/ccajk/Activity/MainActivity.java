@@ -200,13 +200,13 @@ public class MainActivity extends AppCompatActivity
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_PENSION);
-                ShowFragment("Pension Grievance Registeration", fragment, bundle);
+                ShowFragment("Pension GrievanceModel Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
-                ShowFragment("GPF Grievance Registeration", fragment, bundle);
+                ShowFragment("GPF GrievanceModel Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_rti:
                 fragment = new RTIFragment();
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("CCA JK", new LoginFragment(), null);
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
                 break;
-            case R.id.navmenu_update:
+            case R.id.navmenu_update_grievances:
                 ShowFragment("Update Information", new UpdateFragment(), null);
                 break;
             case R.id.navmenu_inspection:
