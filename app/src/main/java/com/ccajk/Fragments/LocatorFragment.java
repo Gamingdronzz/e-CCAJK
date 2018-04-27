@@ -22,8 +22,8 @@ import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.R;
-import com.ccajk.Tabs.TabAllLocations;
-import com.ccajk.Tabs.TabNearby;
+import com.ccajk.Tabs.Locator.TabAllLocations;
+import com.ccajk.Tabs.Locator.TabNearby;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -73,7 +73,29 @@ public class LocatorFragment extends Fragment {
         locatorType = getArguments().getString("Locator");
         bindViews(view);
         manageNoLocationLayout(true);
-        getLocations();
+        if(locatorType.equals(FireBaseHelper.getInstance().ROOT_GP))
+        {
+            if(LocationDataProvider.getInstance().getGpLocationModelArrayList() == null)
+            {
+                getLocations();
+            }
+            else{
+                locationModelArrayList = LocationDataProvider.getInstance().getGpLocationModelArrayList();
+                setTabLayout();
+            }
+        }
+        else
+        {
+            if(LocationDataProvider.getInstance().getHotspotLocationModelArrayList() == null)
+            {
+                getLocations();
+            }
+            else{
+                locationModelArrayList = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
+                setTabLayout();
+            }
+        }
+
         return view;
     }
 
@@ -187,16 +209,14 @@ public class LocatorFragment extends Fragment {
 
     private void setTabLayout() {
         Log.d(TAG, "setTabLayout: " + locatorType + " - " + locationModelArrayList.size());
-
+        manageNoLocationLayout(false);
         if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
             LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
         } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
             LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
         }
-
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
-        manageNoLocationLayout(false);
         progressDialog.dismiss();
 
     }

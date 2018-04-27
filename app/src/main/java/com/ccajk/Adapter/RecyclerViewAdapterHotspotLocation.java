@@ -1,6 +1,7 @@
 package com.ccajk.Adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,9 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
         String stateId = locationArray.get(position).getStateID();
 
         //holder.textViewLocationName.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
-        holder.textViewLocationName.setText(location+"\n"+district);
+
+        holder.textViewLocationName.setText(Html.fromHtml("<u>"+location+"</u>"));
+        holder.textViewDistrict.setText(district);
 
     }
 
@@ -48,11 +51,17 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewLocationName;
+        public TextView textViewLocationName;
+        public  TextView textViewDistrict;
+        private TextView textViewGetDirections;
+
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.textViewLocationName = itemView.findViewById(R.id.textview_location_name);
+            textViewDistrict = itemView.findViewById(R.id.textview_location_district);
+            textViewGetDirections = itemView.findViewById(R.id.textview_get_directions);
+            textViewGetDirections.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_directions_black_24dp,0,0);
             //this.textViewDistrict = itemView.findViewById(R.id.state);
         }
     }

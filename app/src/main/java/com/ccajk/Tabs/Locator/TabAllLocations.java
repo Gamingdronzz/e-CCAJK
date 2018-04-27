@@ -1,4 +1,4 @@
-package com.ccajk.Tabs;
+package com.ccajk.Tabs.Locator;
 
 
 import android.content.DialogInterface;
@@ -111,7 +111,7 @@ public class TabAllLocations extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerview_locations);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         recyclerView.getItemAnimator().setAddDuration(1000);
 
 

@@ -118,7 +118,8 @@
                 android:layout_toRightOf="@+id/grievance_status_text"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_spinner"
-                android:textAlignment="viewStart"
+                android:gravity="center_horizontal"
+                android:textAlignment="gravity"
                 android:layout_marginLeft="@dimen/padding_large"
                 android:id="@+id/spinner_update_status">
 

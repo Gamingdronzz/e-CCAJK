@@ -18,12 +18,14 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:backgroundTint="@color/colorOffWhite"
         android:fitsSystemWindows="true"
         app:elevation="@dimen/elevation_large"
+        android:background="@color/colorWhite"
         app:headerLayout="@layout/nav_header_home"
-        app:itemIconTint="@color/colorBlack"
+        app:itemBackground="@drawable/item_background"
+        app:itemIconTint="@color/colorWhite"
         app:itemTextColor="@color/colorBlack"
-        app:menu="@menu/activity_home_drawer" />
+        app:menu="@menu/activity_home_drawer"
+        tools:ignore="RtlCompat" />
 
 </com.ccajk.CustomObjects.CardDrawerLayout>

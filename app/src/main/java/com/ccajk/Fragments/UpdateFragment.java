@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,11 @@ import android.widget.RelativeLayout;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
-import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
-import com.ccajk.Tabs.TabAllLocations;
-import com.ccajk.Tabs.TabNearby;
 import com.ccajk.Tabs.UpdateGrievance.TabResolved;
 import com.ccajk.Tabs.UpdateGrievance.TabSubmitted;
 import com.ccajk.Tabs.UpdateGrievance.TabUnderProcess;
 import com.ccajk.Tools.ConnectionUtility;
-import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 
 

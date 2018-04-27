@@ -1,4 +1,4 @@
-package com.ccajk.Tabs;
+package com.ccajk.Tabs.Locator;
 
 
 import android.annotation.SuppressLint;
