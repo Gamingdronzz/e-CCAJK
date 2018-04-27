@@ -2,11 +2,9 @@ package com.ccajk.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.ccajk.Models.RtiModel;
-import com.ccajk.R;
 
 import java.util.ArrayList;
 
@@ -35,8 +33,8 @@ public class RecyclerViewAdapterRTIUpdate extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder holder, int position) {
 
         RtiModel rtiModel = rtiModelArrayList.get(position);
-        holder.pensioner.setText(rtiModel.getName());
-        holder.grievanceType.setText(rtiModel.getMobile());
+        holder.textViewPensionerCode.setText(rtiModel.getName());
+        holder.textViewGrievanceType.setText(rtiModel.getMobile());
     }
 
     @Override

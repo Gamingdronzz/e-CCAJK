@@ -1,12 +1,14 @@
 package com.ccajk.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +25,10 @@ import com.ccajk.Tabs.UpdateGrievance.TabUnderProcess;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.Helper;
 
+import java.util.List;
 
-public class UpdateFragment extends Fragment {
+
+public class UpdateGrievanceFragment extends Fragment {
     public TabLayout tabLayout;
     public ViewPager viewPager;
     ProgressDialog progressDialog;
@@ -32,10 +36,10 @@ public class UpdateFragment extends Fragment {
     public final static int INT_UPDATE_GRIEVANCE_TAB_ITEMS = 3;
     RelativeLayout relativeLayoutNoLocation;
     LinearLayout linearLayoutTab;
-    String TAG = "UpdateFragment";
+    String TAG = "UpdateGrievanceFragment";
     ImageButton imageButtonRefresh;
 
-    public UpdateFragment() {
+    public UpdateGrievanceFragment() {
 
     }
 
@@ -80,7 +84,7 @@ public class UpdateFragment extends Fragment {
                 showNoInternetConnectionLayout(true);
             }
         });
-        connectionUtility.CheckConnectionAvailability();
+        connectionUtility.checkConnectionAvailability();
     }
 
     private void showNoInternetConnectionLayout(boolean show) {
@@ -96,6 +100,7 @@ public class UpdateFragment extends Fragment {
     private void setTabLayout() {
 
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+        viewPager.setOffscreenPageLimit(0);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -139,6 +144,17 @@ public class UpdateFragment extends Fragment {
 
             }
             return null;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        List<Fragment> allFragments = getChildFragmentManager().getFragments();
+
+        for (Fragment frag : allFragments) {
+            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            frag.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

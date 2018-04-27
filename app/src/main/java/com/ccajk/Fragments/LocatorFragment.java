@@ -154,7 +154,7 @@ public class LocatorFragment extends Fragment {
 //                        "Cancel");
             }
         });
-        connectionUtility.CheckConnectionAvailability();
+        connectionUtility.checkConnectionAvailability();
 
     }
 

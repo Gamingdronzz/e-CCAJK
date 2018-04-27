@@ -121,9 +121,15 @@
                 android:gravity="center_horizontal"
                 android:textAlignment="gravity"
                 android:layout_marginLeft="@dimen/padding_large"
+                android:visibility="gone"
                 android:id="@+id/spinner_update_status">
-
             </Spinner>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/textview_status_text"/>
 
         </RelativeLayout>
 
@@ -133,6 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/padding_large"
+                android:visibility="gone"
                 android:paddingRight="@dimen/padding_large"
                 android:layout_marginTop="@dimen/margin_large"
             >
@@ -148,12 +155,13 @@
 
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:id="@+id/button_update_grievance"
             android:text="UPDATE"
             android:textSize="@dimen/text_20"
-            android:background="@drawable/custom_button"
+            android:background="@drawable/custom_button_rounded"
             android:textColor="@color/colorWhite"
             android:paddingLeft="@dimen/padding_xxlarge"
             android:paddingRight="@dimen/padding_xxlarge"

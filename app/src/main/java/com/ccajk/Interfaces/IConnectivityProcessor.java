@@ -5,5 +5,5 @@ package com.ccajk.Interfaces;
  */
 
 public interface IConnectivityProcessor {
-    void CheckConnectionAvailability();
+    void checkConnectionAvailability();
 }

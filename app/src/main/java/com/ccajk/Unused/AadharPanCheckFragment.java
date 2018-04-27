@@ -78,7 +78,7 @@ public class AadharPanCheckFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (pcode.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(getContext(), "Please enter a pensioner code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please enter a textViewPensionerCode code", Toast.LENGTH_SHORT).show();
                 } else {
                     check.setVisibility(View.GONE);
                     checkStatus();

@@ -27,7 +27,7 @@ public class ConnectionUtility implements IConnectivityProcessor {
     }
 
     @Override
-    public void CheckConnectionAvailability() {
+    public void checkConnectionAvailability() {
         String customURL = Helper.getInstance().getBaseURL();
         MyTask task = new MyTask();
         task.execute(customURL);

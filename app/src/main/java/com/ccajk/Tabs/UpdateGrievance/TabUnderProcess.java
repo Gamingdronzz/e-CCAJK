@@ -9,13 +9,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.ccajk.Activity.MainActivity;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +51,45 @@ public class TabUnderProcess extends Fragment {
         bindViews(view);
         init();
         fromFirebase();
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    private void refresh()
+    {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                init();
+                fromFirebase();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_browser,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_refresh_link:
+            {
+               refresh();
+               break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void bindViews(View view) {
@@ -55,7 +99,7 @@ public class TabUnderProcess extends Fragment {
 
     private void init() {
         grievanceModelArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, getContext());
+        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList,(MainActivity)getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -128,7 +172,24 @@ public class TabUnderProcess extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode)
+        {
+            case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE:
+            {
+                String pensionerCode = data.getStringExtra("pensionerCode");
+                long grievanceStatus = data.getLongExtra("pensionerGrievanceStatus",-1);
+                for (int i= 0; i < grievanceModelArrayList.size();i++) {
+                    GrievanceModel grievanceModel = grievanceModelArrayList.get(i);
 
+                    if(grievanceModel.getPensionerIdentifier().equals(pensionerCode) && grievanceModel.getGrievanceStatus()== grievanceStatus)
+                    {
+                        Log.d(TAG, "onActivityResult: removing under " + i);
+                        grievanceModelArrayList.remove(i);
+                        adapter.notifyItemRemoved(i);
+                    }
+                }
+            }
+        }
     }
 
 }

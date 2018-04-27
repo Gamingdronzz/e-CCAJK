@@ -2,6 +2,7 @@ package com.ccajk.Tools;
 
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
+import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.Models.State;
@@ -47,6 +48,8 @@ public class FireBaseHelper {
     public final String GRIEVANCE_GPF = "GPF";
 
     private final String TAG = "firebaseHelper";
+
+    public GrievanceModel selectedGrievance;
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     //public final String ROOT_PAN_STATUS = "Pan-Status";
 

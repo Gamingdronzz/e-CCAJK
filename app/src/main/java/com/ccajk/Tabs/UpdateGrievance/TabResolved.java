@@ -9,16 +9,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 
+import com.ccajk.Activity.MainActivity;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
-import com.ccajk.Listeners.ClickListener;
-import com.ccajk.Listeners.RecyclerViewTouchListeners;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -48,6 +51,7 @@ public class TabResolved extends Fragment {
         bindViews(view);
         init();
         fromFirebase();
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -56,9 +60,46 @@ public class TabResolved extends Fragment {
         progressBar  = view.findViewById(R.id.progress_grievances);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_browser,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_refresh_link:
+            {
+                refresh();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void refresh()
+    {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                init();
+                fromFirebase();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private void init() {
         grievanceModelArrayList = new ArrayList<>();
-        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, getContext());
+        adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, (MainActivity)getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -145,7 +186,13 @@ public class TabResolved extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        switch (requestCode)
+        {
+            case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE:
+            {
+                refresh();
+            }
+        }
     }
 
 }

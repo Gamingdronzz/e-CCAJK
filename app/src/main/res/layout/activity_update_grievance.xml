@@ -4,80 +4,148 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLightGray"
     android:animateLayoutChanges="true"
     tools:context="com.ccajk.Activity.UpdateGrievanceActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_grievance"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/recyclerview_grievance"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>-->
 
-    <TextView
-        android:id="@+id/textview_no_data_msg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="@dimen/padding_large"
-        android:textSize="@dimen/text_30" />
+    <!--<TextView-->
+    <!--android:id="@+id/textview_no_data_msg"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:padding="@dimen/padding_large"-->
+    <!--android:textSize="@dimen/text_30" />-->
 
     <LinearLayout
         android:id="@+id/layout_grievance_update"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:orientation="vertical">
 
-        <TextView
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:text="Pensioner:"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:layout_margin="@dimen/margin_medium"
+            android:elevation="@dimen/elevation_large"
+            app:cardCornerRadius="@dimen/corner_radius_medium">
 
-        <TextView
-            android:id="@+id/textview_pensioner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_medium"
+                android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:text="Grievance:"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_medium"
+                    android:text="Pensioner Code"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_15" />
 
-        <TextView
-            android:id="@+id/textview_grievance_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_large"
-            android:paddingRight="@dimen/padding_large"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray"></View>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:text="Date :"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+                <TextView
+                    android:id="@+id/textview_pensioner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_18"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-        <TextView
-            android:id="@+id/textview_date"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:layout_margin="@dimen/margin_medium"
+            android:elevation="@dimen/elevation_large"
+            app:cardCornerRadius="@dimen/corner_radius_medium">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_medium"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_medium"
+                    android:text="Grievance"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_15" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray"></View>
+
+                <TextView
+                    android:id="@+id/textview_grievance_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_large"
+                    android:paddingRight="@dimen/padding_large"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_18"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_medium"
+            android:elevation="@dimen/elevation_large"
+            app:cardCornerRadius="@dimen/corner_radius_medium">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_medium"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:padding="@dimen/padding_medium"
+                    android:text="Grievance Application Date"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_15" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray"></View>
+
+                <TextView
+                    android:id="@+id/textview_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_18"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,8 +154,11 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/text_update_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_vertical"
                 android:gravity="center"
                 android:paddingLeft="@dimen/padding_large"
                 android:text="Update Status:"
@@ -96,9 +167,13 @@
 
             <Spinner
                 android:id="@+id/spinner_status"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/margin_large"
+                android:layout_toRightOf="@id/text_update_status"
+                android:background="@drawable/bg_spinner"
                 android:gravity="center_vertical" />
         </LinearLayout>
 
@@ -111,6 +186,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:paddingLeft="@dimen/padding_large"
                 android:text="Message:"
                 android:textColor="@color/colorBlack"
@@ -120,20 +196,23 @@
                 android:id="@+id/edittext_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/margin_large"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/text_18" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/margin_xlarge"
-            android:background="@drawable/custom_button_rounded"
-            android:text="UPDATE"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_20" />
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/custom_button"
+        android:text="UPDATE"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_20" />
 </RelativeLayout>
