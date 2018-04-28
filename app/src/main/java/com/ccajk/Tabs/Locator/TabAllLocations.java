@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,9 +25,9 @@ import com.ccajk.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.ccajk.Listeners.ClickListener;
 import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
-import com.ccajk.Providers.LocationDataProvider;
 
 import java.util.ArrayList;
 
@@ -130,35 +128,6 @@ public class TabAllLocations extends Fragment {
 
             }
         }));
-//        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-//
-//            GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-//                public boolean onSingleTapUp(MotionEvent e) {
-//                    return true;
-//                }
-//            });
-//
-//            @Override
-//            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-//                View child = rv.findChildViewUnder(e.getX(), e.getY());
-//                if (child != null && gestureDetector.onTouchEvent(e)) {
-//                    int pos = rv.getChildAdapterPosition(child);
-//                    LocationModel location = stateLocations.get(pos);
-//                    Uri uri = Uri.parse("geo:0,0?q=" + (location.getLatitude() + "," + location.getLongitude() + "(" + Uri.encode(location.getLocationName()) + ")"));
-//                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                    getContext().startActivity(intent);
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-//            }
-//
-//            @Override
-//            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-//            }
-//        });
 
     }
 

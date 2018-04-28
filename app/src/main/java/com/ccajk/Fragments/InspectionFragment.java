@@ -11,13 +11,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -64,7 +66,8 @@ public class InspectionFragment extends Fragment {
     boolean isCurrentLocationFound = false;
     Double latitude, longitude;
 
-    TextView textViewAddImage, textLocation, textViewSelectedFileCount;
+    TextView textViewAddImage, textLocationCoordinates, textViewSelectedFileCount;
+    EditText editTextLocationName;
     Button upload;
     ImageButton removeAll;
     ImagePicker imagePicker;
@@ -100,8 +103,9 @@ public class InspectionFragment extends Fragment {
                 getLocationCoordinates();
             }
         };
+
         textViewAddImage = view.findViewById(R.id.textview_add_inspection_image);
-        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_add_circle_black_24dp,0, 0, 0);
+        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_circle_black_24dp, 0, 0, 0);
         removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         removeAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,9 +124,10 @@ public class InspectionFragment extends Fragment {
             }
         });
 
-        textLocation = view.findViewById(R.id.textview_current_location);
-        textLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_location_black_24dp, 0, R.drawable.ic_refresh_black_24dp, 0);
-        textLocation.setOnClickListener(getCoordinatesListener);
+        editTextLocationName = view.findViewById(R.id.edittext_current_location_name);
+        textLocationCoordinates = view.findViewById(R.id.textview_current_location_coordinates);
+        textLocationCoordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_location_black_24dp, 0, R.drawable.ic_refresh_black_24dp, 0);
+        textLocationCoordinates.setOnClickListener(getCoordinatesListener);
         textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
 
 
@@ -134,14 +139,14 @@ public class InspectionFragment extends Fragment {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isCurrentLocationFound) {
-                    if (selectedImageModelArrayList.size() != 0)
-                        uploadInspectionData();
-                    else
-                        Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
-                } else {
+                if (editTextLocationName.getText().toString().trim().isEmpty())
+                    editTextLocationName.setError("Location Name Required");
+                else if (!isCurrentLocationFound)
                     Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
-                }
+                else if (selectedImageModelArrayList.size() == 0)
+                    Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
+                else
+                    uploadInspectionData();
             }
         });
 
@@ -167,7 +172,8 @@ public class InspectionFragment extends Fragment {
         selectedImageModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        //recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -238,7 +244,7 @@ public class InspectionFragment extends Fragment {
         myLocationManager.cleanUp();
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
-        textLocation.setText(location.getLatitude() + " , " + location.getLongitude());
+        textLocationCoordinates.setText(location.getLatitude() + " , " + location.getLongitude());
         progressDialog.dismiss();
 
     }
@@ -282,18 +288,21 @@ public class InspectionFragment extends Fragment {
     }
 
     private void uploadInspectionData() {
+
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yy");
+        String locName = editTextLocationName.getText().toString().trim();
+        final String key = locName.replaceAll("\\s", "-") + "-" + dt.format(new Date());
+
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
 
         staffId = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STAFF_ID);
-        InspectionModel inspectionModel = new InspectionModel(staffId, null, latitude, longitude, new Date());
+        InspectionModel inspectionModel = new InspectionModel(staffId, locName, latitude, longitude, new Date());
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference
                 .child(FireBaseHelper.getInstance().ROOT_INSPECTION)
-                .child(staffId)
-                .push();
-        final String key = dbref.getKey();
-        inspectionModel.setKey(key);
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .child(key);
         dbref.setValue(inspectionModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -313,7 +322,7 @@ public class InspectionFragment extends Fragment {
                     true,
                     count++,
                     FireBaseHelper.getInstance().ROOT_INSPECTION,
-                    staffId,
+                    Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                     key);
 
             if (uploadTask != null) {

@@ -2,6 +2,7 @@ package com.ccajk.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -56,6 +57,7 @@ public class LocatorFragment extends Fragment {
     RelativeLayout relativeLayoutNoLocation;
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
+
     public LocatorFragment() {
 
     }
@@ -64,34 +66,25 @@ public class LocatorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locator_layout, container, false);
-        if (savedInstanceState == null) {
-            Log.d(TAG, "onCreateView: first time");
-        } else {
-            Log.d(TAG, "onCreateView: from restart");
-        }
 
         locatorType = getArguments().getString("Locator");
         bindViews(view);
-        manageNoLocationLayout(true);
-        if(locatorType.equals(FireBaseHelper.getInstance().ROOT_GP))
-        {
-            if(LocationDataProvider.getInstance().getGpLocationModelArrayList() == null)
-            {
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)
+            manageNoLocationLayout(false);
+        else
+            manageNoLocationLayout(true);
+
+        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+            if (LocationDataProvider.getInstance().getGpLocationModelArrayList() == null) {
                 getLocations();
-            }
-            else{
-                locationModelArrayList = LocationDataProvider.getInstance().getGpLocationModelArrayList();
+            } else {
                 setTabLayout();
             }
-        }
-        else
-        {
-            if(LocationDataProvider.getInstance().getHotspotLocationModelArrayList() == null)
-            {
+        } else {
+            if (LocationDataProvider.getInstance().getHotspotLocationModelArrayList() == null) {
                 getLocations();
-            }
-            else{
-                locationModelArrayList = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
+            } else {
                 setTabLayout();
             }
         }
@@ -118,13 +111,10 @@ public class LocatorFragment extends Fragment {
     }
 
     private void manageNoLocationLayout(boolean show) {
-        if (show)
-        {
+        if (show) {
             relativeLayoutNoLocation.setVisibility(View.VISIBLE);
             linearLayoutTab.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             relativeLayoutNoLocation.setVisibility(View.GONE);
             linearLayoutTab.setVisibility(View.VISIBLE);
         }
@@ -140,18 +130,8 @@ public class LocatorFragment extends Fragment {
 
             @Override
             public void OnConnectionNotAvailable() {
+                manageNoLocationLayout(true);
                 progressDialog.dismiss();
-//                Helper.getInstance().showAlertDialog(
-//                        getContext(),
-//                        "Internet Connection Not Available\nTo make full use of " + locatorType + " locator, please turn on your internet connection\n\nPress Ok after you turn on the location\nPress Cancel to go back",
-//                        locatorType + " Locator", "OK",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                getLocations();
-//                            }
-//                        },
-//                        "Cancel");
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -159,7 +139,6 @@ public class LocatorFragment extends Fragment {
     }
 
     private void fetchLocations() {
-        progressDialog.show();
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
@@ -194,31 +173,35 @@ public class LocatorFragment extends Fragment {
 
                     }
                 });
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                setTabLayout();
-            }
+        databaseReference.child(locatorType)
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        setData();
+                        setTabLayout();
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 
     private void setTabLayout() {
-        Log.d(TAG, "setTabLayout: " + locatorType + " - " + locationModelArrayList.size());
         manageNoLocationLayout(false);
+        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
+        progressDialog.dismiss();
+    }
+
+    public void setData() {
         if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
             LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
         } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
             LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
         }
-        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-        tabLayout.setupWithViewPager(viewPager);
-        progressDialog.dismiss();
-
     }
 
     class MyAdapter extends FragmentPagerAdapter {

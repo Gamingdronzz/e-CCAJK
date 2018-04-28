@@ -57,6 +57,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
     private int seekBarValue;
     private final String TAG = "Nearby";
+    String locatorType;
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
 
     TextView kilometres;
@@ -85,7 +86,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             }
         }
     };
-    String locatorType;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

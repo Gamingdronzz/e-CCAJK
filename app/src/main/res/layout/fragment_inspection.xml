@@ -10,7 +10,7 @@
         android:id="@+id/textview_add_inspection_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/textview_current_location"
+        android:layout_above="@id/edittext_current_location_name"
         android:clickable="true"
         android:drawableTint="@color/colorAccent"
         android:gravity="center_horizontal"
@@ -22,43 +22,55 @@
         android:id="@+id/textview_selected_image_count_inspection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selec"
-        android:layout_centerVertical="true"
         android:layout_above="@+id/textview_add_inspection_image"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/padding_medium"
+        android:text="Selec"
         android:textSize="@dimen/text_15"
-        android:textStyle="bold"
-        android:padding="@dimen/padding_medium" />
+        android:textStyle="bold" />
 
     <ImageButton
         android:id="@+id/imageButton_removeAllFiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
         android:layout_above="@+id/textview_add_inspection_image"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:background="@color/colorAccent"
         android:padding="@dimen/padding_small"
-        app:srcCompat="@drawable/ic_close_black_24dp"
-        android:layout_alignParentEnd="true"/>
+        app:srcCompat="@drawable/ic_close_black_24dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_selected_images_inspection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_above="@id/textview_selected_image_count_inspection"
+        android:layout_alignParentTop="true"
         android:background="@color/colorOffWhite">
 
     </android.support.v7.widget.RecyclerView>
 
+    <EditText
+        android:id="@+id/edittext_current_location_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textview_current_location_coordinates"
+        android:gravity="center_vertical"
+        android:hint="Location Name"
+        android:padding="@dimen/padding_medium"
+        android:textAlignment="textStart"
+        android:textStyle="bold"
+        tools:ignore="RtlCompat" />
+
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/textview_current_location"
+        android:id="@+id/textview_current_location_coordinates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_upload"
         android:layout_marginBottom="@dimen/margin_medium"
         android:gravity="center_vertical"
         android:padding="@dimen/padding_medium"
-        android:text="Current Location - N/A"
+        android:text="Location Coordinates- N/A"
         android:textAlignment="textStart"
         tools:ignore="RtlCompat" />
 

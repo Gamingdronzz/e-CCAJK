@@ -9,7 +9,7 @@ import java.util.Date;
 public class InspectionModel {
 
     String staffId;
-    String key;
+    String locationName;
     double latitude;
     double longitute;
     Date date;
@@ -22,12 +22,12 @@ public class InspectionModel {
         this.staffId = staffId;
     }
 
-    public String getKey() {
-        return key;
+    public String getLocationName() {
+        return locationName;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
     public double getLatitude() {
@@ -58,10 +58,10 @@ public class InspectionModel {
 
     }
 
-    public InspectionModel(String staffId, String key, double latitude, double longitute, Date date) {
+    public InspectionModel(String staffId, String locationName, double latitude, double longitute, Date date) {
 
         this.staffId = staffId;
-        this.key = key;
+        this.locationName = locationName;
         this.latitude = latitude;
         this.longitute = longitute;
         this.date = date;
