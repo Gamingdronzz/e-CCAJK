@@ -39,10 +39,12 @@ public class Helper {
 
     public ArrayList<LocationModel> allLocationModels;
 
-    public String getBaseURL()
+    public String getConnectionCheckURL()
     {
         return "https://www.google.co.in/";
     }
+
+    public String getBaseURL(){ return "https://cca-jk.appspot.com/";}
 
     public Helper() {
         _instance = this;

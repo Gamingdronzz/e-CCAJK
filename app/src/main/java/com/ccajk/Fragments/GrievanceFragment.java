@@ -8,8 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Patterns;
@@ -20,16 +19,14 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ccajk.Adapter.GrievancAdapter;
+import com.ccajk.Adapter.GrievanceAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
-import com.ccajk.CustomObjects.CustomTextWatcher.MaskedEditText;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Models.GrievanceType;
@@ -54,15 +51,15 @@ import java.util.Date;
 
 
 public class GrievanceFragment extends Fragment {
-    AutoCompleteTextView inputIdentifier, inputEmail;
-//    AutoCompleteTextView  inputMobile;
-    MaskedEditText inputMobile;
+    AutoCompleteTextView autoCompleteTextViewPensionerCode, inputEmail;
+    AutoCompleteTextView inputMobile;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     EditText inputDetails;
     Spinner inputType, inputSubmittedBy;
     Button submit, buttonChooseFile;
     //ImageButton buttonRemove;
+    TextView removeAll;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
@@ -75,11 +72,11 @@ public class GrievanceFragment extends Fragment {
     int count;
     GrievanceType grievanceType;
 
-    ImageView imagePensionerCode;
-    ImageView imageMobile, imageEmail;
-    ImageView imageDetails;
-    ImageView imageType;
-    ImageView imageSubmittedBy;
+//    ImageView imagePensionerCode;
+//    ImageView imageMobile, imageEmail;
+//    ImageView imageDetails;
+//    ImageView imageType;
+//    ImageView imageSubmittedBy;
     //ImageView imageviewSelectedImage;
 
     RecyclerView recyclerViewSelectedImages;
@@ -100,23 +97,23 @@ public class GrievanceFragment extends Fragment {
         type = bundle.getString("Type");
         bindViews(view);
         init();
-Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","Click this button to attach images to your grievance\nYou can select multiple files as well");
+        //Helper.getInstance().showGuide(getContext(), buttonChooseFile, "Add File Button", "Click this button to attach images to your grievance\nYou can select multiple files as well");
         return view;
     }
 
     private void bindViews(View view) {
-        imagePensionerCode = view.findViewById(R.id.image_pcode);
-        imageMobile = view.findViewById(R.id.image_mobile);
-        imageEmail = view.findViewById(R.id.image_email);
-        imageDetails = view.findViewById(R.id.image_details);
-        imageType = view.findViewById(R.id.image_type);
-        imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
+        //imagePensionerCode = view.findViewById(R.id.image_pcode);
+        //imageMobile = view.findViewById(R.id.image_mobile);
+        //imageEmail = view.findViewById(R.id.image_email);
+        //imageDetails = view.findViewById(R.id.image_details);
+        //imageType = view.findViewById(R.id.image_type);
+        //imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
         //imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
 
         radioLayout = view.findViewById(R.id.layout_radio);
-        textInputIdentifier = view.findViewById(R.id.text_input_code);
-        inputIdentifier = view.findViewById(R.id.autocomplete_pcode);
+        textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
+        autoCompleteTextViewPensionerCode = view.findViewById(R.id.autocomplete_pcode);
         inputMobile = view.findViewById(R.id.autocomplete_mobile);
         inputEmail = view.findViewById(R.id.autocomplete_email);
         inputType = view.findViewById(R.id.spinner_type);
@@ -128,19 +125,28 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
 
         radioGroup = view.findViewById(R.id.groupNumberType);
         buttonChooseFile = view.findViewById(R.id.button_attach);
-        //buttonRemove = view.findViewById(R.id.btn_remove);
+        removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         submit = view.findViewById(R.id.button_submit);
     }
 
     private void init() {
 
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
-        imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
-        imageMobile.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_phone_android_black_24dp));
-        imageEmail.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_email_black_24dp));
-        imageDetails.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_details_black_24dp));
-        imageType.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_sentiment_dissatisfied_black_24dp));
-        imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
+        //imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
+
+//        imageMobile.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_phone_android_black_24dp));
+//        imageEmail.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_email_black_24dp));
+//        imageDetails.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_details_black_24dp));
+//        imageType.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_sentiment_dissatisfied_black_24dp));
+//        imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
+
+        autoCompleteTextViewPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);;
+        inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);;
+        inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
+        removeAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
+
+        textViewSelectedFileCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
 
         if (type.equals(FireBaseHelper.getInstance().GRIEVANCE_PENSION)) {
             list = Helper.getInstance().getPensionGrievanceTypelist();
@@ -150,7 +156,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
             list = Helper.getInstance().getGPFGrievanceTypelist();
         }
 
-        GrievancAdapter adapter = new GrievancAdapter(getContext(), list);
+        GrievanceAdapter adapter = new GrievanceAdapter(getContext(), list);
         inputType.setAdapter(adapter);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -159,25 +165,25 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
                 switch (checkedId) {
                     case R.id.radioButtonPensioner:
                         hint = "Pensioner Code";
-                        inputIdentifier.setFilters(Helper.getInstance().limitInputLength(15));
+                        autoCompleteTextViewPensionerCode.setFilters(Helper.getInstance().limitInputLength(15));
                         break;
                     //TODO
                     //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
-                        //inputIdentifier.setFilters(Helper.getInstance().limitInputLength(10));
+                        //autoCompleteTextViewPensionerCode.setFilters(Helper.getInstance().limitInputLength(10));
                         break;
                     case R.id.radioButtonStaff:
                         hint = "Staff Number";
-                        //inputIdentifier.setFilters(Helper.getInstance().limitInputLength(12));
+                        //autoCompleteTextViewPensionerCode.setFilters(Helper.getInstance().limitInputLength(12));
                 }
-                inputIdentifier.setText("");
-                inputIdentifier.setError(null);
+                autoCompleteTextViewPensionerCode.setText("");
+                autoCompleteTextViewPensionerCode.setError(null);
                 textInputIdentifier.setHint(hint);
             }
         });
 
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, Helper.getInstance().submittedByList(type));
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.simple_spinner, Helper.getInstance().submittedByList(type));
         inputSubmittedBy.setAdapter(arrayAdapter1);
 
 
@@ -201,7 +207,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
         selectedImageModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
 
     }
 
@@ -248,27 +254,27 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
     }
 
     public void setSelectedFileCount(int count) {
-        textViewSelectedFileCount.setText("Selected Files = " + count);
+        textViewSelectedFileCount.setText(" = " + count);
     }
 
     private boolean checkInput() {
-        code = inputIdentifier.getText().toString();
+        code = autoCompleteTextViewPensionerCode.getText().toString();
         String email = inputEmail.getText().toString();
         grievanceType = (GrievanceType) inputType.getSelectedItem();
 
         if (code.length() < 15 && hint.equals("Pensioner Code")) {
-            inputIdentifier.setError("Enter Valid Pensioner Code");
-            inputIdentifier.requestFocus();
+            autoCompleteTextViewPensionerCode.setError("Enter Valid Pensioner Code");
+            autoCompleteTextViewPensionerCode.requestFocus();
             return false;
         } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
-            inputIdentifier.setError("Enter Valid HR Number");
-            inputIdentifier.requestFocus();
+            autoCompleteTextViewPensionerCode.setError("Enter Valid HR Number");
+            autoCompleteTextViewPensionerCode.requestFocus();
             return false;
         } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
-            inputIdentifier.setError("Enter Valid Staff Number");
-            inputIdentifier.requestFocus();
+            autoCompleteTextViewPensionerCode.setError("Enter Valid Staff Number");
+            autoCompleteTextViewPensionerCode.requestFocus();
             return false;
-        } else if (inputMobile.getUnmaskedText().toString().length() < 10) {
+        } else if (inputMobile.getText().toString().length() < 10) {
             inputMobile.setError("Enter Valid Mobile No");
             inputMobile.requestFocus();
             return false;
@@ -302,7 +308,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
         TextView ppoNo = v.findViewById(R.id.textview_ppo_no);
         ppoNo.setText(hint + ": " + code);
         TextView mobNo = v.findViewById(R.id.textview_mobile_no);
-        mobNo.setText(mobNo.getText() + " " + inputMobile.getUnmaskedText());
+        mobNo.setText(mobNo.getText() + " " + inputMobile.getText());
         TextView email = v.findViewById(R.id.textview_email);
         email.setText(email.getText() + " " + inputEmail.getText());
         TextView grievance = v.findViewById(R.id.textview_grievance_type);
@@ -327,7 +333,7 @@ Helper.getInstance().showGuide(getContext(),buttonChooseFile,"Add File Button","
                 inputSubmittedBy.getSelectedItem().toString(),
                 inputEmail.getText().toString(),
                 null,
-                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE),
+                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                 0, new Date());
 
         dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievanceModel).addOnCompleteListener(new OnCompleteListener<Void>() {

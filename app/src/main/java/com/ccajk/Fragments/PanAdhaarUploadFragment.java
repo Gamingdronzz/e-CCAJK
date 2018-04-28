@@ -83,7 +83,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         imagePensionerCode = view.findViewById(R.id.image_pcode);
         imageNumber = view.findViewById(R.id.image_number);
         radioGroup = view.findViewById(R.id.groupNumberType);
-        textInputIdentifier = view.findViewById(R.id.text_input_code);
+        textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
         textInputNumber = view.findViewById(R.id.text_number);
         inputPCode = view.findViewById(R.id.autocomplete_pcode);
         inputNumber = view.findViewById(R.id.autocomplete_number);

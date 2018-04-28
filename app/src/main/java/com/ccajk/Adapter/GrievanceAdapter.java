@@ -16,11 +16,11 @@ import java.util.ArrayList;
  * Created by hp on 16-03-2018.
  */
 
-public class GrievancAdapter extends BaseAdapter {
+public class GrievanceAdapter extends BaseAdapter {
     Context context;
     ArrayList<GrievanceType> types;
 
-    public GrievancAdapter(Context context, ArrayList<GrievanceType> types) {
+    public GrievanceAdapter(Context context, ArrayList<GrievanceType> types) {
         this.context = context;
         this.types = types;
     }

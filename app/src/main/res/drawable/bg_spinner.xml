@@ -6,9 +6,12 @@
             <solid android:color="@color/colorOffWhite" />
             <corners android:radius="@dimen/corner_radius_xlarge" />
             <stroke android:color="@color/colorAccent"
-                android:width="2dp">
-
+                android:width="1dp">
             </stroke>
+            <padding android:left="@dimen/padding_medium"></padding>
+            <padding android:right="@dimen/padding_medium"></padding>
+            <padding android:top="@dimen/padding_medium"></padding>
+            <padding android:bottom="@dimen/padding_medium"></padding>
         </shape>
     </item>
     <item

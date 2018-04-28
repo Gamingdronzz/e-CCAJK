@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_large"
     android:animateLayoutChanges="true"
@@ -17,8 +17,9 @@
 
         <ImageView
             android:id="@+id/imageview_selected_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="108dp"
+            android:layout_height="192dp"
+            android:src="@color/colorAccentLight"
             android:adjustViewBounds="true" />
         <TextView
             android:layout_width="match_parent"
@@ -31,7 +32,7 @@
             android:textAlignment="center"
             android:textStyle="bold"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_25"/>
+            android:textSize="40sp"/>
 
     </FrameLayout>
 
@@ -40,8 +41,9 @@
         android:layout_width="match_parent"
         android:background="@color/colorPrimaryLight"
         android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
         android:textColor="@color/colorBlack"
-        android:textSize="@dimen/text_12"
+        android:textSize="@dimen/text_15"
         android:textAlignment="center"
         android:textStyle="bold" />
 
