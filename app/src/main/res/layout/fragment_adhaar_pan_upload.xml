@@ -88,7 +88,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_xxlarge"
+                android:layout_marginTop="@dimen/margin_large"
                 android:orientation="horizontal"
                 android:padding="@dimen/padding_medium">
 
@@ -114,32 +114,19 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/textview_filename"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_large"
-                android:orientation="horizontal">
+                android:layout_marginTop="@dimen/margin_medium"
+                android:background="@color/colorPrimaryLight"
+                android:padding="@dimen/padding_small"
+                android:text="NO FILE SELECTED"
+                android:textAlignment="center"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_15" />
 
-                <Button
-                    android:id="@+id/button_attach"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/custom_button_rounded"
-                    android:drawableTint="@color/colorPrimary"
-                    android:paddingLeft="@dimen/padding_medium"
-                    android:paddingRight="@dimen/padding_medium"
-                    android:textColor="@color/colorWhite" />
-
-
-                <TextView
-                    android:id="@+id/textview_selected_file_count_grievance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/text_15" />
-            </LinearLayout>
 
             <ImageView
                 android:id="@+id/imageview_selected_image"
@@ -152,6 +139,20 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/button_attach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_upload"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:background="@drawable/custom_button_rounded"
+        android:drawableTint="@color/colorPrimary"
+        android:text="Add File"
+        android:textColor="@color/colorWhite" />
 
     <Button
         android:id="@+id/button_upload"

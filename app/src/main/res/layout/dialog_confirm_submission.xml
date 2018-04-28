@@ -10,6 +10,17 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:padding="@dimen/padding_large"
+            android:text="PLEASE CONFIRM YOUR INPUT"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_20"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/textview_ppo_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

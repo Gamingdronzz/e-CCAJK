@@ -48,7 +48,6 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -61,7 +60,7 @@ import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment {
 
     private static final String TAG = "Inspection";
-    String staffId, date;
+    String staffId;
     int count;
     boolean isCurrentLocationFound = false;
     Double latitude, longitude;
@@ -289,9 +288,10 @@ public class InspectionFragment extends Fragment {
 
     private void uploadInspectionData() {
 
-        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yy");
+        Date date = new Date();
         String locName = editTextLocationName.getText().toString().trim();
-        final String key = locName.replaceAll("\\s", "-") + "-" + dt.format(new Date());
+        final String key = locName.replaceAll("\\s", "-") + "-" +
+                Helper.getInstance().formatDate(date, "dd-MM-yy");
 
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();

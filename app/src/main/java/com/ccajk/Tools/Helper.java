@@ -294,8 +294,8 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
-    public String formatDate(Date date) {
-        SimpleDateFormat dt = new SimpleDateFormat("MMM d, yyyy");
+    public String formatDate(Date date , String format) {
+        SimpleDateFormat dt = new SimpleDateFormat(format);
         return dt.format(date);
     }
 

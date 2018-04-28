@@ -6,7 +6,6 @@ import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.Models.State;
-import com.ccajk.Providers.DummyLocationProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,7 +42,6 @@ public class FireBaseHelper {
     public final String ROOT_RTI = "RTI";
 
 
-
     public final String GRIEVANCE_PENSION = "Pension";
     public final String GRIEVANCE_GPF = "GPF";
 
@@ -59,7 +57,7 @@ public class FireBaseHelper {
         _instance = this;
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
-        statelist = getStatelist();
+        //statelist = getStatelist();
     }
 
     public static FireBaseHelper getInstance() {
@@ -84,12 +82,6 @@ public class FireBaseHelper {
         return uploadTask;
     }
 
-    public ArrayList<LocationModel> getLocationModels(String stateId) {
-        DummyLocationProvider dummyLocationProvider = new DummyLocationProvider();
-        dummyLocationProvider.storeLocations("jnk");
-        return dummyLocationProvider.getLocations();
-    }
-
     public ArrayList<Contact> getContactsList(String stateId) {
         ArrayList<Contact> contactArrayList = new ArrayList<>();
         contactArrayList.add(new ContactBuilder().setName("Sh. Rajnish Kumar Jenaw ").setDesignation("CCA").setEmail("ccajk@nic.in").setOfficeContact("2477280").setMobileContact("9419120080").setStateId(stateId).createContact());
@@ -111,7 +103,7 @@ public class FireBaseHelper {
         return contactArrayList;
     }
 
-    public ArrayList<State> getStatelist() {
+    /*public ArrayList<State> getStatelist() {
         statelist = new ArrayList<>();
         statelist.add(new State("anp", "Andhra Pradesh"));
         statelist.add(new State("jnk", "Jammu and Kashmir"));
@@ -126,7 +118,7 @@ public class FireBaseHelper {
                 return s.getName();
         }
         return null;
-    }
+    }*/
 
 
 }

@@ -87,7 +87,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         textInputNumber = view.findViewById(R.id.text_number);
         inputPCode = view.findViewById(R.id.autocomplete_pcode);
         inputNumber = view.findViewById(R.id.autocomplete_number);
-        textViewFileName = view.findViewById(R.id.textview_selected_file_count_grievance);
+        textViewFileName = view.findViewById(R.id.textview_filename);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
         buttonChooseFile = view.findViewById(R.id.button_attach);
         buttonUpload = view.findViewById(R.id.button_upload);
@@ -143,7 +143,6 @@ public class PanAdhaarUploadFragment extends Fragment {
             }
         });
 
-        buttonChooseFile.setText("Select " + root + " Image");
         buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,7 +226,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         //if no file selected
         else if (imageModel == null) {
             textViewFileName.setError("");
-            textViewFileName.setText("Select a file");
+            textViewFileName.setText("NO FILE SELECTED");
             return false;
         }
         return true;

@@ -2,8 +2,6 @@ package com.ccajk.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -18,19 +16,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ccajk.Activity.UpdateGrievanceActivity;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -75,7 +68,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
         holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
         holder.textViewPensionerMobile.setText(grievanceModel.getMobile());
-        holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate()));
+        holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
         if (grievanceModel.isExpanded()) {
@@ -243,9 +236,8 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 //                }
 //            });
             Intent intent = new Intent(appCompatActivity, UpdateGrievanceActivity.class);
-           FireBaseHelper.getInstance().selectedGrievance = grievanceModel;
-
-            appCompatActivity.startActivityForResult(intent,REQUEST_UPDATE);
+            FireBaseHelper.getInstance().selectedGrievance = grievanceModel;
+            appCompatActivity.startActivityForResult(intent, REQUEST_UPDATE);
         }
     }
 

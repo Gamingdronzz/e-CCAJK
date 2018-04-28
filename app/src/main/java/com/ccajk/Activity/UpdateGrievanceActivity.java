@@ -21,7 +21,6 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApiNotAvailableException;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
@@ -95,7 +94,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     private void setLayoutData() {
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
         textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
-        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate()));
+        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(),"MMM d, yyyy"));
         statusSpinner.setSelection((int) grievanceModel.getGrievanceStatus());
         editTextMessage.setText("");
     }

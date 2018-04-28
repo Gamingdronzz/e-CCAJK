@@ -114,12 +114,10 @@ public class MainActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
 
-        try
-        {
+        try {
 
             ProviderInstaller.installIfNeeded(getApplicationContext());
-        }
-        catch (GooglePlayServicesNotAvailableException e) {
+        } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
@@ -199,13 +197,13 @@ public class MainActivity extends AppCompatActivity
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_PENSION);
-                ShowFragment("Pension GrievanceModel Registeration", fragment, bundle);
+                ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
                 fragment = new GrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
-                ShowFragment("GPF GrievanceModel Registeration", fragment, bundle);
+                ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
@@ -251,14 +249,14 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_gp_locator:
                 bundle = new Bundle();
                 bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_GP);
-                ShowFragment("GP Locations", new LocatorFragment(), bundle);
+                ShowFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
                 ShowFragment("CCA JK", new LoginFragment(), null);
                 PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
                 break;
             case R.id.navmenu_update_grievances:
-                ShowFragment("Update Information", new UpdateGrievanceFragment(), null);
+                ShowFragment("Update Grievance Status", new UpdateGrievanceFragment(), null);
                 break;
             case R.id.navmenu_inspection:
                 ShowFragment("Inspection", new InspectionFragment(), null);
