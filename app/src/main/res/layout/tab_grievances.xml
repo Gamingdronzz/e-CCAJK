@@ -7,15 +7,26 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_grievances"
-        android:background="@color/colorOffWhite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:background="@color/colorOffWhite"></android.support.v7.widget.RecyclerView>
 
-    <!--<ProgressBar-->
-        <!--android:id="@+id/progress_grievances"-->
-        <!--android:layout_width="@dimen/padding_xxlarge"-->
-        <!--android:layout_height="@dimen/padding_xxlarge"-->
-        <!--android:layout_gravity="bottom|right"-->
-        <!--android:layout_margin="@dimen/margin_medium" />-->
+    <RelativeLayout
+        android:id="@+id/layout_empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000">
+
+        <TextView
+            android:id="@+id/textview_info_tab_grievances"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorWhite"
+            android:padding="@dimen/padding_large"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_20" />
+
+    </RelativeLayout>
 
 </FrameLayout>

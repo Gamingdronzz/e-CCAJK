@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.ccajk.Activity.UpdateGrievanceActivity;
 import com.ccajk.Models.GrievanceModel;
+import com.ccajk.Providers.GrievanceDataProvider;
 import com.ccajk.R;
-import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 
 import java.util.ArrayList;
@@ -236,7 +236,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 //                }
 //            });
             Intent intent = new Intent(appCompatActivity, UpdateGrievanceActivity.class);
-            FireBaseHelper.getInstance().selectedGrievance = grievanceModel;
+            GrievanceDataProvider.getInstance().selectedGrievance = grievanceModel;
             appCompatActivity.startActivityForResult(intent, REQUEST_UPDATE);
         }
     }

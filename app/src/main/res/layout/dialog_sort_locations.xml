@@ -39,7 +39,7 @@
                 android:text="Name" />
 
             <RadioButton
-                android:id="@+id/rBState"
+                android:id="@+id/rBDistrict"
                 android:padding="@dimen/padding_large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

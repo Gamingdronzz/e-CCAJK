@@ -310,7 +310,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                         Log.v(TAG, "Resolution denied");
                         Helper.getInstance().showAlertDialog(
                                 getContext(),
-                                "Location not turned on! Hotspot Locator will not show nearby locations without location access.",
+                                "LOCATION OFF!\nUnable to get nearby locations without location access.",
                                 "CCA JK",
                                 "OK");
                         break;

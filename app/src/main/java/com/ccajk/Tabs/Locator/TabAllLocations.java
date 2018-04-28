@@ -32,8 +32,6 @@ import com.ccajk.Tools.FireBaseHelper;
 import java.util.ArrayList;
 
 
-
-
 //Our class extending fragment
 public class TabAllLocations extends Fragment {
 
@@ -109,7 +107,7 @@ public class TabAllLocations extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerview_locations);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recyclerView.getItemAnimator().setAddDuration(1000);
 
 
@@ -131,26 +129,24 @@ public class TabAllLocations extends Fragment {
 
     }
 
-
-
-    private void ShowSearchByNameDialog() {
-
-        //radioGroup.clearCheck();
+    private void ShowSortDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_name, (ViewGroup) getView(), false);
-
-        final AutoCompleteTextView input = viewInflated.findViewById(R.id.input);
-        input.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location,0,0,0);
-        ArrayAdapter<String> actAdapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, locations);
-        input.setAdapter(actAdapter);
-
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_sort_locations, (ViewGroup) getView(), false);
+        final RadioGroup radioGroupSort = viewInflated.findViewById(R.id.radio_group_sort);
         builder.setView(viewInflated);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String name = input.getText().toString();
-                FilterLocationsByName(name);
+                if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBName) {
+                    LocationDataProvider.getInstance().sortByName(stateLocations);
+                    //adapter.notifyDataSetChanged();
+                }
+                if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBDistrict) {
+                    LocationDataProvider.getInstance().sortByDistrict(stateLocations);
+                    //adapter.notifyDataSetChanged();
+                }
+                adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
+                recyclerView.setAdapter(adapter);
                 dialog.dismiss();
             }
         });
@@ -163,17 +159,24 @@ public class TabAllLocations extends Fragment {
         builder.show();
     }
 
-    private void ShowSortDialog() {
+    private void ShowSearchByNameDialog() {
+
+        //radioGroup.clearCheck();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_sort_locations, (ViewGroup) getView(), false);
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_name, (ViewGroup) getView(), false);
 
-
+        final AutoCompleteTextView input = viewInflated.findViewById(R.id.input);
+        input.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
+        ArrayAdapter<String> actAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, locations);
+        input.setAdapter(actAdapter);
 
         builder.setView(viewInflated);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                String name = input.getText().toString();
+                FilterLocationsByName(name);
                 dialog.dismiss();
             }
         });
@@ -201,7 +204,43 @@ public class TabAllLocations extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    /*private void ShowSearchByStateDialog() {
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        // Check for the rotation
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this.getContext(), "LANDSCAPE", Toast.LENGTH_SHORT).show();
+            setupGridLayout(true);
+
+        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(this.getContext(), "PORTRAIT", Toast.LENGTH_SHORT).show();
+            /*if (isTab) {
+                setupGridLayout(true);
+            } else {
+                setupGridLayout(false);
+            }*/
+        }
+    }
+
+    private void setupGridLayout(boolean multiColumn) {
+        if (multiColumn) {
+            GridLayoutManager manager = new GridLayoutManager(this.getContext(), 2);
+           /* manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+
+                }
+            });*/
+            recyclerView.setLayoutManager(manager);
+        } else {
+            GridLayoutManager manager = new GridLayoutManager(this.getContext(), 1);
+            recyclerView.setLayoutManager(manager);
+        }
+    }
+
+}
+
+/*private void ShowSearchByStateDialog() {
         radioGroup.clearCheck();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         final View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_state, (ViewGroup) getView(), false);
@@ -274,41 +313,3 @@ public class TabAllLocations extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 */
-
-    @Override
-    public void onConfigurationChanged(Configuration config) {
-        super.onConfigurationChanged(config);
-        // Check for the rotation
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this.getContext(), "LANDSCAPE", Toast.LENGTH_SHORT).show();
-            setupGridLayout(true);
-
-        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this.getContext(), "PORTRAIT", Toast.LENGTH_SHORT).show();
-            /*if (isTab) {
-                setupGridLayout(true);
-            } else {
-                setupGridLayout(false);
-            }*/
-        }
-    }
-
-
-    private void setupGridLayout(boolean multiColumn) {
-        if (multiColumn) {
-            GridLayoutManager manager = new GridLayoutManager(this.getContext(), 2);
-           /* manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-
-                }
-            });*/
-            recyclerView.setLayoutManager(manager);
-        } else {
-            GridLayoutManager manager = new GridLayoutManager(this.getContext(), 1);
-            recyclerView.setLayoutManager(manager);
-        }
-    }
-
-
-}

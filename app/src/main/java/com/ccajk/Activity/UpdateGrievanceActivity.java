@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.GrievanceModel;
+import com.ccajk.Providers.GrievanceDataProvider;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
@@ -27,38 +28,30 @@ import java.util.HashMap;
 
 public class UpdateGrievanceActivity extends AppCompatActivity {
 
-//    RecyclerView recyclerView;
-//    LinearLayout linearLayout;
     TextView textViewPensionerCode, textViewGrievanceString, textViewDateOfApplication;
     Spinner statusSpinner;
     EditText editTextMessage;
     Button update;
     ProgressDialog progressDialog;
 
-//    RecyclerViewAdapterGrievanceUpdate adapter;
-//    ArrayList<GrievanceModel> grievanceModelArrayList;
-
     String TAG = "Update";
     GrievanceModel grievanceModel;
     Intent resultIntent;
-    //boolean recyclerVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
 
-        grievanceModel = FireBaseHelper.getInstance().selectedGrievance;
+        grievanceModel = GrievanceDataProvider.getInstance().selectedGrievance;
         bindViews();
         init();
         setLayoutData();
-        resultIntent =  new Intent();
+        resultIntent = new Intent();
         resultIntent.putExtra("pensionerCode", grievanceModel.getPensionerIdentifier());
-        resultIntent.putExtra("pensionerGrievanceStatus", grievanceModel.getGrievanceStatus());
+        resultIntent.putExtra("status", (int)grievanceModel.getGrievanceStatus());
 
     }
-
-
 
     private void bindViews() {
         textViewPensionerCode = findViewById(R.id.textview_pensioner);
@@ -67,7 +60,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         statusSpinner = findViewById(R.id.spinner_status);
         editTextMessage = findViewById(R.id.edittext_message);
         update = findViewById(R.id.button_update);
-        progressDialog = Helper.getInstance().getProgressWindow(this,"Updating Grievance Details");
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Updating Grievance Details");
     }
 
     private void init() {
@@ -94,13 +87,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     private void setLayoutData() {
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
         textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
-        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(),"MMM d, yyyy"));
+        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         statusSpinner.setSelection((int) grievanceModel.getGrievanceStatus());
         editTextMessage.setText("");
     }
 
 
-    private void updateData(String message, int status) {
+    private void updateData(final String message, final int status) {
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("grievanceStatus", status);
@@ -114,6 +107,11 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 if (task.isSuccessful()) {
                     Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
+
+                    GrievanceDataProvider.getInstance().selectedGrievance.setGrievanceStatus(status);
+                    GrievanceDataProvider.getInstance().selectedGrievance.setMessage(message);
+                    GrievanceDataProvider.getInstance().selectedGrievance.setExpanded(false);
+
                     setResult(Activity.RESULT_OK, resultIntent);
                     finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
                     finish();

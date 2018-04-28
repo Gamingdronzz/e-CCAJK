@@ -34,7 +34,7 @@ public class LocationDataProvider {
 
     public void setHotspotLocationModelArrayList(ArrayList<LocationModel> hotspotLocationModelArrayList) {
         this.hotspotLocationModelArrayList = hotspotLocationModelArrayList;
-        sort(hotspotLocationModelArrayList);
+        sortByName(hotspotLocationModelArrayList);
     }
 
     public ArrayList<LocationModel> getGpLocationModelArrayList() {
@@ -43,15 +43,23 @@ public class LocationDataProvider {
 
     public void setGpLocationModelArrayList(ArrayList<LocationModel> gpLocationModelArrayList) {
         this.gpLocationModelArrayList = gpLocationModelArrayList;
-        sort(gpLocationModelArrayList);
+        sortByName(gpLocationModelArrayList);
     }
 
-
-    private void sort(ArrayList<LocationModel> arrayList) {
+    public void sortByName(ArrayList<LocationModel> arrayList) {
         Collections.sort(arrayList, new Comparator<LocationModel>() {
             @Override
             public int compare(LocationModel o1, LocationModel o2) {
                 return (o1.getLocationName().toLowerCase().compareTo(o2.getLocationName().toLowerCase()));
+            }
+        });
+    }
+
+    public void sortByDistrict(ArrayList<LocationModel> arrayList) {
+        Collections.sort(arrayList, new Comparator<LocationModel>() {
+            @Override
+            public int compare(LocationModel o1, LocationModel o2) {
+                return (o1.getDistrict().toLowerCase().compareTo(o2.getDistrict().toLowerCase()));
             }
         });
     }

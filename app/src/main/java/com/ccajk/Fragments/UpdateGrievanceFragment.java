@@ -18,26 +18,41 @@ import android.widget.RelativeLayout;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
+import com.ccajk.Models.GrievanceModel;
+import com.ccajk.Providers.GrievanceDataProvider;
 import com.ccajk.R;
 import com.ccajk.Tabs.UpdateGrievance.TabResolved;
 import com.ccajk.Tabs.UpdateGrievance.TabSubmitted;
 import com.ccajk.Tabs.UpdateGrievance.TabUnderProcess;
 import com.ccajk.Tools.ConnectionUtility;
+import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class UpdateGrievanceFragment extends Fragment {
+
+    RelativeLayout relativeLayoutNoInternet;
+    LinearLayout linearLayoutTab;
     public TabLayout tabLayout;
     public ViewPager viewPager;
+    ImageButton imageButtonRefresh;
     ProgressDialog progressDialog;
 
     public final static int INT_UPDATE_GRIEVANCE_TAB_ITEMS = 3;
-    RelativeLayout relativeLayoutNoLocation;
-    LinearLayout linearLayoutTab;
+    ArrayList<GrievanceModel> allGrievances;
+    ArrayList<GrievanceModel> submittedGrievances;
+    ArrayList<GrievanceModel> processingGrievances;
+    ArrayList<GrievanceModel> resolvedGrievances;
     String TAG = "UpdateGrievanceFragment";
-    ImageButton imageButtonRefresh;
+
 
     public UpdateGrievanceFragment() {
 
@@ -53,10 +68,20 @@ public class UpdateGrievanceFragment extends Fragment {
         return view;
     }
 
+    private void showNoInternetConnectionLayout(boolean show) {
+        if (show) {
+            relativeLayoutNoInternet.setVisibility(View.VISIBLE);
+            linearLayoutTab.setVisibility(View.GONE);
+        } else {
+            relativeLayoutNoInternet.setVisibility(View.GONE);
+            linearLayoutTab.setVisibility(View.VISIBLE);
+        }
+    }
+
     void bindViews(View view) {
         tabLayout = view.findViewById(R.id.tab_update_grievances);
         viewPager = view.findViewById(R.id.viewpager_update_grievance);
-        relativeLayoutNoLocation = view.findViewById(R.id.layout_no_internet_update_grievance_fragment);
+        relativeLayoutNoInternet = view.findViewById(R.id.layout_no_internet_update_grievance_fragment);
         linearLayoutTab = view.findViewById(R.id.linear_layout_update_grievance_fragment);
         imageButtonRefresh = view.findViewById(R.id.image_btn_refresh_update_grievance_fragment);
         imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
@@ -70,12 +95,21 @@ public class UpdateGrievanceFragment extends Fragment {
 
     private void init() {
         progressDialog.show();
+        checkConnection();
+    }
+
+    private void checkConnection() {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                setTabLayout();
+                if (GrievanceDataProvider.getInstance().getAllGrievanceList() == null) {
+                    progressDialog.setMessage("Getting Grievances");
+                    getData();
+                } else
+                    progressDialog.dismiss();
+                    setTabLayout();
+
                 showNoInternetConnectionLayout(false);
-                progressDialog.dismiss();
             }
 
             @Override
@@ -87,22 +121,71 @@ public class UpdateGrievanceFragment extends Fragment {
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void showNoInternetConnectionLayout(boolean show) {
-        if (show) {
-            relativeLayoutNoLocation.setVisibility(View.VISIBLE);
-            linearLayoutTab.setVisibility(View.GONE);
-        } else {
-            relativeLayoutNoLocation.setVisibility(View.GONE);
-            linearLayoutTab.setVisibility(View.VISIBLE);
-        }
+    private void getData() {
+        allGrievances = new ArrayList<>();
+        submittedGrievances = new ArrayList<>();
+        processingGrievances = new ArrayList<>();
+        resolvedGrievances = new ArrayList<>();
+        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
+                        allGrievances.add(grievanceModel);
+                        if (grievanceModel.getGrievanceStatus() == 0) {
+                            submittedGrievances.add(grievanceModel);
+                        } else if (grievanceModel.getGrievanceStatus() == 1) {
+                            processingGrievances.add(grievanceModel);
+                        } else {
+                            resolvedGrievances.add(grievanceModel);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                GrievanceDataProvider.getInstance().setAllGrievanceList(allGrievances);
+                GrievanceDataProvider.getInstance().setSubmittedGrievanceList(submittedGrievances);
+                GrievanceDataProvider.getInstance().setProcessingGrievanceList(processingGrievances);
+                GrievanceDataProvider.getInstance().setResolvedGrievanceList(resolvedGrievances);
+                setTabLayout();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void setTabLayout() {
-
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
+
 
     class MyAdapter extends FragmentPagerAdapter {
 
