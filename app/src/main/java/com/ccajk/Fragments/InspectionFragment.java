@@ -109,11 +109,9 @@ public class InspectionFragment extends Fragment {
         removeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
-                    return;
-                }
-                selectedImageModelArrayList.clear();
-                adapterSelectedImages.notifyDataSetChanged();
+
+                removeAllSelectedImages();
+
             }
         });
         textViewAddImage.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +173,14 @@ public class InspectionFragment extends Fragment {
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
     }
 
+    private void removeAllSelectedImages()
+    {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+    }
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
         showProgressDialog();

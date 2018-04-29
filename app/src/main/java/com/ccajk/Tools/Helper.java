@@ -5,12 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
@@ -20,6 +25,9 @@ import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
 import com.linchaolong.android.imagepicker.ImagePicker;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +40,7 @@ import java.util.Random;
 
 public class Helper {
     private static Helper _instance;
+    public final String SUCCESS = "success";
 
     public final String Nil = "Nil";
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
@@ -44,7 +53,7 @@ public class Helper {
         return "https://www.google.co.in/";
     }
 
-    public String getBaseURL(){ return "https://cca-jk.appspot.com/";}
+    public String getAPIUrl(){ return "http://jknccdirectorate.com/api/cca/v1/";}
 
     public Helper() {
         _instance = this;
@@ -172,6 +181,89 @@ public class Helper {
                 .show();
     }
 
+    public JSONObject getJson(String input) {
+        try {
+            try {
+                return new JSONObject(input.substring(input.indexOf("{"), input.indexOf("}") + 1));
+            } catch (JSONException jse) {
+                jse.printStackTrace();
+                Log.v("Helper", "Error creating json");
+                return null;
+            }
+        } catch (StringIndexOutOfBoundsException sioobe) {
+            sioobe.printStackTrace();
+            return null;
+        }
+    }
+
+    public byte[] getByteArrayFromBitmap(Bitmap image) {
+        if (image == null) {
+            return null;
+        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public byte[] getByteArrayFromFile(Bitmap image) {
+        if (image == null) {
+            return null;
+        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public Bitmap getBitmapFromString(String value) {
+        byte[] inter = Base64.decode(value, 0);
+        Log.d("Helper", "Byte Array = " + inter.toString());
+        return BitmapFactory.decodeByteArray(inter, 0, inter.length);
+    }
+
+//    public byte[] getByteArrayFromFilePath(String path) {
+//        if (path != null) {
+//
+//            File file = new File(path);
+//            try {
+//                byte[] data = FileUtils.readFileToByteArray(file);//Convert any file, image or video into byte array
+//                Log.v(TAG, "getByteArrayFromFile: " + " File = " + file.getName() + "\nLength = " + data.length + "Array =   " + data.toString());
+//                return data;
+//            } catch (IOException e) {
+//                Log.d(TAG, e.toString());
+//            }
+//
+//
+//        }
+//        return null;
+//    }
+
+    public byte[] getByteArrayFromBitmapFile(String path) {
+        if (path != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            return getByteArrayFromBitmap(bitmap);
+        }
+        return null;
+
+    }
+
+    public Bitmap createBitmapFromByteArray(byte[] array) {
+        if (array != null) {
+            Bitmap bmp = BitmapFactory.decodeByteArray(array, 0, array.length);
+            return bmp;
+        }
+        return null;
+    }
+
+    public Bitmap getBitmapFromByteArray(byte[] value) {
+        if (value != null) {
+            return BitmapFactory.decodeByteArray(value, 0, value.length);
+        }
+        return null;
+    }
+
+    public Bitmap getBitmapFromResource(Context context,int res) {
+        return BitmapFactory.decodeResource(context.getResources(), res);
+    }
 
     public boolean checkInput(String input) {
 

@@ -1,6 +1,7 @@
 package com.ccajk.Fragments;
 
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -25,17 +27,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.ccajk.Adapter.GrievanceAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
+import com.ccajk.Tools.VolleyHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,11 +52,16 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class GrievanceFragment extends Fragment {
+public class GrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse {
     AutoCompleteTextView autoCompleteTextViewPensionerCode, inputEmail;
     AutoCompleteTextView inputMobile;
     TextInputLayout textInputIdentifier;
@@ -69,8 +80,9 @@ public class GrievanceFragment extends Fragment {
     String TAG = "GrievanceModel";
     String hint = "Pensioner Code";
     String code, type;
-    int count;
+    int counterFirebase;
     GrievanceType grievanceType;
+    int counterServerImages = 0;
 
 //    ImageView imagePensionerCode;
 //    ImageView imageMobile, imageEmail;
@@ -82,7 +94,7 @@ public class GrievanceFragment extends Fragment {
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
-
+    VolleyHelper volleyHelper;
 
     public GrievanceFragment() {
 
@@ -109,6 +121,8 @@ public class GrievanceFragment extends Fragment {
         //imageType = view.findViewById(R.id.image_type);
         //imageSubmittedBy = view.findViewById(R.id.image_submitted_by);
         //imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
+
+        volleyHelper = new VolleyHelper(this, getContext());
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
 
         radioLayout = view.findViewById(R.id.layout_radio);
@@ -141,8 +155,10 @@ public class GrievanceFragment extends Fragment {
 //        imageSubmittedBy.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_person_black_24dp));
 
         autoCompleteTextViewPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
-        inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);;
-        inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);;
+        inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
+        ;
+        inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
+        ;
         inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
         removeAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
 
@@ -207,10 +223,24 @@ public class GrievanceFragment extends Fragment {
         selectedImageModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        removeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAllSelectedImages();
+            }
+        });
 
     }
 
+    private void removeAllSelectedImages() {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+    }
 
     private void showImageChooser() {
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
@@ -299,7 +329,7 @@ public class GrievanceFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        submitGrievance();
+                        submitGrievanceToFirebase();
                     }
                 });
     }
@@ -320,7 +350,7 @@ public class GrievanceFragment extends Fragment {
     }
 
 
-    private void submitGrievance() {
+    private void submitGrievanceToFirebase() {
         progressDialog.show();
         final DatabaseReference dbref;
         dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
@@ -340,12 +370,8 @@ public class GrievanceFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    if (selectedImageModelArrayList.size() != 0) {
-                        uploadFile();
-                    } else {
-                        Toast.makeText(getActivity(), "GrievanceModel Submitted", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                    }
+                    sendMailToServer();
+                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Unable to submit", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
@@ -355,40 +381,100 @@ public class GrievanceFragment extends Fragment {
         });
     }
 
-    private void uploadFile() {
-        UploadTask uploadTask;
-        count = 0;
-        for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFiles(
-                    imageModel,
-                    true,
-                    count++,
-                    FireBaseHelper.getInstance().ROOT_GRIEVANCES,
-                    code,
-                    String.valueOf(grievanceType.getId()));
+    private void uploadAllImagesToFirebase() {
+        if (selectedImageModelArrayList.size() > 0) {
+            progressDialog.setMessage("Uploading images");
+            progressDialog.show();
 
-            if (uploadTask != null) {
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(getContext(), "Unable to buttonUpload file", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onFailure: " + exception.getMessage());
-                        progressDialog.dismiss();
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        Log.d(TAG, "onSuccess: " + downloadUrl);
-                        progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
-                        if (count == selectedImageModelArrayList.size()) {
-                            Toast.makeText(getActivity(), "GrievanceModel Submitted", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
+            counterFirebase = 0;
+            for (SelectedImageModel imageModel : selectedImageModelArrayList) {
+                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
+                        imageModel,
+                        true,
+                        counterFirebase++,
+                        FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                        code,
+                        String.valueOf(grievanceType.getId()));
+
+                if (uploadTask != null) {
+                    uploadTask.addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    Toast.makeText(getContext(), "Unable to Upload file", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "onFailure: " + exception.getMessage());
+                                    progressDialog.dismiss();
+                                }
+                            })
+                            .addOnSuccessListener(
+                                    new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                            Log.d(TAG, "onSuccess: " + downloadUrl);
+                                            progressDialog.setMessage("Uploaded file " + counterFirebase + " / " + selectedImageModelArrayList.size());
+                                            Log.d(TAG, "onSuccess: counter = " + counterFirebase + "size = " + selectedImageModelArrayList.size());
+                                        }
+                                    }
+                            );
+                }
             }
+        } else {
+            sendFinalMail();
         }
+    }
+
+    private void sendMailToServer() {
+        progressDialog.setMessage("Sending Mail to Office\nPlease Wait..");
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                uploadAllImagesToServer();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Internet Connection Not Available\n\nPlease Try Again",
+                        "CCA JK",
+                        "OK");
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+
+    }
+
+    private void uploadAllImagesToServer() {
+        counterServerImages = 0;
+        progressDialog.show();
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
+        int selectedFileCount = selectedImageModelArrayList.size();
+
+        if (selectedFileCount != 0) {
+            for (int i = 0; i < selectedImageModelArrayList.size(); i++) {
+                try {
+                    Log.d(TAG, "uploadAllImagesToServer: " + i);
+                    SelectedImageModel selectedImageModel = selectedImageModelArrayList.get(i);
+                    String image = Base64.encodeToString(Helper.getInstance().getByteArrayFromBitmapFile(selectedImageModel.getImageURI().getPath()), Base64.DEFAULT);
+                    Map<String, String> params = new HashMap();
+                    params.put("pensionerCode", autoCompleteTextViewPensionerCode.getText().toString());
+                    params.put("image", image);
+                    params.put("imageName", "image-" + i);
+                    params.put("imageCount", i + "");
+                    if (volleyHelper.countRequestsInFlight("upload_image-" + i) == 0)
+                        volleyHelper.makeStringRequest(url, "upload_image-" + i, params);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                }
+            }
+        } else {
+            sendFinalMail();
+        }
+
+
     }
 
     @Override
@@ -415,59 +501,48 @@ public class GrievanceFragment extends Fragment {
 
     }
 
-}
-
-
-  /*private void removeSelectedFile() {
-        fileChosed = null;
-        fileChosedPath = null;
-        textViewFileName.setText("");
-        buttonRemove.setVisibility(View.GONE);
-        imageviewSelectedImage.setImageDrawable(null);
+    @Override
+    public void onError(VolleyError volleyError) {
+        volleyError.printStackTrace();
+        progressDialog.dismiss();
+        Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
     }
 
-    private void setupSelectedFile(File file) {
-        if (file.length() / 1048576 > 1) {
-            Helper.getInstance().showAlertDialog(getContext(), "You have selected a file larger than 1 MB\nPlease choose a file of smaller size\n\nThe selection you just made will not be processed", "Choose File", "OK");
-            removeSelectedFile();
-        } else {
-            fileChosedPath = file.getAbsolutePath();
-            fileChosed = file.getName();
-            Log.d(TAG, "onFileSelected: " + fileChosedPath);
-            buttonRemove.setVisibility(View.VISIBLE);
-            textViewFileName.setText(fileChosed);
-        }
-    }*/
-
-
-        /*buttonRemove.setImageDrawable(AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_black_24dp));
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeSelectedFile();
-
-            }
-        });*/
-
-
-/*    private void showFileChooser() {
-        DialogConfig dialogConfig = new DialogConfig.Builder()
-                .enableMultipleSelect(false) // default is false
-                .enableFolderSelect(false) // default is false
-                .initialDirectory(Environment.getExternalStorageDirectory().getAbsolutePath()) // default is sdcard
-                .supportFiles(new SupportFile(".jpeg", 0), new SupportFile(".jpg", 0), new SupportFile(".pdf", 0)) // default is showing all file types.
-                .build();
-
-        new FilePickerDialogFragment.Builder()
-                .configs(dialogConfig)
-                .onFilesSelected(new FilePickerDialogFragment.OnFilesSelectedListener() {
-                    @Override
-                    public void onFileSelected(List<File> list) {
-                        for (File file : list) {
-                            setupSelectedFile(file);
-                        }
+    @Override
+    public void onResponse(String str) {
+        JSONObject jsonObject = Helper.getInstance().getJson(str);
+        Log.d(TAG, jsonObject.toString());
+        try {
+            if (jsonObject.get("action").equals("Creating Image")) {
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                    counterServerImages++;
+                    if (counterFirebase == selectedImageModelArrayList.size()) {
+                        progressDialog.dismiss();
+                        Log.d(TAG, "onResponse: Files uploaded");
+                        uploadAllImagesToFirebase();
+                        sendFinalMail();
                     }
-                })
-                .build()
-                .show(getActivity().getSupportFragmentManager(), null);
-    }*/
+                }
+            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (JSONException jse) {
+            jse.printStackTrace();
+        }
+    }
+
+    private void sendFinalMail() {
+        String url = Helper.getInstance().getAPIUrl() + "sendMail.php";
+        Map<String, String> params = new HashMap();
+        String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
+        params.put("pensionerCode", pensionerCode);
+        params.put("pensionerEmail", inputEmail.getText().toString());
+        params.put("message", "The Code " + pensionerCode + " has applied for " + inputType.getSelectedItem().toString() + "with  files = " + selectedImageModelArrayList.size());
+        params.put("fileCount", selectedImageModelArrayList.size() + "");
+        if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
+            volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);
+    }
+}

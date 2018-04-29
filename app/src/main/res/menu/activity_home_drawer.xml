@@ -1,109 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
     tools:showIn="navigation_view">
     <item
         android:id="@+id/navmenu_home"
+        android:checkable="true"
         android:icon="@drawable/ic_drawable_home"
         android:title="Home" />
 
     <item
         android:id="@+id/navmenu_visit_cca_website"
         android:icon="@drawable/ic_drawable_web"
+        android:checkable="true"
         android:title="Visit CCA JK Website" />
 
     <item android:title="Functions">
         <menu>
+            <group
+                android:checkableBehavior="single">
+
+
             <item
                 android:id="@+id/navmenu_pension"
+                android:checkable="true"
                 android:icon="@drawable/ic_pension"
-                android:iconTint="@color/colorAccent"
                 android:title="Pension Grievance" />
 
             <item
                 android:id="@+id/navmenu_gpf"
                 android:icon="@drawable/ic_drawable_gpf"
+                android:checkable="true"
                 android:title="GPF Grievance" />
 
             <item
                 android:id="@+id/navmenu_rti"
                 android:icon="@drawable/ic_drawable_rti"
+                android:checkable="true"
                 android:title="RTI Application"
                 android:visible="false"/>
 
+            </group>
+
         </menu>
     </item>
-    <item android:title="Update Information">
+    <item android:title="Update Information"
+        android:checkable="true">
         <menu>
+            <group
+                android:checkableBehavior="single">
             <item
                 android:id="@+id/navmenu_aadhaar"
                 android:icon="@drawable/ic_drawable_aadhaar"
+                android:checkable="true"
                 android:title="Upload AADHAAR" />
 
             <item
                 android:id="@+id/navmenu_pan"
                 android:icon="@drawable/ic_drawable_pancard"
+                android:checkable="true"
                 android:title="Upload PAN" />
             <item
                 android:id="@+id/navmenu_life_certificate"
                 android:icon="@drawable/ic_life"
+                android:checkable="true"
                 android:title="Upload Life Certificate" />
 
             <item
                 android:id="@+id/navmenu_remarriage_certificate"
                 android:icon="@drawable/ic_marriage"
+                android:checkable="true"
                 android:title="Upload Re-Marriage Certificate" />
 
             <item
                 android:id="@+id/navmenu_reemployment"
                 android:icon="@drawable/ic_employment"
+                android:checkable="true"
                 android:title="Upload Re-Employment Certificate" />
-
+            </group>
 
         </menu>
     </item>
 
-    <item android:title="Tracking">
+    <item android:title="Tracking"
+        android:checkable="true">
         <menu>
+            <group
+                android:checkableBehavior="single">
             <item
                 android:id="@+id/navmenu_tracking"
                 android:icon="@drawable/ic_drawable_tracking"
+                android:checkable="true"
                 android:title="Track Grievance" />
 
             <item
                 android:id="@+id/navmenu_track_rti"
                 android:icon="@drawable/ic_drawable_tracking"
+                android:checkable="true"
                 android:title="Track RTI"
                 android:visible="false"/>
+            </group>
 
         </menu>
     </item>
 
 
-    <item android:title="Others">
+    <item android:title="Others"
+        android:checkable="true">
         <menu>
+            <group
+                android:checkableBehavior="single">
             <item
                 android:id="@+id/navmenu_contact_us"
                 android:icon="@drawable/ic_contact_phone_black_24dp"
+                android:checkable="true"
                 android:title="Contact Us" />
             <item
                 android:id="@+id/navmenu_hotspot_locator"
                 android:icon="@drawable/ic_wifi"
+                android:checkable="true"
                 android:title="WIFI Hotspot Locator" />
 
             <item
                 android:id="@+id/navmenu_gp_locator"
                 android:icon="@drawable/ic_menu_slideshow"
+                android:checkable="true"
                 android:title="GP LIT Locator" />
+            </group>
         </menu>
 
     </item>
     <item
         android:id="@+id/staff_login"
-        android:title="Staff Corner">
+        android:title="Staff Corner"
+        android:checkable="true">
         <menu>
             <item
                 android:id="@+id/navmenu_login"
+                android:checkable="true"
                 android:icon="@drawable/ic_drawbale_login_24dp"
                 android:title="Log in" />
 
@@ -112,23 +146,30 @@
     </item>
     <item
         android:id="@+id/staff_panel"
-        android:title="Staff Corner">
+        android:title="Staff Corner"
+        android:checkable="true">
         <menu>
+            <group
+                android:checkableBehavior="single">
             <item
                 android:id="@+id/navmenu_inspection"
                 android:icon="@drawable/ic_inspection"
+                android:checkable="true"
                 android:visible="false"
                 android:title="Inspection" />
 
             <item
                 android:id="@+id/navmenu_update_grievances"
                 android:icon="@drawable/ic_update_black_24dp"
+                android:checkable="true"
                 android:title="Update Grievances" />
 
             <item
                 android:id="@+id/navmenu_logout"
+                android:checkable="true"
                 android:icon="@drawable/ic_logout"
                 android:title="Log Out" />
+            </group>
         </menu>
 
     </item>

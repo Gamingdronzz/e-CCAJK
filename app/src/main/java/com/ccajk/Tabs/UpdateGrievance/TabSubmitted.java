@@ -123,6 +123,7 @@ public class TabSubmitted extends Fragment {
         if (recyclerView.getAdapter() == null) {
             recyclerView.setAdapter(adapter);
         }
+
         if (recyclerView.getLayoutManager() == null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }*/
