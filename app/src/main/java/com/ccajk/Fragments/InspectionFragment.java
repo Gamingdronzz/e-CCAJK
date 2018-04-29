@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -65,10 +66,10 @@ public class InspectionFragment extends Fragment {
     boolean isCurrentLocationFound = false;
     Double latitude, longitude;
 
-    TextView textViewAddImage, textLocationCoordinates, textViewSelectedFileCount;
+    AppCompatTextView textViewAddImage, textLocationCoordinates, textViewSelectedFileCount;
     EditText editTextLocationName;
     Button upload;
-    ImageButton removeAll;
+    AppCompatTextView removeAll;
     ImagePicker imagePicker;
     ProgressDialog progressDialog;
     View.OnClickListener getCoordinatesListener;
@@ -104,8 +105,9 @@ public class InspectionFragment extends Fragment {
         };
 
         textViewAddImage = view.findViewById(R.id.textview_add_inspection_image);
-        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_circle_black_24dp, 0, 0, 0);
+        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_add_circle_black_24dp, 0, 0);
         removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
+        removeAll.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_remove_circle_black_24dp,0,0);
         removeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,7 +172,7 @@ public class InspectionFragment extends Fragment {
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
         //recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
+        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void removeAllSelectedImages()

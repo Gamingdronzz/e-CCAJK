@@ -9,18 +9,27 @@ import java.util.Date;
  */
 
 public class GrievanceModel {
-    String pensionerIdentifier;
-    String mobile;
-    long grievanceType;
     String details;
-    String submittedBy;
     String email;
-    String message;
-    String state;
+
+
     long grievanceStatus;
+    long grievanceType;
+    boolean isExpanded = false;
+    String mobile;
+    String pensionerIdentifier;
+    String state;
+    String submittedBy;
+
+
+
+
+    String message;
+
+
     Date date;
 
-    boolean isExpanded = false;
+
     public GrievanceModel(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
         this.pensionerIdentifier = pensionerIdentifier;
         this.mobile = mobile;

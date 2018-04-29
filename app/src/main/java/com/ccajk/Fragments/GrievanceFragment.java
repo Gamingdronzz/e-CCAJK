@@ -540,7 +540,7 @@ public class GrievanceFragment extends Fragment implements VolleyHelper.VolleyRe
         String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
         params.put("pensionerCode", pensionerCode);
         params.put("pensionerEmail", inputEmail.getText().toString());
-        params.put("message", "The Code " + pensionerCode + " has applied for " + inputType.getSelectedItem().toString() + "with  files = " + selectedImageModelArrayList.size());
+        params.put("message", inputDetails.getText().toString());
         params.put("fileCount", selectedImageModelArrayList.size() + "");
         if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
             volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);

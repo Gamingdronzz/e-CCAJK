@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_large"
     android:animateLayoutChanges="true"
     android:elevation="@dimen/elevation_medium"
     android:orientation="vertical">
-
-
 
 
     <FrameLayout
@@ -19,32 +18,39 @@
             android:id="@+id/imageview_selected_image"
             android:layout_width="108dp"
             android:layout_height="192dp"
-            android:src="@color/colorAccentLight"
-            android:adjustViewBounds="true" />
-        <TextView
+            android:adjustViewBounds="true"
+            android:src="@color/colorAccentLight" />
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/imageview_overlay_remove_button"-->
+        <!--android:background="#33000000"-->
+        <!--android:layout_gravity="center_vertical|center_horizontal"-->
+        <!--android:gravity="center_horizontal|center_vertical"-->
+        <!--android:text="X"-->
+        <!--android:textAlignment="center"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textColor="@color/colorBlack"-->
+        <!--android:textSize="40sp"/>-->
+
+        <ImageButton
+            android:id="@+id/imageview_overlay_remove_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/imageview_overlay_remove_button"
-            android:background="#33000000"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="X"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:textColor="@color/colorBlack"
-            android:textSize="40sp"/>
+            android:background="@null"
+            app:srcCompat="@drawable/ic_remove_circle_black_24dp" />
 
     </FrameLayout>
 
     <TextView
         android:id="@+id/textview_selected_image_name"
         android:layout_width="match_parent"
-        android:background="@color/colorPrimaryLight"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryLight"
         android:padding="@dimen/padding_small"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_15"
-        android:textAlignment="center"
         android:textStyle="bold" />
 
 

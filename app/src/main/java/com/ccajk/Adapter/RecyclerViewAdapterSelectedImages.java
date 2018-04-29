@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,7 +62,8 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
     public class SelectedImageViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView selectedImageTitle,overlayRemoveImage;
+        private TextView selectedImageTitle;
+        ImageButton overlayRemoveImage;
         private ImageView selectedImage;
         private RemoveClickListener removeClickListener;
 

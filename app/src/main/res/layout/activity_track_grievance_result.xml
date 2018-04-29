@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_track_result"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/colorOffWhite"
     tools:context="com.ccajk.Activity.TrackGrievanceResultActivity">
 
     <FrameLayout
@@ -14,6 +15,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_tracking"
             android:layout_width="match_parent"
+            android:background="@color/colorOffWhite"
             android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>

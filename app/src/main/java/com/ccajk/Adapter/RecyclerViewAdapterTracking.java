@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ccajk.Models.GrievanceModel;
@@ -26,7 +27,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public TrackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TrackViewHolder viewHolder = new TrackViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_track_result, parent, false));
+        TrackViewHolder viewHolder = new TrackViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_track_grievance_item, parent, false));
         return viewHolder;
     }
 
@@ -42,6 +43,14 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         holder.status.setText("");
         holder.status.setText(Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]);
         holder.message.setText("");
+        if(grievanceModel.isExpanded())
+        {
+            holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.linearLayoutExpandableArea.setVisibility(View.GONE);
+        }
         if (grievanceModel.getMessage() != null)
             holder.message.setText(grievanceModel.getMessage());
         else
@@ -56,6 +65,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
     public class TrackViewHolder extends RecyclerView.ViewHolder {
 
         public TextView grievanceType, grievanceApplied, date, status, message;
+        public LinearLayout linearLayoutExpandableArea;
 
         public TrackViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +74,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
             date = itemView.findViewById(R.id.textview_date);
             status = itemView.findViewById(R.id.textview_result);
             message = itemView.findViewById(R.id.textview_message);
+            linearLayoutExpandableArea = itemView.findViewById(R.id.expandable_area_track_grievance);
         }
     }
 }

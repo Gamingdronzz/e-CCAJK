@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Listeners.ClickListener;
+import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
@@ -54,6 +57,20 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewTrack.setLayoutManager(linearLayoutManager);
         recyclerViewTrack.setAdapter(adapterTracking);
+
+        recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Log.d(TAG, "onClick: " + position);
+                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
+                adapterTracking.notifyItemChanged(position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
     }
 
 
@@ -62,9 +79,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        int size = grievanceModelArrayList.size();
-                        grievanceModelArrayList.add(size,dataSnapshot.getValue(GrievanceModel.class));
-                        adapterTracking.notifyItemInserted(size);
+                        //int size = grievanceModelArrayList.size();
+                        grievanceModelArrayList.add(dataSnapshot.getValue(GrievanceModel.class));
+                        //adapterTracking.notifyItemInserted(size);
                     }
 
                     @Override

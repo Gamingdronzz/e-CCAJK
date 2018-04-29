@@ -129,9 +129,10 @@
 
 
             <ImageView
+                android:layout_marginTop="@dimen/margin_small"
                 android:id="@+id/imageview_selected_image"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="108dp"
+                android:layout_height="192dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:src="@null" />
