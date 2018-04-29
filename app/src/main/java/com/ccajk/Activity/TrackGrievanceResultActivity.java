@@ -50,7 +50,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         pensionerCode = getIntent().getStringExtra("Code");
         Log.d(TAG, "init: pcode = " + pensionerCode);
         grievanceModelArrayList = new ArrayList<>();
-        getGrievances();
+
         adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
         textView = findViewById(R.id.textview_tracking);
         recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
@@ -71,6 +71,8 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
             }
         }));
+
+       getGrievances();
     }
 
 
@@ -81,6 +83,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         //int size = grievanceModelArrayList.size();
                         grievanceModelArrayList.add(dataSnapshot.getValue(GrievanceModel.class));
+                        Log.d(TAG, "onChildAdded: added");
                         //adapterTracking.notifyItemInserted(size);
                     }
 

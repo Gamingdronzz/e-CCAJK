@@ -8,7 +8,5 @@
         android:title="@string/action_settings"
         app:showAsAction="always"
         android:icon="@drawable/ic_settings_black_24dp"
-        app:actionViewClass="android.widget.ImageButton"
-        android:actionViewClass="android.widget.ImageButton"
         tools:ignore="AppCompatResource" />
 </menu>

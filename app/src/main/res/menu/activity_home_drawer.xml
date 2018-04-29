@@ -117,13 +117,13 @@
                 android:title="Contact Us" />
             <item
                 android:id="@+id/navmenu_hotspot_locator"
-                android:icon="@drawable/ic_wifi"
+                android:icon="@drawable/ic_wifi_black_24dp"
                 android:checkable="true"
                 android:title="WIFI Hotspot Locator" />
 
             <item
                 android:id="@+id/navmenu_gp_locator"
-                android:icon="@drawable/ic_menu_slideshow"
+                android:icon="@drawable/ic_gp"
                 android:checkable="true"
                 android:title="GP LIT Locator" />
             </group>

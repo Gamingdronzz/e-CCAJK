@@ -64,7 +64,7 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
         private TextView selectedImageTitle;
         ImageButton overlayRemoveImage;
-        private ImageView selectedImage;
+        private ImageButton selectedImage;
         private RemoveClickListener removeClickListener;
 
         public SelectedImageViewHolder(View itemView,RemoveClickListener removeClickListener) {

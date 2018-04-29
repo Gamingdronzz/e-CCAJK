@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ccajk.Activity.AboutUsActivity;
 import com.ccajk.Activity.MainActivity;
@@ -114,6 +115,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Log.d(TAG, "onOptionsItemSelected: Showing Settings");
+                Toast.makeText(getContext(), "Settings Menu", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
