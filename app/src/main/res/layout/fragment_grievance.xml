@@ -227,8 +227,10 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:textColor="@color/colorWhite"
+                    android:drawableTint="@color/colorPrimaryLight"
                     android:layout_toLeftOf="@id/imageButton_removeAllFiles"
-                    android:background="@color/colorAccentLight"
+                    android:background="@drawable/custom_button"
                     android:drawablePadding="@dimen/padding_medium"
                     android:padding="@dimen/padding_medium"
                     android:text="Remove All" />

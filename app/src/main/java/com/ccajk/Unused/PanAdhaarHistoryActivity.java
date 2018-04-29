@@ -66,15 +66,15 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
 
                         panAdhaarStatus = dataSnapshot1.getValue(PanAdhaarStatus.class);
                         Log.d(TAG, panAdhaarStatus.getAppliedDate().toString());
-                        status = FireBaseHelper.getInstance().getStatusString(panAdhaarStatus.getStatus());
+                        textViewStatus = FireBaseHelper.getInstance().getStatusString(panAdhaarStatus.getStatus());
                         panAdhaarStatusArrayList.add(panAdhaarStatus);
                         historyAdapter.notifyDataSetChanged();
                     }
                 } else {
                     Log.d(TAG, "No records found");
-                    status = "Not Applied for Updation";
+                    textViewStatus = "Not Applied for Updation";
                 }
-                textView.setText("Current Status: " + status);
+                textView.setText("Current Status: " + textViewStatus);
             }
 
             @Override

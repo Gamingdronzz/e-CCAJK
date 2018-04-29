@@ -44,19 +44,19 @@ public class ProgressDialog {
         builder = new AlertDialog.Builder(view.getContext());
     }
 
-//    public void light(String message) {
+//    public void light(String textViewMessage) {
 //        setBackgroundColor(view.getResources().getColor(R.color.colorWhite));
 //        setProgressColor(view.getResources().getColor(R.color.colorBlack));
 //        setMessageColor(view.getResources().getColor(R.color.colorBlack));
-//        setMessage(message);
+//        setMessage(textViewMessage);
 //        show();
 //    }
 //
-//    public void dark(String message) {
+//    public void dark(String textViewMessage) {
 //        setBackgroundColor(view.getResources().getColor(R.color.colorBlack));
 //        setProgressColor(view.getResources().getColor(R.color.colorWhite));
 //        setMessageColor(view.getResources().getColor(R.color.colorWhite));
-//        setMessage(message);
+//        setMessage(textViewMessage);
 //        show();
 //    }
 

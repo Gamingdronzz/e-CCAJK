@@ -256,12 +256,12 @@ public class GuideView extends FrameLayout {
             xMessageView = 0;
 
 
-        //set message view bottom
+        //set textViewMessage view bottom
         if (rect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
             isTop = false;
             yMessageView = (int) (rect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
         }
-        //set message view top
+        //set textViewMessage view top
         else {
             isTop = true;
             yMessageView = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);

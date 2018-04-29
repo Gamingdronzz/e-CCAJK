@@ -364,7 +364,7 @@ public class Helper {
 
     public String getStatusString(long status) {
 
-       /* switch ((int) status) {
+       /* switch ((int) textViewStatus) {
             case 0:
                 return "Submitted";
             case 1:

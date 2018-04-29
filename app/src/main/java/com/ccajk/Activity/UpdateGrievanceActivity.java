@@ -49,7 +49,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         setLayoutData();
         resultIntent = new Intent();
         resultIntent.putExtra("pensionerCode", grievanceModel.getPensionerIdentifier());
-        resultIntent.putExtra("status", (int)grievanceModel.getGrievanceStatus());
+        resultIntent.putExtra("textViewStatus", (int)grievanceModel.getGrievanceStatus());
 
     }
 
@@ -97,7 +97,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("grievanceStatus", status);
-        hashMap.put("message", message);
+        hashMap.put("textViewMessage", message);
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())

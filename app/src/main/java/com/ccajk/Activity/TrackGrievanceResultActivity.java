@@ -39,6 +39,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_grievance_result);
+        getSupportActionBar().setTitle("Track Grievance");
         init();
     }
 
@@ -75,15 +76,16 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
        getGrievances();
     }
 
-
     private void getGrievances() {
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        //int size = grievanceModelArrayList.size();
-                        grievanceModelArrayList.add(dataSnapshot.getValue(GrievanceModel.class));
+                        int size = grievanceModelArrayList.size();
+                        grievanceModelArrayList.add(size,dataSnapshot.getValue(GrievanceModel.class));
+                        adapterTracking.notifyItemInserted(size);
                         Log.d(TAG, "onChildAdded: added");
+
                         //adapterTracking.notifyItemInserted(size);
                     }
 

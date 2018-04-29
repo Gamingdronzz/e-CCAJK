@@ -223,8 +223,8 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             long status = grievanceModel.getGrievanceStatus();
             String message = grievanceModel.getMessage();
 //            HashMap<String, Object> hashMap = new HashMap<>();
-//            hashMap.put("grievanceStatus", status);
-//            hashMap.put("message", message);
+//            hashMap.put("grievanceStatus", textViewStatus);
+//            hashMap.put("textViewMessage", textViewMessage);
 //
 //            DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
 //            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())

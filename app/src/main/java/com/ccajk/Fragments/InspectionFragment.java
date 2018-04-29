@@ -288,7 +288,7 @@ public class InspectionFragment extends Fragment {
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                Log.d(TAG, "onPermissionDenied: Permission not given to choose message");
+                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
             }
         });
 

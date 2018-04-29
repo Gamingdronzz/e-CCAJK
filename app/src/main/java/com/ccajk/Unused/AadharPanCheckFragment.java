@@ -105,16 +105,16 @@ public class AadharPanCheckFragment extends Fragment {
                 Log.d(TAG, dataSnapshot.toString());
                 if (dataSnapshot.getValue() != null) {
 
-                    long status = (long) dataSnapshot.child("status").getValue();
+                    long textViewStatus = (long) dataSnapshot.child("textViewStatus").getValue();
                     String number = (String) dataSnapshot.child("number").getValue();
                     String msg = (String) dataSnapshot.child("msg").getValue();
-                    Log.d(TAG, String.valueOf(status));
-                    setMessageAndAction(status,msg,number);
-                    *//*numberRef.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+                    Log.d(TAG, String.valueOf(textViewStatus));
+                    setMessageAndAction(textViewStatus,msg,number);
+                    *//*numberRef.child("textViewStatus").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            long status = (long) dataSnapshot.getValue();
-                            setMessageAndAction(status);
+                            long textViewStatus = (long) dataSnapshot.getValue();
+                            setMessageAndAction(textViewStatus);
                         }
 
                         @Override

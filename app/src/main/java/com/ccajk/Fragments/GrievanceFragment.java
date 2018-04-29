@@ -277,7 +277,7 @@ public class GrievanceFragment extends Fragment implements VolleyHelper.VolleyRe
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                Log.d(TAG, "onPermissionDenied: Permission not given to choose message");
+                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
             }
         });
 
@@ -540,7 +540,7 @@ public class GrievanceFragment extends Fragment implements VolleyHelper.VolleyRe
         String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
         params.put("pensionerCode", pensionerCode);
         params.put("pensionerEmail", inputEmail.getText().toString());
-        params.put("message", inputDetails.getText().toString());
+        params.put("textViewMessage", inputDetails.getText().toString());
         params.put("fileCount", selectedImageModelArrayList.size() + "");
         if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
             volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);
