@@ -68,18 +68,22 @@ public class GrievanceDataProvider {
     }
 
     public void updateLists() {
+        submittedGrievanceList.remove(selectedGrievance);
+        processingGrievanceList.remove(selectedGrievance);
+        resolvedGrievanceList.remove(selectedGrievance);
+
         if (selectedGrievance.getGrievanceStatus() == 0) {
             submittedGrievanceList.add(selectedGrievance);
-            processingGrievanceList.remove(selectedGrievance);
-            resolvedGrievanceList.remove(selectedGrievance);
+//            processingGrievanceList.remove(selectedGrievance);
+//            resolvedGrievanceList.remove(selectedGrievance);
         } else if (selectedGrievance.getGrievanceStatus() == 1) {
             processingGrievanceList.add(selectedGrievance);
-            submittedGrievanceList.remove(selectedGrievance);
-            resolvedGrievanceList.remove(selectedGrievance);
+//            submittedGrievanceList.remove(selectedGrievance);
+//            resolvedGrievanceList.remove(selectedGrievance);
         } else {
             resolvedGrievanceList.add(selectedGrievance);
-            processingGrievanceList.remove(selectedGrievance);
-            submittedGrievanceList.remove(selectedGrievance);
+//            processingGrievanceList.remove(selectedGrievance);
+//            submittedGrievanceList.remove(selectedGrievance);
         }
         Log.d("Data Provider ", "submitted: "+ submittedGrievanceList.size());
         Log.d("Data Provider ", "processing: "+ processingGrievanceList.size());

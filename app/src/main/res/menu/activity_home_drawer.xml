@@ -174,5 +174,23 @@
 
     </item>
 
+    <item
+        android:id="@+id/developer_section"
+        android:title="Others"
+        android:checkable="true">
+        <menu>
+            <group
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/navmenu_developer_section"
+                    android:icon="@drawable/ic_inspection"
+                    android:checkable="true"
+                    android:visible="false"
+                    android:title="Developers Section" />
+            </group>
+        </menu>
+
+    </item>
+
 
 </menu>

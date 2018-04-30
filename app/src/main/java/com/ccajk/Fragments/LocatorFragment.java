@@ -191,7 +191,8 @@ public class LocatorFragment extends Fragment {
 
     private void setTabLayout() {
         manageNoLocationLayout(false);
-        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+        FragmentPagerAdapter adapter = new MyAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         progressDialog.dismiss();
     }
@@ -203,6 +204,8 @@ public class LocatorFragment extends Fragment {
             LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
         }
     }
+
+
 
     class MyAdapter extends FragmentPagerAdapter {
 

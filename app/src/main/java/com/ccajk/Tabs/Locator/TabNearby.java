@@ -63,7 +63,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     TextView kilometres;
     IndicatorSeekBar seekBar;
     ProgressDialog progressDialog;
-    MyLocationManager locationManager;
+    public MyLocationManager locationManager;
     MapsHelper mapsHelper;
     ImageButton buttonRefresh;
     RelativeLayout relativeLayoutNoLocation;
@@ -158,7 +158,47 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 if (mLastLocation != null) {
                     mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
                 } else {
-                    locationManager.ManageLocation();
+                    Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+                    if (task != null) {
+                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                            @Override
+                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                                Log.v(TAG, "On Task Complete");
+                                if (task.isSuccessful()) {
+                                    Log.v(TAG, "Task is Successful");
+                                    locationManager.requestLocationUpdates(mMap);
+                                    manageNoLocationLayout(false);
+
+
+                                } else {
+                                    Log.v(TAG, "Task is not Successful");
+                                }
+                            }
+                        });
+                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                            @Override
+                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                                Log.v(TAG, "On Task Success");
+                                // All location settings are satisfied. The client can initialize
+                                // location requests here.
+                                // ...
+
+                            }
+                        });
+
+                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.v(TAG, "On Task Failed");
+                                if (e instanceof ResolvableApiException) {
+                                    locationManager.onLocationAcccessRequestFailure(e);
+                                    // Location settings are not satisfied, but this can be fixed
+                                    // by showing the user a dialog.
+
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -279,23 +319,66 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         for (String s : permissions) {
             Log.v(TAG, "Premissions = " + s);
         }
+
+        Log.d(TAG, "onRequestPermissionsResult: rc = " + requestCode + " l rc = " + LOCATION_REQUEST_CODE + "result = " + grantResults[0]);
         switch (requestCode) {
             case LOCATION_REQUEST_CODE: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.ManageLocation();
-                    mMap.setMyLocationEnabled(true);
-                } else {
-                    locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nHotspot Locator will not work without location access.\n\nDo you want to grant location acces ?");
+                    Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+                    if (task != null) {
+                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                            @Override
+                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                                Log.v(TAG, "On Task Complete");
+                                if (task.isSuccessful()) {
+                                    Log.v(TAG, "Task is Successful");
+                                    locationManager.requestLocationUpdates(mMap);
+                                    manageNoLocationLayout(false);
+
+
+                                } else {
+                                    Log.v(TAG, "Task is not Successful");
+                                }
+                            }
+                        });
+                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                            @Override
+                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                                Log.v(TAG, "On Task Success");
+                                // All location settings are satisfied. The client can initialize
+                                // location requests here.
+                                // ...
+
+                            }
+                        });
+
+                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.v(TAG, "On Task Failed");
+                                if (e instanceof ResolvableApiException) {
+                                    locationManager.onLocationAcccessRequestFailure(e);
+                                    // Location settings are not satisfied, but this can be fixed
+                                    // by showing the user a dialog.
+
+                                }
+                            }
+                        });
+                        mMap.setMyLocationEnabled(true);
+                    } else {
+                        locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nHotspot Locator will not work without location access.\n\nDo you want to grant location acces ?");
+                    }
+                    return;
                 }
-                return;
             }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, Integer.toString(resultCode));
+        Log.d(TAG, "Result Code = " + Integer.toString(resultCode) + "Request code = " + requestCode + " connection code = " + CONNECTION_FAILURE_RESOLUTION_REQUEST);
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
                 switch (resultCode) {
@@ -323,119 +406,5 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 break;
         }
     }
-
 }
-
-     /*@TargetApi(Build.VERSION_CODES.M)
-    private void ManageLocation() {
-        Log.v(TAG, "Checking for location permission");
-        if (locationManager.checkForLocationPermission()) {
-            Log.v(TAG, "Permission Available\nChecking for location on or off");
-            Task<LocationSettingsResponse> task = locationManager.createLocationRequest();
-            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                    Log.v(TAG, "On Task Complete");
-                    if (task.isSuccessful()) {
-                        Log.v(TAG, "Task is Successful");
-                        requestLocationUpdates();
-                    } else {
-                        Log.v(TAG, "Task is not Successful");
-                    }
-                }
-            });
-            task.addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-                @Override
-                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                    Log.v(TAG, "On Task Success");
-                    // All location settings are satisfied. The client can initialize
-                    // location requests here.
-                    // ...
-
-                }
-            });
-
-            task.addOnFailureListener(this.getActivity(), new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.v(TAG, "On Task Failed");
-                    if (e instanceof ResolvableApiException) {
-                        onLocationAcccessRequestFailure(e);
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-
-                    }
-                }
-            });
-        } else {
-            Log.v(TAG, "Permission not Available");
-            locationManager.requestLocationPermission(getParentFragment(), LOCATION_REQUEST_CODE);
-
-        }
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private void requestLocationUpdates() {
-        progressDialog.setMessage("Getting Current Location");
-        progressDialog.show();
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-        mMap.setMyLocationEnabled(true);
-    }
-
-
-    private void onLocationAcccessRequestFailure(Exception e) {
-        Log.v(TAG, "Request Failure Further process");
-        try {
-            // Show the dialog by calling startResolutionForResult(),
-            // and check the result in onActivityResult().
-            ResolvableApiException resolvable = (ResolvableApiException) e;
-            resolvable.startResolutionForResult(this.getActivity(),
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-        } catch (IntentSender.SendIntentException sendEx) {
-            // Ignore the error.
-        }
-    }
-*/
-   /* private void ShowDialogOnPermissionDenied() {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                this.getActivity(), R.style.MyAlertDialogStyle);
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                locationManager.ManageLocation();
-            }
-        })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setMessage("Location Permission denied !\nHotspot Locator will not work without location access.\n\nDo you want to grant location acces ?")
-                .setTitle("CCA JK")
-                .show();
-    }
-
-    private void ShowDialogOnLocationOff() {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                this.getActivity(), R.style.MyAlertDialogStyle);
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                locationManager.ManageLocation();
-            }
-        })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setMessage("Location not turned on!\nHotspot Locator will not show nearby locations without location access.\n\nDo you want to turn location on ?")
-                .setTitle("CCA JK")
-                .show();
-    }*/
-
-
 

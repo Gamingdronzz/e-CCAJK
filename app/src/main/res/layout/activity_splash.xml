@@ -20,6 +20,7 @@
          android:layout_alignParentBottom="true"
          android:text="Office of CCA, J&amp;K Circle\nJAMMU\nDepartment of Telecommunications"
          android:textAlignment="center"
+         android:typeface="sans"
          android:textColor="@color/colorWhite"
          android:textStyle="bold"
          android:textSize="@dimen/text_18" />

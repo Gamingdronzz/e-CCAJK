@@ -247,17 +247,30 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
     private void loadValues(View v) {
-        TextView pNo = v.findViewById(R.id.textview_ppo_no);
-        pNo.setText(hint + ": " + pensionerCode);
-        TextView mobNo = v.findViewById(R.id.textview_mobile_no);
+
+        TextView pensionerHeading = v.findViewById(R.id.textview_pensioner_code_confirm);
+        pensionerHeading.setText(hint);
+
+        TextView pensionerValue = v.findViewById(R.id.textview_pensioner_code_confirm_value);
+        pensionerValue.setText(pensionerCode);
+
+//        TextView pNo = v.findViewById(R.id.textview_pensioner_code_confirm_value);
+//        pNo.setText(hint + ": " + pensionerCode);
+        TextView heading = v.findViewById(R.id.textview_mobile_no);
+        TextView value = v.findViewById(R.id.textview_mobile_value);
+        value.setText(inputNumber.getText());
         if (root.equals(FireBaseHelper.getInstance().ROOT_PAN) || root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR))
-            mobNo.setText(root + " No: " + inputNumber.getText());
+            heading.setText(root+" No:");
         else
-            mobNo.setText("Applicant's Name: " + inputNumber.getText());
+            heading.setText("Applicant's Name: ");
         v.findViewById(R.id.textview_email).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_email_value).setVisibility(View.GONE);
         v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_grievance_value).setVisibility(View.GONE);
         v.findViewById(R.id.textview_grievance_by).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_submitted_by_value).setVisibility(View.GONE);
         v.findViewById(R.id.detail).setVisibility(View.GONE);
+
         v.findViewById(R.id.textview_grievance_details).setVisibility(View.GONE);
     }
 

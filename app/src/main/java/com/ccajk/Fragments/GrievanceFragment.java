@@ -4,6 +4,7 @@ package com.ccajk.Fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,13 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
@@ -58,6 +66,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -335,20 +344,35 @@ public class GrievanceFragment extends Fragment implements VolleyHelper.VolleyRe
     }
 
     private void loadValues(View v) {
-        TextView ppoNo = v.findViewById(R.id.textview_ppo_no);
-        ppoNo.setText(hint + ": " + code);
-        TextView mobNo = v.findViewById(R.id.textview_mobile_no);
-        mobNo.setText(mobNo.getText() + " " + inputMobile.getText());
-        TextView email = v.findViewById(R.id.textview_email);
-        email.setText(email.getText() + " " + inputEmail.getText());
-        TextView grievance = v.findViewById(R.id.textview_grievance_type);
-        grievance.setText(grievance.getText() + " " + grievanceType.getName());
-        TextView gr_by = v.findViewById(R.id.textview_grievance_by);
-        gr_by.setText(gr_by.getText() + " " + inputSubmittedBy.getSelectedItem());
+        TextView pensionerHeading = v.findViewById(R.id.textview_pensioner_code_confirm);
+        pensionerHeading.setText(hint);
+
+        TextView pensionerValue = v.findViewById(R.id.textview_pensioner_code_confirm_value);
+        pensionerValue.setText(code);
+
+        TextView mobNo = v.findViewById(R.id.textview_mobile_value);
+        mobNo.setText(inputMobile.getText());
+        TextView email = v.findViewById(R.id.textview_email_value);
+        email.setText(inputEmail.getText());
+        TextView grievance = v.findViewById(R.id.textview_grievance_value);
+        grievance.setText(grievanceType.getName());
+        TextView gr_by = v.findViewById(R.id.textview_submitted_by_value);
+        gr_by.setText(inputSubmittedBy.getSelectedItem().toString());
         TextView details = v.findViewById(R.id.textview_grievance_details);
         details.setText(inputDetails.getText().toString().trim());
     }
 
+    private Spanned makeTextBold(String text) {
+        String unspanned = String.format(Locale.US, "%s%s", text, 99);
+
+        Spanned spanned;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            spanned = Html.fromHtml(unspanned, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            spanned = Html.fromHtml(unspanned);
+        }
+        return spanned;
+    }
 
     private void submitGrievanceToFirebase() {
         progressDialog.show();

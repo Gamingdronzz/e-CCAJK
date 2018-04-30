@@ -21,14 +21,25 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_ppo_no"
+            android:id="@+id/textview_pensioner_code_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
             android:text="Pensioner Code:"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/textview_pensioner_code_confirm_value"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_mobile_no"
@@ -37,8 +48,19 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
             android:text="Mobile No:"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/textview_mobile_value"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_email"
@@ -47,8 +69,19 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
             android:text="E-mail:"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/textview_email_value"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_grievance_type"
@@ -57,8 +90,19 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
             android:text="Grievance:"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/textview_grievance_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_grievance_by"
@@ -67,8 +111,19 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
             android:text="Submitted by:"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/textview_submitted_by_value"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/detail"
@@ -79,18 +134,18 @@
             android:paddingEnd="@dimen/padding_medium"
             android:paddingStart="@dimen/padding_medium"
             android:text="Details:"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/textview_grievance_details"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:paddingEnd="@dimen/padding_medium"
-            android:paddingStart="@dimen/padding_medium"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15" />
-
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
