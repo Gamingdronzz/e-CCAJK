@@ -22,6 +22,7 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.ccajk.R;
@@ -31,12 +32,15 @@ import static android.content.ContentValues.TAG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DeveloperSectionFragment extends Fragment {
+public class FeedbackFragment extends Fragment {
 
 
 
+    private Button btnRateApplication,btnSuggestion,btnReportIssue;
 
-    public DeveloperSectionFragment() {
+
+
+    public FeedbackFragment() {
         // Required empty public constructor
     }
 

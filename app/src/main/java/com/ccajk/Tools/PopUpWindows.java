@@ -190,7 +190,7 @@ public class PopUpWindows {
     public AlertDialog.Builder getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
         confirmDialog.setView(view);
-        confirmDialog.setPositiveButton("Upload", yes);
+        confirmDialog.setPositiveButton("Confirm", yes);
         confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

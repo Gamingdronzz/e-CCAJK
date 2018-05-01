@@ -125,6 +125,7 @@ public class ContactUsFragment extends Fragment {
                 }
             });
         }
+        ManageOfficeAddress();
         /*recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {

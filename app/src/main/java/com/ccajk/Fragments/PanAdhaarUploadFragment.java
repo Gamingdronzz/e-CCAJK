@@ -361,9 +361,9 @@ public class PanAdhaarUploadFragment extends Fragment {
  /*statusref.child(imagePensionerCode).addListenerForSingleValueEvent(new ValueEventListener(){
 @Override
 public void onDataChange(DataSnapshot dataSnapshot){
-        counterFirebase=dataSnapshot.getChildrenCount();
+        counterFirebaseImages=dataSnapshot.getChildrenCount();
         PanAdhaarStatus panAdhaarStatus=new PanAdhaarStatus(new Date(),null,null,0);
-        statusref.child(imagePensionerCode).child(String.valueOf(counterFirebase+1)).setValue(panAdhaarStatus).addOnCompleteListener(new OnCompleteListener<Void>(){
+        statusref.child(imagePensionerCode).child(String.valueOf(counterFirebaseImages+1)).setValue(panAdhaarStatus).addOnCompleteListener(new OnCompleteListener<Void>(){
 @Override
 public void onComplete(@NonNull Task<Void> task){
         if(task.isSuccessful()){

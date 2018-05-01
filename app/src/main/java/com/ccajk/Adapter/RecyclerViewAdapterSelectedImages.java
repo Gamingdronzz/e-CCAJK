@@ -4,20 +4,15 @@ package com.ccajk.Adapter;
 
 
 import android.support.v4.app.Fragment;
-import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ccajk.Fragments.GrievanceFragment;
+import com.ccajk.Fragments.SubmitGrievanceFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
@@ -98,10 +93,10 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
                 InspectionFragment inspectionFragment = (InspectionFragment) fragment;
                 inspectionFragment.setSelectedFileCount(selectedImageModelArrayList.size());
             }
-            else if(fragment instanceof GrievanceFragment)
+            else if(fragment instanceof SubmitGrievanceFragment)
             {
-                GrievanceFragment grievanceFragment = (GrievanceFragment) fragment;
-                grievanceFragment.setSelectedFileCount(selectedImageModelArrayList.size());
+                SubmitGrievanceFragment submitGrievanceFragment = (SubmitGrievanceFragment) fragment;
+                submitGrievanceFragment.setSelectedFileCount(selectedImageModelArrayList.size());
             }
 
         }

@@ -21,7 +21,7 @@ import com.ccajk.CustomObjects.CardDrawerLayout;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
-import com.ccajk.Fragments.GrievanceFragment;
+import com.ccajk.Fragments.SubmitGrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.LocatorFragment;
@@ -194,13 +194,13 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("CCA J&K", fragment, bundle);
                 break;
             case R.id.navmenu_pension:
-                fragment = new GrievanceFragment();
+                fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_PENSION);
                 ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
-                fragment = new GrievanceFragment();
+                fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
                 ShowFragment("GPF Grievance Registeration", fragment, bundle);
