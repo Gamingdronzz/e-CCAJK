@@ -96,6 +96,7 @@
                         android:layout_height="wrap_content"
                         android:hint="Pensioner Code"
                         android:inputType="number"
+                        android:maxLength="15"
                         android:singleLine="true"
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/text_20"

@@ -14,8 +14,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
@@ -25,9 +23,10 @@ import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
 import com.linchaolong.android.imagepicker.ImagePicker;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,13 +92,7 @@ public class Helper {
                 .build()
                 .show();
     }
-
-    /*public void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager)
-                context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }*/
-
+    
     public void hideKeyboardFrom(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)
                 activity.getSystemService(Context.INPUT_METHOD_SERVICE);

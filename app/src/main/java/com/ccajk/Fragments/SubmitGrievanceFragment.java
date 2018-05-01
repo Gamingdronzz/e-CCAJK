@@ -1,7 +1,6 @@
 package com.ccajk.Fragments;
 
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +10,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
+import android.text.InputFilter;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -37,6 +36,7 @@ import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
+import com.ccajk.Tools.DataSubmissionAndMail;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
@@ -46,7 +46,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.UploadTask;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
@@ -193,11 +192,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
-                        //autoCompleteTextViewPensionerCode.setFilters(Helper.getInstance().limitInputLength(10));
+                        autoCompleteTextViewPensionerCode.setFilters(new InputFilter[]{});
                         break;
                     case R.id.radioButtonStaff:
                         hint = "Staff Number";
-                        //autoCompleteTextViewPensionerCode.setFilters(Helper.getInstance().limitInputLength(12));
+                        autoCompleteTextViewPensionerCode.setFilters(new InputFilter[]{});
                 }
                 autoCompleteTextViewPensionerCode.setText("");
                 autoCompleteTextViewPensionerCode.setError(null);
@@ -240,80 +239,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         firebaseImageURLs = new ArrayList<>();
 
-    }
-
-    private void doSubmission() {
-        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-            @Override
-            public void OnConnectionAvailable() {
-                doSubmissionOnInternetAvailable();
-            }
-
-            @Override
-            public void OnConnectionNotAvailable() {
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Intenet Not Available\nPlease turn on internet connection before submitting " + type + " Grievance",
-                        "No Internet Connection",
-                        "OK");
-            }
-        });
-        connectionUtility.checkConnectionAvailability();
-    }
-
-    private void doSubmissionOnInternetAvailable() {
-        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer);
-        if (isUploadedToFirebase) {
-            if (isUploadedToServer) {
-                sendFinalMail();
-            } else {
-                uploadImagesToServer();
-            }
-        } else {
-            uploadDataToFirebase();
-        }
-    }
-
-    private void uploadDataToFirebase() {
-        progressDialog.setMessage("Preparing your grievance for submission");
-        progressDialog.show();
-        final DatabaseReference dbref;
-        dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
-
-        final GrievanceModel grievanceModel = new GrievanceModel(
-                code,
-                inputMobile.getText().toString(),
-                grievanceType.getId(),
-                inputDetails.getText().toString().trim(),
-                inputSubmittedBy.getSelectedItem().toString(),
-                inputEmail.getText().toString(),
-                null,
-                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
-                0, new Date());
-
-        dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievanceModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadAllImagesToFirebase();
-                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                }
-
-            }
-        });
-    }
-
-
-    private void removeAllSelectedImages() {
-        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
-            return;
-        }
-        selectedImageModelArrayList.clear();
-        adapterSelectedImages.notifyDataSetChanged();
     }
 
     private void showImageChooser() {
@@ -361,12 +286,20 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         textViewSelectedFileCount.setText(" = " + count);
     }
 
+    private void removeAllSelectedImages() {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+    }
+
     private boolean checkInputBeforeSubmission() {
         code = autoCompleteTextViewPensionerCode.getText().toString();
         String email = inputEmail.getText().toString();
         grievanceType = (GrievanceType) inputType.getSelectedItem();
 
-        if (code.length() < 15 && hint.equals("Pensioner Code")) {
+        if (code.length() != 15 && hint.equals("Pensioner Code")) {
             autoCompleteTextViewPensionerCode.setError("Enter Valid Pensioner Code");
             autoCompleteTextViewPensionerCode.requestFocus();
             return false;
@@ -427,6 +360,87 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         details.setText(inputDetails.getText().toString().trim());
     }
 
+    private void doSubmission() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                doSubmissionOnInternetAvailable();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Intenet Not Available\nPlease turn on internet connection before submitting " + type + " Grievance",
+                        "No Internet Connection",
+                        "OK");
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void doSubmissionOnInternetAvailable() {
+        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+                "Server = " + isUploadedToServer);
+        if (isUploadedToFirebase) {
+            if (isUploadedToServer) {
+                sendFinalMail();
+            } else {
+                uploadImagesToServer();
+            }
+        } else {
+            uploadDataToFirebase();
+        }
+    }
+
+    private void uploadDataToFirebase() {
+        progressDialog.setMessage("Preparing your grievance for submission");
+        progressDialog.show();
+        // final DatabaseReference dbref;
+        //   dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
+
+        final GrievanceModel grievanceModel = new GrievanceModel(
+                code,
+                inputMobile.getText().toString(),
+                grievanceType.getId(),
+                inputDetails.getText().toString().trim(),
+                inputSubmittedBy.getSelectedItem().toString(),
+                inputEmail.getText().toString(),
+                null,
+                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
+                0, new Date());
+
+        /*dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievanceModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    uploadAllImagesToFirebase();
+                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+
+            }
+        });*/
+
+        Task task = DataSubmissionAndMail.getInstance().uploadDataToFirebase(
+                FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                grievanceModel);
+
+        task.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    uploadAllImagesToFirebase();
+                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+        });
+    }
 
     private void uploadAllImagesToFirebase() {
         if (selectedImageModelArrayList.size() > 0) {
@@ -502,7 +516,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     progressDialog.dismiss();
                     Helper.getInstance().showAlertDialog(
                             getContext(),
-                            "Error 1\nPlease report this issue through feedback menu",
+                            "Error 1\nPlease report this issue through feedback section",
                             "Submission Error",
                             "OK");
 
@@ -536,58 +550,60 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 //        }
     }
 
-//    private void sendMailToServer() {
-//        progressDialog.setMessage("Sending Mail to Office\nPlease Wait..");
-//        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-//            @Override
-//            public void OnConnectionAvailable() {
-//                uploadAllImagesToServer();
-//            }
-//
-//            @Override
-//            public void OnConnectionNotAvailable() {
-//                progressDialog.dismiss();
-//                Helper.getInstance().showAlertDialog(
-//                        getContext(),
-//                        "Internet Connection Not Available\n\nPlease Try Again",
-//                        "CCA JK",
-//                        "OK");
-//            }
-//        });
-//        connectionUtility.checkConnectionAvailability();
-//
-//    }
+    private void sendFinalMail() {
+        progressDialog.setMessage("Almost Done..");
+        progressDialog.show();
+        String url = Helper.getInstance().getAPIUrl() + "sendMail.php";
+        Map<String, String> params = new HashMap();
+        String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
 
-//    private void uploadAllImagesToServer() {
-//        counterServerImages = 0;
-//        progressDialog.show();
-//        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
-//        int selectedFileCount = selectedImageModelArrayList.size();
-//
-//        if (selectedFileCount != 0) {
-//            for (int i = 0; i < selectedImageModelArrayList.size(); i++) {
-//                try {
-//                    Log.d(TAG, "uploadAllImagesToServer: " + i);
-//                    SelectedImageModel selectedImageModel = selectedImageModelArrayList.get(i);
-//                    String image = Base64.encodeToString(Helper.getInstance().getByteArrayFromBitmapFile(selectedImageModel.getImageURI().getPath()), Base64.DEFAULT);
-//                    Map<String, String> params = new HashMap();
-//                    params.put("pensionerCode", autoCompleteTextViewPensionerCode.getText().toString());
-//                    params.put("image", image);
-//                    params.put("imageName", "image-" + i);
-//                    params.put("imageCount", i + "");
-//                    if (volleyHelper.countRequestsInFlight("upload_image-" + i) == 0)
-//                        volleyHelper.makeStringRequest(url, "upload_image-" + i, params);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    progressDialog.dismiss();
-//                }
-//            }
-//        } else {
-//            sendFinalMail();
-//        }
-//
-//
-//    }
+        params.put("pensionerCode", pensionerCode);
+        params.put("pensionerMobileNumber", inputMobile.getText().toString());
+        params.put("pensionerEmail", inputEmail.getText().toString());
+        params.put("grievanceType", type);
+        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(inputType.getSelectedItemPosition()));
+        params.put("grievanceDetails", inputDetails.getText().toString());
+        params.put("grievanceSubmittedBy", inputSubmittedBy.getSelectedItem().toString());
+        params.put("fileCount", selectedImageModelArrayList.size() + "");
+        if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
+            volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);
+    }
+
+
+    @Override
+    public void onResponse(String str) {
+        JSONObject jsonObject = Helper.getInstance().getJson(str);
+        Log.d(TAG, jsonObject.toString());
+        try {
+            if (jsonObject.get("action").equals("Creating Image")) {
+                counterServerImages++;
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+
+
+                    if (counterServerImages == selectedImageModelArrayList.size()) {
+                        progressDialog.dismiss();
+                        Log.d(TAG, "onResponse: Files uploaded");
+                        isUploadedToServer = true;
+                        doSubmission();
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
+                    progressDialog.dismiss();
+                }
+            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                    isUploadedToServer = isUploadedToFirebase = false;
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Grievance Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (JSONException jse) {
+            jse.printStackTrace();
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -620,61 +636,57 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onResponse(String str) {
-        JSONObject jsonObject = Helper.getInstance().getJson(str);
-        Log.d(TAG, jsonObject.toString());
-        try {
-            if (jsonObject.get("action").equals("Creating Image")) {
-                counterServerImages++;
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
 
-
-                    if (counterServerImages == selectedImageModelArrayList.size()) {
-                        progressDialog.dismiss();
-                        Log.d(TAG, "onResponse: Files uploaded");
-                        isUploadedToServer = true;
-                        doSubmission();
-                    }
-                }
-                else
-                {
-                    Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
-                    progressDialog.dismiss();
-                }
-            } else if (jsonObject.getString("action").equals("Sending Mail")) {
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
-                    isUploadedToServer = isUploadedToFirebase = false;
-                }
-                else
-                {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Grievance Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } catch (JSONException jse) {
-            jse.printStackTrace();
-        }
-    }
-
-    private void sendFinalMail() {
-        progressDialog.setMessage("Almost Done..");
-        progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl() + "sendMail.php";
-        Map<String, String> params = new HashMap();
-        String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
-
-        params.put("pensionerCode", pensionerCode);
-        params.put("pensionerMobileNumber", inputMobile.getText().toString());
-        params.put("pensionerEmail", inputEmail.getText().toString());
-        params.put("grievanceType", type);
-        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(inputType.getSelectedItemPosition()));
-        params.put("grievanceDetails", inputDetails.getText().toString());
-        params.put("grievanceSubmittedBy", inputSubmittedBy.getSelectedItem().toString());
-        params.put("fileCount", selectedImageModelArrayList.size() + "");
-        if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
-            volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);
-    }
 }
+
+//    private void sendMailToServer() {
+//        progressDialog.setMessage("Sending Mail to Office\nPlease Wait..");
+//        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+//            @Override
+//            public void OnConnectionAvailable() {
+//                uploadAllImagesToServer();
+//            }
+//
+//            @Override
+//            public void OnConnectionNotAvailable() {
+//                progressDialog.dismiss();
+//                Helper.getInstance().showAlertDialog(
+//                        getContext(),
+//                        "Internet Connection Not Available\n\nPlease Try Again",
+//                        "CCA JK",
+//                        "OK");
+//            }
+//        });
+//        connectionUtility.checkConnectionAvailability();
+//
+//    }
+//    private void uploadAllImagesToServer() {
+//        counterServerImages = 0;
+//        progressDialog.show();
+//        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
+//        int selectedFileCount = selectedImageModelArrayList.size();
+//
+//        if (selectedFileCount != 0) {
+//            for (int i = 0; i < selectedImageModelArrayList.size(); i++) {
+//                try {
+//                    Log.d(TAG, "uploadAllImagesToServer: " + i);
+//                    SelectedImageModel selectedImageModel = selectedImageModelArrayList.get(i);
+//                    String image = Base64.encodeToString(Helper.getInstance().getByteArrayFromBitmapFile(selectedImageModel.getImageURI().getPath()), Base64.DEFAULT);
+//                    Map<String, String> params = new HashMap();
+//                    params.put("pensionerCode", autoCompleteTextViewPensionerCode.getText().toString());
+//                    params.put("image", image);
+//                    params.put("imageName", "image-" + i);
+//                    params.put("imageCount", i + "");
+//                    if (volleyHelper.countRequestsInFlight("upload_image-" + i) == 0)
+//                        volleyHelper.makeStringRequest(url, "upload_image-" + i, params);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    progressDialog.dismiss();
+//                }
+//            }
+//        } else {
+//            sendFinalMail();
+//        }
+//
+//
+//    }

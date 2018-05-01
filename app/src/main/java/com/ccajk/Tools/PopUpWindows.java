@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,11 +150,11 @@ public class PopUpWindows {
                     //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
-                        //editText.setFilters(Helper.getInstance().limitInputLength(10));
+                        editText.setFilters(new InputFilter[] {});
                         break;
                     case R.id.radioButtonStaff:
                         hint = "Staff Number";
-                        //editText.setFilters(Helper.getInstance().limitInputLength(12));
+                        editText.setFilters(new InputFilter[] {});
                 }
                 editText.setText("");
                 textInputLayout.setHint(hint);
@@ -165,7 +166,7 @@ public class PopUpWindows {
             @Override
             public void onClick(View v) {
                 String code = editText.getText().toString().trim();
-                if (code.length() < 15 && hint.equals("Pensioner Code")) {
+                if (code.length() != 15 && hint.equals("Pensioner Code")) {
                     Toast.makeText(context, "Invalid Pensioner code!", Toast.LENGTH_LONG).show();
                 } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
                     Toast.makeText(context, "Invalid HR Number!", Toast.LENGTH_LONG).show();
