@@ -1,7 +1,5 @@
 package com.ccajk.Models;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.Date;
 
 /**
@@ -11,22 +9,14 @@ import java.util.Date;
 public class GrievanceModel {
     String details;
     String email;
-
-
     long grievanceStatus;
     long grievanceType;
-    boolean isExpanded = false;
+    boolean isExpanded;
     String mobile;
     String pensionerIdentifier;
     String state;
     String submittedBy;
-
-
-
-
     String message;
-
-
     Date date;
 
 

@@ -47,9 +47,9 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         bindViews();
         init();
         setLayoutData();
-        resultIntent = new Intent();
-        resultIntent.putExtra("pensionerCode", grievanceModel.getPensionerIdentifier());
-        resultIntent.putExtra("textViewStatus", (int)grievanceModel.getGrievanceStatus());
+        //resultIntent = new Intent();
+        //resultIntent.putExtra("pensionerCode", grievanceModel.getPensionerIdentifier());
+        //resultIntent.putExtra("textViewStatus", (int)grievanceModel.getGrievanceStatus());
 
     }
 
@@ -97,7 +97,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("grievanceStatus", status);
-        hashMap.put("textViewMessage", message);
+        hashMap.put("message", message);
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())
@@ -112,7 +112,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                     GrievanceDataProvider.getInstance().selectedGrievance.setMessage(message);
                     GrievanceDataProvider.getInstance().selectedGrievance.setExpanded(false);
 
-                    setResult(Activity.RESULT_OK, resultIntent);
+                    setResult(Activity.RESULT_OK);
                     finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
                     finish();
                 }

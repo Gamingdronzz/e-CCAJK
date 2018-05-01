@@ -185,8 +185,7 @@
                     android:id="@+id/navmenu_developer_section"
                     android:icon="@drawable/ic_inspection"
                     android:checkable="true"
-                    android:visible="false"
-                    android:title="Developers Section" />
+                    android:title="Feedback" />
             </group>
         </menu>
 
