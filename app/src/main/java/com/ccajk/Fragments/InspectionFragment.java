@@ -380,8 +380,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         });
     }
 
-
-
     private void sendFinalMail() {
 
 

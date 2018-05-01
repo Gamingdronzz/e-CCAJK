@@ -31,6 +31,7 @@ public class FireBaseHelper {
     public StorageReference storageReference;
 
     public final String ROOT_GRIEVANCES = "Grievances";
+    public final String ROOT_APP_VERSION = "AppVersion";
     public final String ROOT_ADHAAR = "Aadhaar";
     public final String ROOT_PAN = "Pan";
     public final String ROOT_LIFE = "Life Certificate";
