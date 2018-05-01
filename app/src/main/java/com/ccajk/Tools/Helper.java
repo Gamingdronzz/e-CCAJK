@@ -39,6 +39,11 @@ import java.util.Random;
 
 public class Helper {
     private static Helper _instance;
+    private boolean debugMode = true;
+    public void setDebugMode(boolean set)
+    {
+        this.debugMode = set;
+    }
     public final String SUCCESS = "success";
 
     public final String Nil = "Nil";
@@ -47,12 +52,21 @@ public class Helper {
 
     public ArrayList<LocationModel> allLocationModels;
 
-    public String getConnectionCheckURL()
-    {
+    public String getConnectionCheckURL() {
         return "https://www.google.co.in/";
     }
 
-    public String getAPIUrl(){ return "http://jknccdirectorate.com/api/cca/v1/";}
+    public String getAPIUrl() {
+        if(debugMode)
+        {
+            return "http://jknccdirectorate.com/api/cca/v1/";
+        }
+        else
+        {
+            return "http://jknccdirectorate.com/api/cca/v1/";
+        }
+
+    }
 
     public Helper() {
         _instance = this;
@@ -92,7 +106,7 @@ public class Helper {
                 .build()
                 .show();
     }
-    
+
     public void hideKeyboardFrom(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)
                 activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -155,7 +169,7 @@ public class Helper {
                 .show();
     }
 
-    public void showAlertDialog(Context context, String message, String title, String neutralButtonText,DialogInterface.OnClickListener neutralButtonClickListener) {
+    public void showAlertDialog(Context context, String message, String title, String neutralButtonText, DialogInterface.OnClickListener neutralButtonClickListener) {
         if (title == null) {
             title = "CCA JK";
         }
@@ -254,7 +268,7 @@ public class Helper {
         return null;
     }
 
-    public Bitmap getBitmapFromResource(Context context,int res) {
+    public Bitmap getBitmapFromResource(Context context, int res) {
         return BitmapFactory.decodeResource(context.getResources(), res);
     }
 
@@ -379,7 +393,7 @@ public class Helper {
         return new String[]{first, "Other"};
     }
 
-    public String formatDate(Date date , String format) {
+    public String formatDate(Date date, String format) {
         SimpleDateFormat dt = new SimpleDateFormat(format);
         return dt.format(date);
     }

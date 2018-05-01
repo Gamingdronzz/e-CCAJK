@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ccajk.R;
+import com.ccajk.Tools.Helper;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -23,6 +24,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         bindVIews();
+        Helper.getInstance().setDebugMode(false);
         //ShowNextActivity();
         StartAnimations();
     }

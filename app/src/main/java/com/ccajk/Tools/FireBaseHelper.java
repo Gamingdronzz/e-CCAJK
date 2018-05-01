@@ -2,9 +2,13 @@ package com.ccajk.Tools;
 
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
+import com.ccajk.Models.GrievanceModel;
+import com.ccajk.Models.InspectionModel;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Models.PanAdhaar;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.Models.State;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -79,6 +83,33 @@ public class FireBaseHelper {
         }
         UploadTask uploadTask = sref.putFile(imageFile.getImageURI());
         return uploadTask;
+    }
+
+    public Task uploadDataToFirebase(String root, Object model, String... params) {
+        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
+        Task task;
+
+        if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCES)) {
+            GrievanceModel grievanceModel = (GrievanceModel) model;
+            task = dbref.child(root)
+                    .child(grievanceModel.getPensionerIdentifier())
+                    .child(String.valueOf(grievanceModel.getGrievanceType()))
+                    .setValue(grievanceModel);
+
+        } else if (root.equals(FireBaseHelper.getInstance().ROOT_INSPECTION)) {
+            InspectionModel inspectionModel = (InspectionModel) model;
+            task = dbref.child(root)
+                    .child(params[0])
+                    .child(params[1])
+                    .setValue(inspectionModel);
+
+        } else {
+            PanAdhaar panAdhaar = (PanAdhaar) model;
+            task = dbref.child(root)
+                    .child(panAdhaar.getPensionerIdentifier())
+                    .setValue(panAdhaar);
+        }
+        return task;
     }
 
     public ArrayList<Contact> getContactsList(String stateId) {

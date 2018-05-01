@@ -15,9 +15,11 @@ import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Providers.GrievanceDataProvider;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,9 +49,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         bindViews();
         init();
         setLayoutData();
-        //resultIntent = new Intent();
-        //resultIntent.putExtra("pensionerCode", grievanceModel.getPensionerIdentifier());
-        //resultIntent.putExtra("textViewStatus", (int)grievanceModel.getGrievanceStatus());
 
     }
 
@@ -74,10 +73,26 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message = editTextMessage.getText().toString().trim();
-                int status = statusSpinner.getSelectedItemPosition();
-                updateData(message, status);
-                progressDialog.show();
+                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+                    @Override
+                    public void OnConnectionAvailable() {
+                        String message = editTextMessage.getText().toString().trim();
+                        int status = statusSpinner.getSelectedItemPosition();
+                        updateGrievance(message, status);
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    public void OnConnectionNotAvailable() {
+                        Helper.getInstance().showAlertDialog(
+                                getBaseContext(),
+                                "Internet Connection Not Available\nTurn on internet to update",
+                                "No Internet Connection",
+                                "OK");
+                    }
+                });
+                connectionUtility.checkConnectionAvailability();
+
             }
         });
 
@@ -93,8 +108,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     }
 
 
-    private void updateData(final String message, final int status) {
-
+    private void updateGrievance(final String message, final int status) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("grievanceStatus", status);
         hashMap.put("message", message);

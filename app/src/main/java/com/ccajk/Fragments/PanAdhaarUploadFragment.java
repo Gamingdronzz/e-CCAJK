@@ -24,15 +24,19 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.PanAdhaar;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.DataSubmissionAndMail;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
+import com.ccajk.Tools.VolleyHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,10 +48,16 @@ import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class PanAdhaarUploadFragment extends Fragment {
+public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse {
 
     ImageView imagePensionerCode, imageNumber, imageviewSelectedImage;
     TextView textViewFileName;
@@ -64,6 +74,10 @@ public class PanAdhaarUploadFragment extends Fragment {
     String hint = "Pensioner Code";
     ImagePicker imagePicker;
     DatabaseReference dbref;
+
+    boolean isUploadedToFirebase = false, isUploadedToServer = false;
+    ArrayList<Uri> firebaseImageURLs;
+    VolleyHelper volleyHelper;
 
     public PanAdhaarUploadFragment() {
 
@@ -96,7 +110,7 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void init() {
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
-
+        volleyHelper = new VolleyHelper(this,getContext());
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -156,10 +170,12 @@ public class PanAdhaarUploadFragment extends Fragment {
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkInput())
-                    confirmSubmission();
+                if (checkInputBeforeSubmission())
+                    showConfirmSubmissionDialog();
             }
         });
+
+        firebaseImageURLs = new ArrayList<>();
     }
 
     private void showImageChooser() {
@@ -196,7 +212,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         });
     }
 
-    private boolean checkInput() {
+    private boolean checkInputBeforeSubmission() {
         pensionerCode = inputPCode.getText().toString();
         number = inputNumber.getText().toString();
         //If Pensioner code is empty
@@ -234,7 +250,7 @@ public class PanAdhaarUploadFragment extends Fragment {
         return true;
     }
 
-    private void confirmSubmission() {
+    private void showConfirmSubmissionDialog() {
         Helper.getInstance().hideKeyboardFrom(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
@@ -243,9 +259,43 @@ public class PanAdhaarUploadFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        uploadAdhaarOrPan();
+//                        uploadAdhaarOrPan();
+                        doSubmission();
                     }
                 });
+    }
+
+    private void doSubmission() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                doSubmissionOnInternetAvailable();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Intenet Not Available\nPlease turn on internet connection before updating " + root,
+                        "No Internet Connection",
+                        "OK");
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void doSubmissionOnInternetAvailable() {
+        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+                "Server = " + isUploadedToServer);
+        if (isUploadedToFirebase) {
+            if (isUploadedToServer) {
+                sendFinalMail();
+            } else {
+                uploadImagesToServer();
+            }
+        } else {
+            uploadDataToFirebase();
+        }
     }
 
     private void loadValues(View v) {
@@ -276,41 +326,20 @@ public class PanAdhaarUploadFragment extends Fragment {
     }
 
 
-    private void uploadAdhaarOrPan() {
+    private void uploadDataToFirebase() {
         progressDialog.show();
-       // dbref = FireBaseHelper.getInstance().databaseReference.child(root);
-
         PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
                 number,
                 null,
                 Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
 
-       /* dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadFile();
-                } else {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Unable to Upload", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
-        Task task = DataSubmissionAndMail.getInstance().uploadDataToFirebase(root, panAdhaar);
+        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(root, panAdhaar);
 
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    uploadFile();
+                    uploadAllImagesToFirebase();
                     //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
@@ -320,8 +349,8 @@ public class PanAdhaarUploadFragment extends Fragment {
         });
     }
 
-    private void uploadFile() {
-        UploadTask uploadTask = DataSubmissionAndMail.getInstance().uploadFileToFirebase(
+    private void uploadAllImagesToFirebase() {
+        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
                 imageModel,
                 false,
                 0,
@@ -339,13 +368,56 @@ public class PanAdhaarUploadFragment extends Fragment {
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(getContext(), "Request sent for Upload", Toast.LENGTH_SHORT).show();
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    firebaseImageURLs.add(downloadUrl);
+                    isUploadedToFirebase = true;
                     Log.d(TAG, "onSuccess: " + downloadUrl);
-                    progressDialog.dismiss();
+                    doSubmission();
                 }
             });
         }
+    }
+
+
+    private void uploadImagesToServer() {
+
+        progressDialog.setMessage("Processing..");
+        progressDialog.show();
+
+
+        try {
+            DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                    pensionerCode,
+                    volleyHelper);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Helper.getInstance().showAlertDialog(
+                    getContext(),
+                    "Error 1\nPlease report this issue through feedback section",
+                    "Submission Error",
+                    "OK");
+
+        }
+    }
+
+
+    private void sendFinalMail() {
+
+
+        progressDialog.setMessage("Almost Done..");
+        progressDialog.show();
+        String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php";
+        Map<String, String> params = new HashMap();
+
+        params.put("pensionerCode", pensionerCode);
+        params.put("personType", hint);
+        params.put("updateType",root);
+        params.put("fieldName",textInputNumber.getHint().toString());
+        params.put("value",inputNumber.getText().toString());
+
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper,url);
+//        if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
+//            volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);
     }
 
     @Override
@@ -371,26 +443,38 @@ public class PanAdhaarUploadFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onError(VolleyError volleyError) {
+
+    }
+
+    @Override
+    public void onResponse(String str) {
+        JSONObject jsonObject = Helper.getInstance().getJson(str);
+        Log.d(TAG, jsonObject.toString());
+        try {
+            if (jsonObject.get("action").equals("Creating Image")) {
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                        Log.d(TAG, "onResponse: Files uploaded");
+                        isUploadedToServer = true;
+                        doSubmission();
+                } else {
+                    Log.d(TAG, "onResponse: Image upload failed");
+                    progressDialog.dismiss();
+                }
+            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), root + " Update " + root + " Request Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                    isUploadedToServer = isUploadedToFirebase = false;
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Grievance Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (JSONException jse) {
+            jse.printStackTrace();
+        }
+    }
 }
-
- /*statusref.child(imagePensionerCode).addListenerForSingleValueEvent(new ValueEventListener(){
-@Override
-public void onDataChange(DataSnapshot dataSnapshot){
-        counterFirebaseImages=dataSnapshot.getChildrenCount();
-        PanAdhaarStatus panAdhaarStatus=new PanAdhaarStatus(new Date(),null,null,0);
-        statusref.child(imagePensionerCode).child(String.valueOf(counterFirebaseImages+1)).setValue(panAdhaarStatus).addOnCompleteListener(new OnCompleteListener<Void>(){
-@Override
-public void onComplete(@NonNull Task<Void> task){
-        if(task.isSuccessful()){
-        Toast.makeText(PanAdhaarUploadActivity.this,"Success",Toast.LENGTH_SHORT).show();
-        }else
-        Toast.makeText(PanAdhaarUploadActivity.this,"Failure",Toast.LENGTH_SHORT).show();
-        }
-        });
-        }
-
-@Override
-public void onCancelled(DatabaseError databaseError){
-
-        }
-        });*/

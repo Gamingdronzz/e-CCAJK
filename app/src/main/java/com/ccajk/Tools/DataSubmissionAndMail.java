@@ -1,5 +1,6 @@
 package com.ccajk.Tools;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.ccajk.Models.GrievanceModel;
@@ -37,78 +38,26 @@ public class DataSubmissionAndMail {
     }
 
 
-    public Task uploadDataToFirebase(String root, Object model, String... params) {
-        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-        Task task = null;
-
-        if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCES)) {
-            GrievanceModel grievanceModel = (GrievanceModel) model;
-            task = dbref.child(root)
-                    .child(grievanceModel.getPensionerIdentifier())
-                    .child(String.valueOf(grievanceModel.getGrievanceType()))
-                    .setValue(grievanceModel);
-
-        } else if (root.equals(FireBaseHelper.getInstance().ROOT_INSPECTION)) {
-            InspectionModel inspectionModel = (InspectionModel) model;
-            task = dbref.child(root)
-                    .child(params[0])
-                    .child(params[1])
-                    .setValue(inspectionModel);
-
-        } else {
-            PanAdhaar panAdhaar = (PanAdhaar) model;
-            task = dbref.child(root)
-                    .child(panAdhaar.getPensionerIdentifier())
-                    .setValue(panAdhaar);
-        }
-        return task;
-    }
-
-
-    public UploadTask uploadFileToFirebase(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
-        StorageReference sref;
-        StringBuilder sb = new StringBuilder();
-        for (String param : params)
-            sb.append(param + "/");
-        if (multiple) {
-            sref = FireBaseHelper.getInstance().storageReference.child(sb + "File" + count);
-        } else {
-            sref = FireBaseHelper.getInstance().storageReference.child(sb.toString());
-        }
-        UploadTask uploadTask = sref.putFile(imageFile.getImageURI());
-        return uploadTask;
-    }
-
-
-    public void uploadImagesToServer(ArrayList<URL> firebaseImageURLs, String folderName, VolleyHelper volleyHelper) {
-
+    public void uploadImagesToServer(ArrayList<Uri> firebaseImageURLs, String folderName, VolleyHelper volleyHelper) throws Exception {
+        Log.d("Data Submission", "uploadImagesToServer: Starting Upload");
         String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
         for (int i = 0; i < firebaseImageURLs.size(); i++) {
-            try {
-                Log.d("Data Submission", "uploadAllImagesToServer: Current = " + i);
 
-                Map<String, String> params = new HashMap();
-                params.put("pensionerCode", folderName);
-                params.put("image", firebaseImageURLs.get(i).toString());
-                params.put("imageName", "image-" + i);
-                params.put("imageCount", i + "");
-                if (volleyHelper.countRequestsInFlight("upload_image-" + i) == 0)
-                    volleyHelper.makeStringRequest(url, "upload_image-" + i, params);
-            } catch (Exception e) {
-                e.printStackTrace();
-               /* Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Error 1\nPlease report this issue through feedback section",
-                        "Submission Error",
-                        "OK");*/
+            Log.d("Data Submission", "uploadAllImagesToServer: Current = " + i);
 
-            }
+            Map<String, String> params = new HashMap();
+            params.put("pensionerCode", folderName);
+            params.put("image", firebaseImageURLs.get(i).toString());
+            params.put("imageName", "image-" + i);
+            params.put("imageCount", i + "");
+            if (volleyHelper.countRequestsInFlight("upload_image-" + i) == 0)
+                volleyHelper.makeStringRequest(url, "upload_image-" + i, params);
+
         }
     }
 
 
-    public void sendMail(HashMap<String, String> hashMap, String tag, VolleyHelper volleyHelper) {
-        String url = Helper.getInstance().getAPIUrl() + "sendMail.php";
+    public void sendMail(Map<String, String> hashMap, String tag, VolleyHelper volleyHelper,String url) {
         if (volleyHelper.countRequestsInFlight(tag) == 0)
             volleyHelper.makeStringRequest(url, tag, hashMap);
     }

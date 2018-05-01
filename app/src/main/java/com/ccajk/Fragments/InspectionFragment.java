@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
@@ -34,6 +35,7 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.MyLocationManager;
 import com.ccajk.Tools.Preferences;
+import com.ccajk.Tools.VolleyHelper;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -47,8 +49,13 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.ccajk.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
@@ -56,7 +63,7 @@ import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InspectionFragment extends Fragment {
+public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse {
 
     private static final String TAG = "Inspection";
     String staffId;
@@ -80,6 +87,13 @@ public class InspectionFragment extends Fragment {
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
 
+    boolean isUploadedToFirebase = false, isUploadedToServer = false;
+    ArrayList<Uri> firebaseImageURLs;
+    int counterFirebaseImages;
+    int counterUpload = 0;
+    int counterServerImages = 0;
+    VolleyHelper volleyHelper ;
+
     public InspectionFragment() {
 
     }
@@ -95,6 +109,7 @@ public class InspectionFragment extends Fragment {
     }
 
     private void init(View view) {
+        volleyHelper = new VolleyHelper(this,getContext());
         getCoordinatesListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,9 +118,9 @@ public class InspectionFragment extends Fragment {
         };
 
         textViewAddImage = view.findViewById(R.id.textview_add_inspection_image);
-        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_add_circle_black_24dp, 0, 0);
+        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
         removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
-        removeAll.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_remove_circle_black_24dp,0,0);
+        removeAll.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_remove_circle_black_24dp, 0, 0);
         removeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,18 +147,11 @@ public class InspectionFragment extends Fragment {
 
 
         upload = view.findViewById(R.id.button_upload);
-        upload.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_file_upload_black_24dp, 0, 0);
+        upload.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_file_upload_black_24dp, 0, 0, 0);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editTextLocationName.getText().toString().trim().isEmpty())
-                    editTextLocationName.setError("Location Name Required");
-                else if (!isCurrentLocationFound)
-                    Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
-                else if (selectedImageModelArrayList.size() == 0)
-                    Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
-                else
-                    uploadInspectionData();
+                doSubmission();
             }
         });
 
@@ -173,17 +181,60 @@ public class InspectionFragment extends Fragment {
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
-    private void removeAllSelectedImages()
+    private void doSubmission() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                if (editTextLocationName.getText().toString().trim().isEmpty())
+                    editTextLocationName.setError("Location Name Required");
+                else if (!isCurrentLocationFound)
+                    Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
+                else if (selectedImageModelArrayList.size() == 0)
+                    Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
+                else {
+                            doSubmissionOnInternetAvailable();
+                }
+
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Intenet Not Available\nPlease turn on internet connection before submitting Inspection",
+                        "No Internet Connection",
+                        "OK");
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void doSubmissionOnInternetAvailable()
     {
+        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+                "Server = " + isUploadedToServer);
+        if (isUploadedToFirebase) {
+            if (isUploadedToServer) {
+                sendFinalMail();
+            } else {
+                uploadImagesToServer();
+            }
+        } else {
+            uploadInspectionDataToFirebase();
+        }
+    }
+
+    private void removeAllSelectedImages() {
         if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
             return;
         }
         selectedImageModelArrayList.clear();
         adapterSelectedImages.notifyDataSetChanged();
     }
+
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
-        showProgressDialog();
+        progressDialog.show();
 
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
@@ -198,12 +249,11 @@ public class InspectionFragment extends Fragment {
                             Log.v(TAG, "On Task Complete");
                             if (task.isSuccessful()) {
                                 Log.v(TAG, "Task is Successful");
-
                                 myLocationManager.requestLocationUpdates();
 
                             } else {
                                 Log.v(TAG, "Task is not Successful");
-                                dismissProgressDialog();
+                                progressDialog.dismiss();
                             }
                         }
                     });
@@ -220,7 +270,7 @@ public class InspectionFragment extends Fragment {
                             Log.v(TAG, "On Task Failed");
                             if (e instanceof ResolvableApiException) {
                                 myLocationManager.onLocationAcccessRequestFailure(e);
-                                dismissProgressDialog();
+                                progressDialog.dismiss();
                             }
                         }
                     });
@@ -234,7 +284,7 @@ public class InspectionFragment extends Fragment {
                         "Internet Connection not available\nTurn on your internet before getting location",
                         "Inspection",
                         "OK");
-                dismissProgressDialog();
+                progressDialog.dismiss();
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -242,14 +292,14 @@ public class InspectionFragment extends Fragment {
 
     private void showCoordinates(Location location) {
         isCurrentLocationFound = true;
-        dismissProgressDialog();
+        progressDialog.dismiss();
         mLastLocation = location;
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         myLocationManager.cleanUp();
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
-        textLocationCoordinates.setText(location.getLatitude() + " , " + location.getLongitude());
+        textLocationCoordinates.setText("Current Location\n" + location.getLatitude() + " , " + location.getLongitude());
         progressDialog.dismiss();
 
     }
@@ -292,7 +342,7 @@ public class InspectionFragment extends Fragment {
 
     }
 
-    private void uploadInspectionData() {
+    private void uploadInspectionDataToFirebase() {
 
         Date date = new Date();
         String locName = editTextLocationName.getText().toString().trim();
@@ -305,23 +355,10 @@ public class InspectionFragment extends Fragment {
         staffId = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STAFF_ID);
         InspectionModel inspectionModel = new InspectionModel(staffId, locName, latitude, longitude, new Date());
 
-       /* DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference
-                .child(FireBaseHelper.getInstance().ROOT_INSPECTION)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
-                .child(key);
-        dbref.setValue(inspectionModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadInspectionFiles(key);
-                }
-            }
-        });*/
-
-        Task task= DataSubmissionAndMail.getInstance().uploadDataToFirebase(
+        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
                 FireBaseHelper.getInstance().ROOT_INSPECTION,
                 inspectionModel,
-                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE),
+                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                 key);
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -331,16 +368,46 @@ public class InspectionFragment extends Fragment {
                 }
             }
         });
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Some Error Occured",
+                        "Error 3\nPlease Try Again",
+                        "OK");
+            }
+        });
+    }
+
+
+
+    private void sendFinalMail() {
+
+
+        progressDialog.setMessage("Almost Done..");
+        progressDialog.show();
+        String url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
+        Map<String, String> params = new HashMap();
+
+        params.put("locationName", editTextLocationName.getText().toString());
+        params.put("staffID",staffId);
+        params.put("location",mLastLocation.getLatitude() +"," + mLastLocation.getLongitude());
+        params.put("fileCount", selectedImageModelArrayList.size() + "");
+
+        DataSubmissionAndMail.getInstance().sendMail(params,"send_inspection_mail-"+staffId,volleyHelper,url);
     }
 
     private void uploadInspectionFiles(String key) {
+        firebaseImageURLs = new ArrayList<>();
         UploadTask uploadTask;
-        count = 0;
+        counterFirebaseImages = 0;
+        counterUpload = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = DataSubmissionAndMail.getInstance().uploadFileToFirebase(
+            uploadTask = FireBaseHelper.getInstance().uploadFiles(
                     imageModel,
                     true,
-                    count++,
+                    counterFirebaseImages++,
                     FireBaseHelper.getInstance().ROOT_INSPECTION,
                     Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                     key);
@@ -351,17 +418,18 @@ public class InspectionFragment extends Fragment {
                     public void onFailure(@NonNull Exception exception) {
                         Toast.makeText(getContext(), "Unable to Upload file", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onFailure: " + exception.getMessage());
-                        dismissProgressDialog();
+                        progressDialog.dismiss();
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        firebaseImageURLs.add(downloadUrl);
                         Log.d(TAG, "onSuccess: " + downloadUrl);
-                        progressDialog.setMessage("Uploading file " + count + "/" + selectedImageModelArrayList.size());
-                        if (count == selectedImageModelArrayList.size()) {
-                            Toast.makeText(getActivity(), "Inspection data Submitted", Toast.LENGTH_SHORT).show();
-                            dismissProgressDialog();
+                        progressDialog.setMessage("Uploaded file " + (++counterUpload) + "/" + selectedImageModelArrayList.size());
+                        if (counterUpload == selectedImageModelArrayList.size()) {
+                            isUploadedToFirebase = true;
+                            doSubmission();
                         }
                     }
                 });
@@ -369,14 +437,31 @@ public class InspectionFragment extends Fragment {
         }
     }
 
-    private void dismissProgressDialog() {
-        if (progressDialog.isShowing())
-            progressDialog.dismiss();
-    }
+    private void uploadImagesToServer() {
 
-    private void showProgressDialog() {
-        if (!progressDialog.isShowing()) {
-            progressDialog.show();
+        counterServerImages = 0;
+        progressDialog.setMessage("Processing..");
+        progressDialog.show();
+        int totalFilesToAttach = selectedImageModelArrayList.size();
+
+        if (totalFilesToAttach != 0) {
+            try {
+                DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                        editTextLocationName.getText().toString(),
+                        volleyHelper);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                Helper.getInstance().showAlertDialog(
+                        getContext(),
+                        "Error 1\nPlease report this issue through feedback section",
+                        "Submission Error",
+                        "OK");
+
+            }
+        } else {
+            isUploadedToServer = true;
+            doSubmission();
         }
     }
 
@@ -398,7 +483,7 @@ public class InspectionFragment extends Fragment {
                     case Activity.RESULT_OK: {
                         Log.v(TAG, "Resolution success");
                         myLocationManager.requestLocationUpdates();
-                        showProgressDialog();
+                        progressDialog.show();
                         break;
                     }
                     case Activity.RESULT_CANCELED: {
@@ -409,7 +494,7 @@ public class InspectionFragment extends Fragment {
                     }
                     default: {
                         Log.v(TAG, "User unable to do anything");
-                        dismissProgressDialog();
+                        progressDialog.dismiss();
                         break;
                     }
                 }
@@ -432,7 +517,7 @@ public class InspectionFragment extends Fragment {
 
                 } else {
                     myLocationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nInspection will not work without location access.");
-                    dismissProgressDialog();
+                    progressDialog.dismiss();
                 }
                 break;
             }
@@ -446,5 +531,43 @@ public class InspectionFragment extends Fragment {
     }
 
 
+    @Override
+    public void onError(VolleyError volleyError) {
+        volleyError.printStackTrace();
+        progressDialog.dismiss();
+        Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResponse(String str) {
+        JSONObject jsonObject = Helper.getInstance().getJson(str);
+        Log.d(TAG, jsonObject.toString());
+        try {
+            if (jsonObject.get("action").equals("Creating Image")) {
+                counterServerImages++;
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                    if (counterServerImages == selectedImageModelArrayList.size()) {
+                        Log.d(TAG, "onResponse: Files uploaded");
+                        isUploadedToServer = true;
+                        doSubmission();
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
+                    progressDialog.dismiss();
+                }
+            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Inspection Data Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                    isUploadedToServer = isUploadedToFirebase = false;
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Inspection Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (JSONException jse) {
+            jse.printStackTrace();
+        }
+    }
 }
 
