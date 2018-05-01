@@ -98,16 +98,17 @@ public class SplashActivity extends AppCompatActivity {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION).child("CurrentReleaseVersion")
+                dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
                                 int currentAppVersion = getAppVersion();
-                                Log.d("Version", "onDataChange: current = " + currentAppVersion + "available = " + model.getVersion());
+                                Log.d("Version", "onDataChange: current = " + currentAppVersion);
+                                Log.d("Version","available = " + model.getCurrentReleaseVersion());
                                 if (currentAppVersion == -1) {
                                     LoadNextActivity();
-                                } else if (currentAppVersion == model.getVersion()) {
+                                } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
                                     LoadNextActivity();
                                 } else {
                                     Helper.getInstance().showAlertDialog(getApplicationContext(),

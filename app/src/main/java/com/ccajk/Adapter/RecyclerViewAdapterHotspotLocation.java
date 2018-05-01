@@ -36,12 +36,12 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String location = locationArray.get(position).getLocationName();
         String district = locationArray.get(position).getDistrict();
-        String stateId = locationArray.get(position).getStateID();
-
+        String block = locationArray.get(position).getBlock();
         //holder.textViewLocationName.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
 
         holder.textViewLocationName.setText(Html.fromHtml("<u>"+location+"</u>"));
         holder.textViewDistrict.setText(district);
+        holder.textViewBlock.setText("Block : " + block);
 
     }
 
@@ -54,12 +54,14 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
         public TextView textViewLocationName;
         public  TextView textViewDistrict;
         private TextView textViewGetDirections;
+        private TextView textViewBlock;
 
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.textViewLocationName = itemView.findViewById(R.id.textview_location_name);
             textViewDistrict = itemView.findViewById(R.id.textview_location_district);
+            textViewBlock = itemView.findViewById(R.id.textview_location_block);
             textViewGetDirections = itemView.findViewById(R.id.textview_get_directions);
             textViewGetDirections.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_directions_black_24dp,0,0);
             //this.textViewDistrict = itemView.findViewById(R.id.state);

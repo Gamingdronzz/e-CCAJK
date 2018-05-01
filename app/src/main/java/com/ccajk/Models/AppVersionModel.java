@@ -6,18 +6,18 @@ package com.ccajk.Models;
 
 public class AppVersionModel {
 
-    private int version;
+    private int CurrentReleaseVersion;
 
-    public int getVersion() {
-        return version;
+    public int getCurrentReleaseVersion() {
+        return CurrentReleaseVersion;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setCurrentReleaseVersion(int currentReleaseVersion) {
+        CurrentReleaseVersion = currentReleaseVersion;
     }
 
-    public AppVersionModel(int version) {
+    public AppVersionModel(int currentReleaseVersion) {
 
-        this.version = version;
+        CurrentReleaseVersion = currentReleaseVersion;
     }
 }

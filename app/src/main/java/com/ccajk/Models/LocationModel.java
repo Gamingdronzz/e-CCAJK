@@ -12,6 +12,36 @@ public class LocationModel {
     private String StateID;
     private String District;
 
+    public String getBlock() {
+        return Block;
+    }
+
+    public void setBlock(String block) {
+        Block = block;
+    }
+
+    public String getSSA() {
+        return SSA;
+    }
+
+    public void setSSA(String SSA) {
+        this.SSA = SSA;
+    }
+
+    public LocationModel(String locationName, Double latitude, Double longitude, String stateID, String district, String block, String SSA) {
+
+        LocationName = locationName;
+        Latitude = latitude;
+        Longitude = longitude;
+        StateID = stateID;
+        District = district;
+        Block = block;
+        this.SSA = SSA;
+    }
+
+    private String Block;
+    private String SSA;
+
     public LocationModel()
     {
 
