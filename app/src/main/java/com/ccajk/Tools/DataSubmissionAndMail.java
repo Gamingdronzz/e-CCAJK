@@ -65,7 +65,7 @@ public class DataSubmissionAndMail {
     }
 
 
-    public UploadTask uploadFilesToFirebase(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
+    public UploadTask uploadFileToFirebase(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
         StorageReference sref;
         StringBuilder sb = new StringBuilder();
         for (String param : params)

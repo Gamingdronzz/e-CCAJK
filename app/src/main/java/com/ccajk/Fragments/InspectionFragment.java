@@ -20,8 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
@@ -31,6 +29,7 @@ import com.ccajk.Models.InspectionModel;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
+import com.ccajk.Tools.DataSubmissionAndMail;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.MyLocationManager;
@@ -43,7 +42,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.UploadTask;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
@@ -307,11 +305,25 @@ public class InspectionFragment extends Fragment {
         staffId = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STAFF_ID);
         InspectionModel inspectionModel = new InspectionModel(staffId, locName, latitude, longitude, new Date());
 
-        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference
+       /* DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference
                 .child(FireBaseHelper.getInstance().ROOT_INSPECTION)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .child(key);
         dbref.setValue(inspectionModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    uploadInspectionFiles(key);
+                }
+            }
+        });*/
+
+        Task task= DataSubmissionAndMail.getInstance().uploadDataToFirebase(
+                FireBaseHelper.getInstance().ROOT_INSPECTION,
+                inspectionModel,
+                Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE),
+                key);
+        task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -325,7 +337,7 @@ public class InspectionFragment extends Fragment {
         UploadTask uploadTask;
         count = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFiles(
+            uploadTask = DataSubmissionAndMail.getInstance().uploadFileToFirebase(
                     imageModel,
                     true,
                     count++,

@@ -444,13 +444,14 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void uploadAllImagesToFirebase() {
         if (selectedImageModelArrayList.size() > 0) {
+
             progressDialog.setMessage("Uploading Files..\nBe patient");
             progressDialog.show();
-
             counterFirebaseImages = 0;
             counterUpload = 0;
+
             for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
+                final UploadTask uploadTask = DataSubmissionAndMail.getInstance().uploadFileToFirebase(
                         imageModel,
                         true,
                         counterFirebaseImages++,

@@ -28,6 +28,7 @@ import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.PanAdhaar;
 import com.ccajk.Models.SelectedImageModel;
 import com.ccajk.R;
+import com.ccajk.Tools.DataSubmissionAndMail;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
@@ -277,14 +278,14 @@ public class PanAdhaarUploadFragment extends Fragment {
 
     private void uploadAdhaarOrPan() {
         progressDialog.show();
-        dbref = FireBaseHelper.getInstance().databaseReference.child(root);
+       // dbref = FireBaseHelper.getInstance().databaseReference.child(root);
 
         PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
                 number,
                 null,
                 Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
 
-        dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
+       /* dbref.child(pensionerCode).setValue(panAdhaar).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -302,11 +303,25 @@ public class PanAdhaarUploadFragment extends Fragment {
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+*/
+        Task task = DataSubmissionAndMail.getInstance().uploadDataToFirebase(root, panAdhaar);
 
+        task.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    uploadFile();
+                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+        });
     }
 
     private void uploadFile() {
-        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
+        UploadTask uploadTask = DataSubmissionAndMail.getInstance().uploadFileToFirebase(
                 imageModel,
                 false,
                 0,
