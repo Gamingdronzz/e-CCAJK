@@ -8,6 +8,13 @@ public class AppVersionModel {
 
     private int CurrentReleaseVersion;
 
+    public AppVersionModel() {
+    }
+
+    public AppVersionModel(int currentReleaseVersion) {
+        CurrentReleaseVersion = currentReleaseVersion;
+    }
+
     public int getCurrentReleaseVersion() {
         return CurrentReleaseVersion;
     }
@@ -16,8 +23,5 @@ public class AppVersionModel {
         CurrentReleaseVersion = currentReleaseVersion;
     }
 
-    public AppVersionModel(int currentReleaseVersion) {
 
-        CurrentReleaseVersion = currentReleaseVersion;
-    }
 }
