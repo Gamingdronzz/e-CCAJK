@@ -45,11 +45,16 @@ public class Helper {
     private final String TAG = "Helper";
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
 
-    private boolean debugMode = true;
-    public void setDebugMode(boolean set)
-    {
-        this.debugMode = set;
+    public boolean isDebugMode() {
+        return debugMode;
     }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    private boolean debugMode = true;
+
 
     public ArrayList<LocationModel> allLocationModels;
 
@@ -60,11 +65,11 @@ public class Helper {
     public String getAPIUrl() {
         if(debugMode)
         {
-            return "http://jknccdirectorate.com/api/cca/v1/";
+            return "http://jknccdirectorate.com/api/cca/debug/v1/";
         }
         else
         {
-            return "http://jknccdirectorate.com/api/cca/v1/";
+            return "http://jknccdirectorate.com/api/cca/release/v1/";
         }
 
     }

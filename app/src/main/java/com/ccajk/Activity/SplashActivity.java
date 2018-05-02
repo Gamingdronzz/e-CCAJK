@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         bindVIews();
-        Helper.getInstance().setDebugMode(false);
+        Helper.getInstance().setDebugMode(true);
         //checkForUpdate();
         StartAnimations();
     }
@@ -48,36 +48,39 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForUpdate() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-                @Override
-                public void OnConnectionAvailable() {
-                    dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    checkVersion(dataSnapshot);
+        if (!Helper.getInstance().isDebugMode()) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+                    @Override
+                    public void OnConnectionAvailable() {
+                        dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        checkVersion(dataSnapshot);
 
-                                }
+                                    }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
-                }
+                                    }
+                                });
+                    }
 
-                @Override
-                public void OnConnectionNotAvailable() {
-                    Log.d("Splash", "OnConnectionNotAvailable: ");
-                    LoadNextActivity();
-                }
-            });
-            connectionUtility.checkConnectionAvailability();
-        } else
+                    @Override
+                    public void OnConnectionNotAvailable() {
+                        Log.d("Splash", "OnConnectionNotAvailable: ");
+                        LoadNextActivity();
+                    }
+                });
+                connectionUtility.checkConnectionAvailability();
+            } else
+                LoadNextActivity();
+        } else {
             LoadNextActivity();
+        }
     }
-
     private void checkVersion(DataSnapshot dataSnapshot)
     {
         AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
