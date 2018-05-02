@@ -97,8 +97,9 @@ public class FireBaseHelper {
         else if (root.equals(FireBaseHelper.getInstance().ROOT_ERROR_REPORT)) {
 
             HashMap<String,String> hashMap=new HashMap<>();
-            hashMap.put("Error Code",(String)model);
-            hashMap.put("Cause",params[0]);
+            hashMap.put("Error Code",params[0]);
+            hashMap.put("Error Message",params[1]);
+            hashMap.put("Cause",params[2]);
             task = dbref.push().setValue(hashMap);
         }
         else if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCES)) {

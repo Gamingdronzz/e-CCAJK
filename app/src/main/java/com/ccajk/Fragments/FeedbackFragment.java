@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class FeedbackFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feedback, container, false);
         setHasOptionsMenu(true);
         bindViews(view);
+        init();
         return view;
     }
 
@@ -54,22 +56,30 @@ public class FeedbackFragment extends Fragment {
         btnReportIssue = view.findViewById(R.id.btn_feedback_report_issue);
     }
 
-    private void init(View view) {
+    private void init() {
+
+        spinnerErrorType.setAdapter(new ArrayAdapter(getContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                Helper.getInstance().errorCodesList));
+
         btnSuggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
-                        FireBaseHelper.getInstance().ROOT_SUGGESTIONS,
-                        etSuggestion.getText().toString().trim()
-                );
-                task.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Thanks for your Valuable Suggestion", Toast.LENGTH_SHORT).show();
+                if (!etSuggestion.getText().toString().trim().isEmpty()) {
+                    Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
+                            FireBaseHelper.getInstance().ROOT_SUGGESTIONS,
+                            etSuggestion.getText().toString().trim()
+                    );
+                    task.addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getContext(), "Thanks for your Valuable Suggestion", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                } else
+                    etSuggestion.setError("No Suggestion!");
             }
         });
 
@@ -78,7 +88,9 @@ public class FeedbackFragment extends Fragment {
             public void onClick(View v) {
                 Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
                         FireBaseHelper.getInstance().ROOT_ERROR_REPORT,
+                        null,
                         spinnerErrorType.getSelectedItem().toString(),
+                        Helper.getInstance().errorMessageList[spinnerErrorType.getSelectedItemPosition()],
                         etCauseOfIssue.getText().toString().trim());
 
                 task.addOnCompleteListener(new OnCompleteListener() {

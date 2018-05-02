@@ -20,10 +20,10 @@ import android.widget.Toast;
 
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
-import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.Tools.MapsHelper;
 import com.ccajk.Tools.MyLocationManager;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -39,10 +39,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.warkiz.widget.IndicatorSeekBar;
-import com.warkiz.widget.IndicatorSeekBarType;
-import com.warkiz.widget.IndicatorType;
-import com.warkiz.widget.TickType;
 
 import java.util.ArrayList;
 
@@ -279,20 +275,20 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         mMap.setOnMyLocationClickListener(this);
         Log.v(TAG, "Maps Set");
 
-        View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("4"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
         // position on right bottom
 
 
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 
         rlp.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
         rlp.addRule(RelativeLayout.ALIGN_END, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        rlp.setMargins(30, 0, 0, 40);
+        rlp.setMargins(30, 30, 0, 40);
     }
 
     private void placeMarkerOnMyLocation(Location location) {

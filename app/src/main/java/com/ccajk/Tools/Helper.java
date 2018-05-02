@@ -44,44 +44,12 @@ public class Helper {
     public final String Nil = "Nil";
     private final String TAG = "Helper";
     private String appMode;
-    String[] statuslist = {"Submitted", "Under Process", "Resolved"};
-
-    public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-        if(debugMode)
-        {
-            appMode = "debug";
-        }
-        else
-        {
-            appMode = "release";
-        }
-    }
-
     private boolean debugMode = true;
-
-
     public ArrayList<LocationModel> allLocationModels;
 
-    public String getConnectionCheckURL() {
-        return "https://www.google.co.in/";
-    }
-
-    public String getAPIUrl() {
-        if(debugMode)
-        {
-            return "http://jknccdirectorate.com/api/cca/debug/v1/";
-        }
-        else
-        {
-            return "http://jknccdirectorate.com/api/cca/release/v1/";
-        }
-
-    }
+    String[] statuslist = {"Submitted", "Under Process", "Resolved"};
+    public String[] errorCodesList={"Error Code 1","Error Code 2","Error Code 3"};
+    public String[] errorMessageList={"Message 1","Message 2","Message 3"};
 
     public Helper() {
         _instance = this;
@@ -93,6 +61,146 @@ public class Helper {
         } else {
             return _instance;
         }
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+        if (debugMode) {
+            appMode = "debug";
+        } else {
+            appMode = "release";
+        }
+    }
+
+
+    public String getConnectionCheckURL() {
+        return "https://www.google.co.in/";
+    }
+
+    public String getAPIUrl() {
+        if (debugMode) {
+            return "http://jknccdirectorate.com/api/cca/debug/v1/";
+        } else {
+            return "http://jknccdirectorate.com/api/cca/release/v1/";
+        }
+
+    }
+
+
+    public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
+        ArrayList<GrievanceType> types = new ArrayList<>();
+        types.add(new GrievanceType("Change of PDA", 0));
+        types.add(new GrievanceType("Correction in PPO", 1));
+        types.add(new GrievanceType("Wrong Fixation of Pension", 2));
+        types.add(new GrievanceType("Non Updation of DA", 3));
+        types.add(new GrievanceType("Non Payment of Monthly Pension", 4));
+        types.add(new GrievanceType("Non Payment of Medical Allowance", 5));
+        types.add(new GrievanceType("Non Starting of Family Pension", 6));
+        types.add(new GrievanceType("Non Revision as per Latest CPC", 7));
+        types.add(new GrievanceType("Request for CGIES", 8));
+        types.add(new GrievanceType("Excess/Short Payment", 9));
+        types.add(new GrievanceType("Enhancement of Pension on Attaining 75/80", 10));
+        types.add(new GrievanceType("Other Pension GrievanceModel", 11));
+        return types;
+    }
+
+    public ArrayList<GrievanceType> getGPFGrievanceTypelist() {
+        ArrayList<GrievanceType> types = new ArrayList<>();
+        types.add(new GrievanceType("GPF Final Payment not received", 100));
+        types.add(new GrievanceType("Correction in the Name", 101));
+        types.add(new GrievanceType("Change of Nomination", 102));
+        types.add(new GrievanceType("GPF Account not transfered", 103));
+        types.add(new GrievanceType("Details of GPF Deposit A/C Slip", 104));
+        types.add(new GrievanceType("Non Payment of GPF Withdrawal", 105));
+        types.add(new GrievanceType("Other GPF GrievanceModel", 106));
+        return types;
+    }
+
+    public String getGrievanceString(long id) {
+        switch ((int) id) {
+            case 0:
+                return "Change of PDA";
+            case 1:
+                return "Correction in PPO";
+            case 2:
+                return "Wrong Fixation of Pension";
+            case 3:
+                return "Non Updation of DA";
+            case 4:
+                return "Non Payment of Monthly Pension";
+            case 5:
+                return "Non Payment of Medical Allowance";
+            case 6:
+                return "Non Starting of Family Pension";
+            case 7:
+                return "Non Revision as per Latest CPC";
+            case 8:
+                return "Request for CGIES";
+            case 9:
+                return "Excess/Short Payment";
+            case 10:
+                return "Enhancement of Pension on Attaining 75/80";
+            case 11:
+                return "Other Pension GrievanceModel";
+            case 100:
+                return "GPF Final Payment not received";
+            case 101:
+                return "Correction in the Name";
+            case 102:
+                return "Change of Nomination";
+            case 103:
+                return "GPF Account not transfered";
+            case 104:
+                return "Details of GPF Deposit A/C Slip";
+            case 105:
+                return "Non Payment of GPF Withdrawal";
+            case 106:
+                return "Other GPF GrievanceModel";
+        }
+        return null;
+    }
+
+    public String getGrievanceCategory(long id) {
+        if (id < 100)
+            return FireBaseHelper.getInstance().GRIEVANCE_PENSION;
+        else
+            return FireBaseHelper.getInstance().GRIEVANCE_GPF;
+    }
+
+    public String[] getStatusList() {
+        return statuslist;
+    }
+
+    public String getStatusString(long status) {
+        return getStatusList()[(int) status];
+    }
+
+    public String[] submittedByList(String type) {
+        String first;
+        if (type == FireBaseHelper.getInstance().GRIEVANCE_PENSION)
+            first = "Pensioner";
+        else
+            first = "GPF Benificiary";
+        return new String[]{first, "Other"};
+    }
+
+    public String formatDate(Date date, String format) {
+        SimpleDateFormat dt = new SimpleDateFormat(format);
+        return dt.format(date);
+    }
+
+    public InputFilter[] limitInputLength(int length) {
+        return new InputFilter[]{new InputFilter.LengthFilter(length)};
+    }
+
+    public ProgressDialog getProgressWindow(final Activity context, String message) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(message);
+        return progressDialog;
     }
 
     public void showGuide(Context context, View view, String title, String message) {
@@ -308,128 +416,7 @@ public class Helper {
         return result;
     }
 
-    public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
-        ArrayList<GrievanceType> types = new ArrayList<>();
-        types.add(new GrievanceType("Change of PDA", 0));
-        types.add(new GrievanceType("Correction in PPO", 1));
-        types.add(new GrievanceType("Wrong Fixation of Pension", 2));
-        types.add(new GrievanceType("Non Updation of DA", 3));
-        types.add(new GrievanceType("Non Payment of Monthly Pension", 4));
-        types.add(new GrievanceType("Non Payment of Medical Allowance", 5));
-        types.add(new GrievanceType("Non Starting of Family Pension", 6));
-        types.add(new GrievanceType("Non Revision as per Latest CPC", 7));
-        types.add(new GrievanceType("Request for CGIES", 8));
-        types.add(new GrievanceType("Excess/Short Payment", 9));
-        types.add(new GrievanceType("Enhancement of Pension on Attaining 75/80", 10));
-        types.add(new GrievanceType("Other Pension GrievanceModel", 11));
-        return types;
-    }
 
-    public ArrayList<GrievanceType> getGPFGrievanceTypelist() {
-        ArrayList<GrievanceType> types = new ArrayList<>();
-        types.add(new GrievanceType("GPF Final Payment not received", 100));
-        types.add(new GrievanceType("Correction in the Name", 101));
-        types.add(new GrievanceType("Change of Nomination", 102));
-        types.add(new GrievanceType("GPF Account not transfered", 103));
-        types.add(new GrievanceType("Details of GPF Deposit A/C Slip", 104));
-        types.add(new GrievanceType("Non Payment of GPF Withdrawal", 105));
-        types.add(new GrievanceType("Other GPF GrievanceModel", 106));
-        return types;
-    }
-
-    public String getGrievanceString(long id) {
-        switch ((int) id) {
-            case 0:
-                return "Change of PDA";
-            case 1:
-                return "Correction in PPO";
-            case 2:
-                return "Wrong Fixation of Pension";
-            case 3:
-                return "Non Updation of DA";
-            case 4:
-                return "Non Payment of Monthly Pension";
-            case 5:
-                return "Non Payment of Medical Allowance";
-            case 6:
-                return "Non Starting of Family Pension";
-            case 7:
-                return "Non Revision as per Latest CPC";
-            case 8:
-                return "Request for CGIES";
-            case 9:
-                return "Excess/Short Payment";
-            case 10:
-                return "Enhancement of Pension on Attaining 75/80";
-            case 11:
-                return "Other Pension GrievanceModel";
-            case 100:
-                return "GPF Final Payment not received";
-            case 101:
-                return "Correction in the Name";
-            case 102:
-                return "Change of Nomination";
-            case 103:
-                return "GPF Account not transfered";
-            case 104:
-                return "Details of GPF Deposit A/C Slip";
-            case 105:
-                return "Non Payment of GPF Withdrawal";
-            case 106:
-                return "Other GPF GrievanceModel";
-        }
-        return null;
-    }
-
-    public String getGrievanceCategory(long id) {
-        if (id < 100)
-            return FireBaseHelper.getInstance().GRIEVANCE_PENSION;
-        else
-            return FireBaseHelper.getInstance().GRIEVANCE_GPF;
-    }
-
-    public String[] getStatusList() {
-        return statuslist;
-    }
-
-    public String getStatusString(long status) {
-
-       /* switch ((int) textViewStatus) {
-            case 0:
-                return "Submitted";
-            case 1:
-                return "Under process";
-            case 2:
-                return "Unable to resolve";
-            case 3:
-                return "Resolved";
-        }*/
-        return getStatusList()[(int) status];
-    }
-
-    public String[] submittedByList(String type) {
-        String first;
-        if (type == FireBaseHelper.getInstance().GRIEVANCE_PENSION)
-            first = "Pensioner";
-        else
-            first = "GPF Benificiary";
-        return new String[]{first, "Other"};
-    }
-
-    public String formatDate(Date date, String format) {
-        SimpleDateFormat dt = new SimpleDateFormat(format);
-        return dt.format(date);
-    }
-
-    public ProgressDialog getProgressWindow(final Activity context, String message) {
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage(message);
-        return progressDialog;
-    }
-
-    public InputFilter[] limitInputLength(int length) {
-        return new InputFilter[]{new InputFilter.LengthFilter(length)};
-    }
 
     public void showSnackBar(CharSequence message, View view) {
         Snackbar.make(view.findViewById(R.id.fragmentPlaceholder), message, Snackbar.LENGTH_INDEFINITE)

@@ -19,60 +19,53 @@
             android:layout_height="match_parent" />
 
         <!--<com.ccajk.CustomObjects.VerticalSeekBarWrapper-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:background="#88000000"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginRight="@dimen/margin_xlarge"-->
-            <!--android:layout_marginTop="@dimen/margin_xxxxlarge"-->
-            <!--android:layout_marginBottom="@dimen/margin_xxxxlarge"-->
-            <!--android:layout_height="match_parent">-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:background="#88000000"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginRight="@dimen/margin_xlarge"-->
+        <!--android:layout_marginTop="@dimen/margin_xxxxlarge"-->
+        <!--android:layout_marginBottom="@dimen/margin_xxxxlarge"-->
+        <!--android:layout_height="match_parent">-->
 
-            <!--<com.ccajk.CustomObjects.VerticalSeekBar-->
-                <!--android:layout_width="25dp"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:splitTrack="false"-->
-                <!--android:tickMarkTint="@color/colorPrimary"-->
-                <!--android:thumbTint="@color/colorPrimary"-->
-                <!--app:seekBarRotation="CW270"-->
-            <!--/>-->
+        <!--<com.ccajk.CustomObjects.VerticalSeekBar-->
+        <!--android:layout_width="25dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:splitTrack="false"-->
+        <!--android:tickMarkTint="@color/colorPrimary"-->
+        <!--android:thumbTint="@color/colorPrimary"-->
+        <!--app:seekBarRotation="CW270"-->
+        <!--/>-->
         <!--</com.ccajk.CustomObjects.VerticalSeekBarWrapper>-->
         <com.warkiz.widget.IndicatorSeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/margin_xxlarge"
-        android:background="#88000000"
-        android:layout_centerHorizontal="true"
-        android:paddingBottom="@dimen/padding_medium"
-        android:paddingLeft="@dimen/padding_xxxlarge"
-        android:paddingRight="@dimen/padding_xxxlarge"
-        android:paddingTop="@dimen/padding_medium"
-        app:isb_indicator_color="@color/colorAccent"
-        app:isb_indicator_stay="false"
-        app:isb_indicator_text_color="@color/colorWhite"
-        app:isb_indicator_text_size="@dimen/text_15"
-        app:isb_indicator_type="circular_bubble"
-        app:isb_max="5"
-        app:isb_min="1"
-        app:isb_seek_bar_type="discrete_ticks"
-        app:isb_text_color="@color/colorWhite"
-        app:isb_thumb_color="@color/colorAccent"
-        app:isb_thumb_width="@dimen/margin_large"
-        app:isb_track_background_bar_color="@color/colorWhite"
-        app:isb_track_background_bar_size="@dimen/padding_xlarge"
-        app:isb_track_progress_bar_color="@color/colorAccent"
-        app:isb_track_progress_bar_size="@dimen/margin_small"></com.warkiz.widget.IndicatorSeekBar>
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textview_range"
+            android:paddingTop="@dimen/padding_medium"
+            android:layout_centerHorizontal="true"
+            android:background="#88000000"
+            app:isb_indicator_color="@color/colorAccent"
+            app:isb_indicator_stay="false"
+            app:isb_indicator_text_color="@color/colorWhite"
+            app:isb_indicator_text_size="@dimen/text_15"
+            app:isb_indicator_type="circular_bubble"
+            app:isb_max="5"
+            app:isb_min="1"
+            app:isb_seek_bar_type="discrete_ticks"
+            app:isb_text_color="@color/colorWhite"
+            app:isb_thumb_color="@color/colorAccent"
+            app:isb_thumb_width="@dimen/margin_large"
+            app:isb_track_background_bar_color="@color/colorWhite"
+            app:isb_track_background_bar_size="@dimen/padding_xlarge"
+            app:isb_track_progress_bar_color="@color/colorAccent"
+            app:isb_track_progress_bar_size="@dimen/margin_small"></com.warkiz.widget.IndicatorSeekBar>
 
         <TextView
             android:id="@+id/textview_range"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/margin_medium"
-
-            android:layout_marginRight="@dimen/margin_medium"
             android:background="#88000000"
             android:paddingBottom="@dimen/padding_small"
             android:paddingLeft="@dimen/padding_large"
