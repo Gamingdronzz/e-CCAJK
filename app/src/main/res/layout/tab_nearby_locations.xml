@@ -19,6 +19,8 @@
 
         <com.warkiz.widget.IndicatorSeekBar
             android:id="@+id/seekBar"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginRight="@dimen/margin_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/textview_range"
@@ -47,6 +49,8 @@
             android:id="@+id/textview_range"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginRight="@dimen/margin_medium"
             android:layout_alignParentTop="true"
             android:background="#88000000"
             android:paddingBottom="@dimen/padding_small"
