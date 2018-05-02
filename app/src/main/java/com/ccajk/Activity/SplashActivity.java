@@ -38,7 +38,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         bindVIews();
         Helper.getInstance().setDebugMode(false);
-        checkForUpdate();
+        //checkForUpdate();
         StartAnimations();
     }
 
@@ -56,20 +56,7 @@ public class SplashActivity extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
-                                    int currentAppVersion = getAppVersion();
-                                    Log.d("Version", "onDataChange: current = " + currentAppVersion);
-                                    Log.d("Version", "available = " + model.getCurrentReleaseVersion());
-                                    if (currentAppVersion == -1) {
-                                        LoadNextActivity();
-                                    } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
-                                        LoadNextActivity();
-                                    } else {
-                                        Helper.getInstance().showAlertDialog(getApplicationContext(),
-                                                "A new version of the application is available on the play Store\n\nUpdate to continue using the application",
-                                                "Update",
-                                                "OK");
-                                    }
+                                    checkVersion(dataSnapshot);
 
                                 }
 
@@ -89,6 +76,24 @@ public class SplashActivity extends AppCompatActivity {
             connectionUtility.checkConnectionAvailability();
         } else
             LoadNextActivity();
+    }
+
+    private void checkVersion(DataSnapshot dataSnapshot)
+    {
+        AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
+        int currentAppVersion = getAppVersion();
+        Log.d("Version", "onDataChange: current = " + currentAppVersion);
+        Log.d("Version", "available = " + model.getCurrentReleaseVersion());
+        if (currentAppVersion == -1) {
+            LoadNextActivity();
+        } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
+            LoadNextActivity();
+        } else {
+            Helper.getInstance().showAlertDialog(this,
+                    "A new version of the application is available on the play Store\n\nUpdate to continue using the application",
+                    "Update",
+                    "OK");
+        }
     }
 
     private void LoadNextActivity() {
@@ -125,7 +130,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                checkForUpdate();
             }
 
             @Override

@@ -20,9 +20,26 @@
          android:layout_alignParentBottom="true"
          android:text="Office of CCA, J&amp;K Circle\nJAMMU\nDepartment of Telecommunications"
          android:textAlignment="center"
+         android:id="@+id/tv_splash_office"
          android:typeface="sans"
          android:textColor="@color/colorWhite"
          android:textStyle="bold"
          android:textSize="@dimen/text_18" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@null"
+        android:layout_centerHorizontal="true">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:padding="@dimen/padding_small" />
+
+    </LinearLayout>
 
 </RelativeLayout>
