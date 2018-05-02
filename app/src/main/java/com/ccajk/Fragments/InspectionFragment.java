@@ -92,7 +92,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     int counterFirebaseImages;
     int counterUpload = 0;
     int counterServerImages = 0;
-    VolleyHelper volleyHelper ;
+    VolleyHelper volleyHelper;
 
     public InspectionFragment() {
 
@@ -109,7 +109,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
     private void init(View view) {
-        volleyHelper = new VolleyHelper(this,getContext());
+        volleyHelper = new VolleyHelper(this, getContext());
         getCoordinatesListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,7 +192,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 else if (selectedImageModelArrayList.size() == 0)
                     Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
                 else {
-                            doSubmissionOnInternetAvailable();
+                    doSubmissionOnInternetAvailable();
                 }
 
             }
@@ -209,8 +209,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void doSubmissionOnInternetAvailable()
-    {
+    private void doSubmissionOnInternetAvailable() {
         Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
         if (isUploadedToFirebase) {
@@ -381,20 +380,23 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
     private void sendFinalMail() {
-
-
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
-        Map<String, String> params = new HashMap();
+        String url;
+        if (Helper.getInstance().isDebugMode()) {
+            url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
+        } else {
+            url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
+        }
+            Map<String, String> params = new HashMap();
 
-        params.put("locationName", editTextLocationName.getText().toString());
-        params.put("staffID",staffId);
-        params.put("location",mLastLocation.getLatitude() +"," + mLastLocation.getLongitude());
-        params.put("fileCount", selectedImageModelArrayList.size() + "");
+            params.put("locationName", editTextLocationName.getText().toString());
+            params.put("staffID", staffId);
+            params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
+            params.put("fileCount", selectedImageModelArrayList.size() + "");
 
-        DataSubmissionAndMail.getInstance().sendMail(params,"send_inspection_mail-"+staffId,volleyHelper,url);
-    }
+            DataSubmissionAndMail.getInstance().sendMail(params, "send_inspection_mail-" + staffId, volleyHelper, url);
+        }
 
     private void uploadInspectionFiles(String key) {
         firebaseImageURLs = new ArrayList<>();
@@ -447,8 +449,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
                         editTextLocationName.getText().toString(),
                         volleyHelper);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 Helper.getInstance().showAlertDialog(
                         getContext(),

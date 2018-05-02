@@ -43,6 +43,7 @@ public class Helper {
     public final String SUCCESS = "success";
     public final String Nil = "Nil";
     private final String TAG = "Helper";
+    private String appMode;
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
 
     public boolean isDebugMode() {
@@ -51,6 +52,14 @@ public class Helper {
 
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
+        if(debugMode)
+        {
+            appMode = "debug";
+        }
+        else
+        {
+            appMode = "release";
+        }
     }
 
     private boolean debugMode = true;
