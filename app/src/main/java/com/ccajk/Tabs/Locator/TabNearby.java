@@ -61,7 +61,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
 
     TextView kilometres;
-    IndicatorSeekBar seekBar;
+    //IndicatorSeekBar seekBar;
     ProgressDialog progressDialog;
     public MyLocationManager locationManager;
     MapsHelper mapsHelper;
@@ -71,6 +71,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private GoogleMap mMap;
     private Location mLastLocation;
     private LatLng latLng;
+    View mapView;
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -93,6 +94,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         locatorType = getArguments().getString("Locator");
         init(view);
+
         return view;
     }
 
@@ -123,88 +125,89 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         }
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
 
-        seekBar = view.findViewById(R.id.seekBar);
-        seekBar.getBuilder()
-                .setMax(3)
-                .setMin(0)
-                .setProgress(0)
-                .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
-                .setTickType(TickType.OVAL)
-                .setTickNum(1)
-                .setBackgroundTrackSize(2)//dp size
-                .setProgressTrackSize(3)//dp size
-                .setIndicatorType(IndicatorType.CIRCULAR_BUBBLE)
-                .setIndicatorColor(getResources().getColor(R.color.colorAccent))
-                .build();
-
-        seekBar.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
-            }
-
-            @Override
-            public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
-            }
-
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
-                seekBarValue = seekBar.getProgress();
-                kilometres.setText("WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM");
-                if (mLastLocation != null) {
-                    mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
-                } else {
-                    Task<LocationSettingsResponse> task = locationManager.ManageLocation();
-                    if (task != null) {
-                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                            @Override
-                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                                Log.v(TAG, "On Task Complete");
-                                if (task.isSuccessful()) {
-                                    Log.v(TAG, "Task is Successful");
-                                    locationManager.requestLocationUpdates(mMap);
-                                    manageNoLocationLayout(false);
-
-
-                                } else {
-                                    Log.v(TAG, "Task is not Successful");
-                                }
-                            }
-                        });
-                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-                            @Override
-                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                                Log.v(TAG, "On Task Success");
-                                // All location settings are satisfied. The client can initialize
-                                // location requests here.
-                                // ...
-
-                            }
-                        });
-
-                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.v(TAG, "On Task Failed");
-                                if (e instanceof ResolvableApiException) {
-                                    locationManager.onLocationAcccessRequestFailure(e);
-                                    // Location settings are not satisfied, but this can be fixed
-                                    // by showing the user a dialog.
-
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
+//        seekBar = view.findViewById(R.id.seekBar);
+//        seekBar.getBuilder()
+//                .setMax(3)
+//                .setMin(0)
+//                .setProgress(0)
+//                .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
+//                .setTickType(TickType.OVAL)
+//                .setTickNum(1)
+//                .setBackgroundTrackSize(2)//dp size
+//                .setProgressTrackSize(3)//dp size
+//                .setIndicatorType(IndicatorType.CIRCULAR_BUBBLE)
+//                .setIndicatorColor(getResources().getColor(R.color.colorAccent))
+//                .build();
+//
+//        seekBar.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
+//            }
+//
+//            @Override
+//            public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
+//            }
+//
+//            @SuppressLint("MissingPermission")
+//            @Override
+//            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+//                seekBarValue = seekBar.getProgress();
+//                kilometres.setText("WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM");
+//                if (mLastLocation != null) {
+//                    mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
+//                } else {
+//                    Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+//                    if (task != null) {
+//                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+//                                Log.v(TAG, "On Task Complete");
+//                                if (task.isSuccessful()) {
+//                                    Log.v(TAG, "Task is Successful");
+//                                    locationManager.requestLocationUpdates(mMap);
+//                                    manageNoLocationLayout(false);
+//
+//
+//                                } else {
+//                                    Log.v(TAG, "Task is not Successful");
+//                                }
+//                            }
+//                        });
+//                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+//                            @Override
+//                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+//                                Log.v(TAG, "On Task Success");
+//                                // All location settings are satisfied. The client can initialize
+//                                // location requests here.
+//                                // ...
+//
+//                            }
+//                        });
+//
+//                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.v(TAG, "On Task Failed");
+//                                if (e instanceof ResolvableApiException) {
+//                                    locationManager.onLocationAcccessRequestFailure(e);
+//                                    // Location settings are not satisfied, but this can be fixed
+//                                    // by showing the user a dialog.
+//
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mapView = mapFragment.getView();
 
     }
 
@@ -275,6 +278,21 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         Log.v(TAG, "Maps Set");
+
+        View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        // position on right bottom
+
+
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
+        rlp.addRule(RelativeLayout.ALIGN_END, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        rlp.setMargins(30, 0, 0, 40);
     }
 
     private void placeMarkerOnMyLocation(Location location) {
