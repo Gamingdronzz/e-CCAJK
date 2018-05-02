@@ -16,6 +16,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -37,12 +38,14 @@ public class FireBaseHelper {
     public final String ROOT_LIFE = "Life Certificate";
     public final String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
     public final String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
-    public final String ROOT_HOTSPOTS = "Locations";
+    public final String ROOT_HOTSPOTS = "Wifi Locations";
     public final String ROOT_GP = "GP Locations";
     public final String ROOT_STAFF = "Staff";
     public final String ROOT_PASSWORD = "password";
     public final String ROOT_TYPE = "type";
     public final String ROOT_INSPECTION = "Inspection";
+    public final String ROOT_SUGGESTIONS = "Suggestions";
+    public final String ROOT_ERROR_REPORT = "Error Reporting";
 
     public final String GRIEVANCE_PENSION = "Pension";
     public final String GRIEVANCE_GPF = "GPF";
@@ -57,8 +60,8 @@ public class FireBaseHelper {
 
     public FireBaseHelper() {
         _instance = this;
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child(Helper.getInstance().getAppMode());
+        storageReference = FirebaseStorage.getInstance().getReference().child(Helper.getInstance().getAppMode());
         //statelist = getStatelist();
     }
 
@@ -85,27 +88,36 @@ public class FireBaseHelper {
     }
 
     public Task uploadDataToFirebase(String root, Object model, String... params) {
-        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
+        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         Task task;
 
-        if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCES)) {
+        if (root.equals(FireBaseHelper.getInstance().ROOT_SUGGESTIONS)) {
+            task = dbref.push().setValue((String) model);
+        }
+        else if (root.equals(FireBaseHelper.getInstance().ROOT_ERROR_REPORT)) {
+
+            HashMap<String,String> hashMap=new HashMap<>();
+            hashMap.put("Error Code",(String)model);
+            hashMap.put("Cause",params[0]);
+            task = dbref.push().setValue(hashMap);
+        }
+        else if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCES)) {
             GrievanceModel grievanceModel = (GrievanceModel) model;
-            task = dbref.child(root)
-                    .child(grievanceModel.getPensionerIdentifier())
+            task = dbref.child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType()))
                     .setValue(grievanceModel);
 
-        } else if (root.equals(FireBaseHelper.getInstance().ROOT_INSPECTION)) {
+        }
+        else if (root.equals(FireBaseHelper.getInstance().ROOT_INSPECTION)) {
             InspectionModel inspectionModel = (InspectionModel) model;
-            task = dbref.child(root)
-                    .child(params[0])
+            task = dbref.child(params[0])
                     .child(params[1])
                     .setValue(inspectionModel);
 
-        } else {
+        }
+        else {
             PanAdhaar panAdhaar = (PanAdhaar) model;
-            task = dbref.child(root)
-                    .child(panAdhaar.getPensionerIdentifier())
+            task = dbref.child(panAdhaar.getPensionerIdentifier())
                     .setValue(panAdhaar);
         }
         return task;

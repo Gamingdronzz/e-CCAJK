@@ -75,6 +75,7 @@
                 android:text="Found an issue?" />
 
             <Spinner
+                android:id="@+id/spinner_feedback_error_types"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_medium"

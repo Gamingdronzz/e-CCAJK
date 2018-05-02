@@ -3,6 +3,8 @@ package com.ccajk.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,25 +13,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.ccajk.Activity.SubmitSuggestionActivity;
 import com.ccajk.R;
+import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FeedbackFragment extends Fragment {
 
-
-
-    private Button btnRateApplication,btnSuggestion,btnReportIssue;
-
-
+    private Button btnRateApplication, btnSuggestion, btnReportIssue;
+    private TextInputEditText etSuggestion, etCauseOfIssue;
+    private Spinner spinnerErrorType;
 
     public FeedbackFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -42,25 +45,50 @@ public class FeedbackFragment extends Fragment {
         return view;
     }
 
-    private void bindViews(View view)
-    {
+    private void bindViews(View view) {
+        etSuggestion = view.findViewById(R.id.et_feedback_submit_suggestion);
+        etCauseOfIssue = view.findViewById(R.id.et_feedback_report_issue);
+        spinnerErrorType = view.findViewById(R.id.spinner_feedback_error_types);
         btnRateApplication = view.findViewById(R.id.btn_feedback_rate_application);
         btnSuggestion = view.findViewById(R.id.btn_feedback_submit_advice);
         btnReportIssue = view.findViewById(R.id.btn_feedback_report_issue);
     }
 
     private void init(View view) {
-        btnReportIssue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //LoadActivity();
-            }
-        });
-
         btnSuggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //LoadActivity(SubmitSuggestionActivity.class);
+                Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
+                        FireBaseHelper.getInstance().ROOT_SUGGESTIONS,
+                        etSuggestion.getText().toString().trim()
+                );
+                task.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), "Thanks for your Valuable Suggestion", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+        btnReportIssue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
+                        FireBaseHelper.getInstance().ROOT_ERROR_REPORT,
+                        spinnerErrorType.getSelectedItem().toString(),
+                        etCauseOfIssue.getText().toString().trim());
+
+                task.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), "Thankyou for Reporting", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -72,27 +100,22 @@ public class FeedbackFragment extends Fragment {
         });
     }
 
-    private void LoadActivity(Class cl)
-    {
+
+    private void LoadActivity(Class cl) {
         Intent intent = new Intent();
-        intent.setClass(getContext(),cl);
+        intent.setClass(getContext(), cl);
         startActivity(intent);
     }
 
-    private void rateApplication()
-    {
-        if(Helper.getInstance().isDebugMode())
-        {
+    private void rateApplication() {
+        if (Helper.getInstance().isDebugMode()) {
             Toast.makeText(getContext(), "App is in debug Mode\nCannot Rate Application", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             //TODO
             //Show play store app page
             //showPlayStoreAppPage();
         }
     }
-
 
 
     @Override
@@ -114,8 +137,6 @@ public class FeedbackFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_browser, menu);
     }
-
-
 
 
 }

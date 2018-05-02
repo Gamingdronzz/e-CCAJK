@@ -165,6 +165,14 @@ public class Helper {
                 .show();
     }
 
+    public String getAppMode() {
+        return appMode;
+    }
+
+    public void setAppMode(String appMode) {
+        this.appMode = appMode;
+    }
+
     public void showAlertDialog(Context context, String message, String title, String neutralButtonText) {
         if (title == null) {
             title = "CCA JK";
