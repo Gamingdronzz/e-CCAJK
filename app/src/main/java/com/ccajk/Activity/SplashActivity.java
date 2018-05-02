@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         bindVIews();
-        Helper.getInstance().setDebugMode(true);
+        Helper.getInstance().setDebugMode(false);
         //checkForUpdate();
         StartAnimations();
     }

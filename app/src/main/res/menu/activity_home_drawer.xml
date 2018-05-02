@@ -182,7 +182,7 @@
             <group
                 android:checkableBehavior="single">
                 <item
-                    android:id="@+id/navmenu_developer_section"
+                    android:id="@+id/navmenu_feedback"
                     android:icon="@drawable/ic_inspection"
                     android:checkable="true"
                     android:title="Feedback" />

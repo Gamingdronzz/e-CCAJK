@@ -21,6 +21,7 @@ import com.ccajk.CustomObjects.CardDrawerLayout;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
+import com.ccajk.Fragments.FeedbackFragment;
 import com.ccajk.Fragments.SubmitGrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.InspectionFragment;
@@ -260,6 +261,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_inspection:
                 ShowFragment("Inspection", new InspectionFragment(), null);
+                break;
+            case R.id.navmenu_feedback:
+                ShowFragment("Feedback", new FeedbackFragment(),null);
                 break;
             case R.id.navmenu_logout:
                 logout();
