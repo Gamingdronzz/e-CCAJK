@@ -6,7 +6,7 @@
     android:elevation="@dimen/elevation_medium"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -22,12 +22,14 @@
             android:paddingRight="@dimen/padding_medium"
             android:paddingStart="@dimen/padding_medium"
             android:text="TextView"
+            android:layout_alignParentTop="true"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_designation"
+            android:layout_below="@id/textview_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_medium"
@@ -37,19 +39,40 @@
             android:textSize="@dimen/text_15"
             android:textStyle="italic" />
 
-        <LinearLayout
-            android:id="@+id/expandable_area_contact"
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/expandable_area_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_medium">
+
+        <Button
+            android:id="@+id/button_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_medium">
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:background="@drawable/custom_button_rounded"
+            android:drawablePadding="@dimen/padding_medium"
+            android:drawableTint="@color/colorPrimaryLight"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button_email"
-                android:layout_width="match_parent"
+                android:id="@+id/button_office"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_medium"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_weight="1"
                 android:background="@drawable/custom_button_rounded"
                 android:drawablePadding="@dimen/padding_medium"
                 android:drawableTint="@color/colorPrimaryLight"
@@ -58,41 +81,22 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_15" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/textview_mobile"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:layout_weight="1"
+                android:background="@drawable/custom_button_rounded"
+                android:drawablePadding="@dimen/padding_medium"
+                android:drawableTint="@color/colorPrimaryLight"
+                android:text="TextView"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_15" />
 
-                <Button
-                    android:id="@+id/button_office"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_medium"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_button_rounded"
-                    android:drawablePadding="@dimen/padding_medium"
-                    android:drawableTint="@color/colorPrimaryLight"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_15" />
-
-                <Button
-                    android:id="@+id/textview_mobile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_medium"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_button_rounded"
-                    android:drawablePadding="@dimen/padding_medium"
-                    android:drawableTint="@color/colorPrimaryLight"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_15" />
-
-            </LinearLayout>
         </LinearLayout>
+
 
         <!--<View
             android:layout_width="match_parent"

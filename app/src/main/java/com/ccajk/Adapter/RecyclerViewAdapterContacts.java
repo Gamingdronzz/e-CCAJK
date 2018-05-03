@@ -153,7 +153,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         public void onClick(View v) {
             Contact contact = contactArrayList.get(position);
             contact.setExpanded(!contact.isExpanded());
-            notifyDataSetChanged();
+            notifyItemChanged(position);
         }
     }
 }

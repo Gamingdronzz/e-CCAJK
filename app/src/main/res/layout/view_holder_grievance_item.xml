@@ -3,20 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:orientation="vertical"
-    android:elevation="@dimen/elevation_medium">
+    android:elevation="@dimen/elevation_medium"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_large"
-        android:paddingTop="@dimen/padding_medium"
         android:paddingRight="@dimen/padding_large"
-        android:layout_height="wrap_content">
+        android:paddingTop="@dimen/padding_medium">
+
         <TextView
             android:id="@+id/textview_pensioner"
-            android:layout_alignParentStart="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:text="TextView"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
@@ -32,142 +33,132 @@
             android:textSize="@dimen/text_15" />
 
         <TextView
+            android:id="@+id/textview_grievance_subtype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textview_grievance_subtype"
+            android:layout_below="@id/textview_pensioner"
             android:padding="@dimen/padding_small"
-            android:textSize="@dimen/text_18"
             android:text="subtype"
-            android:layout_below="@id/textview_pensioner"/>
+            android:textSize="@dimen/text_18" />
 
     </RelativeLayout>
 
 
-
     <LinearLayout
+        android:id="@+id/expandable_layout_grievance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_large"
-        android:id="@+id/expandable_layout_grievance"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/padding_large">
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="@dimen/padding_large"
-            android:paddingRight="@dimen/padding_large"
-            android:layout_height="wrap_content">
+            android:paddingRight="@dimen/padding_large">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:textSize="@dimen/text_15"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Mobile">
-            </TextView>
+                android:text="Mobile"
+                android:textSize="@dimen/text_15"></TextView>
 
             <TextView
+                android:id="@+id/textview_pensioner_mobile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/textview_pensioner_mobile">
-            </TextView>
+                android:layout_alignParentEnd="true"></TextView>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="@dimen/padding_large"
-            android:paddingRight="@dimen/padding_large"
-            android:layout_height="wrap_content">
+            android:paddingRight="@dimen/padding_large">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:textSize="@dimen/text_15"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Applied on">
-            </TextView>
+                android:text="Applied on"
+                android:textSize="@dimen/text_15"></TextView>
 
             <TextView
+                android:id="@+id/textview_date_of_grievance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/textview_date_of_grievance"/>
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:paddingLeft="@dimen/padding_large"
-            android:paddingRight="@dimen/padding_large"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
-            android:layout_height="wrap_content">
+            android:paddingLeft="@dimen/padding_large"
+            android:paddingRight="@dimen/padding_large">
 
             <TextView
+                android:id="@+id/grievance_status_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/text_15"
-                android:id="@+id/grievance_status_text"
                 android:layout_alignParentStart="true"
-                android:text="Grievance Status">
-            </TextView>
+                android:layout_centerVertical="true"
+                android:text="Grievance Status"
+                android:textSize="@dimen/text_15"></TextView>
 
             <Spinner
+                android:id="@+id/spinner_update_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/grievance_status_text"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/padding_large"
+                android:layout_toRightOf="@+id/grievance_status_text"
                 android:background="@drawable/bg_spinner"
                 android:gravity="center_horizontal"
                 android:textAlignment="gravity"
-                android:layout_marginLeft="@dimen/padding_large"
-                android:visibility="gone"
-                android:id="@+id/spinner_update_status">
-            </Spinner>
+                android:visibility="gone"></Spinner>
 
             <TextView
+                android:id="@+id/textview_status_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/textview_status_text"/>
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:paddingLeft="@dimen/padding_large"
+            android:paddingRight="@dimen/padding_large"
+            android:visibility="gone">
 
-            <android.support.design.widget.TextInputLayout
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/editTextGrievanceMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_large"
-                android:visibility="gone"
-                android:paddingRight="@dimen/padding_large"
-                android:layout_marginTop="@dimen/margin_large"
-            >
-
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Grievance Message"
-                    android:id="@+id/editTextGrievanceMessage"/>
-            </android.support.design.widget.TextInputLayout>
-
-
+                android:hint="Enter Grievance Message" />
+        </android.support.design.widget.TextInputLayout>
 
 
         <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_update_grievance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:id="@+id/button_update_grievance"
-            android:text="UPDATE"
-            android:textSize="@dimen/text_18"
             android:background="@drawable/custom_button_rounded"
-            android:textColor="@color/colorWhite"
+            android:drawablePadding="@dimen/padding_medium"
+            android:drawableTint="@color/colorWhite"
             android:paddingLeft="@dimen/padding_xxlarge"
             android:paddingRight="@dimen/padding_xxlarge"
-            android:drawableTint="@color/colorWhite"
-            android:drawablePadding="@dimen/padding_medium"/>
+            android:text="UPDATE"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_18" />
 
     </LinearLayout>
 
@@ -175,7 +166,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginTop="@dimen/margin_medium"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_medium"
         android:background="@color/colorAccent"></View>
 </LinearLayout>

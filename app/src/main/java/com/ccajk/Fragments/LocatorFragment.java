@@ -147,10 +147,13 @@ public class LocatorFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected: selected = " + position);
-                if(position == 0) {
-                    TabNearby tabNearby = (TabNearby) adapter.getCurrentFragment();
-                    tabNearby.startLocationProcess();
-                }
+
+                    Fragment fragment =  adapter.getCurrentFragment();
+                    if(fragment instanceof  TabNearby) {
+                        ((TabNearby)fragment).startLocationProcess();
+                    }
+
+
 
             }
 
@@ -258,18 +261,22 @@ public class LocatorFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
-                            Log.d(TAG, "init: same amount of locations in firebase");
-                            setTabLayout();
-                        } else {
-                            Log.d(TAG, "init: new locations in firebase");
-                            fetchLocationsFromFirebase();
+                        try {
+                            if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
+                                Log.d(TAG, "init: same amount of locations in firebase");
+                                setTabLayout();
+                            } else {
+                                Log.d(TAG, "init: new locations in firebase");
+                                fetchLocationsFromFirebase();
+                            }
+                        } catch (DatabaseException dbe) {
+                            dbe.printStackTrace();
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.d(TAG, "onCancelled: " + databaseError.getMessage());
                     }
                 });
     }
@@ -373,12 +380,14 @@ public class LocatorFragment extends Fragment {
         return null;
     }
 
+
     class MyAdapter extends FragmentPagerAdapter {
         private Fragment mCurrentFragment;
 
         public Fragment getCurrentFragment() {
             return mCurrentFragment;
         }
+
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }

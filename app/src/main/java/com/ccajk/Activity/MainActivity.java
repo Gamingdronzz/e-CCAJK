@@ -22,21 +22,18 @@ import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.FeedbackFragment;
-import com.ccajk.Fragments.SubmitGrievanceFragment;
 import com.ccajk.Fragments.HomeFragment;
 import com.ccajk.Fragments.InspectionFragment;
 import com.ccajk.Fragments.LocatorFragment;
 import com.ccajk.Fragments.LoginFragment;
 import com.ccajk.Fragments.PanAdhaarUploadFragment;
+import com.ccajk.Fragments.SubmitGrievanceFragment;
 import com.ccajk.Fragments.UpdateGrievanceFragment;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.PopUpWindows;
 import com.ccajk.Tools.Preferences;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.security.ProviderInstaller;
 
 import java.util.List;
 
@@ -115,13 +112,13 @@ public class MainActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
 
-        try {
+        /*try {
             ProviderInstaller.installIfNeeded(getApplicationContext());
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override

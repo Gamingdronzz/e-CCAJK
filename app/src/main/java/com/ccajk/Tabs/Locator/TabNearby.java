@@ -304,7 +304,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        mapsHelper.AnimateCamera(locationModels, getZoomValue(0), mMap, mLastLocation, seekBarValue);
+        mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
         Log.v(TAG, "Animating through Callback ");
     }
 
