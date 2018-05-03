@@ -76,7 +76,6 @@
             android:name=".Activity.UpdateGrievanceActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".Activity.SubmitSuggestionActivity"></activity>
     </application>
 
 </manifest>

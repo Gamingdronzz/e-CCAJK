@@ -21,6 +21,7 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
@@ -33,18 +34,16 @@ public class SplashActivity extends AppCompatActivity {
     DatabaseReference dbref;
     int currentAppVersion;
     String currentVersionName;
+    private String TAG = "Splash";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Helper.getInstance().setDebugMode(false);
+        Helper.getInstance().setDebugMode(true);
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
         bindVIews();
-
-
-        //checkForUpdate();
         StartAnimations();
     }
 
@@ -54,70 +53,6 @@ public class SplashActivity extends AppCompatActivity {
         tvSplashVersion = findViewById(R.id.tv_splash_version);
         tvSplashVersion.setText("Version - " + currentVersionName);
     }
-
-    private void checkForUpdate() {
-        if (!Helper.getInstance().isDebugMode()) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-                    @Override
-                    public void OnConnectionAvailable() {
-                        dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION)
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        checkVersion(dataSnapshot);
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void OnConnectionNotAvailable() {
-                        Log.d("Splash", "OnConnectionNotAvailable: ");
-                        LoadNextActivity();
-                    }
-                });
-                connectionUtility.checkConnectionAvailability();
-            } else
-                LoadNextActivity();
-        } else {
-            LoadNextActivity();
-        }
-    }
-
-    private void checkVersion(DataSnapshot dataSnapshot) {
-        AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
-
-        Log.d("Version", "onDataChange: current = " + currentAppVersion);
-        Log.d("Version", "available = " + model.getCurrentReleaseVersion());
-        if (currentAppVersion == -1) {
-            LoadNextActivity();
-        } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
-            LoadNextActivity();
-        } else {
-            Helper.getInstance().showAlertDialog(this,
-                    "A new version of the application is available on the play Store\n\nUpdate to continue using the application",
-                    "Update",
-                    "OK");
-        }
-    }
-
-    private void LoadNextActivity() {
-        Intent intent = new Intent();
-        if (showWelcomeScreen) {
-            //intent.setClass(getApplicationContext(), WelcomeScreen.class);
-        } else {
-            intent.setClass(getApplicationContext(), MainActivity.class);
-        }
-        startActivity(intent);
-        finish();
-    }
-
 
     private void StartAnimations() {
         final Animation animationAlpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
@@ -149,6 +84,73 @@ public class SplashActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void checkForUpdate() {
+        if (!Helper.getInstance().isDebugMode()) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+
+                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+                    @Override
+                    public void OnConnectionAvailable() {
+                        try {
+                            dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            checkVersion(dataSnapshot);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                                        }
+                                    });
+                        } catch (DatabaseException dbe) {
+                            dbe.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void OnConnectionNotAvailable() {
+                        Log.d(TAG, "OnConnectionNotAvailable: ");
+                        LoadNextActivity();
+                    }
+                });
+                connectionUtility.checkConnectionAvailability();
+            } else
+                LoadNextActivity();
+        } else {
+            LoadNextActivity();
+        }
+    }
+
+    private void checkVersion(DataSnapshot dataSnapshot) {
+        AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
+
+        Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
+        Log.d(TAG, "available Version = " + model.getCurrentReleaseVersion());
+        if (currentAppVersion == -1) {
+            LoadNextActivity();
+        } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
+            LoadNextActivity();
+        } else {
+            Helper.getInstance().showAlertDialog(this,
+                    "A new version of the application is available on the play Store\n\nUpdate to continue using the application",
+                    "Update",
+                    "OK");
+        }
+    }
+
+    private void LoadNextActivity() {
+        Intent intent = new Intent();
+        if (showWelcomeScreen) {
+            //intent.setClass(getApplicationContext(), WelcomeScreen.class);
+        } else {
+            intent.setClass(getApplicationContext(), MainActivity.class);
+        }
+        startActivity(intent);
+        finish();
     }
 
     private int getAppVersion() {

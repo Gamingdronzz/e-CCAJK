@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         try {
-
             ProviderInstaller.installIfNeeded(getApplicationContext());
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();

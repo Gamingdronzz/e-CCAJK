@@ -47,6 +47,30 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     }
 
     private void init() {
+        grievanceModelArrayList = new ArrayList<>();
+
+        adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
+        textView = findViewById(R.id.textview_tracking);
+        textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_exclamation, 0, 0);
+        recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerViewTrack.setLayoutManager(linearLayoutManager);
+        recyclerViewTrack.setAdapter(adapterTracking);
+
+        recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Log.d(TAG, "onClick: " + position);
+                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
+                adapterTracking.notifyItemChanged(position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
         progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
         progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
@@ -81,97 +105,73 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("Code");
         Log.d(TAG, "init: pcode = " + pensionerCode);
-        grievanceModelArrayList = new ArrayList<>();
-
-        adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
-        textView = findViewById(R.id.textview_tracking);
-        textView.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_exclamation,0,0);
-        recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerViewTrack.setLayoutManager(linearLayoutManager);
-        recyclerViewTrack.setAdapter(adapterTracking);
-
-        recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Log.d(TAG, "onClick: " + position);
-                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
-                adapterTracking.notifyItemChanged(position);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
         getGrievances();
     }
 
     private void getGrievances() {
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        try {
-                            int size = grievanceModelArrayList.size();
-                            grievanceModelArrayList.add(size, dataSnapshot.getValue(GrievanceModel.class));
-                            adapterTracking.notifyItemInserted(size);
-                            Log.d(TAG, "onChildAdded: added");
-                        }
-                        catch (DatabaseException e)
-                        {
-                            e.printStackTrace();
+        try {
+            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            try {
+                                int size = grievanceModelArrayList.size();
+                                grievanceModelArrayList.add(size, dataSnapshot.getValue(GrievanceModel.class));
+                                adapterTracking.notifyItemInserted(size);
+                                Log.d(TAG, "onChildAdded: added");
+                            } catch (DatabaseException e) {
+                                e.printStackTrace();
+
+                            }
 
                         }
 
-                    }
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        }
 
-                    }
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        }
 
-                    }
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        }
 
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        progressDialog.dismiss();
-                    }
-                });
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        progressDialog.dismiss();
-                        if (grievanceModelArrayList.size() == 0)
-                            ManageNoGrievanceLayout(true);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                            progressDialog.dismiss();
+                        }
+                    });
+            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            progressDialog.dismiss();
+                            if (grievanceModelArrayList.size() == 0)
+                                ManageNoGrievanceLayout(true);
                             textView.setText("No Grievances Registered");
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        progressDialog.dismiss();
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            progressDialog.dismiss();
+                        }
+                    });
+        } catch (DatabaseException dbe) {
+            dbe.printStackTrace();
+        }
     }
 
-    private void ManageNoGrievanceLayout(boolean show)
-    {
-        if(show)
-        {
+    private void ManageNoGrievanceLayout(boolean show) {
+        if (show) {
             recyclerViewTrack.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             recyclerViewTrack.setVisibility(View.VISIBLE);
             textView.setVisibility(View.GONE);
         }
