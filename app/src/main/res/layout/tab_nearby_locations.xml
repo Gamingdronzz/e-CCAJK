@@ -102,7 +102,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/colorWhite"
             android:padding="@dimen/padding_large"
-            android:text="Nearby Locations will not be shown until Location is Turned On. Turn On Location and Refresh"
+            android:text="Nearby Locations will not be shown until Location and Internet is Turned On. Turn On Location and Refresh"
             android:textAlignment="center"
             android:textSize="@dimen/text_20" />
     </RelativeLayout>

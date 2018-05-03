@@ -22,7 +22,6 @@ import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
-import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.ccajk.Tools.MapsHelper;
 import com.ccajk.Tools.MyLocationManager;
@@ -51,6 +50,7 @@ import static com.ccajk.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
 
 //Our class extending fragment
+
 public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
@@ -88,44 +88,30 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         }
     };
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         locatorType = getArguments().getString("Locator");
-        init(view);
-
+        Log.d(TAG, "onCreateView: tabnearby created");
+        bindViews(view);
+        init();
         return view;
     }
 
-    private void init(View view) {
-
-        kilometres = view.findViewById(R.id.textview_range);
-        relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location);
-
-        buttonRefresh = view.findViewById(R.id.image_btn_refresh);
+    private void init() {
+        Log.d(TAG, "init: tabnearby init");
         buttonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: managing");
                 //locationManager.ManageLocation();
-                onMapReady(mMap);
+                startLocationProcess();
             }
         });
         manageNoLocationLayout(true);
-
         locationManager = new MyLocationManager(this, mLocationCallback);
-        mapsHelper = new MapsHelper(view.getContext());
-        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
-            Log.d(TAG, "init: GP");
-            locationModels = LocationDataProvider.getInstance().getGpLocationModelArrayList();
-        } else {
-            Log.d(TAG, "init: Hotspot");
-            locationModels = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
-        }
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
 
-        seekBar = view.findViewById(R.id.seekBar);
+        locationModels = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
         seekBar.getBuilder()
                 .setMax(3)
                 .setMin(0)
@@ -205,6 +191,16 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             }
         });
 
+    }
+
+    private void bindViews(View view) {
+        Log.d(TAG, "bindViews: ");
+        kilometres = view.findViewById(R.id.textview_range);
+        relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location);
+        mapsHelper = new MapsHelper(view.getContext());
+        buttonRefresh = view.findViewById(R.id.image_btn_refresh);
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
+        seekBar = view.findViewById(R.id.seekBar);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mapView = mapFragment.getView();
@@ -218,12 +214,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             relativeLayoutNoLocation.setVisibility(View.GONE);
     }
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        setMyMap(googleMap);
-
+    public void startLocationProcess()
+    {
         Task<LocationSettingsResponse> task = locationManager.ManageLocation();
         if (task != null) {
             task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
@@ -272,6 +264,14 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         if (mLastLocation != null) {
             mapsHelper.AnimateCamera(locationModels, 0, mMap, mLastLocation, seekBarValue);
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        setMyMap(googleMap);
+
 
     }
 

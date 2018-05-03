@@ -34,7 +34,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_no_location_lcoator_fragment"
+        android:id="@+id/layout_no_internet_locator_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#88000000"

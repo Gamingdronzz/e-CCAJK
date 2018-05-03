@@ -27,7 +27,6 @@ import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
-import com.ccajk.Tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -89,13 +88,14 @@ public class TabAllLocations extends Fragment {
             }
         });
 
-        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
-            Log.d(TAG, "init: GP");
-            stateLocations = LocationDataProvider.getInstance().getGpLocationModelArrayList();
-        } else {
-            Log.d(TAG, "init: Hotspot");
-            stateLocations = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
-        }
+        stateLocations = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
+//        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+//            Log.d(TAG, "init: GP");
+//            stateLocations = LocationDataProvider.getInstance().getGpLocationModelArrayList();
+//        } else {
+//            Log.d(TAG, "init: Hotspot");
+//            stateLocations = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
+//        }
         adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
 
         locations = new String[stateLocations.size()];

@@ -1,8 +1,8 @@
 package com.ccajk.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -22,13 +22,13 @@ import android.widget.TextView;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
 import com.ccajk.Tabs.Locator.TabAllLocations;
 import com.ccajk.Tabs.Locator.TabNearby;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
-import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +36,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,9 +65,10 @@ public class LocatorFragment extends Fragment {
     String TAG = "locator";
     TextView textViewLocatorInfo;
     String locatorType;
-    RelativeLayout relativeLayoutNoLocation;
+    RelativeLayout relativeLayoutNoInternet;
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
+
 
     public LocatorFragment() {
 
@@ -70,33 +81,14 @@ public class LocatorFragment extends Fragment {
 
         locatorType = getArguments().getString("Locator");
         bindViews(view);
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)
-            manageNoLocationLayout(false);
-        else
-            manageNoLocationLayout(true);
-
-        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
-            if (LocationDataProvider.getInstance().getGpLocationModelArrayList() == null) {
-                getLocations();
-            } else {
-                setTabLayout();
-            }
-        } else {
-            if (LocationDataProvider.getInstance().getHotspotLocationModelArrayList() == null) {
-                getLocations();
-            } else {
-                setTabLayout();
-            }
-        }
-
+        init();
         return view;
     }
 
     private void bindViews(View view) {
         tabLayout = view.findViewById(R.id.tab_locator);
         viewPager = view.findViewById(R.id.viewpager_locator);
-        relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location_lcoator_fragment);
+        relativeLayoutNoInternet = view.findViewById(R.id.layout_no_internet_locator_fragment);
         linearLayoutTab = view.findViewById(R.id.linear_layout_locator_fragment);
         textViewLocatorInfo = view.findViewById(R.id.textview_locator_info);
         imageButtonRefresh = view.findViewById(R.id.image_btn_refresh_tab_all);
@@ -105,42 +97,186 @@ public class LocatorFragment extends Fragment {
         imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLocations();
+                checkConnection();
             }
         });
         textViewLocatorInfo.setText(textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh");
     }
 
+    private void init() {
+
+        manageNoLocationLayout(true);
+        //progressDialog.show();
+
+//            if (LocationDataProvider.getInstance().getLocationModelArrayList(locatorType) == null) {
+//                getAllLocations();
+//            } else {
+//                setTabLayout();
+//            }
+
+        //Fetch Locations from ram
+        locationModelArrayList = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
+        // if no locations in ram
+        if (locationModelArrayList == null) {
+            Log.d(TAG, "init: No Locations in Ram");
+
+            //fetch from local storage
+            locationModelArrayList = getLocationsFromLocalStorage();
+            checkConnection();
+        }
+        // if locations in ram
+        else {
+            checkConnection();
+            //check new locatrions in firebase
+        }
+
+    }
+
+    private void setTabLayout() {
+        setData();
+        manageNoLocationLayout(false);
+        final MyAdapter adapter = new MyAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d(TAG, "onPageSelected: selected = " + position);
+                if(position == 0) {
+                    TabNearby tabNearby = (TabNearby) adapter.getCurrentFragment();
+                    tabNearby.startLocationProcess();
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        progressDialog.dismiss();
+    }
+
+    public void setData() {
+        LocationDataProvider.getInstance().setLocationModelArrayList(locatorType, locationModelArrayList);
+//        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+//            LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
+//        } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
+//            LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
+//        }
+    }
+
     private void manageNoLocationLayout(boolean show) {
         if (show) {
-            relativeLayoutNoLocation.setVisibility(View.VISIBLE);
+            relativeLayoutNoInternet.setVisibility(View.VISIBLE);
             linearLayoutTab.setVisibility(View.GONE);
         } else {
-            relativeLayoutNoLocation.setVisibility(View.GONE);
+            relativeLayoutNoInternet.setVisibility(View.GONE);
             linearLayoutTab.setVisibility(View.VISIBLE);
         }
     }
 
-    private void getLocations() {
+    private ArrayList<LocationModel> getLocationsFromLocalStorage() {
+
+        String json = readFromFile();
+        ArrayList<LocationModel> arrayList;
+        try {
+            Gson gson = new Gson();
+            Type collectionType = new TypeToken<ArrayList<LocationModel>>() {
+            }.getType();
+            arrayList = gson.fromJson(json, collectionType);
+            if (arrayList != null)
+                Log.d(TAG, "Getting Locations From Local Storage: size = " + arrayList.size());
+            return arrayList;
+        } catch (JsonIOException jioe) {
+            jioe.printStackTrace();
+        } catch (JsonParseException jpe) {
+            jpe.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
+        try {
+            Gson gson = new Gson();
+            String jsonObject = gson.toJson(locationModels);
+            Log.d(TAG, "adding LocationsToLocalStorage: ");
+            writeToFile(jsonObject);
+        } catch (JsonIOException jioe) {
+            jioe.printStackTrace();
+        } catch (JsonParseException jpe) {
+            jpe.printStackTrace();
+        }
+    }
+
+
+//    private void getAllLocations() {
+//        locationModelArrayList = getLocationsFromLocalStorage();
+//        Log.d(TAG, "getAllLocations: " + locationModelArrayList);
+//        checkConnection();
+//    }
+
+    private void checkConnection() {
         progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                fetchLocations();
+                if (locationModelArrayList == null) {
+                    Log.d(TAG, "init: No Locations in Local Storage");
+                    fetchLocationsFromFirebase();
+                } else {
+                    Log.d(TAG, "init: Locations found in local/ram storage");
+                    checkNewLocationsinFirebase();
+                }
             }
 
             @Override
             public void OnConnectionNotAvailable() {
-                manageNoLocationLayout(true);
-                progressDialog.dismiss();
+                if (locationModelArrayList == null) {
+                    manageNoLocationLayout(true);
+                    progressDialog.dismiss();
+                } else {
+                    setTabLayout();
+                }
             }
         });
         connectionUtility.checkConnectionAvailability();
 
     }
 
-    private void fetchLocations() {
+    private void checkNewLocationsinFirebase() {
+        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+        databaseReference.child(locatorType)
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
+                            Log.d(TAG, "init: same amount of locations in firebase");
+                            setTabLayout();
+                        } else {
+                            Log.d(TAG, "init: new locations in firebase");
+                            fetchLocationsFromFirebase();
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void fetchLocationsFromFirebase() {
+
+        locationModelArrayList = new ArrayList<>();
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
@@ -149,13 +285,12 @@ public class LocatorFragment extends Fragment {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
                             try {
+                                Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
                                 LocationModel location = dataSnapshot.getValue(LocationModel.class);
-                                Log.d(TAG, "onChildAdded: " + location.getLocationName());
-                                Log.d(TAG, "onChildAdded: " + location.getLatitude() + ":" + location.getLongitude());
+
+                                //Log.d(TAG, "onChildAdded: " + location.getLatitude() + ":" + location.getLongitude());
                                 locationModelArrayList.add(location);
-                            }
-                            catch (DatabaseException dbe)
-                            {
+                            } catch (DatabaseException dbe) {
                                 dbe.printStackTrace();
                             }
                         }
@@ -186,8 +321,9 @@ public class LocatorFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        setData();
+                        Log.d(TAG, "onDataChange: got locations from firebase");
                         setTabLayout();
+                        addLocationsToLocalStorage(locationModelArrayList);
                     }
 
                     @Override
@@ -197,26 +333,52 @@ public class LocatorFragment extends Fragment {
                 });
     }
 
-    private void setTabLayout() {
-        manageNoLocationLayout(false);
-        FragmentPagerAdapter adapter = new MyAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        progressDialog.dismiss();
-    }
+    private void writeToFile(String jsonObject) {
 
-    public void setData() {
-        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
-            LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
-        } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
-            LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
+
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = getActivity().openFileOutput(locatorType + ".json", Context.MODE_PRIVATE);
+
+            outputStream.write(jsonObject.getBytes());
+            Log.d(TAG, "writeToFile: ");
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
+    private String readFromFile() {
 
+        try {
+            File file = new File(getActivity().getFilesDir(), locatorType + ".json");
+            Log.d(TAG, "readFromFile: file path = " + file.getPath());
+            FileInputStream fin = getActivity().openFileInput(file.getName());
+            int size = fin.available();
+            byte[] buffer = new byte[size];
+            fin.read(buffer);
+            Log.d(TAG, "readFromFile: ");
+            fin.close();
+            String json = new String(buffer);
+            return json;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     class MyAdapter extends FragmentPagerAdapter {
+        private Fragment mCurrentFragment;
 
+        public Fragment getCurrentFragment() {
+            return mCurrentFragment;
+        }
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -235,6 +397,14 @@ public class LocatorFragment extends Fragment {
 
             }
             return null;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            if (getCurrentFragment() != object) {
+                mCurrentFragment = ((Fragment) object);
+            }
+            super.setPrimaryItem(container, position, object);
         }
 
         @Override

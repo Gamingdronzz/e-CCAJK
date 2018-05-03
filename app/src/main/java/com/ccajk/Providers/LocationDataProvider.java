@@ -1,6 +1,7 @@
 package com.ccajk.Providers;
 
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Tools.FireBaseHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,25 +28,43 @@ public class LocationDataProvider {
             return _instance;
         }
     }
+//
+//    public ArrayList<LocationModel> getHotspotLocationModelArrayList() {
+//        return hotspotLocationModelArrayList;
+//    }
+//
+//    public void setHotspotLocationModelArrayList(ArrayList<LocationModel> hotspotLocationModelArrayList) {
+//        this.hotspotLocationModelArrayList = hotspotLocationModelArrayList;
+//        sortByName(hotspotLocationModelArrayList);
+//    }
 
-    public ArrayList<LocationModel> getHotspotLocationModelArrayList() {
-        return hotspotLocationModelArrayList;
+    public ArrayList<LocationModel> getLocationModelArrayList(String type) {
+        if (type.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+            return gpLocationModelArrayList;
+        } else {
+            return hotspotLocationModelArrayList;
+        }
     }
 
-    public void setHotspotLocationModelArrayList(ArrayList<LocationModel> hotspotLocationModelArrayList) {
-        this.hotspotLocationModelArrayList = hotspotLocationModelArrayList;
-        sortByName(hotspotLocationModelArrayList);
+    public void setLocationModelArrayList(String type, ArrayList<LocationModel> arrayList) {
+        sortByName(arrayList);
+        if (type.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+            gpLocationModelArrayList = arrayList;
+        } else {
+            hotspotLocationModelArrayList = arrayList;
+        }
     }
 
-    public ArrayList<LocationModel> getGpLocationModelArrayList() {
-        return gpLocationModelArrayList;
-    }
 
-    public void setGpLocationModelArrayList(ArrayList<LocationModel> gpLocationModelArrayList) {
-        this.gpLocationModelArrayList = gpLocationModelArrayList;
-        sortByName(gpLocationModelArrayList);
-    }
-
+    //    public ArrayList<LocationModel> getGpLocationModelArrayList() {
+//        return gpLocationModelArrayList;
+//    }
+//
+//    public void setGpLocationModelArrayList(ArrayList<LocationModel> gpLocationModelArrayList) {
+//        this.gpLocationModelArrayList = gpLocationModelArrayList;
+//        sortByName(gpLocationModelArrayList);
+//    }
+//
     public void sortByName(ArrayList<LocationModel> arrayList) {
         Collections.sort(arrayList, new Comparator<LocationModel>() {
             @Override
