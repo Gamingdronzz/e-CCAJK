@@ -140,6 +140,7 @@ public class LocatorFragment extends Fragment {
     }
 
     private void fetchLocations() {
+
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
