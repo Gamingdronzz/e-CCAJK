@@ -59,7 +59,7 @@ public class FeedbackFragment extends Fragment {
     private void init() {
 
         spinnerErrorType.setAdapter(new ArrayAdapter(getContext(),
-                android.R.layout.simple_spinner_dropdown_item,
+                android.R.layout.simple_spinner_item,
                 Helper.getInstance().errorCodesList));
 
         btnSuggestion.setOnClickListener(new View.OnClickListener() {

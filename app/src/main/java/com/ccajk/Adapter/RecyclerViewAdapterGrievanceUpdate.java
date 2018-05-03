@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -96,7 +97,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         Spinner spinnerUpdateStatus;
         TextInputEditText textInputEditTextMessage;
 
-        public Button updateGrievance;
+        public AppCompatButton updateGrievance;
 
         CustomClickListener customClickListener;
         //        CustomEditTextListener customEditTextListener;
@@ -125,6 +126,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 //                    Helper.getInstance().getStatusList()));
 //            textInputEditTextMessage = itemView.findViewById(R.id.editTextGrievanceMessage);
             updateGrievance = itemView.findViewById(R.id.button_update_grievance);
+            updateGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp,0,0,0);
 
 
             this.customClickListener = customClickListener;

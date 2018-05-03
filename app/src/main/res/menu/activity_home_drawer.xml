@@ -186,6 +186,12 @@
                     android:icon="@drawable/ic_inspection"
                     android:checkable="true"
                     android:title="Feedback" />
+
+                <item
+                    android:id="@+id/navmenu_about_us"
+                    android:icon="@drawable/ic_detail"
+                    android:checkable="true"
+                    android:title="About Us" />
             </group>
         </menu>
 

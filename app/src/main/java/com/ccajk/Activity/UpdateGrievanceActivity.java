@@ -59,13 +59,14 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         statusSpinner = findViewById(R.id.spinner_status);
         editTextMessage = findViewById(R.id.edittext_message);
         update = findViewById(R.id.button_update);
+        update.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp,0,0,0);
         progressDialog = Helper.getInstance().getProgressWindow(this, "Updating Grievance Details");
     }
 
     private void init() {
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item,
+                R.layout.simple_spinner,
                 Helper.getInstance().getStatusList());
         statusSpinner.setAdapter(arrayAdapter);
 

@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:background="@drawable/custom_layout_background_primary"
         android:layout_marginEnd="@dimen/margin_large"
         android:layout_marginStart="@dimen/margin_large"
         android:orientation="vertical">
@@ -17,7 +18,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
             android:elevation="@dimen/elevation_large">
 
             <TextView

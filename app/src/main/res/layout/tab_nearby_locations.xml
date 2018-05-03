@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/textview_range"
             android:paddingTop="@dimen/padding_medium"
+            android:paddingBottom="@dimen/padding_medium"
             android:layout_centerHorizontal="true"
             android:background="#88000000"
             app:isb_indicator_color="@color/colorAccent"

@@ -33,6 +33,7 @@ import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
@@ -146,10 +147,16 @@ public class LocatorFragment extends Fragment {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
-                            LocationModel location = dataSnapshot.getValue(LocationModel.class);
-                            Log.d(TAG, "onChildAdded: " + location.getLocationName());
-                            Log.d(TAG, "onChildAdded: " + location.getLatitude() + ":" + location.getLongitude());
-                            locationModelArrayList.add(location);
+                            try {
+                                LocationModel location = dataSnapshot.getValue(LocationModel.class);
+                                Log.d(TAG, "onChildAdded: " + location.getLocationName());
+                                Log.d(TAG, "onChildAdded: " + location.getLatitude() + ":" + location.getLongitude());
+                                locationModelArrayList.add(location);
+                            }
+                            catch (DatabaseException dbe)
+                            {
+                                dbe.printStackTrace();
+                            }
                         }
                     }
 

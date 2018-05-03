@@ -6,8 +6,8 @@ android {
         applicationId "com.ccajk"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 1
-        versionName "0.1"
+        versionCode 3
+        versionName "0.3"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -42,8 +42,6 @@ dependencies {
     //Image processing and loading from path
     implementation 'com.squareup.picasso:picasso:2.3.2'
 
-
-    implementation 'com.timqi.sectorprogressview:library:2.0.1'
     //Showing images in a slider
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
@@ -55,8 +53,7 @@ dependencies {
 
     //Image picker
     compile 'com.linchaolong.android:imagepicker:1.5'
-    //File folder picker
-    implementation 'com.kingfisherphuoc:easy-file-folder-picker-dialog:1.4'
+
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     //Shortcut maker
     implementation 'com.github.matthiasrobbers:shortbread:1.0.2'

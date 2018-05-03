@@ -155,17 +155,18 @@
 
 
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:id="@+id/button_update_grievance"
             android:text="UPDATE"
-            android:textSize="@dimen/text_20"
+            android:textSize="@dimen/text_18"
             android:background="@drawable/custom_button_rounded"
             android:textColor="@color/colorWhite"
             android:paddingLeft="@dimen/padding_xxlarge"
             android:paddingRight="@dimen/padding_xxlarge"
+            android:drawableTint="@color/colorWhite"
             android:drawablePadding="@dimen/padding_medium"/>
 
     </LinearLayout>

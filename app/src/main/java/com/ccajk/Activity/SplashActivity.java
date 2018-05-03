@@ -28,16 +28,21 @@ public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
     AppCompatImageButton imageButton;
-    TextView gd;
+    TextView gd, tvSplashVersion;
     boolean showWelcomeScreen = false;
     DatabaseReference dbref;
+    int currentAppVersion;
+    String currentVersionName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Helper.getInstance().setDebugMode(true);
+        Helper.getInstance().setDebugMode(false);
+        currentAppVersion = getAppVersion();
+        currentVersionName = getAppVersionName();
         bindVIews();
+
 
         //checkForUpdate();
         StartAnimations();
@@ -46,6 +51,8 @@ public class SplashActivity extends AppCompatActivity {
     private void bindVIews() {
         imageView = findViewById(R.id.logo);
         dbref = FireBaseHelper.getInstance().databaseReference;
+        tvSplashVersion = findViewById(R.id.tv_splash_version);
+        tvSplashVersion.setText("Version - " + currentVersionName);
     }
 
     private void checkForUpdate() {
@@ -82,10 +89,10 @@ public class SplashActivity extends AppCompatActivity {
             LoadNextActivity();
         }
     }
-    private void checkVersion(DataSnapshot dataSnapshot)
-    {
+
+    private void checkVersion(DataSnapshot dataSnapshot) {
         AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
-        int currentAppVersion = getAppVersion();
+
         Log.d("Version", "onDataChange: current = " + currentAppVersion);
         Log.d("Version", "available = " + model.getCurrentReleaseVersion());
         if (currentAppVersion == -1) {
@@ -152,5 +159,15 @@ public class SplashActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    private String getAppVersionName() {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

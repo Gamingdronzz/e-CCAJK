@@ -103,6 +103,7 @@ public class LoginFragment extends Fragment {
                     } else {
                         MainActivity mainActivity = (MainActivity) getActivity();
                         mainActivity.OnLoginFailure("Password Mismatch");
+                        progressDialog.dismiss();
                     }
                 }
             }

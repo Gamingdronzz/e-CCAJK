@@ -175,6 +175,8 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setSubtitle("");
         fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+        navigationView.setCheckedItem(R.id.navmenu_home);
+
     }
 
 

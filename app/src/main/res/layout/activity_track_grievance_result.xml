@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_track_result"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     android:background="@color/colorOffWhite"
     tools:context="com.ccajk.Activity.TrackGrievanceResultActivity">
@@ -22,9 +21,14 @@
 
         <TextView
             android:id="@+id/textview_tracking"
+            android:visibility="gone"
             android:layout_width="match_parent"
+            android:drawableTint="@color/colorRed"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/colorBlack"
+            android:layout_margin="@dimen/margin_large"
+            android:textAlignment="center"
             android:padding="@dimen/padding_large"
             android:textSize="@dimen/text_30" />
 

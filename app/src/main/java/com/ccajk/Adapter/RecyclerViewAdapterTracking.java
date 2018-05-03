@@ -41,7 +41,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         holder.textViewDate.setText("");
         holder.textViewDate.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         holder.textViewStatus.setText("");
-        holder.textViewStatus.setText(Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]);
+        holder.textViewStatus.setText("Status : " + Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]);
         holder.textViewMessage.setText("");
         if (grievanceModel.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);

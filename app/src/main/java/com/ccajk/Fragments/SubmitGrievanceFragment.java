@@ -300,6 +300,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         }
         selectedImageModelArrayList.clear();
         adapterSelectedImages.notifyDataSetChanged();
+        setSelectedFileCount(0);
     }
 
     private boolean checkInputBeforeSubmission() {

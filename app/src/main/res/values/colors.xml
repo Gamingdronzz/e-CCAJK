@@ -23,6 +23,8 @@
     <color name="colorLightBlack">#323232</color>
     <color name="colorSaffron">#ee8317</color>
     <color name="colorGreen">#399236</color>
+    <color name="colorTranslucentBlack">#66000000</color>
+    <color name="colorTranslucentDarkBlack">#aa000000</color>
 </resources>
 
 

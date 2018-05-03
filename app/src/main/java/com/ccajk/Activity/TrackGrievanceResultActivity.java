@@ -11,14 +11,17 @@ import android.widget.TextView;
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
 import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.Listeners.ClickListener;
+import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Listeners.RecyclerViewTouchListeners;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.R;
+import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
@@ -43,17 +46,46 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         init();
     }
 
-   private void init() {
-       progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
-       progressDialog.show();
+    private void init() {
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
+        progressDialog.show();
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                getGrievancesOnConnectionAvailable();
+            }
 
-       dbref = FireBaseHelper.getInstance().databaseReference;
+            @Override
+            public void OnConnectionNotAvailable() {
+                onConnectionNotAvailable();
+                ManageNoGrievanceLayout(true);
+                textView.setText("No Internet Connection");
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+
+
+    }
+
+    private void onConnectionNotAvailable() {
+        progressDialog.dismiss();
+        Helper.getInstance().showAlertDialog(this, "No Internet Connection\nTurn on Internet Connection First",
+                "No Internet Connection",
+                "OK");
+    }
+
+    private void getGrievancesOnConnectionAvailable() {
+
+        progressDialog.show();
+
+        dbref = FireBaseHelper.getInstance().databaseReference;
         pensionerCode = getIntent().getStringExtra("Code");
         Log.d(TAG, "init: pcode = " + pensionerCode);
         grievanceModelArrayList = new ArrayList<>();
 
         adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
         textView = findViewById(R.id.textview_tracking);
+        textView.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_exclamation,0,0);
         recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewTrack.setLayoutManager(linearLayoutManager);
@@ -72,8 +104,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
             }
         }));
-
-       getGrievances();
+        getGrievances();
     }
 
     private void getGrievances() {
@@ -81,12 +112,18 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        int size = grievanceModelArrayList.size();
-                        grievanceModelArrayList.add(size,dataSnapshot.getValue(GrievanceModel.class));
-                        adapterTracking.notifyItemInserted(size);
-                        Log.d(TAG, "onChildAdded: added");
+                        try {
+                            int size = grievanceModelArrayList.size();
+                            grievanceModelArrayList.add(size, dataSnapshot.getValue(GrievanceModel.class));
+                            adapterTracking.notifyItemInserted(size);
+                            Log.d(TAG, "onChildAdded: added");
+                        }
+                        catch (DatabaseException e)
+                        {
+                            e.printStackTrace();
 
-                        //adapterTracking.notifyItemInserted(size);
+                        }
+
                     }
 
                     @Override
@@ -106,7 +143,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        progressDialog.dismiss();
                     }
                 });
         dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
@@ -115,13 +152,28 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         progressDialog.dismiss();
                         if (grievanceModelArrayList.size() == 0)
+                            ManageNoGrievanceLayout(true);
                             textView.setText("No Grievances Registered");
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        progressDialog.dismiss();
                     }
                 });
+    }
+
+    private void ManageNoGrievanceLayout(boolean show)
+    {
+        if(show)
+        {
+            recyclerViewTrack.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            recyclerViewTrack.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.GONE);
+        }
     }
 }

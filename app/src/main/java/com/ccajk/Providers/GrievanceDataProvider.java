@@ -85,9 +85,9 @@ public class GrievanceDataProvider {
 //            processingGrievanceList.remove(selectedGrievance);
 //            submittedGrievanceList.remove(selectedGrievance);
         }
-        Log.d("Data Provider ", "submitted: "+ submittedGrievanceList.size());
-        Log.d("Data Provider ", "processing: "+ processingGrievanceList.size());
-        Log.d("Data Provider ", "resolved: "+ resolvedGrievanceList.size());
+        Log.v("Data Provider ", "submitted: "+ submittedGrievanceList.size());
+        Log.v("Data Provider ", "processing: "+ processingGrievanceList.size());
+        Log.v("Data Provider ", "resolved: "+ resolvedGrievanceList.size());
     }
 
 }

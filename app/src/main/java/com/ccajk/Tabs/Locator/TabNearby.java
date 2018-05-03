@@ -39,6 +39,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.warkiz.widget.IndicatorSeekBar;
+import com.warkiz.widget.IndicatorSeekBarType;
+import com.warkiz.widget.IndicatorType;
+import com.warkiz.widget.TickType;
 
 import java.util.ArrayList;
 
@@ -57,7 +61,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     private ArrayList<LocationModel> locationModels = new ArrayList<>();
 
     TextView kilometres;
-    //IndicatorSeekBar seekBar;
+    IndicatorSeekBar seekBar;
     ProgressDialog progressDialog;
     public MyLocationManager locationManager;
     MapsHelper mapsHelper;
@@ -72,9 +76,9 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Log.v(TAG, "Updating My Location");
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
+
+            progressDialog.dismiss();
+
             for (Location location : locationResult.getLocations()) {
                 mLastLocation = location;
                 placeMarkerOnMyLocation(location);
@@ -121,85 +125,85 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         }
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
 
-//        seekBar = view.findViewById(R.id.seekBar);
-//        seekBar.getBuilder()
-//                .setMax(3)
-//                .setMin(0)
-//                .setProgress(0)
-//                .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
-//                .setTickType(TickType.OVAL)
-//                .setTickNum(1)
-//                .setBackgroundTrackSize(2)//dp size
-//                .setProgressTrackSize(3)//dp size
-//                .setIndicatorType(IndicatorType.CIRCULAR_BUBBLE)
-//                .setIndicatorColor(getResources().getColor(R.color.colorAccent))
-//                .build();
-//
-//        seekBar.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
-//            }
-//
-//            @Override
-//            public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
-//            }
-//
-//            @SuppressLint("MissingPermission")
-//            @Override
-//            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
-//                seekBarValue = seekBar.getProgress();
-//                kilometres.setText("WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM");
-//                if (mLastLocation != null) {
-//                    mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
-//                } else {
-//                    Task<LocationSettingsResponse> task = locationManager.ManageLocation();
-//                    if (task != null) {
-//                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-//                                Log.v(TAG, "On Task Complete");
-//                                if (task.isSuccessful()) {
-//                                    Log.v(TAG, "Task is Successful");
-//                                    locationManager.requestLocationUpdates(mMap);
-//                                    manageNoLocationLayout(false);
-//
-//
-//                                } else {
-//                                    Log.v(TAG, "Task is not Successful");
-//                                }
-//                            }
-//                        });
-//                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-//                            @Override
-//                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-//                                Log.v(TAG, "On Task Success");
-//                                // All location settings are satisfied. The client can initialize
-//                                // location requests here.
-//                                // ...
-//
-//                            }
-//                        });
-//
-//                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Log.v(TAG, "On Task Failed");
-//                                if (e instanceof ResolvableApiException) {
-//                                    locationManager.onLocationAcccessRequestFailure(e);
-//                                    // Location settings are not satisfied, but this can be fixed
-//                                    // by showing the user a dialog.
-//
-//                                }
-//                            }
-//                        });
-//                    }
-//                }
-//            }
-//        });
+        seekBar = view.findViewById(R.id.seekBar);
+        seekBar.getBuilder()
+                .setMax(3)
+                .setMin(0)
+                .setProgress(0)
+                .setSeekBarType(IndicatorSeekBarType.DISCRETE_TICKS)
+                .setTickType(TickType.OVAL)
+                .setTickNum(1)
+                .setBackgroundTrackSize(2)//dp size
+                .setProgressTrackSize(3)//dp size
+                .setIndicatorType(IndicatorType.CIRCULAR_BUBBLE)
+                .setIndicatorColor(getResources().getColor(R.color.colorAccentLight))
+                .build();
+
+        seekBar.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
+            }
+
+            @Override
+            public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
+            }
+
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+                seekBarValue = seekBar.getProgress();
+                kilometres.setText("WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM");
+                if (mLastLocation != null) {
+                    mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
+                } else {
+                    Task<LocationSettingsResponse> task = locationManager.ManageLocation();
+                    if (task != null) {
+                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                            @Override
+                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                                Log.v(TAG, "On Task Complete");
+                                if (task.isSuccessful()) {
+                                    Log.v(TAG, "Task is Successful");
+                                    locationManager.requestLocationUpdates(mMap);
+                                    manageNoLocationLayout(false);
+
+
+                                } else {
+                                    Log.v(TAG, "Task is not Successful");
+                                }
+                            }
+                        });
+                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                            @Override
+                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                                Log.v(TAG, "On Task Success");
+                                // All location settings are satisfied. The client can initialize
+                                // location requests here.
+                                // ...
+
+                            }
+                        });
+
+                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.v(TAG, "On Task Failed");
+                                if (e instanceof ResolvableApiException) {
+                                    locationManager.onLocationAcccessRequestFailure(e);
+                                    // Location settings are not satisfied, but this can be fixed
+                                    // by showing the user a dialog.
+
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -228,6 +232,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     Log.v(TAG, "On Task Complete");
                     if (task.isSuccessful()) {
                         Log.v(TAG, "Task is Successful");
+                        progressDialog.setMessage("Getting Current Location Coordinates");
+                        progressDialog.show();
                         locationManager.requestLocationUpdates(mMap);
                         manageNoLocationLayout(false);
 
@@ -288,7 +294,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         rlp.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
         rlp.addRule(RelativeLayout.ALIGN_END, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        rlp.setMargins(30, 30, 0, 40);
+        rlp.setMargins(20, 25, 0, 0);
     }
 
     private void placeMarkerOnMyLocation(Location location) {
@@ -346,9 +352,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                                 Log.v(TAG, "On Task Complete");
                                 if (task.isSuccessful()) {
                                     Log.v(TAG, "Task is Successful");
+                                    progressDialog.setMessage("Getting Current Location Coordinates");
+                                    progressDialog.show();
                                     locationManager.requestLocationUpdates(mMap);
                                     manageNoLocationLayout(false);
-
 
                                 } else {
                                     Log.v(TAG, "Task is not Successful");
@@ -400,6 +407,8 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                         Log.v(TAG, "Resolution success");
                         locationManager.requestLocationUpdates(mMap);
                         manageNoLocationLayout(false);
+                        progressDialog.setMessage("Turning Location On\nPlease wait..");
+                        progressDialog.show();
                         break;
                     }
                     case Activity.RESULT_CANCELED: {

@@ -1,20 +1,61 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".Fragments.BrowserFragment">
+    android:background="@color/colorOffWhite"
+    android:layout_height="match_parent">
 
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".Fragments.BrowserFragment">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin_medium"
+                android:text="Like the Application?" />
+
+            <Button
+                android:id="@+id/btn_feedback_rate_application"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/custom_button_rounded"
+                android:text="Rate 5 Stars"
+                android:textColor="@color/colorOffWhite"
+                android:textSize="@dimen/text_18"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:background="@color/colorBlack">
+
+        </View>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_large"
+            android:layout_marginRight="@dimen/margin_large"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -35,38 +76,35 @@
                     android:padding="@dimen/margin_medium" />
             </android.support.design.widget.TextInputLayout>
 
-
+            <Button
+                android:id="@+id/btn_feedback_submit_advice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin_medium"
+                android:background="@drawable/custom_button_rounded"
+                android:text="Submit advice"
+                android:textColor="@color/colorOffWhite"
+                android:textSize="@dimen/text_18"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_feedback_submit_advice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/custom_button_accent_light"
-            android:text="Submit your advice"
-            android:textColor="@color/colorOffWhite"
-            android:textSize="@dimen/text_18"
-            android:textStyle="bold" />
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:background="@color/colorBlack">
+
+        </View>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="@dimen/margin_large"
+            android:layout_marginRight="@dimen/margin_large"
             android:gravity="center"
             android:orientation="vertical">
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="@dimen/margin_medium"-->
-            <!--android:text="Found an issue?"/>-->
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -92,52 +130,26 @@
                     android:id="@+id/et_feedback_report_issue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cause of Issue"
+                    android:hint="Details of Problem"
                     android:padding="@dimen/margin_medium" />
             </android.support.design.widget.TextInputLayout>
 
-
+            <Button
+                android:id="@+id/btn_feedback_report_issue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/custom_button_rounded"
+                android:gravity="center_horizontal"
+                android:text=" Report Issue "
+                android:textColor="@color/colorOffWhite"
+                android:textSize="@dimen/text_18"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_feedback_report_issue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_button_accent_light"
-            android:text="Report Problem"
-            android:layout_alignParentBottom="true"
-            android:textColor="@color/colorOffWhite"
-            android:textSize="@dimen/text_18"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_medium"
-            android:text="Like the Application?" />
-
-        <Button
-            android:id="@+id/btn_feedback_rate_application"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_button_accent_light"
-            android:text="Rate 5 Stars"
-            android:textColor="@color/colorOffWhite"
-            android:textSize="@dimen/text_18"
-            android:textStyle="bold" />
-
 
     </LinearLayout>
 
-</LinearLayout>
-
+</ScrollView>
