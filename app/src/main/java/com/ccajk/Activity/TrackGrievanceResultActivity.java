@@ -47,16 +47,16 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     }
 
     private void init() {
-        grievanceModelArrayList = new ArrayList<>();
 
+        grievanceModelArrayList = new ArrayList<>();
         adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
+
         textView = findViewById(R.id.textview_tracking);
         textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_exclamation, 0, 0);
-        recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerViewTrack.setLayoutManager(linearLayoutManager);
-        recyclerViewTrack.setAdapter(adapterTracking);
 
+        recyclerViewTrack = findViewById(R.id.recyclerview_tracking);
+        recyclerViewTrack.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTrack.setAdapter(adapterTracking);
         recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -73,6 +73,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
         progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
         progressDialog.show();
+
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -87,8 +88,6 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
             }
         });
         connectionUtility.checkConnectionAvailability();
-
-
     }
 
     private void onConnectionNotAvailable() {

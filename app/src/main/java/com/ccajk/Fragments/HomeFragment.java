@@ -62,14 +62,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         return view;
     }
 
-    private void bindViews(View view)
-    {
+    private void bindViews(View view) {
         welcomeText = view.findViewById(R.id.textview_welcome_short);
         ccaDeskText = view.findViewById(R.id.textview_cca_desk);
     }
 
-    private void init()
-    {
+    private void init() {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
         builder.append(str1);
@@ -148,7 +146,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public void onStop() {
         mDemoSlider.stopAutoCycle();
-        //getActivity().getSupportFragmentManager().popBackStack();
         super.onStop();
     }
 
@@ -165,32 +162,19 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         MainActivity mainActivity = (MainActivity) getActivity();
 
 
-        //Intent intent = new Intent(HomeFragment.this.getActivity(), BrowserActivity.class);
         Bundle bundle = new Bundle();
         switch (name) {
             case "Digital India":
-//                intent.putExtra("url", "http://www.digitalindia.gov.in/");
-//                intent.putExtra("title", "Digital India");
-//                startActivity(intent);
                 bundle.putString("url", "http://www.digitalindia.gov.in");
-                //browserFragment.setArguments(bundle);
-                mainActivity.ShowFragment(name, browserFragment,bundle);
+                mainActivity.ShowFragment(name, browserFragment, bundle);
                 break;
             case "Swachh Bharat Abhiyan":
-//                intent.putExtra("url", "https://swachhbharat.mygov.in");
-//                intent.putExtra("title", "Swachh Bharat");
-//                startActivity(intent);
                 bundle.putString("url", "https://swachhbharat.mygov.in");
-                //browserFragment.setArguments(bundle);
-                mainActivity.ShowFragment(name, browserFragment,bundle);
+                mainActivity.ShowFragment(name, browserFragment, bundle);
                 break;
             case "Controller of Communication Accounts":
-//                intent.putExtra("url", "http://ccajk.gov.in/");
-//                intent.putExtra("title", "CCA J&K");
-//                startActivity(intent);
                 bundle.putString("url", "http://ccajk.gov.in");
-                //browserFragment.setArguments(bundle);
-                mainActivity.ShowFragment(name, browserFragment,bundle);
+                mainActivity.ShowFragment(name, browserFragment, bundle);
                 break;
         }
 

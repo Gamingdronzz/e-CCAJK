@@ -7,11 +7,12 @@ import java.util.Date;
  */
 
 public class GrievanceModel {
+
     String details;
     String email;
     long grievanceStatus;
     long grievanceType;
-    boolean isExpanded;
+    boolean expanded;
     String mobile;
     String pensionerIdentifier;
     String state;
@@ -19,6 +20,10 @@ public class GrievanceModel {
     String message;
     Date date;
 
+
+    public GrievanceModel() {
+
+    }
 
     public GrievanceModel(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
         this.pensionerIdentifier = pensionerIdentifier;
@@ -34,15 +39,11 @@ public class GrievanceModel {
     }
 
     public boolean isExpanded() {
-        return isExpanded;
+        return expanded;
     }
 
     public void setExpanded(boolean expanded) {
-        isExpanded = expanded;
-    }
-
-    public GrievanceModel() {
-
+        this.expanded = expanded;
     }
 
     public String getPensionerIdentifier() {

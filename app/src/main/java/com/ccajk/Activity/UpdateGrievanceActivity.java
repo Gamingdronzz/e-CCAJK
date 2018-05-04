@@ -1,10 +1,10 @@
 package com.ccajk.Activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,6 +24,7 @@ import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     String TAG = "Update";
     GrievanceModel grievanceModel;
-    Intent resultIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         bindViews();
         init();
         setLayoutData();
-
     }
 
     private void bindViews() {
@@ -59,7 +59,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         statusSpinner = findViewById(R.id.spinner_status);
         editTextMessage = findViewById(R.id.edittext_message);
         update = findViewById(R.id.button_update);
-        update.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp,0,0,0);
+        update.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_update_black_24dp, 0, 0);
         progressDialog = Helper.getInstance().getProgressWindow(this, "Updating Grievance Details");
     }
 
@@ -105,7 +105,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
         textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         statusSpinner.setSelection((int) grievanceModel.getGrievanceStatus());
-        editTextMessage.setText("");
+        editTextMessage.setText(grievanceModel.getMessage()==null ? "" : grievanceModel.getMessage());
     }
 
 
@@ -115,24 +115,30 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         hashMap.put("message", message);
 
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())
-                .child(String.valueOf(grievanceModel.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                progressDialog.dismiss();
-                if (task.isSuccessful()) {
-                    Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
 
-                    GrievanceDataProvider.getInstance().selectedGrievance.setGrievanceStatus(status);
-                    GrievanceDataProvider.getInstance().selectedGrievance.setMessage(message);
-                    GrievanceDataProvider.getInstance().selectedGrievance.setExpanded(false);
+        try {
+            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())
+                    .child(String.valueOf(grievanceModel.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    progressDialog.dismiss();
+                    if (task.isSuccessful()) {
+                        Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
 
-                    setResult(Activity.RESULT_OK);
-                    finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
-                    finish();
+                        GrievanceDataProvider.getInstance().selectedGrievance.setGrievanceStatus(status);
+                        GrievanceDataProvider.getInstance().selectedGrievance.setMessage(message);
+                        GrievanceDataProvider.getInstance().selectedGrievance.setExpanded(false);
+
+                        setResult(Activity.RESULT_OK);
+                        finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
+                        finish();
+                    } else {
+                        Log.d(TAG, "onComplete: " + task.toString());
+                    }
                 }
-
-            }
-        });
+            });
+        } catch (DatabaseException dbe) {
+            dbe.printStackTrace();
+        }
     }
 }

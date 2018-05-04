@@ -97,7 +97,7 @@ public class LocatorFragment extends Fragment {
         imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkConnection();
+                checkConnection(false);
             }
         });
         textViewLocatorInfo.setText(textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh");
@@ -122,12 +122,17 @@ public class LocatorFragment extends Fragment {
 
             //fetch from local storage
             locationModelArrayList = getLocationsFromLocalStorage();
-            checkConnection();
+            if(locationModelArrayList == null) {
+                checkConnection(false);
+            }
+            else
+            {
+                checkConnection(true);
+            }
         }
         // if locations in ram
         else {
-            checkConnection();
-            //check new locatrions in firebase
+            checkConnection(true);
         }
 
     }
@@ -226,7 +231,7 @@ public class LocatorFragment extends Fragment {
 //        checkConnection();
 //    }
 
-    private void checkConnection() {
+    private void checkConnection(boolean checkNetwork) {
         progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
@@ -236,6 +241,7 @@ public class LocatorFragment extends Fragment {
                     fetchLocationsFromFirebase();
                 } else {
                     Log.d(TAG, "init: Locations found in local/ram storage");
+
                     checkNewLocationsinFirebase();
                 }
             }
@@ -250,7 +256,23 @@ public class LocatorFragment extends Fragment {
                 }
             }
         });
-        connectionUtility.checkConnectionAvailability();
+
+        if(!checkNetwork)
+        {
+            connectionUtility.checkConnectionAvailability();
+        }
+        else
+        {
+            String networkClass = connectionUtility.getNetworkClass(getContext());
+            if(networkClass.equals(connectionUtility._2G))
+            {
+                setTabLayout();
+            }
+            else
+            {
+                connectionUtility.checkConnectionAvailability();
+            }
+        }
 
     }
 

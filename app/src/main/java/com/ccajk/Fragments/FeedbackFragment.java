@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ import com.google.android.gms.tasks.Task;
  */
 public class FeedbackFragment extends Fragment {
 
+    String TAG = "feedback";
     private Button btnRateApplication, btnSuggestion, btnReportIssue;
     private TextInputEditText etSuggestion, etCauseOfIssue;
     private Spinner spinnerErrorType;
@@ -75,6 +77,8 @@ public class FeedbackFragment extends Fragment {
                         public void onComplete(@NonNull Task task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getContext(), "Thanks for your Valuable Suggestion", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.d(TAG, task.getResult().toString());
                             }
                         }
                     });
@@ -98,6 +102,8 @@ public class FeedbackFragment extends Fragment {
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Thankyou for Reporting", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Log.d(TAG, task.getResult().toString());
                         }
                     }
                 });

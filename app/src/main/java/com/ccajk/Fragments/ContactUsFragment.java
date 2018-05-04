@@ -76,10 +76,8 @@ public class ContactUsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String location = "32.707500,74.874217";
-                //Uri gmmIntentUri = Uri.parse("geo:"+location+"?q="+location+"(Office of\nController of Communication Accounts,\nJammu and Kashmir)");
                 Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q="+location+"(Office of CCA, JK)");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                //mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(mapIntent);
                 }
@@ -91,24 +89,6 @@ public class ContactUsFragment extends Fragment {
             }
         });
     }
-
-//    @Override
-//    public void onConfigurationChanged(Configuration config) {
-//        Log.d(TAG, "onConfigurationChanged: " + config.orientation);
-//        super.onConfigurationChanged(config);
-//        // Check for the rotation
-//        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            init(true);
-//        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            if (isTab) {
-//                init(true);
-//            } else {
-//                init(false);
-//            }
-//
-//
-//        }
-//    }
 
     private void init(boolean isMultiColumn) {
 
@@ -126,33 +106,7 @@ public class ContactUsFragment extends Fragment {
             });
         }
         ManageOfficeAddress();
-        /*recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(getContext(), recyclerView, new ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
 
-                if(expandedPosition!=-1)
-                {
-                    Contact contact = contactArrayList.get(expandedPosition);
-                    contact.setExpanded(false);
-                }
-                if(position == expandedPosition) {
-
-                }
-                else
-                {
-                    Contact contact = contactArrayList.get(position);
-                    contact.setExpanded(!contact.isExpanded());
-                    expandedPosition = position;
-                    Log.d(TAG, "onClick: Changing expanded of " + position + "to " + contact.isExpanded());
-                    adapterContacts.notifyDataSetChanged();
-          }
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));*/
     }
 
     private boolean ManageOfficeAddress() {

@@ -49,6 +49,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.storage.UploadTask;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
@@ -86,7 +87,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     GrievanceType grievanceType;
 
 
-
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
@@ -116,8 +116,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         init();
         return view;
     }
-
-
 
 
     private void bindViews(View view) {
@@ -370,6 +368,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmission() {
+        progressDialog.setMessage("");
+        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -378,6 +378,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
                 Helper.getInstance().showAlertDialog(
                         getContext(),
                         "Intenet Not Available\nPlease turn on internet connection before submitting " + type + " Grievance",
@@ -419,36 +420,26 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                 0, new Date());
 
-        /*dbref.child(code).child(String.valueOf(grievanceType.getId())).setValue(grievanceModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadAllImagesToFirebase();
-                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
+        try {
+
+            Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
+                    FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                    grievanceModel);
+
+            task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        uploadAllImagesToFirebase();
+                    } else {
+                        Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
                 }
-
-            }
-        });*/
-
-        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
-                FireBaseHelper.getInstance().ROOT_GRIEVANCES,
-                grievanceModel);
-
-        task.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadAllImagesToFirebase();
-                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                }
-            }
-        });
+            });
+        } catch (DatabaseException dbe) {
+            dbe.printStackTrace();
+        }
     }
 
     private void uploadAllImagesToFirebase() {
@@ -514,8 +505,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
                         autoCompleteTextViewPensionerCode.getText().toString(),
                         volleyHelper);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 Helper.getInstance().showAlertDialog(
                         getContext(),
@@ -540,7 +530,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
 
         params.put("pensionerCode", pensionerCode);
-        params.put("personType",hint);
+        params.put("personType", hint);
         params.put("pensionerMobileNumber", inputMobile.getText().toString());
         params.put("pensionerEmail", inputEmail.getText().toString());
         params.put("grievanceType", type);
@@ -549,7 +539,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         params.put("grievanceSubmittedBy", spinnerInputSubmittedBy.getSelectedItem().toString());
         params.put("fileCount", selectedImageModelArrayList.size() + "");
 
-        DataSubmissionAndMail.getInstance().sendMail(params,"send_mail-"+pensionerCode,volleyHelper,url);
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
 
 
@@ -585,8 +575,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         }
     }
 
-    private void clearFormData()
-    {
+    private void clearFormData() {
         autoCompleteTextViewPensionerCode.setText("");
         inputMobile.setText("");
         inputEmail.setText("");

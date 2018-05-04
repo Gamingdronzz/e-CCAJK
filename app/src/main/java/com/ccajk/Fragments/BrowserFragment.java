@@ -8,8 +8,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,19 +23,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.ccajk.Adapter.RecyclerViewAdapterContacts;
-import com.ccajk.Listeners.ClickListener;
-import com.ccajk.Listeners.RecyclerViewTouchListeners;
-import com.ccajk.Models.Contact;
-import com.ccajk.Models.ContactBuilder;
 import com.ccajk.R;
-import com.ccajk.Tools.Preferences;
-
-import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
@@ -189,5 +176,36 @@ public class BrowserFragment extends Fragment {
     public void stopLoading() {
         webView.stopLoading();
         hasStopped = true;
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(TAG, "onPause: ");
+        super.onPause();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(TAG, "onDetach: ");
+        super.onDetach();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(TAG, "onStop: ");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        stopLoading();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView: ");
+        super.onDestroyView();
     }
 }

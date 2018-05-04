@@ -45,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_medium"
-                    android:text="Pensioner Code"
+                    android:text="Pensioner/HR/Staff Code"
                     android:textAlignment="center"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/text_15" />
@@ -215,7 +215,7 @@
         android:background="@drawable/custom_button"
         android:text="UPDATE"
         android:drawableTint="@color/colorWhite"
-        android:drawablePadding="@dimen/padding_large"
+        android:drawablePadding="@dimen/padding_min"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18" />
 </RelativeLayout>
