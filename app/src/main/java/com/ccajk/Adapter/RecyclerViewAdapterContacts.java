@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,13 +46,13 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         holder.name.setText(contact.getName());
         holder.designation.setText(contact.getDesignation());
 
-        holder.email.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_mail_outline_black_24dp), null, null, null);
+        //holder.email.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_mail_outline_black_24dp), null, null, null);
         holder.email.setText("\t" + contact.getEmail());
 
-        holder.office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
+        //holder.office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
         holder.office.setText("\t" + contact.getOfficeContact());
 
-        holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
+        //holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
         holder.mobile.setText("\t" + contact.getMobileContact());
 
         if (contact.isExpanded()) {
@@ -73,18 +72,30 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
         LinearLayout linearLayoutExpandableArea;
+        //,linearLayoutMobile,linearLayoutOffice,linearLayoutEMail;
         private TextView name;
         private TextView designation;
-        private Button mobile, email, office;
+        private TextView mobile, email, office;
         private ViewClickListener viewClickListener;
 
         public ContactsViewHolder(View itemView, ViewClickListener viewClickListener) {
             super(itemView);
             name = itemView.findViewById(R.id.textview_name);
             designation = itemView.findViewById(R.id.textview_designation);
-            office = itemView.findViewById(R.id.button_office);
-            mobile = itemView.findViewById(R.id.textview_mobile);
-            email = itemView.findViewById(R.id.button_email);
+            office = itemView.findViewById(R.id.tv_contact_office);
+            mobile = itemView.findViewById(R.id.tv_contact_mobile);
+            email = itemView.findViewById(R.id.tv_contact_email);
+
+
+            email.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_mail_outline_black_24dp), null, null, null);
+            office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
+            mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
+
+
+
+//            linearLayoutEMail = itemView.findViewById(R.id.ll_contact_email);
+//            linearLayoutMobile = itemView.findViewById(R.id.ll_contact_phone);
+//            linearLayoutOffice = itemView.findViewById(R.id.ll_contact_office);
             linearLayoutExpandableArea = itemView.findViewById(R.id.expandable_area_contact);
             linearLayoutExpandableArea.setVisibility(View.GONE);
             this.viewClickListener = viewClickListener;

@@ -1,6 +1,7 @@
 package com.ccajk.Adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +42,16 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         holder.textViewDate.setText("");
         holder.textViewDate.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         holder.textViewStatus.setText("");
-        holder.textViewStatus.setText("Status : " + Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]);
+        holder.textViewStatus.setText(Html.fromHtml("Status : <b>" + Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]+ "</b>"));
         holder.textViewMessage.setText("");
         if (grievanceModel.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
+            holder.textViewgrievance.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
         } else {
             holder.linearLayoutExpandableArea.setVisibility(View.GONE);
+            holder.textViewgrievance.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_down_black_24dp,0);
         }
-        if (grievanceModel.getMessage() != null)
+        if (grievanceModel.getMessage() != null && !grievanceModel.getMessage().isEmpty())
             holder.textViewMessage.setText(grievanceModel.getMessage());
         else
             holder.textViewMessage.setText("Nil");
@@ -69,14 +72,14 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
             textViewgrievance = itemView.findViewById(R.id.textview_grievance);
 
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
-            textViewGrievanceType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grievance, 0);
+            textViewGrievanceType.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_grievance,0,0, 0);
 
             textViewDate = itemView.findViewById(R.id.textview_date);
-            textViewDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
+            textViewDate.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_calendar, 0,0,0);
             textViewStatus = itemView.findViewById(R.id.textview_result);
             textViewStatus.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_inspection, 0);
             textViewMessage = itemView.findViewById(R.id.textview_message);
-            textViewMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_message, 0);
+            textViewMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_message, 0,0,0);
             linearLayoutExpandableArea = itemView.findViewById(R.id.expandable_area_track_grievance);
         }
     }

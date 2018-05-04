@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:elevation="@dimen/elevation_medium"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/padding_large">
+        android:paddingTop="@dimen/padding_medium">
 
         <TextView
             android:id="@+id/textview_name"
@@ -18,28 +19,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
             android:paddingEnd="@dimen/padding_medium"
-            android:paddingLeft="@dimen/padding_medium"
+            android:paddingLeft="@dimen/padding_large"
             android:paddingRight="@dimen/padding_medium"
-            android:paddingStart="@dimen/padding_medium"
+            android:paddingStart="@dimen/padding_large"
             android:text="TextView"
-            android:layout_alignParentTop="true"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_designation"
-            android:layout_below="@id/textview_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/textview_name"
             android:layout_marginBottom="@dimen/margin_medium"
-            android:paddingStart="@dimen/padding_medium"
+            android:paddingStart="@dimen/padding_large"
             android:text="TextView"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/text_15"
             android:textStyle="italic" />
 
-    </RelativeLayout>
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/expandable_area_contact"
@@ -47,70 +49,57 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:padding="@dimen/padding_medium">
+        android:paddingTop="@dimen/padding_medium"
+        android:paddingLeft="@dimen/padding_large">
 
-        <Button
-            android:id="@+id/button_email"
+        <TextView
+            android:id="@+id/tv_contact_mobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_medium"
-            android:background="@drawable/custom_button_rounded"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
             android:drawablePadding="@dimen/padding_medium"
-            android:drawableTint="@color/colorPrimaryLight"
+            android:drawableTint="@color/colorAccentDark"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_medium"
             android:text="TextView"
-            android:textAlignment="center"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_15" />
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_18" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_contact_office"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:drawablePadding="@dimen/padding_medium"
+            android:drawableTint="@color/colorAccentDark"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_medium"
+            android:text="TextView"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_18" />
 
-            <Button
-                android:id="@+id/button_office"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/margin_medium"
-                android:layout_weight="1"
-                android:background="@drawable/custom_button_rounded"
-                android:drawablePadding="@dimen/padding_medium"
-                android:drawableTint="@color/colorPrimaryLight"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_15" />
+        <TextView
 
-            <Button
-                android:id="@+id/textview_mobile"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_medium"
-                android:layout_weight="1"
-                android:background="@drawable/custom_button_rounded"
-                android:drawablePadding="@dimen/padding_medium"
-                android:drawableTint="@color/colorPrimaryLight"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_15" />
-
-        </LinearLayout>
-
-
-        <!--<View
+            android:id="@+id/tv_contact_email"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="@dimen/margin_large"
-            android:layout_marginBottom="@dimen/margin_large"
-            android:layout_marginStart="@dimen/margin_large"
-            android:layout_marginEnd="@dimen/margin_large"
-            android:background="@color/colorLightGray"></View>-->
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawablePadding="@dimen/padding_medium"
+            android:drawableTint="@color/colorAccentDark"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_medium"
+            android:text="TextView"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_18" />
+        <!--</LinearLayout>-->
+
+
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:background="@color/colorGray"></View>
+        android:background="@color/colorBlack"></View>
 </LinearLayout>

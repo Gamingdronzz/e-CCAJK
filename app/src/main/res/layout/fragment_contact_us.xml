@@ -111,8 +111,7 @@
             android:background="@color/colorOffWhite"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_office_address"
-            android:paddingBottom="8dp"
-            android:padding="@dimen/padding_medium"></android.support.v7.widget.RecyclerView>
+            android:paddingBottom="8dp"></android.support.v7.widget.RecyclerView>
 
 
     </LinearLayout>

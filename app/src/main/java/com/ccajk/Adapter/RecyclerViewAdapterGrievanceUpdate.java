@@ -74,7 +74,9 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
         if (grievanceModel.isExpanded()) {
             holder.expandableArea.setVisibility(View.VISIBLE);
+            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
         } else {
+            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_down_black_24dp,0);
             holder.expandableArea.setVisibility(View.GONE);
         }
     }
@@ -94,8 +96,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         public TextView textViewStatus;
 
         public TextView textViewPensionerMobile, textViewDateOfGrievance;
-        Spinner spinnerUpdateStatus;
-        TextInputEditText textInputEditTextMessage;
 
         public AppCompatButton updateGrievance;
 
@@ -114,29 +114,23 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
+
             textViewGrievanceSubtype = itemView.findViewById(R.id.textview_grievance_subtype);
             expandableArea = itemView.findViewById(R.id.expandable_layout_grievance);
             textViewStatus = itemView.findViewById(R.id.textview_status_text);
-
+            textViewStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_inspection,0,0,0);
             textViewPensionerMobile = itemView.findViewById(R.id.textview_pensioner_mobile);
+            textViewPensionerMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp,0,0,0);
+
             textViewDateOfGrievance = itemView.findViewById(R.id.textview_date_of_grievance);
-            spinnerUpdateStatus = itemView.findViewById(R.id.spinner_update_status);
-//            spinnerUpdateStatus.setAdapter(new ArrayAdapter(context,
-//                    android.R.layout.simple_spinner_dropdown_item,
-//                    Helper.getInstance().getStatusList()));
-//            textInputEditTextMessage = itemView.findViewById(R.id.editTextGrievanceMessage);
+            textViewDateOfGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar,0,0,0);
+
             updateGrievance = itemView.findViewById(R.id.button_update_grievance);
             updateGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp,0,0,0);
 
-
             this.customClickListener = customClickListener;
-//            this.customEditTextListener  = customEditTextListener;
-//            this.spinnerItemSelectedListener = customSpinnerItemSelectedListener;
             this.customUpdateClickListener = customUpdateClickListener;
-
             itemView.setOnClickListener(this.customClickListener);
-//            spinnerUpdateStatus.setOnItemSelectedListener(this.spinnerItemSelectedListener);
-//            textInputEditTextMessage.addTextChangedListener(this.customEditTextListener);
             updateGrievance.setOnClickListener(this.customUpdateClickListener);
 
         }
