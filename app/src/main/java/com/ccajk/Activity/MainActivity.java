@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.ccajk.CustomObjects.CardDrawerLayout;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
+import com.ccajk.Fragments.AboutUsFragment;
 import com.ccajk.Fragments.BrowserFragment;
 import com.ccajk.Fragments.ContactUsFragment;
 import com.ccajk.Fragments.FeedbackFragment;
@@ -258,6 +259,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_logout:
                 logout();
+            case R.id.navmenu_about_us:
+                ShowFragment("About Us", new AboutUsFragment(),null);
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
