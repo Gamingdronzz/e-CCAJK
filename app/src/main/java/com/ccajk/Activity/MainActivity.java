@@ -55,9 +55,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Helper.getInstance().setDebugMode(true);
         setupToolbar();
         bindViews();
         init();
+        Log.d(TAG, "onCreate: created");
         ShowFragment("Home", new HomeFragment(), null);
 
     }
@@ -153,8 +155,9 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }*/
-    @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi, shortLabel = "HotSpot Locations")
+    @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi_black_24dp, shortLabel = "HotSpot Locations")
     public void ShowHotSpotLocations() {
+        Log.d(TAG, "ShowHotSpotLocations: ");
         Bundle bundle = new Bundle();
         bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
         ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
