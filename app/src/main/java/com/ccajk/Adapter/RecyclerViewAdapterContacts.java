@@ -42,19 +42,13 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(ContactsViewHolder holder, int position) {
         Contact contact = contactArrayList.get(position);
+
         holder.viewClickListener.setPosition(position);
         holder.name.setText(contact.getName());
         holder.designation.setText(contact.getDesignation());
-
-        //holder.email.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_mail_outline_black_24dp), null, null, null);
         holder.email.setText("\t" + contact.getEmail());
-
-        //holder.office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
         holder.office.setText("\t" + contact.getOfficeContact());
-
-        //holder.mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
         holder.mobile.setText("\t" + contact.getMobileContact());
-
         if (contact.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
             holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
@@ -90,7 +84,6 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             email.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_mail_outline_black_24dp), null, null, null);
             office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
             mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
-
 
 
 //            linearLayoutEMail = itemView.findViewById(R.id.ll_contact_email);

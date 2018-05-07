@@ -49,8 +49,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
                 (LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_grievance_item, parent, false),
                         appCompatActivity,
                         new CustomClickListener(),
-//                        new CustomSpinnerItemSelectedListener(),
-//                        new CustomEditTextListener(),
                         new CustomUpdateClickListener());
         return viewHolder;
     }
@@ -60,8 +58,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
 
         holder.customClickListener.setPosition(position);
-//        holder.customEditTextListener.setPosition(position);
-//        holder.spinnerItemSelectedListener.setPosition(position);
         holder.customUpdateClickListener.setPosition(position);
         holder.textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
         holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
@@ -72,9 +68,9 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
         if (grievanceModel.getExpanded()) {
             holder.expandableArea.setVisibility(View.VISIBLE);
-            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
+            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
         } else {
-            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_down_black_24dp,0);
+            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
             holder.expandableArea.setVisibility(View.GONE);
         }
     }
@@ -98,17 +94,12 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         public AppCompatButton updateGrievance;
 
         CustomClickListener customClickListener;
-        //        CustomEditTextListener customEditTextListener;
-//        CustomSpinnerItemSelectedListener spinnerItemSelectedListener;
         CustomUpdateClickListener customUpdateClickListener;
 
 
-        public GrievanaceUpdateViewHolder
-                (View itemView, Context context,
-                 CustomClickListener customClickListener,
-//                 CustomSpinnerItemSelectedListener customSpinnerItemSelectedListener,
-//                 CustomEditTextListener customEditTextListener,
-                 CustomUpdateClickListener customUpdateClickListener) {
+        public GrievanaceUpdateViewHolder(View itemView, Context context,
+                                          CustomClickListener customClickListener,
+                                          CustomUpdateClickListener customUpdateClickListener) {
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
@@ -116,15 +107,15 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             textViewGrievanceSubtype = itemView.findViewById(R.id.textview_grievance_subtype);
             expandableArea = itemView.findViewById(R.id.expandable_layout_grievance);
             textViewStatus = itemView.findViewById(R.id.textview_status_text);
-            textViewStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_inspection,0,0,0);
+            textViewStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_inspection, 0, 0, 0);
             textViewPensionerMobile = itemView.findViewById(R.id.textview_pensioner_mobile);
-            textViewPensionerMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp,0,0,0);
+            textViewPensionerMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
 
             textViewDateOfGrievance = itemView.findViewById(R.id.textview_date_of_grievance);
-            textViewDateOfGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar,0,0,0);
+            textViewDateOfGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar, 0, 0, 0);
 
             updateGrievance = itemView.findViewById(R.id.button_update_grievance);
-            updateGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp,0,0,0);
+            updateGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp, 0, 0, 0);
 
             this.customClickListener = customClickListener;
             this.customUpdateClickListener = customUpdateClickListener;
@@ -157,12 +148,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         public void setPosition(int position) {
             this.position = position;
         }
-
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            GrievanceModel grievanceModel = grievanceModelArrayList.get(this.position);
-//            grievanceModel.setGrievanceStatus(position);
-//        }
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -214,21 +199,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         @Override
         public void onClick(View v) {
             GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
-            long status = grievanceModel.getGrievanceStatus();
-            String message = grievanceModel.getMessage();
-//            HashMap<String, Object> hashMap = new HashMap<>();
-//            hashMap.put("grievanceStatus", textViewStatus);
-//            hashMap.put("textViewMessage", textViewMessage);
-//
-//            DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-//            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())
-//                    .child(String.valueOf(grievanceModel.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    if (task.isSuccessful())
-//                        Toast.makeText(context, "Successfully Updated", Toast.LENGTH_LONG).show();
-//                }
-//            });
             Intent intent = new Intent(appCompatActivity, UpdateGrievanceActivity.class);
             GrievanceDataProvider.getInstance().selectedGrievance = grievanceModel;
             appCompatActivity.startActivityForResult(intent, REQUEST_UPDATE);
