@@ -104,7 +104,7 @@ public class Helper {
         types.add(new GrievanceType("Request for CGIES", 8));
         types.add(new GrievanceType("Excess/Short Payment", 9));
         types.add(new GrievanceType("Enhancement of Pension on Attaining 75/80", 10));
-        types.add(new GrievanceType("Other Pension GrievanceModel", 11));
+        types.add(new GrievanceType("Other Pension Grievance", 11));
         return types;
     }
 
@@ -116,7 +116,7 @@ public class Helper {
         types.add(new GrievanceType("GPF Account not transfered", 103));
         types.add(new GrievanceType("Details of GPF Deposit A/C Slip", 104));
         types.add(new GrievanceType("Non Payment of GPF Withdrawal", 105));
-        types.add(new GrievanceType("Other GPF GrievanceModel", 106));
+        types.add(new GrievanceType("Other GPF Grievance", 106));
         return types;
     }
 
@@ -145,7 +145,7 @@ public class Helper {
             case 10:
                 return "Enhancement of Pension on Attaining 75/80";
             case 11:
-                return "Other Pension GrievanceModel";
+                return "Other Pension Grievance";
             case 100:
                 return "GPF Final Payment not received";
             case 101:
@@ -159,7 +159,7 @@ public class Helper {
             case 105:
                 return "Non Payment of GPF Withdrawal";
             case 106:
-                return "Other GPF GrievanceModel";
+                return "Other GPF Grievance";
         }
         return null;
     }
