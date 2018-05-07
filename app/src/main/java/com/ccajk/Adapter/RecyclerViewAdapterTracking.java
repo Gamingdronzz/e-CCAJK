@@ -44,7 +44,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         holder.textViewStatus.setText("");
         holder.textViewStatus.setText(Html.fromHtml("Status : <b>" + Helper.getInstance().getStatusList()[(int) grievanceModel.getGrievanceStatus()]+ "</b>"));
         holder.textViewMessage.setText("");
-        if (grievanceModel.isExpanded()) {
+        if (grievanceModel.getExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
             holder.textViewgrievance.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
         } else {

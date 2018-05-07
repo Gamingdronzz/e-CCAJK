@@ -70,7 +70,8 @@ public class FeedbackFragment extends Fragment {
                 if (!etSuggestion.getText().toString().trim().isEmpty()) {
                     Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
                             FireBaseHelper.getInstance().ROOT_SUGGESTIONS,
-                            etSuggestion.getText().toString().trim()
+                            etSuggestion.getText().toString().trim(),
+                            getContext()
                     );
                     task.addOnCompleteListener(new OnCompleteListener() {
                         @Override
@@ -93,6 +94,7 @@ public class FeedbackFragment extends Fragment {
                 Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
                         FireBaseHelper.getInstance().ROOT_ERROR_REPORT,
                         null,
+                        getContext(),
                         spinnerErrorType.getSelectedItem().toString(),
                         Helper.getInstance().errorMessageList[spinnerErrorType.getSelectedItemPosition()],
                         etCauseOfIssue.getText().toString().trim());

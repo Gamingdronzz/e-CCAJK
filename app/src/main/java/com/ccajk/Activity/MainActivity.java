@@ -262,6 +262,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_logout:
                 logout();
+                break;
             case R.id.navmenu_about_us:
                 ShowFragment("About Us", new AboutUsFragment(),null);
                 break;

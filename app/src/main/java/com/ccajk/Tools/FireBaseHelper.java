@@ -1,5 +1,7 @@
 package com.ccajk.Tools;
 
+import android.content.Context;
+
 import com.ccajk.Models.Contact;
 import com.ccajk.Models.ContactBuilder;
 import com.ccajk.Models.GrievanceModel;
@@ -87,7 +89,7 @@ public class FireBaseHelper {
         return uploadTask;
     }
 
-    public Task uploadDataToFirebase(String root, Object model, String... params) {
+    public Task uploadDataToFirebase(String root, Object model, Context context,String... params) {
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference.child(root);
         Task task;
 
@@ -104,21 +106,23 @@ public class FireBaseHelper {
         }
         else if (root.equals(FireBaseHelper.getInstance().ROOT_GRIEVANCES)) {
             GrievanceModel grievanceModel = (GrievanceModel) model;
-            task = dbref.child(grievanceModel.getPensionerIdentifier())
+            task = dbref.child(Preferences.getInstance().getStringPref(context,Preferences.PREF_STATE))
+                    .child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType()))
                     .setValue(grievanceModel);
 
         }
         else if (root.equals(FireBaseHelper.getInstance().ROOT_INSPECTION)) {
             InspectionModel inspectionModel = (InspectionModel) model;
-            task = dbref.child(params[0])
-                    .child(params[1])
+            task = dbref.child(Preferences.getInstance().getStringPref(context,Preferences.PREF_STATE))
+                    .child(params[0])
                     .setValue(inspectionModel);
 
         }
         else {
             PanAdhaar panAdhaar = (PanAdhaar) model;
-            task = dbref.child(panAdhaar.getPensionerIdentifier())
+            task = dbref.child(Preferences.getInstance().getStringPref(context,Preferences.PREF_STATE))
+                    .child(panAdhaar.getPensionerIdentifier())
                     .setValue(panAdhaar);
         }
         return task;

@@ -424,7 +424,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
             Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
                     FireBaseHelper.getInstance().ROOT_GRIEVANCES,
-                    grievanceModel);
+                    grievanceModel,
+                    getContext());
 
             task.addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -456,6 +457,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         true,
                         counterFirebaseImages++,
                         FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                        Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                         code,
                         String.valueOf(grievanceType.getId()));
 

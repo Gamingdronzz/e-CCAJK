@@ -2,7 +2,6 @@ package com.ccajk.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -72,7 +70,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
-        if (grievanceModel.isExpanded()) {
+        if (grievanceModel.getExpanded()) {
             holder.expandableArea.setVisibility(View.VISIBLE);
             holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_up_black_24dp,0);
         } else {
@@ -147,7 +145,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
         @Override
         public void onClick(View v) {
-            grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
+            grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).getExpanded());
             Log.d(TAG, "onClick: " + position);
             notifyItemChanged(position);
         }

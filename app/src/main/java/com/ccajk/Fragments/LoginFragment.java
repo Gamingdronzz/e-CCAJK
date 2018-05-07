@@ -18,6 +18,7 @@ import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -79,7 +80,9 @@ public class LoginFragment extends Fragment {
 
         final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Logging In...");
         progressDialog.show();
-        FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+        FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF)
+                .child(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE))
+                .child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {

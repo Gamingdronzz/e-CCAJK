@@ -22,6 +22,7 @@ import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseException;
@@ -117,7 +118,9 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
 
         try {
-            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(grievanceModel.getPensionerIdentifier())
+            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+                    .child(Preferences.getInstance().getStringPref(this, Preferences.PREF_STATE))
+                    .child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType())).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {

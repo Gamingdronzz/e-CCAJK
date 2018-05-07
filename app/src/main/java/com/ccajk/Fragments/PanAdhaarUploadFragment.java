@@ -333,7 +333,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 null,
                 Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
 
-        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(root, panAdhaar);
+        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(root, panAdhaar,getContext());
 
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -355,6 +355,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 false,
                 0,
                 root,
+                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                 pensionerCode);
 
         if (uploadTask != null) {

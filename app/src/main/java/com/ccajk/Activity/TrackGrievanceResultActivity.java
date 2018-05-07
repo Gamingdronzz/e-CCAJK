@@ -18,6 +18,7 @@ import com.ccajk.R;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +62,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Log.d(TAG, "onClick: " + position);
-                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
+                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).getExpanded());
                 adapterTracking.notifyItemChanged(position);
             }
 
@@ -109,7 +110,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     private void getGrievances() {
         try {
-            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
+            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+                    .child(Preferences.getInstance().getStringPref(this, Preferences.PREF_STATE))
+                    .child(pensionerCode)
                     .addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -146,7 +149,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                         }
                     });
-            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).child(pensionerCode)
+            dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+                    .child(Preferences.getInstance().getStringPref(this, Preferences.PREF_STATE))
+                    .child(pensionerCode)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

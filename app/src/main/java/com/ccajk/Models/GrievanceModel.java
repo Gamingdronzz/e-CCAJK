@@ -38,7 +38,7 @@ public class GrievanceModel {
         this.date = date;
     }
 
-    public boolean isExpanded() {
+    public boolean getExpanded() {
         return expanded;
     }
 

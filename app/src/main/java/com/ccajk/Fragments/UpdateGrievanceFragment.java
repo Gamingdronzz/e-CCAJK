@@ -27,6 +27,7 @@ import com.ccajk.Tabs.UpdateGrievance.TabUnderProcess;
 import com.ccajk.Tools.ConnectionUtility;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;
+import com.ccajk.Tools.Preferences;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -107,7 +108,7 @@ public class UpdateGrievanceFragment extends Fragment {
                     getData();
                 } else
                     progressDialog.dismiss();
-                    setTabLayout();
+                setTabLayout();
 
                 showNoInternetConnectionLayout(false);
             }
@@ -127,41 +128,45 @@ public class UpdateGrievanceFragment extends Fragment {
         processingGrievances = new ArrayList<>();
         resolvedGrievances = new ArrayList<>();
         DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (dataSnapshot.getValue() != null) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
-                        allGrievances.add(grievanceModel);
-                        if (grievanceModel.getGrievanceStatus() == 0) {
-                            submittedGrievances.add(grievanceModel);
-                        } else if (grievanceModel.getGrievanceStatus() == 1) {
-                            processingGrievances.add(grievanceModel);
-                        } else {
-                            resolvedGrievances.add(grievanceModel);
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        if (dataSnapshot.getValue() != null) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
+                                allGrievances.add(grievanceModel);
+                                if (grievanceModel.getGrievanceStatus() == 0) {
+                                    submittedGrievances.add(grievanceModel);
+                                } else if (grievanceModel.getGrievanceStatus() == 1) {
+                                    processingGrievances.add(grievanceModel);
+                                } else {
+                                    resolvedGrievances.add(grievanceModel);
+                                }
+                            }
                         }
                     }
-                }
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
