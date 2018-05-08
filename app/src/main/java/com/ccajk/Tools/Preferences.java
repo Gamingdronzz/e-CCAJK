@@ -46,15 +46,16 @@ public class Preferences {
         return res;
     }
 
-    public int getIntPref(Context context,String key)
-    {
-        return getSharedPreferences(context).getInt(key,-1);
-    }
-
     public void setStringPref(Context context,String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putString(key, value);
         editor.commit();
+    }
+
+
+    public int getIntPref(Context context,String key)
+    {
+        return getSharedPreferences(context).getInt(key,-1);
     }
 
     public void setIntPref(Context context,String key, int value) {

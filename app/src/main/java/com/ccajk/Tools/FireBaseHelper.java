@@ -9,7 +9,6 @@ import com.ccajk.Models.InspectionModel;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Models.PanAdhaar;
 import com.ccajk.Models.SelectedImageModel;
-import com.ccajk.Models.State;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -57,8 +56,6 @@ public class FireBaseHelper {
     //public GrievanceModel selectedGrievance;
     //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
     //public final String ROOT_PAN_STATUS = "Pan-Status";
-
-    public ArrayList<State> statelist;
 
     public FireBaseHelper() {
         _instance = this;
@@ -148,23 +145,5 @@ public class FireBaseHelper {
         contactArrayList.add(new ContactBuilder().setName("Sh Neeraj Koul").setDesignation("Consultant (Pension)").setOfficeContact("2477284").setStateId(stateId).setMobileContact("9419286585").createContact());
         return contactArrayList;
     }
-
-    /*public ArrayList<State> getStatelist() {
-        statelist = new ArrayList<>();
-        statelist.add(new State("anp", "Andhra Pradesh"));
-        statelist.add(new State("jnk", "Jammu and Kashmir"));
-        statelist.add(new State("pnb", "Punjab"));
-        return statelist;
-    }
-
-
-    public String getState(String stateId) {
-        for (State s : statelist) {
-            if (s.getId() == stateId)
-                return s.getName();
-        }
-        return null;
-    }*/
-
 
 }

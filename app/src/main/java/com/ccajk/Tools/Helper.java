@@ -19,6 +19,7 @@ import com.ccajk.CustomObjects.ProgressDialog;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
+import com.ccajk.Models.State;
 import com.ccajk.R;
 import com.google.firebase.database.DatabaseReference;
 import com.linchaolong.android.imagepicker.ImagePicker;
@@ -45,6 +46,7 @@ public class Helper {
     private final String TAG = "Helper";
     private String appMode;
     private boolean debugMode = true;
+    public ArrayList<State> statelist;
     public ArrayList<LocationModel> allLocationModels;
 
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
@@ -90,6 +92,22 @@ public class Helper {
 
     }
 
+    /*public ArrayList<State> getStatelist() {
+              statelist = new ArrayList<>();
+              statelist.add(new State("anp", "Andhra Pradesh"));
+              statelist.add(new State("jnk", "Jammu and Kashmir"));
+              statelist.add(new State("pnb", "Punjab"));
+              return statelist;
+          }
+
+
+          public String getState(String stateId) {
+              for (State s : statelist) {
+                  if (s.getId() == stateId)
+                      return s.getName();
+              }
+              return null;
+          }*/
 
     public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
         ArrayList<GrievanceType> types = new ArrayList<>();
