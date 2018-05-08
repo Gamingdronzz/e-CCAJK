@@ -34,7 +34,6 @@ public class Preferences {
 
     public String getStringPref(Context context,String key)
     {
-
         String res = getSharedPreferences(context).getString(key,null);
         if(res == null)
         {

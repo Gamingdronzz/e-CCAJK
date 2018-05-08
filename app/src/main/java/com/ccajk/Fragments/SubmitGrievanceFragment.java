@@ -552,6 +552,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
 
+    private void clearFormData() {
+        autoCompleteTextViewPensionerCode.setText("");
+        inputMobile.setText("");
+        inputEmail.setText("");
+        spinnerInputType.setSelection(0);
+        spinnerInputSubmittedBy.setSelection(0);
+        inputDetails.setText("");
+        removeAllSelectedImages();
+    }
 
     @Override
     public void onResponse(String str) {
@@ -583,16 +592,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         } catch (JSONException jse) {
             jse.printStackTrace();
         }
-    }
-
-    private void clearFormData() {
-        autoCompleteTextViewPensionerCode.setText("");
-        inputMobile.setText("");
-        inputEmail.setText("");
-        spinnerInputType.setSelection(0);
-        spinnerInputSubmittedBy.setSelection(0);
-        inputDetails.setText("");
-        removeAllSelectedImages();
     }
 
     @Override

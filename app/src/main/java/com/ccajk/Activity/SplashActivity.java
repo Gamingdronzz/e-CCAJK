@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
@@ -43,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Helper.getInstance().setDebugMode(false);
+        Helper.getInstance().setDebugMode(true);
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
         bindVIews();
@@ -91,8 +90,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkForUpdate() {
         if (!Helper.getInstance().isDebugMode()) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-
                 ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
                     @Override
                     public void OnConnectionAvailable() {
@@ -123,9 +120,6 @@ public class SplashActivity extends AppCompatActivity {
                 connectionUtility.checkConnectionAvailability();
             } else
                 LoadNextActivity();
-        } else {
-            LoadNextActivity();
-        }
     }
 
     private void checkVersion(DataSnapshot dataSnapshot) {
@@ -146,6 +140,7 @@ public class SplashActivity extends AppCompatActivity {
                         @Override
                         public void OnClick() {
                             showGooglePlayStore();
+                            finish();
                         }
                     },
                     "Cancel",

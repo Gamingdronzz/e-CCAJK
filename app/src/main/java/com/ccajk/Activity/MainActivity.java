@@ -1,6 +1,5 @@
 package com.ccajk.Activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.ccajk.CustomObjects.CustomDrawer.CardDrawerLayout;
-import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialog;
 import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.ccajk.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;

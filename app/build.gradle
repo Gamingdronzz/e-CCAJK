@@ -41,30 +41,28 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:0.5'
     //Image processing and loading from path
     implementation 'com.squareup.picasso:picasso:2.3.2'
-
     //Showing images in a slider
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
-
     //Firebase
     implementation 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
     implementation 'com.google.firebase:firebase-storage:11.8.0'
-
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
     //Image picker
     compile 'com.linchaolong.android:imagepicker:1.5'
-
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     //Shortcut maker
     implementation 'com.github.matthiasrobbers:shortbread:1.0.2'
     annotationProcessor 'com.github.matthiasrobbers:shortbread-compiler:1.0.2'
     //Welcome screen
     implementation 'com.stephentuso:welcome:1.4.1'
-//Volley
+    //Volley
     implementation 'com.android.volley:volley:1.0.0'
-//gson
+    //gson
     compile 'com.google.code.gson:gson:2.8.4'
     //implementation 'org.apache.commons:commons-io:1.3.2'
+
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
 
 }
 apply plugin: 'com.google.gms.google-services'
