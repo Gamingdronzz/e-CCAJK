@@ -6,7 +6,7 @@
     android:background="@color/colorAccentLight"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context="com.ccajk.Fragments.ContactUsFragment">
+    tools:context="com.mycca.Fragments.ContactUsFragment">
 
     <!--  <LinearLayout
           android:layout_width="match_parent"

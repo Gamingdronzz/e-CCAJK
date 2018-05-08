@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/colorLightGray"
-    tools:context="com.ccajk.Activity.UpdateGrievanceActivity">
+    tools:context="com.mycca.Activity.UpdateGrievanceActivity">
 
     <ScrollView
         android:layout_width="match_parent"

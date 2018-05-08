@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ccajk">
+    package="com.mycca">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".App.AppController"
+        android:name="com.mycca.App.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_cca_new"
         android:label="@string/app_name"
@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustNothing">
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name="com.mycca.Activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar.Splash"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.MainActivity"
+            android:name="com.mycca.Activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar.Home"
@@ -59,22 +59,22 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".Unused.PanAdhaarHistoryActivity"
+            android:name="com.mycca.Unused.PanAdhaarHistoryActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".Activity.AboutUsActivity"
+            android:name="com.mycca.Activity.AboutUsActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".Activity.TrackGrievanceResultActivity"
+            android:name="com.mycca.Activity.TrackGrievanceResultActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".Activity.WelcomeScreen"
+            android:name="com.mycca.Activity.WelcomeScreen"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".Activity.UpdateGrievanceActivity"
+            android:name="com.mycca.Activity.UpdateGrievanceActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustNothing" />
         <!-- This meta-data tag is required to use Google Play Services. -->
@@ -83,7 +83,7 @@
             android:value="@integer/google_play_services_version" />
 
         <service
-            android:name=".FirebaseService.MyFirebaseInstanceIdService">
+            android:name="com.mycca.FirebaseService.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
