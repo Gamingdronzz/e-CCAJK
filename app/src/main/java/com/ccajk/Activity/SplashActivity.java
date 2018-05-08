@@ -40,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Helper.getInstance().setDebugMode(true);
+        Helper.getInstance().setDebugMode(false);
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
         bindVIews();
