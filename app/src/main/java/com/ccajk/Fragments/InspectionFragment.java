@@ -24,7 +24,8 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.InspectionModel;
 import com.ccajk.Models.SelectedImageModel;
@@ -199,16 +200,23 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Intenet Not Available\nPlease turn on internet connection before submitting Inspection",
-                        "No Internet Connection",
-                        "OK");
+              showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
+    private void showNoInternetConnectionDialog(String message)
+    {
+        Helper.getInstance().showFancyAlertDialog(this.getActivity(),
+                message,
+                "Inspection",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
+    }
     private void doSubmissionOnInternetAvailable() {
         Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
@@ -278,16 +286,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Internet Connection not available\nTurn on your internet before getting location",
-                        "Inspection",
-                        "OK");
+                showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates");
                 progressDialog.dismiss();
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
+
+
 
     private void showCoordinates(Location location) {
         isCurrentLocationFound = true;
@@ -370,11 +376,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Some Error Occured",
-                        "Error 3\nPlease Try Again",
-                        "OK");
+                showNoInternetConnectionDialog("Some Error Occured\nError 3\nPlease Try Again");
+
             }
         });
     }
@@ -451,12 +454,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Error 1\nPlease report this issue through feedback section",
-                        "Submission Error",
-                        "OK");
-
+                showNoInternetConnectionDialog("Error 1\nPlease report this issue through feedback section");
             }
         } else {
             isUploadedToServer = true;

@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.ccajk.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -143,32 +144,26 @@ public class MyLocationManager {
     }
 
     public void ShowDialogOnPermissionDenied(String message) {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                context.getActivity(), R.style.MyAlertDialogStyle);
-        alertDialog.setMessage(message)
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                })
-                .setMessage(message)
-                .setTitle("CCA JK")
-                .show();
+        Helper.getInstance().showFancyAlertDialog(context.getActivity(),
+                message,
+                "Location",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.WARNING);
     }
 
     public void ShowDialogOnLocationOff(String message) {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                context.getActivity(), R.style.MyAlertDialogStyle);
-        alertDialog.setMessage(message)
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setTitle("CCA JK")
-                .show();
+        Helper.getInstance().showFancyAlertDialog(context.getActivity(),
+                message,
+                "Location",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.WARNING);
     }
 
 

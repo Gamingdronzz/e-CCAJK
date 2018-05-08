@@ -32,7 +32,8 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.ccajk.Adapter.GrievanceAdapter;
 import com.ccajk.Adapter.RecyclerViewAdapterSelectedImages;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Models.GrievanceType;
@@ -379,11 +380,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Intenet Not Available\nPlease turn on internet connection before submitting " + type + " Grievance",
-                        "No Internet Connection",
-                        "OK");
+                Helper.getInstance().showFancyAlertDialog(getActivity(),
+                        "No Internet Connection\nPlease turn on internet connection before submitting " + type + " Grievance",
+                        "Submit Grievance",
+                        "OK",
+                        null,
+                        null,
+                        null,
+                        FancyAlertDialogType.ERROR);
+
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -509,11 +514,14 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
+                Helper.getInstance().showFancyAlertDialog(getActivity(),
                         "Error 1\nPlease report this issue through feedback section",
-                        "Submission Error",
-                        "OK");
+                        "Track Grievance",
+                        "OK",
+                        null,
+                        null,
+                        null,
+                        FancyAlertDialogType.ERROR);
 
             }
         } else {

@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ccajk.Adapter.RecyclerViewAdapterTracking;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Listeners.ClickListener;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Listeners.RecyclerViewTouchListeners;
@@ -93,9 +94,14 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     private void onConnectionNotAvailable() {
         progressDialog.dismiss();
-        Helper.getInstance().showAlertDialog(this, "No Internet Connection\nTurn on Internet Connection First",
-                "No Internet Connection",
-                "OK");
+        Helper.getInstance().showFancyAlertDialog(this,
+                "No Internet Connection\nTurn on Internet Connection First",
+                "Track Grievance",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
     }
 
     private void getGrievancesOnConnectionAvailable() {

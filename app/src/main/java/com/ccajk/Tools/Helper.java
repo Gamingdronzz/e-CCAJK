@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
@@ -15,7 +16,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.ccajk.CustomObjects.FancyAlertDialog.Icon;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Models.GrievanceType;
 import com.ccajk.Models.LocationModel;
@@ -64,6 +69,8 @@ public class Helper {
             return _instance;
         }
     }
+
+    public String getPlayStoreURL(){return "http://play.google.com/store/apps/details?id=com.ccajk";}
 
     public boolean isDebugMode() {
         return debugMode;
@@ -272,24 +279,63 @@ public class Helper {
         return isTab;
     }
 
-    public void showAlertDialog(Context context, String message, String title, String positiveButtonText,
-                                DialogInterface.OnClickListener positiveButtonOnClickListener,
-                                String negativeButtonText) {
+    public void showFancyAlertDialog(Activity activity,
+                                     String message,
+                                     String title,
+                                     String positiveButtonText, IFancyAlertDialogListener positiveButtonOnClickListener,
+                                     String negativeButtonText, IFancyAlertDialogListener negativeButtonOnClickListener,
+                                     FancyAlertDialogType fancyAlertDialogType) {
         if (title == null) {
             title = "CCA JK";
         }
         if (message == null) {
-            Log.d(TAG, "showAlertDialog: Message cant be null");
+            Log.d(TAG, "showFancyAlertDialog: Message cant be null");
             return;
         }
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                context, R.style.MyAlertDialogStyle);
-        alertDialog.setPositiveButton(positiveButtonText, positiveButtonOnClickListener)
-                .setNegativeButton(negativeButtonText, null)
-                .setMessage(message)
+        int bgColor = 1;
+        int icon = 1;
+        switch (fancyAlertDialogType)
+        {
+            case ERROR:
+                bgColor = Color.parseColor("#aa0000");
+                icon = R.drawable.ic_sentiment_dissatisfied_black_24dp;
+                break;
+            case SUCCESS:
+                bgColor = Color.parseColor("#00aa00");
+                icon = R.drawable.ic_check_black_24dp;
+                break;
+            case WARNING:
+                bgColor = Color.parseColor("#E2AB04");
+                icon = R.drawable.ic_error_outline_black_24dp;
+                break;
+        }
+
+        new FancyAlertDialog.Builder(activity)
                 .setTitle(title)
-                .show();
+                .setMessage(message)
+                .setBackgroundColor(bgColor)
+                .setNegativeBtnText(negativeButtonText)
+                .setPositiveBtnText(positiveButtonText)
+                .isCancellable(false)
+                .setPositiveBtnBackground(bgColor)
+                .setIcon(icon, Icon.Visible)
+                .OnNegativeClicked(negativeButtonOnClickListener)
+                .OnPositiveClicked(positiveButtonOnClickListener)
+                .build();
     }
+
+//    public void showAlertDialog(Context context, String message, String title, String positiveButtonText,
+//                                DialogInterface.OnClickListener positiveButtonOnClickListener,
+//                                String negativeButtonText) {
+//
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+//                context, R.style.MyAlertDialogStyle);
+//        alertDialog.setPositiveButton(positiveButtonText, positiveButtonOnClickListener)
+//                .setNegativeButton(negativeButtonText, null)
+//                .setMessage(message)
+//                .setTitle(title)
+//                .show();
+//    }
 
     public String getAppMode() {
         return appMode;
@@ -299,43 +345,43 @@ public class Helper {
         this.appMode = appMode;
     }
 
-    public void showAlertDialog(Context context, String message, String title, String neutralButtonText) {
-        if (title == null) {
-            title = "CCA JK";
-        }
-        if (message == null) {
-            Log.d(TAG, "showAlertDialog: Message cant be null");
-            return;
-        }
-        if (neutralButtonText == null) {
-            neutralButtonText = "OK";
-        }
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                context, R.style.MyAlertDialogStyle);
-        alertDialog.setNeutralButton(neutralButtonText, null)
-                .setMessage(message)
-                .setTitle(title)
-                .show();
-    }
+//    public void showAlertDialog(Context context, String message, String title, String neutralButtonText) {
+//        if (title == null) {
+//            title = "CCA JK";
+//        }
+//        if (message == null) {
+//            Log.d(TAG, "showAlertDialog: Message cant be null");
+//            return;
+//        }
+//        if (neutralButtonText == null) {
+//            neutralButtonText = "OK";
+//        }
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+//                context, R.style.MyAlertDialogStyle);
+//        alertDialog.setNeutralButton(neutralButtonText, null)
+//                .setMessage(message)
+//                .setTitle(title)
+//                .show();
+//    }
 
-    public void showAlertDialog(Context context, String message, String title, String neutralButtonText, DialogInterface.OnClickListener neutralButtonClickListener) {
-        if (title == null) {
-            title = "CCA JK";
-        }
-        if (message == null) {
-            Log.d(TAG, "showAlertDialog: Message cant be null");
-            return;
-        }
-        if (neutralButtonText == null) {
-            neutralButtonText = "OK";
-        }
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                context, R.style.MyAlertDialogStyle);
-        alertDialog.setNeutralButton(neutralButtonText, neutralButtonClickListener)
-                .setMessage(message)
-                .setTitle(title)
-                .show();
-    }
+//    public void showAlertDialog(Context context, String message, String title, String neutralButtonText, DialogInterface.OnClickListener neutralButtonClickListener) {
+//        if (title == null) {
+//            title = "CCA JK";
+//        }
+//        if (message == null) {
+//            Log.d(TAG, "showAlertDialog: Message cant be null");
+//            return;
+//        }
+//        if (neutralButtonText == null) {
+//            neutralButtonText = "OK";
+//        }
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+//                context, R.style.MyAlertDialogStyle);
+//        alertDialog.setNeutralButton(neutralButtonText, neutralButtonClickListener)
+//                .setMessage(message)
+//                .setTitle(title)
+//                .show();
+//    }
 
     public JSONObject getJson(String input) {
         try {

@@ -17,7 +17,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.ccajk.CustomObjects.CardDrawerLayout;
+import com.ccajk.CustomObjects.CustomDrawer.CardDrawerLayout;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.ccajk.CustomObjects.ShowcaseView.GuideView;
 import com.ccajk.Fragments.AboutUsFragment;
 import com.ccajk.Fragments.BrowserFragment;
@@ -258,13 +261,13 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("Inspection", new InspectionFragment(), null);
                 break;
             case R.id.navmenu_feedback:
-                ShowFragment("Feedback", new FeedbackFragment(),null);
+                ShowFragment("Feedback", new FeedbackFragment(), null);
                 break;
             case R.id.navmenu_logout:
                 logout();
                 break;
             case R.id.navmenu_about_us:
-                ShowFragment("About Us", new AboutUsFragment(),null);
+                ShowFragment("About Us", new AboutUsFragment(), null);
                 break;
         }
 
@@ -281,22 +284,37 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void doExit() {
-        Helper.getInstance().showAlertDialog(
-                this,
+
+        Helper.getInstance().showFancyAlertDialog(this,
                 "Do you want to exit?",
-                null,
-                "Yes",
-                new DialogInterface.OnClickListener() {
+                "MY CCA JK",
+                "YES",
+                new IFancyAlertDialogListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void OnClick() {
                         finish();
                     }
                 },
-                "No");
+                "NO",
+                new IFancyAlertDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                },
+                FancyAlertDialogType.WARNING);
     }
 
     public void OnLoginFailure(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Helper.getInstance().showFancyAlertDialog(this,
+                message,
+                "Login",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
+        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     public void OnLoginSuccesful(String staffId, long type) {

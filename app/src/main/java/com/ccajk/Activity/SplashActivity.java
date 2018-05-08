@@ -3,6 +3,7 @@ package com.ccajk.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.AppVersionModel;
 import com.ccajk.R;
@@ -29,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
     AppCompatImageButton imageButton;
-    TextView gd, tvSplashVersion;
+    TextView tvSplashVersion;
     boolean showWelcomeScreen = false;
     DatabaseReference dbref;
     int currentAppVersion;
@@ -40,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Helper.getInstance().setDebugMode(true);
+        Helper.getInstance().setDebugMode(false);
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
         bindVIews();
@@ -135,11 +138,33 @@ public class SplashActivity extends AppCompatActivity {
         } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
             LoadNextActivity();
         } else {
-            Helper.getInstance().showAlertDialog(this,
-                    "A new version of the application is available on the play Store\n\nUpdate to continue using the application",
+            Helper.getInstance().showFancyAlertDialog(this,
+                    "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
+                    "Location",
                     "Update",
-                    "OK");
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            showGooglePlayStore();
+                        }
+                    },
+                    "Cancel",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            finish();
+                        }
+                    },
+                    FancyAlertDialogType.WARNING);
         }
+    }
+
+    private void showGooglePlayStore()
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=com.ccajk"));
+        startActivity(intent);
+
     }
 
     private void LoadNextActivity() {

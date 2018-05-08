@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ccajk.Activity.MainActivity;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.R;
 import com.ccajk.Tools.FireBaseHelper;
 import com.ccajk.Tools.Helper;

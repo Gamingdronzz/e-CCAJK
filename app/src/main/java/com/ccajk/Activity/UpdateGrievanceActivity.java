@@ -14,7 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.GrievanceModel;
 import com.ccajk.Providers.GrievanceDataProvider;
@@ -86,11 +87,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
                     @Override
                     public void OnConnectionNotAvailable() {
-                        Helper.getInstance().showAlertDialog(
-                                getBaseContext(),
-                                "Internet Connection Not Available\nTurn on internet to update",
-                                "No Internet Connection",
-                                "OK");
+                        showNoInternetConnectionDialog();
                     }
                 });
                 connectionUtility.checkConnectionAvailability();
@@ -100,6 +97,19 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
 
     }
+
+    private void showNoInternetConnectionDialog()
+    {
+        Helper.getInstance().showFancyAlertDialog(this,
+                "No Internet Connection\nTurn on Internet Connection to Update grievance",
+                "Update Grievance",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
+    }
+
 
     private void setLayoutData() {
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());

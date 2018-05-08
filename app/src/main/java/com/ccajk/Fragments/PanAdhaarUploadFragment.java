@@ -25,7 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Listeners.OnConnectionAvailableListener;
 import com.ccajk.Models.PanAdhaar;
 import com.ccajk.Models.SelectedImageModel;
@@ -274,16 +275,23 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void OnConnectionNotAvailable() {
-                Helper.getInstance().showAlertDialog(
-                        getContext(),
-                        "Intenet Not Available\nPlease turn on internet connection before updating " + root,
-                        "No Internet Connection",
-                        "OK");
+                showNoInternetConnectionDialog();
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
+    private void showNoInternetConnectionDialog()
+    {
+        Helper.getInstance().showFancyAlertDialog(this.getActivity(),
+                "No Internet Connection\nPlease turn on internet connection before updating " + root,
+                "Update " + root,
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
+    }
     private void doSubmissionOnInternetAvailable() {
         Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
@@ -392,12 +400,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     volleyHelper);
         } catch (Exception e) {
             e.printStackTrace();
-            Helper.getInstance().showAlertDialog(
-                    getContext(),
-                    "Error 1\nPlease report this issue through feedback section",
-                    "Submission Error",
-                    "OK");
-
+            Helper.getInstance().showFancyAlertDialog(
+                    getActivity(),
+                    "Error 1\nPlease report this issue through feedback section", root, "OK", null, null, null, FancyAlertDialogType.ERROR);
         }
     }
 

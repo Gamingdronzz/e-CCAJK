@@ -18,7 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Models.LocationModel;
 import com.ccajk.Providers.LocationDataProvider;
 import com.ccajk.R;
@@ -414,11 +415,15 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     case Activity.RESULT_CANCELED: {
                         // The user was asked to change settings, but chose not to
                         Log.v(TAG, "Resolution denied");
-                        Helper.getInstance().showAlertDialog(
-                                getContext(),
+                        Helper.getInstance().showFancyAlertDialog(getActivity(),
                                 "LOCATION OFF!\nUnable to get nearby locations without location access.",
-                                "CCA JK",
-                                "OK");
+                                "Nearby Locations",
+                                "OK",
+                                null,
+                                null,
+                                null,
+                                FancyAlertDialogType.ERROR);
+
                         break;
                     }
                     default: {

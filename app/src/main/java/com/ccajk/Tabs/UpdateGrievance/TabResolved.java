@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.ccajk.Activity.MainActivity;
 import com.ccajk.Adapter.RecyclerViewAdapterGrievanceUpdate;
-import com.ccajk.CustomObjects.ProgressDialog;
+import com.ccajk.CustomObjects.Progress.ProgressDialog;
 import com.ccajk.Providers.GrievanceDataProvider;
 import com.ccajk.R;
 import com.ccajk.Tools.Helper;
