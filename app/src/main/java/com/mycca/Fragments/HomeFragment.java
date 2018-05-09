@@ -113,6 +113,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Log.d(TAG, "onOptionsItemSelected: Showing Settings");
+                ((MainActivity)getActivity()).ShowFragment("Settings",new SettingsFragment(),null);
                 Toast.makeText(getContext(), "Settings Menu", Toast.LENGTH_SHORT).show();
                 break;
             default:
