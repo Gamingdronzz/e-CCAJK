@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mycca.R;
 
 public class SettingsFragment extends Fragment {
 
-    private Switch notificationSwitch;
+    private Switch switchNotification;
+    private TextView tvChangeState;
 
     public SettingsFragment() {
 
@@ -32,15 +34,28 @@ public class SettingsFragment extends Fragment {
 
     private void bindViews(View view) {
 
-        notificationSwitch = view.findViewById(R.id.switch_settings_notifications);
+        switchNotification = view.findViewById(R.id.switch_settings_notifications);
+        tvChangeState=view.findViewById(R.id.tv_settings_change_state);
     }
 
     private void init() {
 
-        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(getContext(), "Checked=" + isChecked, Toast.LENGTH_SHORT).show();
+                if(isChecked){
+                    Toast.makeText(getContext(), "Notifications on", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getContext(), "Notifications off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        tvChangeState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

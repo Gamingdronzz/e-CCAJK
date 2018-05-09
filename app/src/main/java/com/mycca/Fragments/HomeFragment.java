@@ -18,13 +18,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mycca.Activity.AboutUsActivity;
-import com.mycca.Activity.MainActivity;
-import com.mycca.R;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.mycca.Activity.AboutUsActivity;
+import com.mycca.Activity.MainActivity;
+import com.mycca.R;
 
 import java.util.HashMap;
 
@@ -43,7 +43,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,6 +60,41 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         return view;
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_home, menu);
+        item = menu.findItem(R.id.action_settings);
+       /* Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
+            @Override
+            public void onDismiss(View view) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.showDrawer();
+            }
+        });*/
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                ((MainActivity)getActivity()).ShowFragment("Settings",new SettingsFragment(),null);
+                break;
+            case R.id.action_invite:
+                Toast.makeText(getContext(), "Invitation", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
 
     private void bindViews(View view) {
         welcomeText = view.findViewById(R.id.textview_welcome_short);
@@ -106,55 +140,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         });
 
         setupSlider();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Log.d(TAG, "onOptionsItemSelected: Showing Settings");
-                ((MainActivity)getActivity()).ShowFragment("Settings",new SettingsFragment(),null);
-                Toast.makeText(getContext(), "Settings Menu", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_home, menu);
-        item = menu.findItem(R.id.action_settings);
-       /* Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
-            @Override
-            public void onDismiss(View view) {
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.showDrawer();
-            }
-        });*/
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-
-    }
-
-    @Override
-    public void onStop() {
-        mDemoSlider.stopAutoCycle();
-        super.onStop();
-    }
-
-    @Override
-    public void onSliderClick(BaseSliderView slider) {
-
-        final String name = (String) slider.getBundle().get("extra");
-        loadWebSite(name);
     }
 
     private void loadWebSite(String name) {
@@ -212,6 +197,19 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         }
 
 
+    }
+
+    @Override
+    public void onStop() {
+        mDemoSlider.stopAutoCycle();
+        super.onStop();
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+
+        final String name = (String) slider.getBundle().get("extra");
+        loadWebSite(name);
     }
 
     @Override
