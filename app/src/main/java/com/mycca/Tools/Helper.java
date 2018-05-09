@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.firebase.database.DatabaseReference;
+import com.linchaolong.android.imagepicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -24,8 +26,6 @@ import com.mycca.Models.GrievanceType;
 import com.mycca.Models.LocationModel;
 import com.mycca.Models.State;
 import com.mycca.R;
-import com.google.firebase.database.DatabaseReference;
-import com.linchaolong.android.imagepicker.ImagePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,12 +49,16 @@ public class Helper {
     private final String TAG = "Helper";
     private String appMode;
     private boolean debugMode = true;
-    public ArrayList<State> statelist;
     public ArrayList<LocationModel> allLocationModels;
 
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
-    public String[] errorCodesList={"Error Code 1","Error Code 2","Error Code 3"};
-    public String[] errorMessageList={"Message 1","Message 2","Message 3"};
+    public String[] errorCodesList = {"Error Code 1", "Error Code 2", "Error Code 3"};
+    public String[] errorMessageList = {"Message 1", "Message 2", "Message 3"};
+
+    State stateList[] = {
+            new State("jnk", "Jammu & Kashmir"),
+            new State("hry", "Haryana")
+    };
 
     public Helper() {
         _instance = this;
@@ -68,7 +72,9 @@ public class Helper {
         }
     }
 
-    public String getPlayStoreURL(){return "market://details?id=com.ccajk";}
+    public String getPlayStoreURL() {
+        return "market://details?id=com.ccajk";
+    }
 
     public boolean isDebugMode() {
         return debugMode;
@@ -97,22 +103,17 @@ public class Helper {
 
     }
 
-    /*public ArrayList<State> getStatelist() {
-              statelist = new ArrayList<>();
-              statelist.add(new State("anp", "Andhra Pradesh"));
-              statelist.add(new State("jnk", "Jammu and Kashmir"));
-              statelist.add(new State("pnb", "Punjab"));
-              return statelist;
-          }
+    public State[] getStatelist() {
+        return stateList;
+    }
 
-
-          public String getState(String stateId) {
-              for (State s : statelist) {
-                  if (s.getId() == stateId)
-                      return s.getName();
-              }
-              return null;
-          }*/
+    public String getStateName(String stateId) {
+        for (State s : stateList) {
+            if (s.getCircleCode() == stateId)
+                return s.getName();
+        }
+        return null;
+    }
 
     public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
         ArrayList<GrievanceType> types = new ArrayList<>();
@@ -292,8 +293,7 @@ public class Helper {
         }
         int bgColor = 1;
         int icon = 1;
-        switch (fancyAlertDialogType)
-        {
+        switch (fancyAlertDialogType) {
             case ERROR:
                 bgColor = Color.parseColor("#aa0000");
                 icon = R.drawable.ic_sentiment_dissatisfied_black_24dp;
@@ -477,7 +477,6 @@ public class Helper {
         Log.d(TAG, "checkInput: result = " + result);
         return result;
     }
-
 
 
     public void showSnackBar(CharSequence message, View view) {

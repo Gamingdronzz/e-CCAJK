@@ -85,10 +85,6 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             office.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_landline), null, null, null);
             mobile.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(context, R.drawable.ic_phone_android_black_24dp), null, null, null);
 
-
-//            linearLayoutEMail = itemView.findViewById(R.id.ll_contact_email);
-//            linearLayoutMobile = itemView.findViewById(R.id.ll_contact_phone);
-//            linearLayoutOffice = itemView.findViewById(R.id.ll_contact_office);
             linearLayoutExpandableArea = itemView.findViewById(R.id.expandable_area_contact);
             linearLayoutExpandableArea.setVisibility(View.GONE);
             this.viewClickListener = viewClickListener;

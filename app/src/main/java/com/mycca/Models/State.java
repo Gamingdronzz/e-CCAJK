@@ -5,21 +5,20 @@ package com.mycca.Models;
  */
 
 public class State {
-    String id;
+    String circleCode;
     String name;
 
-    public State(String id, String name) {
-        this.id = id;
+    public State(String circleCode, String name) {
+        this.circleCode = circleCode;
         this.name = name;
     }
 
-    public String getId() {
-
-        return id;
+    public String getCircleCode() {
+        return circleCode;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCircleCode(String circleCode) {
+        this.circleCode = circleCode;
     }
 
     public String getName() {
