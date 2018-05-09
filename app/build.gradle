@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.ccajk"
+        applicationId "com.mycca"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 5
-        versionName "0.5"
+        versionCode 1
+        versionName "0.0.1"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
