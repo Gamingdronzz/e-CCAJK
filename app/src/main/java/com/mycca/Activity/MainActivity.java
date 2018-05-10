@@ -29,6 +29,7 @@ import com.mycca.Fragments.InspectionFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
+import com.mycca.Fragments.SettingsFragment;
 import com.mycca.Fragments.SubmitGrievanceFragment;
 import com.mycca.Fragments.UpdateGrievanceFragment;
 import com.mycca.R;
@@ -266,6 +267,11 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_about_us:
                 ShowFragment("About Us", new AboutUsFragment(), null);
+                break;
+            case R.id.action_settings:
+                ShowFragment("Settings",new SettingsFragment(),null);
+                break;
+            case R.id.action_invite:
                 break;
         }
 

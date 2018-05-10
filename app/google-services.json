@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:158632546092:android:e9623ae5bd258881",
+        "mobilesdk_app_id": "1:158632546092:android:53373d6c612930c1",
         "android_client_info": {
-          "package_name": "com.ccajk"
+          "package_name": "com.mycca"
         }
       },
       "oauth_client": [
         {
-          "client_id": "158632546092-csaho7dil0m2k1sfblra0gpumk7osgdo.apps.googleusercontent.com",
+          "client_id": "158632546092-kt7cm86d6k5c9355rb6046mvqctirmbv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ccajk",
-            "certificate_hash": "6c105436dee38f5298f306c1274fb6ba6a73ded6"
+            "package_name": "com.mycca",
+            "certificate_hash": "1fe9e2d5d99ee5315b81d031a7833cd3d04b45bd"
           }
         },
         {
@@ -44,37 +44,6 @@
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:158632546092:android:53373d6c612930c1",
-        "android_client_info": {
-          "package_name": "com.mycca"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "158632546092-laat5nhh3lqcs6rl6t2km3b56de7ncg7.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAoxc5cJFhonJ74fnlWHzFnX-OggIQ_zZs"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

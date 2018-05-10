@@ -90,5 +90,4 @@
 
         <activity android:name=".Activity.StateSettingActivity"></activity>
     </application>
-
 </manifest>

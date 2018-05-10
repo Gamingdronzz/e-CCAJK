@@ -181,6 +181,19 @@
         <menu>
             <group
                 android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/action_settings"
+                    android:orderInCategory="100"
+                    android:title="@string/action_settings"
+                    android:icon="@drawable/ic_settings_black_24dp"
+                    tools:ignore="AppCompatResource" />
+                <item
+                    android:id="@+id/action_invite"
+                    android:orderInCategory="100"
+                    android:title="Invite"
+                    android:icon="@drawable/ic_share_black_24dp"
+                    tools:ignore="AppCompatResource" />
                 <item
                     android:id="@+id/navmenu_feedback"
                     android:icon="@drawable/ic_inspection"

@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         view = inflater.inflate(R.layout.fragment_home, container, false);
         bindViews(view);
         init();
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
 
         //imageButtonLogout = view.findViewById(R.id.logout);
         //imageButtonLogout.setBackground(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_logout_24dp));
@@ -60,40 +60,40 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         return view;
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_home, menu);
-        item = menu.findItem(R.id.action_settings);
-       /* Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
-            @Override
-            public void onDismiss(View view) {
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.showDrawer();
-            }
-        });*/
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        inflater.inflate(R.menu.menu_home, menu);
+//        item = menu.findItem(R.id.action_settings);
+//       /* Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
+//            @Override
+//            public void onDismiss(View view) {
+//                MainActivity mainActivity = (MainActivity) getActivity();
+//                mainActivity.showDrawer();
+//            }
+//        });*/
+//    }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                ((MainActivity)getActivity()).ShowFragment("Settings",new SettingsFragment(),null);
-                break;
-            case R.id.action_invite:
-                Toast.makeText(getContext(), "Invitation", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
-
-        return true;
-    }
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_settings:
+//                ((MainActivity)getActivity()).ShowFragment("Settings",new SettingsFragment(),null);
+//                break;
+//            case R.id.action_invite:
+//                Toast.makeText(getContext(), "Invitation", Toast.LENGTH_SHORT).show();
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return true;
+//    }
 
 
     private void bindViews(View view) {
