@@ -188,7 +188,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void onCropImage(Uri imageUri) {
-                File file = new File(imageUri.getPath());
+                //File file = new File(imageUri.getPath());
                 Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
                 imageModel = new SelectedImageModel(imageUri);
                 textViewFileName.setError(null);

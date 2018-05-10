@@ -138,5 +138,9 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
+    <string name="invitation_title">My CCA</string>
+    <string name="invitation_message">Official Android Appication of CCA</string>
+    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
 
 </resources>

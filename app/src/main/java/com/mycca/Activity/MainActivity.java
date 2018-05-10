@@ -1,6 +1,12 @@
 package com.mycca.Activity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.LabeledIntent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -16,6 +23,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -38,6 +46,7 @@ import com.mycca.Tools.Helper;
 import com.mycca.Tools.PopUpWindows;
 import com.mycca.Tools.Preferences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import shortbread.Shortcut;
@@ -45,6 +54,7 @@ import shortbread.Shortcut;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int REQUEST_INVITE = 999;
     final int TYPE_ADMIN = 1;
     final int TYPE_STAFF = 2;
     String TAG = "MainActivity";
@@ -269,14 +279,84 @@ public class MainActivity extends AppCompatActivity
                 ShowFragment("About Us", new AboutUsFragment(), null);
                 break;
             case R.id.action_settings:
-                ShowFragment("Settings",new SettingsFragment(),null);
+                ShowFragment("Settings", new SettingsFragment(), null);
                 break;
             case R.id.action_invite:
+                showInviteIntent();
                 break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showInviteIntent() {
+//        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+//                .setMessage(getString(R.string.invitation_message))
+//                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+//                .build();
+//        startActivityForResult(intent, REQUEST_INVITE);
+
+
+        Resources resources = getResources();
+
+        Intent emailIntent = new Intent();
+        emailIntent.setAction(Intent.ACTION_SEND);
+        // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.share_email_native)));
+        //emailIntent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.share_email_subject));
+        emailIntent.setType("message/rfc822");
+
+        PackageManager pm = getPackageManager();
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+
+
+        Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.invitation_title));
+
+        List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
+        List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
+        for (int i = 0; i < resInfo.size(); i++) {
+            // Extract the label, append it, and repackage it in a LabeledIntent
+            ResolveInfo ri = resInfo.get(i);
+            String packageName = ri.activityInfo.packageName;
+            if (packageName.contains("android.email")) {
+                emailIntent.setPackage(packageName);
+                //} else if(packageName.contains("twitter") || packageName.contains("facebook") || packageName.contains("mms") || packageName.contains("android.gm")) {
+            } else if (packageName.contains("com.twitter.android") || packageName.contains("com.facebook")|| packageName.contains("mms")|| packageName.contains("messaging") || packageName.contains("com.whatsapp") || packageName.contains("com.google.android.gm")) {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
+                intent.setAction(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                if (packageName.contains("twitter")) {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_deep_link));
+                } else if (packageName.contains("facebook")) {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
+//                } else if(packageName.contains("mms")) {
+//                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.share_sms));
+                } else if(packageName.contains("mms") || packageName.contains("messaging") || packageName.contains("whatsapp")) {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
+                } else if (packageName.contains("android.gm")) { // If Gmail shows up twice, try removing this else-if clause and the reference to "android.gm" above
+
+                    intent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.invitation_message));
+                    intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.invitation_message_heading) + "<br><br>" + resources.getString(R.string.invitation_deep_link)));
+                    intent.setType("message/rfc822");
+                }
+                else
+                {
+
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
+                }
+
+                intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
+            }
+        }
+
+        // convert intentList to array
+        LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
+
+        openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+        startActivity(openInChooser);
     }
 
     private void logout() {
@@ -355,6 +435,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult()", Integer.toString(resultCode));
+
+//        if (requestCode == REQUEST_INVITE) {
+//            if (resultCode == RESULT_OK) {
+//                // Get the invitation IDs of all sent messages
+//                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+//                for (String id : ids) {
+//                    Log.d(TAG, "onActivityResult: sent invitation " + id);
+//                    return;
+//                }
+//            } else {
+//                // Sending failed or it was canceled, show failure message to the user
+//                // ...
+//                return;
+//            }
+//        }
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
         for (Fragment frag : allFragments) {
             frag.onActivityResult(requestCode, resultCode, data);
