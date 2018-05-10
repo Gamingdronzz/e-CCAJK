@@ -174,7 +174,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
                 Log.d(TAG, "Notification : Key recieved");
-                getToken(fcmKey);
+                getTokenAndSendNotification(fcmKey);
 
             }
 
@@ -186,7 +186,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     }
 
-    private void getToken(final String fcmKey) {
+    private void getTokenAndSendNotification(final String fcmKey) {
         dbref.child(FireBaseHelper.getInstance(this).ROOT_TOKEN)
                 .child(GrievanceDataProvider.getInstance().selectedGrievance.getPensionerIdentifier())
                 .addListenerForSingleValueEvent(new ValueEventListener() {

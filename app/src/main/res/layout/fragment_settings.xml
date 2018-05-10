@@ -42,6 +42,7 @@
             android:drawableTint="@color/colorAccent"
             android:paddingLeft="@dimen/padding_medium"
             android:paddingTop="@dimen/padding_medium"
+            android:paddingRight="@dimen/padding_medium"
             android:text="Change State"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20" />
@@ -52,7 +53,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/padding_xxxlarge"
             android:text="Current State: "
-            android:textSize="@dimen/text_20"
+            android:textSize="@dimen/text_18"
             android:textStyle="italic" />
 
     </LinearLayout>

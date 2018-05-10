@@ -3,6 +3,7 @@ package com.mycca.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,8 +62,10 @@ public class SettingsFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Toast.makeText(getContext(), "Notifications on", Toast.LENGTH_SHORT).show();
+                    Preferences.getInstance().setBooleanPref(getContext(),Preferences.PREF_RECIEVE_NOTIFICATIONS,true);
                 } else {
                     Toast.makeText(getContext(), "Notifications off", Toast.LENGTH_SHORT).show();
+                    Preferences.getInstance().setBooleanPref(getContext(),Preferences.PREF_RECIEVE_NOTIFICATIONS,false);
                 }
             }
         });

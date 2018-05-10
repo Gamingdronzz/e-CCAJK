@@ -18,6 +18,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.R;
+import com.mycca.Tools.Preferences;
 
 /**
  * Created by hp on 10-05-2018.
@@ -32,13 +33,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        if (remoteMessage.getData().size() > 0) {
-            String title = remoteMessage.getData().get("title");
-            String message = remoteMessage.getData().get("text");
-            String pensionerCode = remoteMessage.getData().get("pensionerCode");
-            String grievanceType = remoteMessage.getData().get("grievanceType");
-            sendUserNotification(title,message ,pensionerCode, Long.parseLong(grievanceType));
+        if(Preferences.getInstance().getBooleanPref(getApplicationContext(),Preferences.PREF_RECIEVE_NOTIFICATIONS))
+        {
+            if (remoteMessage.getData().size() > 0) {
+                String title = remoteMessage.getData().get("title");
+                String message = remoteMessage.getData().get("text");
+                String pensionerCode = remoteMessage.getData().get("pensionerCode");
+                String grievanceType = remoteMessage.getData().get("grievanceType");
+                sendUserNotification(title,message ,pensionerCode, Long.parseLong(grievanceType));
+            }
         }
+
 
     }
 
@@ -68,7 +73,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setPriority(Notification.PRIORITY_HIGH);
         notificationBuilder.setSound(defaultSoundUri);
         notificationBuilder.setContentIntent(pendingIntent);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher_cca_new_round);
+        notificationBuilder.setSmallIcon(R.drawable.ic_notification_cca);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_cca_new));
         notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(mess));
         notificationBuilder.setContentText(mess);
