@@ -4,6 +4,7 @@ package com.mycca.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,7 @@ public class SettingsFragment extends Fragment {
 
     private Switch switchNotification;
     LinearLayout layoutChangeState;
-    private TextView tvChangeState;
-    private TextView tvCurrentState;
+    private TextView tvChangeState, tvCurrentState;
 
     public SettingsFragment() {
 
@@ -46,13 +46,11 @@ public class SettingsFragment extends Fragment {
         switchNotification.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notifications_none_black_24dp, 0, 0, 0);
 
         layoutChangeState = view.findViewById(R.id.layout_settings_change_state);
-
+        tvCurrentState = view.findViewById(R.id.tv_settings_curent_state);
         tvChangeState = view.findViewById(R.id.tv_settings_change_state);
         tvChangeState.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_place_black_24dp, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
 
-        tvCurrentState = view.findViewById(R.id.tv_settings_curent_state);
-        String circleCode = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
-        tvCurrentState.setText(tvCurrentState.getText() + Helper.getInstance().getStateName(circleCode));
+
     }
 
 
@@ -81,7 +79,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        tvCurrentState.setText("Current State: " +
-                Helper.getInstance().getStateName(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE)));
+        String circleCode = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
+        Log.d("Settings", "onResume: " + circleCode);
+        tvCurrentState.setText("Current State: " + Helper.getInstance().getStateName(circleCode));
     }
 }

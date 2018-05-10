@@ -109,7 +109,7 @@ public class Helper {
 
     public String getStateName(String stateId) {
         for (State s : stateList) {
-            if (s.getCircleCode() == stateId)
+            if (s.getCircleCode().equals(stateId))
                 return s.getName();
         }
         return null;

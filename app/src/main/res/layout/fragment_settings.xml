@@ -11,7 +11,7 @@
         android:id="@+id/switch_settings_notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_large"
         android:checked="true"
         android:drawablePadding="@dimen/padding_large"
         android:drawableTint="@color/colorAccent"
