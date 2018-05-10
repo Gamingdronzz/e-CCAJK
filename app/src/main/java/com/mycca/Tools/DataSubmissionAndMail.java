@@ -28,9 +28,8 @@ public class DataSubmissionAndMail {
     }
 
 
-    public void uploadImagesToServer(ArrayList<Uri> firebaseImageURLs, String folderName, VolleyHelper volleyHelper) throws Exception {
+    public void uploadImagesToServer(String url,ArrayList<Uri> firebaseImageURLs, String folderName, VolleyHelper volleyHelper) throws Exception {
         Log.d("Data Submission", "uploadImagesToServer: Starting Upload");
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
         for (int i = 0; i < firebaseImageURLs.size(); i++) {
 
             Log.d("Data Submission", "uploadAllImagesToServer: Current = " + i);

@@ -25,6 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.UploadTask;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
@@ -38,21 +47,11 @@ import com.mycca.Tools.Helper;
 import com.mycca.Tools.PopUpWindows;
 import com.mycca.Tools.Preferences;
 import com.mycca.Tools.VolleyHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.UploadTask;
-import com.linchaolong.android.imagepicker.ImagePicker;
-import com.linchaolong.android.imagepicker.cropper.CropImage;
-import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,7 +110,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void init() {
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
-        volleyHelper = new VolleyHelper(this,getContext());
+        volleyHelper = new VolleyHelper(this, getContext());
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -132,12 +131,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }
         });
 
-        if (root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR)) {
+        if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR)) {
 
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
             textInputNumber.setHint(root + " Number");
-        } else if (root.equals(FireBaseHelper.getInstance().ROOT_PAN)) {
+        } else if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_PAN)) {
 
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
                 @Override
@@ -227,13 +226,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             return false;
         }
         //If Aadhar Number is not complete
-        else if ((root == FireBaseHelper.getInstance().ROOT_ADHAAR) && (number.length() != 12)) {
+        else if ((root == FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR) && (number.length() != 12)) {
             inputNumber.setError("Invalid Aadhaar Number");
             inputNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
-        else if ((root == FireBaseHelper.getInstance().ROOT_PAN) && (number.length() != 10)) {
+        else if ((root == FireBaseHelper.getInstance(getContext()).ROOT_PAN) && (number.length() != 10)) {
             inputNumber.setError("Invalid Pan Number");
             inputNumber.requestFocus();
             return false;
@@ -281,8 +280,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void showNoInternetConnectionDialog()
-    {
+    private void showNoInternetConnectionDialog() {
         Helper.getInstance().showFancyAlertDialog(this.getActivity(),
                 "No Internet Connection\nPlease turn on internet connection before updating " + root,
                 "Update " + root,
@@ -292,6 +290,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 null,
                 FancyAlertDialogType.ERROR);
     }
+
     private void doSubmissionOnInternetAvailable() {
         Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
@@ -319,7 +318,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         TextView heading = v.findViewById(R.id.textview_mobile_no);
         TextView value = v.findViewById(R.id.textview_mobile_value);
         value.setText(inputNumber.getText());
-        if (root.equals(FireBaseHelper.getInstance().ROOT_PAN) || root.equals(FireBaseHelper.getInstance().ROOT_ADHAAR))
+        if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_PAN) || root.equals(FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR))
             heading.setText(root + " No:");
         else
             heading.setText("Applicant's Name: ");
@@ -341,7 +340,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 null,
                 Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
 
-        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(root, panAdhaar,getContext());
+        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(root, panAdhaar, getContext());
 
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -358,7 +357,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void uploadAllImagesToFirebase() {
-        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
+        UploadTask uploadTask = FireBaseHelper.getInstance(getContext()).uploadFiles(
                 imageModel,
                 false,
                 0,
@@ -392,10 +391,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog.setMessage("Processing..");
         progressDialog.show();
-
+        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
+                + "uploadImage.php";
 
         try {
-            DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+            DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
+                    firebaseImageURLs,
                     pensionerCode,
                     volleyHelper);
         } catch (Exception e) {
@@ -412,18 +413,17 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php";
+        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
+                + "sendInfoUpdateEmail.php";
         Map<String, String> params = new HashMap();
 
         params.put("pensionerCode", pensionerCode);
         params.put("personType", hint);
-        params.put("updateType",root);
-        params.put("fieldName",textInputNumber.getHint().toString());
-        params.put("value",inputNumber.getText().toString());
+        params.put("updateType", root);
+        params.put("fieldName", textInputNumber.getHint().toString());
+        params.put("value", inputNumber.getText().toString());
 
-        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper,url);
-//        if (volleyHelper.countRequestsInFlight("send_mail-" + pensionerCode) == 0)
-//            volleyHelper.makeStringRequest(url, "send_mail-" + pensionerCode, params);
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
 
     @Override
@@ -462,9 +462,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
-                        Log.d(TAG, "onResponse: Files uploaded");
-                        isUploadedToServer = true;
-                        doSubmission();
+                    Log.d(TAG, "onResponse: Files uploaded");
+                    isUploadedToServer = true;
+                    doSubmission();
                 } else {
                     Log.d(TAG, "onResponse: Image upload failed");
                     progressDialog.dismiss();

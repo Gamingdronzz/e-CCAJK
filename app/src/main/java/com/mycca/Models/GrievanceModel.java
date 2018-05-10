@@ -18,6 +18,7 @@ public class GrievanceModel {
     String state;
     String submittedBy;
     String message;
+    String token;
     Date date;
 
 
@@ -36,6 +37,10 @@ public class GrievanceModel {
         this.state = state;
         this.grievanceStatus = grievanceStatus;
         this.date = date;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public boolean getExpanded() {

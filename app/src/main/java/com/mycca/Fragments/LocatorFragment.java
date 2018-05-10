@@ -173,9 +173,9 @@ public class LocatorFragment extends Fragment {
 
     public void setData() {
         LocationDataProvider.getInstance().setLocationModelArrayList(locatorType, locationModelArrayList);
-//        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+//        if (locatorType.equals(FireBaseHelper.getInstance(getContext()).ROOT_GP)) {
 //            LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
-//        } else if (locatorType.equals(FireBaseHelper.getInstance().ROOT_HOTSPOTS)) {
+//        } else if (locatorType.equals(FireBaseHelper.getInstance(getContext()).ROOT_HOTSPOTS)) {
 //            LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
 //        }
     }
@@ -277,7 +277,7 @@ public class LocatorFragment extends Fragment {
     }
 
     private void checkNewLocationsinFirebase() {
-        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+        DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -306,7 +306,7 @@ public class LocatorFragment extends Fragment {
     private void fetchLocationsFromFirebase() {
 
         locationModelArrayList = new ArrayList<>();
-        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
+        DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addChildEventListener(new ChildEventListener() {

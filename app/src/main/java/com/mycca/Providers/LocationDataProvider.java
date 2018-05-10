@@ -30,7 +30,7 @@ public class LocationDataProvider {
     }
 
     public ArrayList<LocationModel> getLocationModelArrayList(String type) {
-        if (type.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+        if (type.equals(FireBaseHelper.ROOT_GP)) {
             return gpLocationModelArrayList;
         } else {
             return hotspotLocationModelArrayList;
@@ -39,7 +39,7 @@ public class LocationDataProvider {
 
     public void setLocationModelArrayList(String type, ArrayList<LocationModel> arrayList) {
         sortByName(arrayList);
-        if (type.equals(FireBaseHelper.getInstance().ROOT_GP)) {
+        if (type.equals(FireBaseHelper.ROOT_GP)) {
             gpLocationModelArrayList = arrayList;
         } else {
             hotspotLocationModelArrayList = arrayList;

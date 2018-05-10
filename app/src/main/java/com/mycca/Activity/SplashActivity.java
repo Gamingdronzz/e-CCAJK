@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.Tools.Preferences;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -42,7 +43,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Helper.getInstance().setDebugMode(true);
+        Preferences.getInstance().setBooleanPref(this, Preferences.PREF_DEBUG_MODE, true);
+        //Preferences.getInstance().setStringPref(this, Preferences.PREF_APP_MODE, debugAppMode);
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
         bindVIews();
@@ -51,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void bindVIews() {
         imageView = findViewById(R.id.logo);
-        dbref = FireBaseHelper.getInstance().databaseReference;
+        dbref = FireBaseHelper.getInstance(this).databaseReference;
         tvSplashVersion = findViewById(R.id.tv_splash_version);
         tvSplashVersion.setText("Version - " + currentVersionName);
     }
@@ -89,37 +91,37 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForUpdate() {
-        if (!Helper.getInstance().isDebugMode()) {
-                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-                    @Override
-                    public void OnConnectionAvailable() {
-                        try {
-                            dbref.child(FireBaseHelper.getInstance().ROOT_APP_VERSION)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            checkVersion(dataSnapshot);
-                                        }
+        if (!Preferences.getInstance().getBooleanPref(this, Preferences.PREF_DEBUG_MODE)) {
+            ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+                @Override
+                public void OnConnectionAvailable() {
+                    try {
+                        dbref.child(FireBaseHelper.getInstance(SplashActivity.this).ROOT_APP_VERSION)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        checkVersion(dataSnapshot);
+                                    }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.d(TAG, "onCancelled: " + databaseError.getMessage());
-                                        }
-                                    });
-                        } catch (DatabaseException dbe) {
-                            dbe.printStackTrace();
-                        }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                                    }
+                                });
+                    } catch (DatabaseException dbe) {
+                        dbe.printStackTrace();
                     }
+                }
 
-                    @Override
-                    public void OnConnectionNotAvailable() {
-                        Log.d(TAG, "OnConnectionNotAvailable: ");
-                        LoadNextActivity();
-                    }
-                });
-                connectionUtility.checkConnectionAvailability();
-            } else
-                LoadNextActivity();
+                @Override
+                public void OnConnectionNotAvailable() {
+                    Log.d(TAG, "OnConnectionNotAvailable: ");
+                    LoadNextActivity();
+                }
+            });
+            connectionUtility.checkConnectionAvailability();
+        } else
+            LoadNextActivity();
     }
 
     private void checkVersion(DataSnapshot dataSnapshot) {
@@ -154,8 +156,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void showGooglePlayStore()
-    {
+    private void showGooglePlayStore() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(Helper.getInstance().getPlayStoreURL()));
         startActivity(intent);

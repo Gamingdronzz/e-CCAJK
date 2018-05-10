@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.google.firebase.database.DatabaseReference;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
@@ -34,7 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
 /*
  * Created by hp on 09-02-2018.
@@ -47,8 +45,8 @@ public class Helper {
     public final String SUCCESS = "success";
     public final String Nil = "Nil";
     private final String TAG = "Helper";
-    private String appMode;
-    private boolean debugMode = true;
+    //private String appMode;
+    //private boolean debugMode = true;
     public ArrayList<LocationModel> allLocationModels;
 
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
@@ -76,7 +74,7 @@ public class Helper {
         return "market://details?id=com.ccajk";
     }
 
-    public boolean isDebugMode() {
+    /*public boolean isDebugMode() {
         return debugMode;
     }
 
@@ -89,12 +87,19 @@ public class Helper {
         }
     }
 
+    public String getAppMode() {
+        return appMode;
+    }
+
+    public void setAppMode(String appMode) {
+        this.appMode = appMode;
+    }*/
 
     public String getConnectionCheckURL() {
         return "https://www.google.co.in/";
     }
 
-    public String getAPIUrl() {
+    public String getAPIUrl(boolean debugMode) {
         if (debugMode) {
             return "http://jknccdirectorate.com/api/cca/debug/v1/";
         } else {
@@ -190,9 +195,9 @@ public class Helper {
 
     public String getGrievanceCategory(long id) {
         if (id < 100)
-            return FireBaseHelper.getInstance().GRIEVANCE_PENSION;
+            return FireBaseHelper.GRIEVANCE_PENSION;
         else
-            return FireBaseHelper.getInstance().GRIEVANCE_GPF;
+            return FireBaseHelper.GRIEVANCE_GPF;
     }
 
     public String[] getStatusList() {
@@ -205,7 +210,7 @@ public class Helper {
 
     public String[] submittedByList(String type) {
         String first;
-        if (type == FireBaseHelper.getInstance().GRIEVANCE_PENSION)
+        if (type == FireBaseHelper.GRIEVANCE_PENSION)
             first = "Pensioner";
         else
             first = "GPF Benificiary";
@@ -335,14 +340,6 @@ public class Helper {
 //                .show();
 //    }
 
-    public String getAppMode() {
-        return appMode;
-    }
-
-    public void setAppMode(String appMode) {
-        this.appMode = appMode;
-    }
-
 //    public void showAlertDialog(Context context, String message, String title, String neutralButtonText) {
 //        if (title == null) {
 //            title = "CCA JK";
@@ -379,8 +376,7 @@ public class Helper {
 //                .setMessage(message)
 //                .setTitle(title)
 //                .show();
-//    }
-
+//
     public JSONObject getJson(String input) {
         try {
             try {
@@ -491,7 +487,7 @@ public class Helper {
     }
 
 
-    public void addLocations(int value) {
+    /*public void addLocations(int value) {
         Random random = new Random();
         double maxLongitude = 32.8, minLongitude = 32.1;
         double maxLatitude = 74.5, minLatitude = 75.5;
@@ -511,7 +507,7 @@ public class Helper {
     public void remove() {
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child("Locations").removeValue();
-    }
+    }*/
 
     public ArrayList<LocationModel> getAllLocations() {
         //TODO

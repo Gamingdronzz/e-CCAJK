@@ -23,6 +23,7 @@ import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.mycca.Tools.Preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,8 +69,8 @@ public class FeedbackFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!etSuggestion.getText().toString().trim().isEmpty()) {
-                    Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
-                            FireBaseHelper.getInstance().ROOT_SUGGESTIONS,
+                    Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                            FireBaseHelper.getInstance(getContext()).ROOT_SUGGESTIONS,
                             etSuggestion.getText().toString().trim(),
                             getContext()
                     );
@@ -91,8 +92,8 @@ public class FeedbackFragment extends Fragment {
         btnReportIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
-                        FireBaseHelper.getInstance().ROOT_ERROR_REPORT,
+                Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                        FireBaseHelper.getInstance(getContext()).ROOT_ERROR_REPORT,
                         null,
                         getContext(),
                         spinnerErrorType.getSelectedItem().toString(),
@@ -128,7 +129,7 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void rateApplication() {
-        if (Helper.getInstance().isDebugMode()) {
+        if (Preferences.getInstance().getBooleanPref(getContext(),Preferences.PREF_DEBUG_MODE)) {
             Toast.makeText(getContext(), "App is in debug Mode\nCannot Rate Application", Toast.LENGTH_SHORT).show();
         } else {
             //TODO

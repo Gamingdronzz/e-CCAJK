@@ -200,14 +200,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-              showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
+                showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void showNoInternetConnectionDialog(String message)
-    {
+    private void showNoInternetConnectionDialog(String message) {
         Helper.getInstance().showFancyAlertDialog(this.getActivity(),
                 message,
                 "Inspection",
@@ -217,6 +216,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 null,
                 FancyAlertDialogType.ERROR);
     }
+
     private void doSubmissionOnInternetAvailable() {
         Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
@@ -294,7 +294,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
 
-
     private void showCoordinates(Location location) {
         isCurrentLocationFound = true;
         progressDialog.dismiss();
@@ -360,8 +359,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         staffId = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STAFF_ID);
         InspectionModel inspectionModel = new InspectionModel(staffId, locName, latitude, longitude, new Date());
 
-        Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
-                FireBaseHelper.getInstance().ROOT_INSPECTION,
+        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
                 inspectionModel,
                 getContext(),
                 key);
@@ -386,20 +385,19 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
         String url;
-        if (Helper.getInstance().isDebugMode()) {
-            url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
-        } else {
-            url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
-        }
-            Map<String, String> params = new HashMap();
 
-            params.put("locationName", editTextLocationName.getText().toString());
-            params.put("staffID", staffId);
-            params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
-            params.put("fileCount", selectedImageModelArrayList.size() + "");
+        url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
+                + "sendInspectionEmail.php";
 
-            DataSubmissionAndMail.getInstance().sendMail(params, "send_inspection_mail-" + staffId, volleyHelper, url);
-        }
+        Map<String, String> params = new HashMap();
+
+        params.put("locationName", editTextLocationName.getText().toString());
+        params.put("staffID", staffId);
+        params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
+        params.put("fileCount", selectedImageModelArrayList.size() + "");
+
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_inspection_mail-" + staffId, volleyHelper, url);
+    }
 
     private void uploadInspectionFiles(String key) {
         firebaseImageURLs = new ArrayList<>();
@@ -407,11 +405,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         counterFirebaseImages = 0;
         counterUpload = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFiles(
+            uploadTask = FireBaseHelper.getInstance(getContext()).uploadFiles(
                     imageModel,
                     true,
                     counterFirebaseImages++,
-                    FireBaseHelper.getInstance().ROOT_INSPECTION,
+                    FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
                     Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                     key);
 
@@ -446,10 +444,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Processing..");
         progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
+        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
+                + "uploadImage.php";
 
         if (totalFilesToAttach != 0) {
             try {
-                DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
+                        firebaseImageURLs,
                         editTextLocationName.getText().toString(),
                         volleyHelper);
             } catch (Exception e) {

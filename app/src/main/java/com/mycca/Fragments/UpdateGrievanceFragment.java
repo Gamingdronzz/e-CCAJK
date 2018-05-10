@@ -127,8 +127,8 @@ public class UpdateGrievanceFragment extends Fragment {
         submittedGrievances = new ArrayList<>();
         processingGrievances = new ArrayList<>();
         resolvedGrievances = new ArrayList<>();
-        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
+        dbref.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -164,7 +164,7 @@ public class UpdateGrievanceFragment extends Fragment {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES)
+        dbref.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

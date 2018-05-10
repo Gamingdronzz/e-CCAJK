@@ -157,7 +157,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         textViewSelectedFileCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
 
-        if (type.equals(FireBaseHelper.getInstance().GRIEVANCE_PENSION)) {
+        if (type.equals(FireBaseHelper.getInstance(getContext()).GRIEVANCE_PENSION)) {
             list = Helper.getInstance().getPensionGrievanceTypelist();
             radioLayout.setVisibility(View.GONE);
         } else {
@@ -412,7 +412,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.setMessage("Preparing your grievance for submission");
         progressDialog.show();
         // final DatabaseReference dbref;
-        //   dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES);
+        //   dbref = FireBaseHelper.getInstance(getContext()).databaseReference.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES);
 
         final GrievanceModel grievanceModel = new GrievanceModel(
                 code,
@@ -427,8 +427,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         try {
 
-            Task task = FireBaseHelper.getInstance().uploadDataToFirebase(
-                    FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+            Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                    FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES,
                     grievanceModel,
                     getContext());
 
@@ -457,11 +457,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             counterUpload = 0;
 
             for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(
+                final UploadTask uploadTask = FireBaseHelper.getInstance(getContext()).uploadFiles(
                         imageModel,
                         true,
                         counterFirebaseImages++,
-                        FireBaseHelper.getInstance().ROOT_GRIEVANCES,
+                        FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES,
                         Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
                         code,
                         String.valueOf(grievanceType.getId()));
@@ -506,10 +506,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.setMessage("Processing..");
         progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
+        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
+                + "uploadImage.php";
 
         if (totalFilesToAttach != 0) {
             try {
-                DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
+                        firebaseImageURLs,
                         autoCompleteTextViewPensionerCode.getText().toString(),
                         volleyHelper);
             } catch (Exception e) {
@@ -535,7 +538,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
+        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
+                + "sendGrievanceEmail.php";
         Map<String, String> params = new HashMap();
         String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
 

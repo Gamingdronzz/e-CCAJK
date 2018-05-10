@@ -6,7 +6,6 @@ import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -23,7 +22,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Helper.getInstance().setDebugMode(true);
         setupToolbar();
         bindViews();
         init();
@@ -171,7 +168,7 @@ public class MainActivity extends AppCompatActivity
     public void ShowHotSpotLocations() {
         Log.d(TAG, "ShowHotSpotLocations: ");
         Bundle bundle = new Bundle();
-        bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
+        bundle.putString("Locator", FireBaseHelper.getInstance(this).ROOT_HOTSPOTS);
         ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
     }
 
@@ -204,43 +201,43 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_pension:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_PENSION);
+                bundle.putString("Type", FireBaseHelper.getInstance(this).GRIEVANCE_PENSION);
                 ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_gpf:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type", FireBaseHelper.getInstance().GRIEVANCE_GPF);
+                bundle.putString("Type", FireBaseHelper.getInstance(this).GRIEVANCE_GPF);
                 ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_ADHAAR);
+                bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_ADHAAR);
                 ShowFragment("Upload Aadhar", fragment, bundle);
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_PAN);
+                bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_PAN);
                 ShowFragment("Upload PAN", fragment, bundle);
                 break;
             case R.id.navmenu_life_certificate:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_LIFE);
+                bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_LIFE);
                 ShowFragment("Upload Life Certificate", fragment, bundle);
                 break;
             case R.id.navmenu_remarriage_certificate:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_RE_MARRIAGE);
+                bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_RE_MARRIAGE);
                 ShowFragment("Upload Re-Marriage Certificate", fragment, bundle);
                 break;
             case R.id.navmenu_reemployment:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.getInstance().ROOT_RE_EMPLOYMENT);
+                bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_RE_EMPLOYMENT);
                 ShowFragment("Upload Re-Employment Certificate", fragment, bundle);
                 break;
             case R.id.navmenu_tracking:
@@ -251,12 +248,12 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_HOTSPOTS);
+                bundle.putString("Locator", FireBaseHelper.getInstance(this).ROOT_HOTSPOTS);
                 ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_gp_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.getInstance().ROOT_GP);
+                bundle.putString("Locator", FireBaseHelper.getInstance(this).ROOT_GP);
                 ShowFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:

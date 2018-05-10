@@ -80,7 +80,7 @@ public class LoginFragment extends Fragment {
 
         final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Logging In...");
         progressDialog.show();
-        FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_STAFF)
+        FireBaseHelper.getInstance(getContext()).databaseReference.child(FireBaseHelper.getInstance(getContext()).ROOT_STAFF)
                 .child(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE))
                 .child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -91,14 +91,14 @@ public class LoginFragment extends Fragment {
                     return;
                 }
                 Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
-                Log.d(TAG, "onDataChange: Password = " + dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue());
+                Log.d(TAG, "onDataChange: Password = " + dataSnapshot.child(FireBaseHelper.getInstance(getContext()).ROOT_PASSWORD).getValue());
                 if (dataSnapshot.getValue() == null) {
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.OnLoginFailure("No user found");
                     progressDialog.dismiss();
                 } else {
-                    if (dataSnapshot.child(FireBaseHelper.getInstance().ROOT_PASSWORD).getValue().toString().equals(password)) {
-                        long type = (long) dataSnapshot.child(FireBaseHelper.getInstance().ROOT_TYPE).getValue();
+                    if (dataSnapshot.child(FireBaseHelper.getInstance(getContext()).ROOT_PASSWORD).getValue().toString().equals(password)) {
+                        long type = (long) dataSnapshot.child(FireBaseHelper.getInstance(getContext()).ROOT_TYPE).getValue();
                         Log.d(TAG, "onDataChange: type: " + type);
                         MainActivity mainActivity = (MainActivity) getActivity();
                         mainActivity.OnLoginSuccesful(id, type);
