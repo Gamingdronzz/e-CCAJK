@@ -10,6 +10,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.InputFilter;
 import android.util.Log;
 import android.util.Patterns;
@@ -33,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.mycca.Adapter.GrievanceAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
@@ -369,7 +371,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmission() {
-        progressDialog.setMessage("");
+        progressDialog.setMessage("Please Wait..");
         progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
@@ -586,6 +588,18 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
+                    StringBuilder alertMessage = new StringBuilder();
+                    alertMessage.append(type);
+                    alertMessage.append(" Grievance for ");
+                    alertMessage.append("\n<b>"+grievanceType.getName()+"</b>\n");
+                    alertMessage.append(" has been succesfully submitted");
+
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+
+                        }
+                    }, null, null, FancyAlertDialogType.SUCCESS);
                     Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {

@@ -20,6 +20,8 @@ import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.R;
 import com.mycca.Tools.Preferences;
 
+import java.util.Random;
+
 /**
  * Created by hp on 10-05-2018.
  */
@@ -29,6 +31,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FCM Service";
     private Bitmap bitmap;
     private Context context = this;
+    String groupKey = "grievanceGroupKey";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -51,14 +54,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendUserNotification(String title, String mess, String pensionerCode,long grievanceType) {
 
         Log.d(TAG, "sendUserNotification: ");
-        int notifyID = 1;
+        int notifyID = new Random().nextInt();
         Intent intent;
         NotificationChannel mChannel;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         intent = new Intent(context, TrackGrievanceResultActivity.class);
         intent.putExtra("Code",pensionerCode);
         intent.putExtra("grievanceType",grievanceType);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         String CHANNEL_ID = context.getPackageName();// The id of the channel.
@@ -73,6 +76,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setPriority(Notification.PRIORITY_HIGH);
         notificationBuilder.setSound(defaultSoundUri);
         notificationBuilder.setContentIntent(pendingIntent);
+        notificationBuilder.setGroup(groupKey);
+        notificationBuilder.setGroupSummary(true);
         notificationBuilder.setSmallIcon(R.drawable.ic_notification_cca);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_cca_new));
         notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(mess));

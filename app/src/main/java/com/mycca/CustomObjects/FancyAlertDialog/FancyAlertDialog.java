@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -153,7 +154,7 @@ public class FancyAlertDialog {
             nBtn=(Button)dialog.findViewById(R.id.negativeBtn);
             pBtn=(Button)dialog.findViewById(R.id.positiveBtn);
             title1.setText(title);
-            message1.setText(message);
+            message1.setText(Html.fromHtml(message));
             if(positiveBtnText!=null)
                 pBtn.setText(positiveBtnText);
             if(pBtnColor!=0)

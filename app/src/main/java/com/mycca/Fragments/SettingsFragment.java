@@ -57,6 +57,8 @@ public class SettingsFragment extends Fragment {
 
     private void init() {
 
+        //switchNotification.setActivated(Preferences.getInstance().getBooleanPref(getContext(),Preferences.PREF_RECIEVE_NOTIFICATIONS));
+        switchNotification.setChecked(Preferences.getInstance().getBooleanPref(getContext(),Preferences.PREF_RECIEVE_NOTIFICATIONS));
         switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

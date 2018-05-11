@@ -21,8 +21,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_cca_new_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:windowSoftInputMode="adjustNothing">
+        android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -45,6 +44,7 @@
         <activity
             android:name=".Activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar.Splash"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,33 +56,31 @@
             android:name=".Activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Home"
-            android:windowSoftInputMode="adjustNothing|stateHidden" />
+             />
 
         <activity
             android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
-            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".Unused.PanAdhaarHistoryActivity"
-            android:windowSoftInputMode="adjustNothing" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.AboutUsActivity"
-            android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustNothing" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.TrackGrievanceResultActivity"
-            android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustNothing" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.WelcomeScreen"
-            android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustNothing" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.UpdateGrievanceActivity"
-            android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".Activity.StateSettingActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".Activity.StateSettingActivity"
+            android:screenOrientation="portrait"></activity>
 
 
         <service android:name=".FirebaseService.MyFirebaseInstanceIdService">

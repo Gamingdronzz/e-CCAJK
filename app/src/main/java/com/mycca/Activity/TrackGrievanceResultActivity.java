@@ -53,6 +53,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
         grievanceModelArrayList = new ArrayList<>();
         adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
+        adapterTracking.setHasStableIds(true);
 
         textView = findViewById(R.id.textview_tracking);
         textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_exclamation, 0, 0);
@@ -147,6 +148,20 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
                         @Override
                         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
+                            int counter = 0;
+                            for (GrievanceModel gm :
+                                    grievanceModelArrayList) {
+                                if (gm.getPensionerIdentifier() == model.getPensionerIdentifier() && gm.getGrievanceType() == model.getGrievanceType())
+                                {
+                                    grievanceModelArrayList.remove(counter);
+                                    model.setExpanded(true);
+                                    grievanceModelArrayList.add(counter,model);
+                                    break;
+                                }
+                                counter++;
+                            }
+                            adapterTracking.notifyItemChanged(counter);
 
                         }
 
