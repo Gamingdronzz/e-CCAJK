@@ -357,10 +357,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logout() {
-        ShowFragment("Home", new HomeFragment(), null);
-        Preferences.getInstance().clearPrefs(this);
-        Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show();
-        ManageNavigationView(false, false);
+        Helper.getInstance().showFancyAlertDialog(this,
+                "Do you want to logout?",
+                "MY CCA JK",
+                "YES",
+                new IFancyAlertDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        ShowFragment("Home", new HomeFragment(), null);
+                        Preferences.getInstance().clearPrefs(MainActivity.this);
+                        ManageNavigationView(false, false);
+                    }
+                },
+                "NO",
+                new IFancyAlertDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                },
+                FancyAlertDialogType.WARNING);
+
 
     }
 

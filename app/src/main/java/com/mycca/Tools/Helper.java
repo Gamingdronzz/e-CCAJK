@@ -71,7 +71,7 @@ public class Helper {
     }
 
     public String getPlayStoreURL() {
-        return "market://details?id=com.ccajk";
+        return "market://details?id=com.mycca";
     }
 
     /*public boolean isDebugMode() {

@@ -23,8 +23,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.mycca.Activity.UpdateGrievanceActivity;
+import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.InspectionModel;
@@ -556,11 +559,31 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Inspection Data Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                    StringBuilder alertMessage = new StringBuilder();
+
+                    alertMessage.append("Inspection data of");
+                    alertMessage.append("\n<b>" + editTextLocationName.getText() + "</b>");
+                    alertMessage.append("containing <b>" + selectedImageModelArrayList.size() + "</b> images ");
+                    alertMessage.append(" has been succesfully submitted");
+
+
+
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), "Inspection", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                        }
+                    }, null, null, FancyAlertDialogType.SUCCESS);
+                    //Toast.makeText(getContext(), "Inspection Data Submitted Succesfully", Toast.LENGTH_SHORT).show();
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Inspection Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Inspection Submission Failed\nTry Again",
+                            " Inspection", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                        }
+                    }, null, null, FancyAlertDialogType.ERROR);
+                    //Toast.makeText(getContext(), "Inspection Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (JSONException jse) {

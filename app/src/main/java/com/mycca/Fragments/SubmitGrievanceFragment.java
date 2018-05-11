@@ -600,11 +600,16 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
                         }
                     }, null, null, FancyAlertDialogType.SUCCESS);
-                    Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Grievance Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Grievance Submission Failed\nTry Again", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+
+                        }
+                    }, null, null, FancyAlertDialogType.ERROR);
                 }
             }
         } catch (JSONException jse) {
@@ -640,7 +645,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
         progressDialog.dismiss();
-        Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
+        Helper.getInstance().showFancyAlertDialog(getActivity(), "Some Error Occured Please be patient we are getting things fixed", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+            @Override
+            public void OnClick() {
+
+            }
+        }, null, null, FancyAlertDialogType.ERROR);
+        //Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
     }
 
 

@@ -2,6 +2,7 @@ package com.mycca.Fragments;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -32,8 +33,9 @@ public class FeedbackFragment extends Fragment {
 
     String TAG = "feedback";
     private Button btnRateApplication, btnSuggestion, btnReportIssue;
-    private TextInputEditText etSuggestion, etCauseOfIssue;
-    private Spinner spinnerErrorType;
+    private TextInputEditText etSuggestion;
+    //etCauseOfIssue;
+    //private Spinner spinnerErrorType;
 
     public FeedbackFragment() {
 
@@ -52,18 +54,18 @@ public class FeedbackFragment extends Fragment {
 
     private void bindViews(View view) {
         etSuggestion = view.findViewById(R.id.et_feedback_submit_suggestion);
-        etCauseOfIssue = view.findViewById(R.id.et_feedback_report_issue);
-        spinnerErrorType = view.findViewById(R.id.spinner_feedback_error_types);
+        //etCauseOfIssue = view.findViewById(R.id.et_feedback_report_issue);
+        //spinnerErrorType = view.findViewById(R.id.spinner_feedback_error_types);
         btnRateApplication = view.findViewById(R.id.btn_feedback_rate_application);
         btnSuggestion = view.findViewById(R.id.btn_feedback_submit_advice);
-        btnReportIssue = view.findViewById(R.id.btn_feedback_report_issue);
+        //btnReportIssue = view.findViewById(R.id.btn_feedback_report_issue);
     }
 
     private void init() {
 
-        spinnerErrorType.setAdapter(new ArrayAdapter(getContext(),
-                android.R.layout.simple_spinner_item,
-                Helper.getInstance().errorCodesList));
+//        spinnerErrorType.setAdapter(new ArrayAdapter(getContext(),
+//                android.R.layout.simple_spinner_item,
+//                Helper.getInstance().errorCodesList));
 
         btnSuggestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,29 +91,29 @@ public class FeedbackFragment extends Fragment {
             }
         });
 
-        btnReportIssue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                        FireBaseHelper.getInstance(getContext()).ROOT_ERROR_REPORT,
-                        null,
-                        getContext(),
-                        spinnerErrorType.getSelectedItem().toString(),
-                        Helper.getInstance().errorMessageList[spinnerErrorType.getSelectedItemPosition()],
-                        etCauseOfIssue.getText().toString().trim());
-
-                task.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Thankyou for Reporting", Toast.LENGTH_SHORT).show();
-                        }else {
-                            Log.d(TAG, task.getResult().toString());
-                        }
-                    }
-                });
-            }
-        });
+//        btnReportIssue.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+//                        FireBaseHelper.getInstance(getContext()).ROOT_ERROR_REPORT,
+//                        null,
+//                        getContext(),
+//                        spinnerErrorType.getSelectedItem().toString(),
+//                        Helper.getInstance().errorMessageList[spinnerErrorType.getSelectedItemPosition()],
+//                        etCauseOfIssue.getText().toString().trim());
+//
+//                task.addOnCompleteListener(new OnCompleteListener() {
+//                    @Override
+//                    public void onComplete(@NonNull Task task) {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(getContext(), "Thankyou for Reporting", Toast.LENGTH_SHORT).show();
+//                        }else {
+//                            Log.d(TAG, task.getResult().toString());
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
         btnRateApplication.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,12 +131,12 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void rateApplication() {
-        if (Preferences.getInstance().getBooleanPref(getContext(),Preferences.PREF_DEBUG_MODE)) {
-            Toast.makeText(getContext(), "App is in debug Mode\nCannot Rate Application", Toast.LENGTH_SHORT).show();
-        } else {
-            //TODO
-            //Show play store app page
-            //showPlayStoreAppPage();
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(Helper.getInstance().getPlayStoreURL())));
+        } catch (android.content.ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getActivity().getPackageName())));
         }
     }
 

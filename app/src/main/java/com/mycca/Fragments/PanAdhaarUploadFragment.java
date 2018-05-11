@@ -35,6 +35,7 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.PanAdhaar;
@@ -472,11 +473,29 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), root + " Update " + root + " Request Submitted Succesfully", Toast.LENGTH_SHORT).show();
+                    StringBuilder alertMessage = new StringBuilder();
+
+                    alertMessage.append(root + " update request for ");
+                    alertMessage.append("\n<b>" + pensionerCode + "</b>\nhas been submitted succesfully");
+
+
+
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), root
+                             + " Update", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                        }
+                    }, null, null, FancyAlertDialogType.SUCCESS);
+                    //Toast.makeText(getContext(), root + " Update " + root + " Request Submitted Succesfully", Toast.LENGTH_SHORT).show();
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Grievance Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), root + " update request failed", root
+                            + " Update", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                        }
+                    }, null, null, FancyAlertDialogType.ERROR);
                 }
             }
         } catch (JSONException jse) {

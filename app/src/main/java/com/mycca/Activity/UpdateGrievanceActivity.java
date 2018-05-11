@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
@@ -146,17 +147,41 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             progressDialog.dismiss();
                             if (task.isSuccessful()) {
-                                Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
 
-                                GrievanceDataProvider.getInstance().selectedGrievance.setGrievanceStatus(status);
-                                GrievanceDataProvider.getInstance().selectedGrievance.setMessage(message);
-                                GrievanceDataProvider.getInstance().selectedGrievance.setExpanded(false);
+                                //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
+                                GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
+                                model.setGrievanceStatus(status);
+                                model.setMessage(message);
+                                model.setExpanded(false);
+
+
+                                StringBuilder alertMessage = new StringBuilder();
+                                alertMessage.append(Helper.getInstance().getGrievanceCategory(model.getGrievanceType()));
+                                alertMessage.append(" Grievance of ");
+                                alertMessage.append("<b>" + model.getPensionerIdentifier() + "</b>");
+                                alertMessage.append("for ");
+                                alertMessage.append("<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b>");
+                                alertMessage.append(" has been succesfully updated to\n");
+                                alertMessage.append(Helper.getInstance().getStatusString(model.getGrievanceStatus()));
+
 
                                 notifyPensioner();
                                 setResult(Activity.RESULT_OK);
-                                finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
-                                finish();
+                                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage.toString(), "Grievance Update", "OK", new IFancyAlertDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                        finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
+                                        finish();
+                                    }
+                                }, null, null, FancyAlertDialogType.SUCCESS);
                             } else {
+                                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this,"Unable to update grievance", "Grievance Update", "OK", new IFancyAlertDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                    }
+                                }, null, null, FancyAlertDialogType.SUCCESS);
                                 Log.d(TAG, "onComplete: " + task.toString());
                             }
                         }
@@ -213,7 +238,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                 .send();
 
 
-
     }
 
     private String getJsonBody() {
@@ -222,8 +246,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         String type = Helper.getInstance().getGrievanceString(GrievanceDataProvider.getInstance().selectedGrievance.getGrievanceType());
         JSONObject jsonObjectData = new JSONObject();
         try {
-            jsonObjectData.put(Constants.KEY_TITLE,"Grievance status updated");
-            jsonObjectData.put(Constants.KEY_TEXT,"Your grievance for " + type + " is " + newStatus);
+            jsonObjectData.put(Constants.KEY_TITLE, "Grievance status updated");
+            jsonObjectData.put(Constants.KEY_TEXT, "Your grievance for " + type + " is " + newStatus);
             jsonObjectData.put("pensionerCode", textViewPensionerCode.getText());
             jsonObjectData.put("grievanceType", GrievanceDataProvider.getInstance().selectedGrievance.getGrievanceType());
         } catch (JSONException e) {
