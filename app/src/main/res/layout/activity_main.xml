@@ -26,6 +26,7 @@
         app:itemIconTint="@color/colorBlack"
         app:itemTextColor="@color/colorBlack"
         app:menu="@menu/activity_home_drawer"
+        android:theme="@style/NavigationView"
         tools:ignore="RtlCompat" />
 
 </com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout>

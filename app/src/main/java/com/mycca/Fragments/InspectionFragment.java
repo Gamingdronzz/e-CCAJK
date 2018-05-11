@@ -23,8 +23,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.mycca.Activity.UpdateGrievanceActivity;
-import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.UploadTask;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -40,18 +50,6 @@ import com.mycca.Tools.Helper;
 import com.mycca.Tools.MyLocationManager;
 import com.mycca.Tools.Preferences;
 import com.mycca.Tools.VolleyHelper;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.UploadTask;
-import com.linchaolong.android.imagepicker.ImagePicker;
-import com.linchaolong.android.imagepicker.cropper.CropImage;
-import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -561,7 +559,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     progressDialog.dismiss();
                     StringBuilder alertMessage = new StringBuilder();
 
-                    alertMessage.append("Inspection data of");
+                    alertMessage.append("Inspection data for");
                     alertMessage.append("<br><b>" + editTextLocationName.getText() + "</b><br>");
                     alertMessage.append("containing <b>" + selectedImageModelArrayList.size() + "</b> images ");
                     alertMessage.append(" has been succesfully submitted");

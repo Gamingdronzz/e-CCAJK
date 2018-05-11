@@ -10,7 +10,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.InputFilter;
 import android.util.Log;
 import android.util.Patterns;
@@ -31,6 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.storage.UploadTask;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.mycca.Adapter.GrievanceAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
@@ -48,15 +56,6 @@ import com.mycca.Tools.Helper;
 import com.mycca.Tools.PopUpWindows;
 import com.mycca.Tools.Preferences;
 import com.mycca.Tools.VolleyHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseException;
-import com.google.firebase.storage.UploadTask;
-import com.linchaolong.android.imagepicker.ImagePicker;
-import com.linchaolong.android.imagepicker.cropper.CropImage;
-import com.linchaolong.android.imagepicker.cropper.CropImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -590,7 +589,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     progressDialog.dismiss();
                     StringBuilder alertMessage = new StringBuilder();
                     alertMessage.append(type);
-                    alertMessage.append(" Grievance fo<br>");
+                    alertMessage.append(" Grievance for<br>");
                     alertMessage.append("<b>"+grievanceType.getName()+"</b><br>");
                     alertMessage.append(" has been succesfully submitted");
 
