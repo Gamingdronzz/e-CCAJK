@@ -54,8 +54,8 @@ public class Helper {
     public String[] errorMessageList = {"Message 1", "Message 2", "Message 3"};
 
     State stateList[] = {
-            new State("jnk", "Jammu & Kashmir"),
-            new State("hry", "Haryana")
+            new State("05", "Jammu & Kashmir"),
+            new State("100", "Haryana")
     };
 
     public Helper() {

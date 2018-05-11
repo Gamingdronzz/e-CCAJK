@@ -41,7 +41,7 @@ public class Preferences {
         String res = getSharedPreferences(context).getString(key, null);
         if (res == null) {
             if (key.equals(PREF_STATE)) {
-                return "jnk";
+                return "05";
             }
         }
         return res;
