@@ -215,8 +215,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             relativeLayoutNoLocation.setVisibility(View.GONE);
     }
 
-    public void startLocationProcess()
-    {
+    public void startLocationProcess() {
         Task<LocationSettingsResponse> task = locationManager.ManageLocation();
         if (task != null) {
             task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
@@ -229,8 +228,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                         progressDialog.show();
                         locationManager.requestLocationUpdates(mMap);
                         manageNoLocationLayout(false);
-
-
                     } else {
                         Log.v(TAG, "Task is not Successful");
                     }

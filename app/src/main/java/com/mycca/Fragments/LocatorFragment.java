@@ -106,35 +106,14 @@ public class LocatorFragment extends Fragment {
     private void init() {
 
         manageNoLocationLayout(true);
-        //progressDialog.show();
-
-//            if (LocationDataProvider.getInstance().getLocationModelArrayList(locatorType) == null) {
-//                getAllLocations();
-//            } else {
-//                setTabLayout();
-//            }
-
-        //Fetch Locations from ram
-        locationModelArrayList = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
-        // if no locations in ram
-        if (locationModelArrayList == null) {
-            Log.d(TAG, "init: No Locations in Ram");
 
             //fetch from local storage
             locationModelArrayList = getLocationsFromLocalStorage();
-            if(locationModelArrayList == null) {
+            if (locationModelArrayList == null) {
                 checkConnection(false);
-            }
-            else
-            {
+            } else {
                 checkConnection(true);
             }
-        }
-        // if locations in ram
-        else {
-            checkConnection(true);
-        }
-
     }
 
     private void setTabLayout() {
@@ -153,15 +132,11 @@ public class LocatorFragment extends Fragment {
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected: selected = " + position);
 
-                    Fragment fragment =  adapter.getCurrentFragment();
-                    if(fragment instanceof  TabNearby) {
-                        ((TabNearby)fragment).startLocationProcess();
-                    }
-
-
-
+                Fragment fragment = adapter.getCurrentFragment();
+                if (fragment instanceof TabNearby) {
+                    ((TabNearby) fragment).startLocationProcess();
+                }
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -224,13 +199,6 @@ public class LocatorFragment extends Fragment {
         }
     }
 
-
-//    private void getAllLocations() {
-//        locationModelArrayList = getLocationsFromLocalStorage();
-//        Log.d(TAG, "getAllLocations: " + locationModelArrayList);
-//        checkConnection();
-//    }
-
     private void checkConnection(boolean checkNetwork) {
         progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
@@ -240,8 +208,7 @@ public class LocatorFragment extends Fragment {
                     Log.d(TAG, "init: No Locations in Local Storage");
                     fetchLocationsFromFirebase();
                 } else {
-                    Log.d(TAG, "init: Locations found in local/ram storage");
-
+                    Log.d(TAG, "init: Locations found in local storage");
                     checkNewLocationsinFirebase();
                 }
             }
@@ -257,19 +224,13 @@ public class LocatorFragment extends Fragment {
             }
         });
 
-        if(!checkNetwork)
-        {
+        if (!checkNetwork) {
             connectionUtility.checkConnectionAvailability();
-        }
-        else
-        {
+        } else {
             String networkClass = connectionUtility.getNetworkClass(getContext());
-            if(networkClass.equals(connectionUtility._2G))
-            {
+            if (networkClass.equals(connectionUtility._2G)) {
                 setTabLayout();
-            }
-            else
-            {
+            } else {
                 connectionUtility.checkConnectionAvailability();
             }
         }
@@ -364,11 +325,10 @@ public class LocatorFragment extends Fragment {
 
     private void writeToFile(String jsonObject) {
 
-
+        String filename = locatorType + " " + Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
         FileOutputStream outputStream = null;
         try {
-            outputStream = getActivity().openFileOutput(locatorType + ".json", Context.MODE_PRIVATE);
-
+            outputStream = getActivity().openFileOutput(filename + ".json", Context.MODE_PRIVATE);
             outputStream.write(jsonObject.getBytes());
             Log.d(TAG, "writeToFile: ");
             outputStream.close();
@@ -382,8 +342,9 @@ public class LocatorFragment extends Fragment {
 
     private String readFromFile() {
 
+        String filename = locatorType + " " + Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
         try {
-            File file = new File(getActivity().getFilesDir(), locatorType + ".json");
+            File file = new File(getActivity().getFilesDir(), filename + ".json");
             Log.d(TAG, "readFromFile: file path = " + file.getPath());
             FileInputStream fin = getActivity().openFileInput(file.getName());
             int size = fin.available();
