@@ -20,7 +20,15 @@ public class GrievanceModel {
     String message;
     String token;
     Date date;
+    boolean highlighted = false;
 
+    public boolean isHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
 
     public GrievanceModel() {
 

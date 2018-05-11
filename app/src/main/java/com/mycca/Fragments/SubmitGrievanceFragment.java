@@ -520,7 +520,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             } catch (Exception e) {
                 e.printStackTrace();
                 Helper.getInstance().showFancyAlertDialog(getActivity(),
-                        "Error 1\nPlease report this issue through feedback section",
+                        "Some Error Occured<br>Please try Again",
                         "Track Grievance",
                         "OK",
                         null,
@@ -590,8 +590,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     progressDialog.dismiss();
                     StringBuilder alertMessage = new StringBuilder();
                     alertMessage.append(type);
-                    alertMessage.append(" Grievance for ");
-                    alertMessage.append("\n<b>"+grievanceType.getName()+"</b>\n");
+                    alertMessage.append(" Grievance fo<br>");
+                    alertMessage.append("<b>"+grievanceType.getName()+"</b><br>");
                     alertMessage.append(" has been succesfully submitted");
 
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), "Grievance Submission", "OK", new IFancyAlertDialogListener() {
@@ -604,7 +604,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Grievance Submission Failed\nTry Again", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Grievance Submission Failed<br>Try Again", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
 

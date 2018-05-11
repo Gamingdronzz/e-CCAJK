@@ -152,18 +152,16 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                                 GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
                                 model.setGrievanceStatus(status);
                                 model.setMessage(message);
-                                model.setExpanded(false);
-
+                                model.setExpanded(true);
 
                                 StringBuilder alertMessage = new StringBuilder();
                                 alertMessage.append(Helper.getInstance().getGrievanceCategory(model.getGrievanceType()));
-                                alertMessage.append(" Grievance of ");
-                                alertMessage.append("<b>" + model.getPensionerIdentifier() + "</b>");
-                                alertMessage.append("for ");
-                                alertMessage.append("<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b>");
-                                alertMessage.append(" has been succesfully updated to\n");
-                                alertMessage.append(Helper.getInstance().getStatusString(model.getGrievanceStatus()));
-
+                                alertMessage.append(" Grievance status of<br>");
+                                alertMessage.append("<b>" + model.getPensionerIdentifier() + "</b><br>");
+                                alertMessage.append("for<br>");
+                                alertMessage.append("<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>");
+                                alertMessage.append("has been succesfully updated to<br>");
+                                alertMessage.append("<b>" +Helper.getInstance().getStatusString(model.getGrievanceStatus()) +"</b>");
 
                                 notifyPensioner();
                                 setResult(Activity.RESULT_OK);

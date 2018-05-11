@@ -19,6 +19,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.mycca.Activity.UpdateGrievanceActivity;
+import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
+import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
@@ -80,7 +84,11 @@ public class FeedbackFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), "Thanks for your Valuable Suggestion", Toast.LENGTH_SHORT).show();
+                                Helper.getInstance().showFancyAlertDialog(getActivity(),"Your suggestion means a lot to us!<br><br><b>Thank you</b>" , "Advice", "OK", new IFancyAlertDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+                                    }
+                                }, null, null, FancyAlertDialogType.SUCCESS);
                             } else {
                                 Log.d(TAG, task.getResult().toString());
                             }

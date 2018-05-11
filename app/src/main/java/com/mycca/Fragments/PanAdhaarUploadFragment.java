@@ -475,8 +475,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     progressDialog.dismiss();
                     StringBuilder alertMessage = new StringBuilder();
 
-                    alertMessage.append(root + " update request for ");
-                    alertMessage.append("\n<b>" + pensionerCode + "</b>\nhas been submitted succesfully");
+                    alertMessage.append(root + " update request for<br>");
+                    alertMessage.append("<b>" + pensionerCode + "</b>");
+                    alertMessage.append("<br>has been submitted succesfully");
 
 
 

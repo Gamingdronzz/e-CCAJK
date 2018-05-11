@@ -562,7 +562,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     StringBuilder alertMessage = new StringBuilder();
 
                     alertMessage.append("Inspection data of");
-                    alertMessage.append("\n<b>" + editTextLocationName.getText() + "</b>");
+                    alertMessage.append("<br><b>" + editTextLocationName.getText() + "</b><br>");
                     alertMessage.append("containing <b>" + selectedImageModelArrayList.size() + "</b> images ");
                     alertMessage.append(" has been succesfully submitted");
 

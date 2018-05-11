@@ -52,7 +52,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     private void init() {
 
         grievanceModelArrayList = new ArrayList<>();
-        adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList);
+        adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList,this);
         adapterTracking.setHasStableIds(true);
 
         textView = findViewById(R.id.textview_tracking);
@@ -66,6 +66,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
             public void onClick(View view, int position) {
                 Log.d(TAG, "onClick: " + position);
                 grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).getExpanded());
+                //grievanceModelArrayList.get(position).setHighlighted(false);
                 adapterTracking.notifyItemChanged(position);
             }
 
@@ -134,6 +135,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                                 if (grievanceType != -1) {
                                     if (model.getGrievanceType() == grievanceType) {
                                         model.setExpanded(true);
+                                        model.setHighlighted(true);
                                     }
                                 }
                                 grievanceModelArrayList.add(size, model);
@@ -156,6 +158,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                                 {
                                     grievanceModelArrayList.remove(counter);
                                     model.setExpanded(true);
+                                    model.setHighlighted(true);
                                     grievanceModelArrayList.add(counter,model);
                                     break;
                                 }

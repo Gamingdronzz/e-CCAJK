@@ -1,5 +1,6 @@
 package com.mycca.Adapter;
 
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,9 +22,11 @@ import java.util.ArrayList;
 public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerViewAdapterTracking.TrackViewHolder> {
 
     ArrayList<GrievanceModel> grievanceModels;
+    AppCompatActivity appCompatActivity;
 
-    public RecyclerViewAdapterTracking(ArrayList<GrievanceModel> grievanceModels) {
+    public RecyclerViewAdapterTracking(ArrayList<GrievanceModel> grievanceModels, AppCompatActivity appCompatActivity) {
         this.grievanceModels = grievanceModels;
+        this.appCompatActivity = appCompatActivity;
     }
 
     @Override
@@ -51,6 +54,15 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
             holder.linearLayoutExpandableArea.setVisibility(View.GONE);
             holder.textViewgrievance.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_arrow_drop_down_black_24dp,0);
         }
+
+        if(grievanceModel.isHighlighted())
+        {
+            holder.linearLayouttrackGrievanceParent.setBackgroundColor(appCompatActivity.getResources().getColor(R.color.colorLightGray));
+        }
+        else
+        {
+            holder.linearLayouttrackGrievanceParent.setBackgroundColor(appCompatActivity.getResources().getColor(R.color.colorWhite));
+        }
         if (grievanceModel.getMessage() != null && !grievanceModel.getMessage().isEmpty())
             holder.textViewMessage.setText(grievanceModel.getMessage());
         else
@@ -65,7 +77,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
     public class TrackViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textViewGrievanceType, textViewgrievance, textViewDate, textViewStatus, textViewMessage;
-        public LinearLayout linearLayoutExpandableArea;
+        public LinearLayout linearLayoutExpandableArea,linearLayouttrackGrievanceParent;
 
         public TrackViewHolder(View itemView) {
             super(itemView);
@@ -81,6 +93,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
             textViewMessage = itemView.findViewById(R.id.textview_message);
             textViewMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_message, 0,0,0);
             linearLayoutExpandableArea = itemView.findViewById(R.id.expandable_area_track_grievance);
+            linearLayouttrackGrievanceParent = itemView.findViewById(R.id.ll_track_grievance_parent);
         }
     }
 }
