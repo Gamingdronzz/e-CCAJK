@@ -13,19 +13,18 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
-import com.mycca.Listeners.OnConnectionAvailableListener;
-import com.mycca.Models.AppVersionModel;
-import com.mycca.R;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.mycca.Listeners.OnConnectionAvailableListener;
+import com.mycca.R;
+import com.mycca.Tools.ConnectionUtility;
+import com.mycca.Tools.FireBaseHelper;
+import com.mycca.Tools.Helper;
 import com.mycca.Tools.Preferences;
 
 public class SplashActivity extends AppCompatActivity {
@@ -43,10 +42,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Preferences.getInstance().setBooleanPref(this, Preferences.PREF_DEBUG_MODE, false);
-        //Preferences.getInstance().setStringPref(this, Preferences.PREF_APP_MODE, debugAppMode);
         currentAppVersion = getAppVersion();
+        Preferences.getInstance().setStringPref(this,Preferences.PREF_APP_VERSION, String.valueOf(currentAppVersion));
         currentVersionName = getAppVersionName();
+        Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
         bindVIews();
         StartAnimations();
     }
@@ -70,9 +69,6 @@ public class SplashActivity extends AppCompatActivity {
         imageView.clearAnimation();
         imageView.startAnimation(animationScale);
 
-        //gd.clearAnimation();
-        //gd.startAnimation(animationBounce);
-
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -91,7 +87,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForUpdate() {
-        if (!Preferences.getInstance().getBooleanPref(this, Preferences.PREF_DEBUG_MODE)) {
+
             ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
                 @Override
                 public void OnConnectionAvailable() {
@@ -120,18 +116,18 @@ public class SplashActivity extends AppCompatActivity {
                 }
             });
             connectionUtility.checkConnectionAvailability();
-        } else
-            LoadNextActivity();
+
     }
 
     private void checkVersion(DataSnapshot dataSnapshot) {
-        AppVersionModel model = dataSnapshot.getValue(AppVersionModel.class);
+        long version = (long) dataSnapshot.getValue();
 
         Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
-        Log.d(TAG, "available Version = " + model.getCurrentReleaseVersion());
+        Log.d(TAG, "available Version = " + version);
+
         if (currentAppVersion == -1) {
             LoadNextActivity();
-        } else if (currentAppVersion == model.getCurrentReleaseVersion()) {
+        } else if (currentAppVersion == version) {
             LoadNextActivity();
         } else {
             Helper.getInstance().showFancyAlertDialog(this,

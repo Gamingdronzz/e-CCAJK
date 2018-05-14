@@ -38,6 +38,7 @@ import com.mycca.Fragments.PanAdhaarUploadFragment;
 import com.mycca.Fragments.SettingsFragment;
 import com.mycca.Fragments.SubmitGrievanceFragment;
 import com.mycca.Fragments.UpdateGrievanceFragment;
+import com.mycca.Models.StaffModel;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     CardDrawerLayout drawerLayout;
     Toolbar toolbar;
+    StaffModel staffModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +116,9 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
-        if (Preferences.getInstance().getStringPref(this, Preferences.PREF_STAFF_ID) != null) {
-            if (Preferences.getInstance().getIntPref(this, Preferences.PREF_STAFF_TYPE) == TYPE_ADMIN)
+        staffModel = Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA);
+        if (staffModel != null) {
+            if (staffModel.getType() == TYPE_ADMIN)
                 ManageNavigationView(true, true);
             else
                 ManageNavigationView(true, false);
@@ -278,7 +281,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void OnClick() {
                         ShowFragment("Home", new HomeFragment(), null);
-                        Preferences.getInstance().clearPrefs(MainActivity.this);
+                        Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                         ManageNavigationView(false, false);
                     }
                 },
@@ -388,16 +391,14 @@ public class MainActivity extends AppCompatActivity
         //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void OnLoginSuccesful(String staffId, long type) {
-        Log.d(TAG, "OnLoginSuccesful: ");
+    public void OnLoginSuccesful(StaffModel staffModel) {
+        this.staffModel = staffModel;
         Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
-        Preferences.getInstance().setStringPref(this, Preferences.PREF_STAFF_ID, staffId);
-        if (type == TYPE_ADMIN) {
+        Preferences.getInstance().setStaffPref(this, Preferences.PREF_STAFF_DATA, staffModel);
+        if (staffModel.getType() == TYPE_ADMIN) {
             ManageNavigationView(true, true);
-            Preferences.getInstance().setIntPref(this, Preferences.PREF_STAFF_TYPE, TYPE_ADMIN);
         } else {
             ManageNavigationView(true, false);
-            Preferences.getInstance().setIntPref(this, Preferences.PREF_STAFF_TYPE, TYPE_STAFF);
         }
 
         ShowFragment("Home", new HomeFragment(), null);

@@ -357,7 +357,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
 
-        staffId = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STAFF_ID);
+        staffId = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getId();
         InspectionModel inspectionModel = new InspectionModel(staffId, locName, latitude, longitude, new Date());
 
         Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
@@ -387,8 +387,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.show();
         String url;
 
-        url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
-                + "sendInspectionEmail.php";
+        url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
 
         Map<String, String> params = new HashMap();
 
@@ -445,8 +444,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Processing..");
         progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
-                + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl()+ "uploadImage.php";
 
         if (totalFilesToAttach != 0) {
             try {

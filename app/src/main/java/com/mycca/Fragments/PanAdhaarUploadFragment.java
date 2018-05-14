@@ -392,8 +392,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog.setMessage("Processing..");
         progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
-                + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
 
         try {
             DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
@@ -414,8 +413,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
-                + "sendInfoUpdateEmail.php";
+        String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php";
         Map<String, String> params = new HashMap();
 
         params.put("pensionerCode", pensionerCode);
@@ -480,9 +478,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     alertMessage.append("<br>has been submitted succesfully");
 
 
-
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), root
-                             + " Update", "OK", new IFancyAlertDialogListener() {
+                            + " Update", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
                         }

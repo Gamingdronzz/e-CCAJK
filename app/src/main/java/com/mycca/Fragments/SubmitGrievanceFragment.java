@@ -507,8 +507,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.setMessage("Processing..");
         progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
-                + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
 
         if (totalFilesToAttach != 0) {
             try {
@@ -539,8 +538,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
-        String url = Helper.getInstance().getAPIUrl(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_DEBUG_MODE))
-                + "sendGrievanceEmail.php";
+        String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
         Map<String, String> params = new HashMap();
         String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
 
@@ -590,7 +588,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     StringBuilder alertMessage = new StringBuilder();
                     alertMessage.append(type);
                     alertMessage.append(" Grievance for<br>");
-                    alertMessage.append("<b>"+grievanceType.getName()+"</b><br>");
+                    alertMessage.append("<b>" + grievanceType.getName() + "</b><br>");
                     alertMessage.append(" has been succesfully submitted");
 
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), "Grievance Submission", "OK", new IFancyAlertDialogListener() {

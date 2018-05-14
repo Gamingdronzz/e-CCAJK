@@ -10,13 +10,10 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -50,51 +47,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         view = inflater.inflate(R.layout.fragment_home, container, false);
         bindViews(view);
         init();
-        //setHasOptionsMenu(true);
-
-        //imageButtonLogout = view.findViewById(R.id.logout);
-        //imageButtonLogout.setBackground(AppCompatResources.getDrawable(this.getContext(),R.drawable.ic_logout_24dp));
-
-        // Helper.getInstance().addLocations(300);
-
-
+        //Helper.getInstance().updateLocations();
         return view;
     }
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.menu_home, menu);
-//        item = menu.findItem(R.id.action_settings);
-//       /* Helper.getInstance().showGuide(getContext(),item.getActionView(), "Settings Button", "Click this to open Settings", new GuideView.GuideListener() {
-//            @Override
-//            public void onDismiss(View view) {
-//                MainActivity mainActivity = (MainActivity) getActivity();
-//                mainActivity.showDrawer();
-//            }
-//        });*/
-//    }
-
-//    @Override
-//    public void onPrepareOptionsMenu(Menu menu) {
-//        super.onPrepareOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                ((MainActivity)getActivity()).ShowFragment("Settings",new SettingsFragment(),null);
-//                break;
-//            case R.id.action_invite:
-//                Toast.makeText(getContext(), "Invitation", Toast.LENGTH_SHORT).show();
-//                break;
-//            default:
-//                break;
-//        }
-//
-//        return true;
-//    }
-
 
     private void bindViews(View view) {
         welcomeText = view.findViewById(R.id.textview_welcome_short);

@@ -3,7 +3,6 @@ package com.mycca.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.Models.StaffModel;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,8 +78,9 @@ public class LoginFragment extends Fragment {
 
         final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Logging In...");
         progressDialog.show();
-        FireBaseHelper.getInstance(getContext()).databaseReference.child(FireBaseHelper.getInstance(getContext()).ROOT_STAFF)
-                .child(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE))
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(FireBaseHelper.ROOT_STAFF)
                 .child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,18 +89,15 @@ public class LoginFragment extends Fragment {
                     progressDialog.dismiss();
                     return;
                 }
-                Log.d(TAG, "onDataChange: DataSnapshot = " + dataSnapshot);
-                Log.d(TAG, "onDataChange: Password = " + dataSnapshot.child(FireBaseHelper.getInstance(getContext()).ROOT_PASSWORD).getValue());
                 if (dataSnapshot.getValue() == null) {
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.OnLoginFailure("No user found");
                     progressDialog.dismiss();
                 } else {
-                    if (dataSnapshot.child(FireBaseHelper.getInstance(getContext()).ROOT_PASSWORD).getValue().toString().equals(password)) {
-                        long type = (long) dataSnapshot.child(FireBaseHelper.getInstance(getContext()).ROOT_TYPE).getValue();
-                        Log.d(TAG, "onDataChange: type: " + type);
+                    StaffModel staffModel=dataSnapshot.getValue(StaffModel.class);
+                    if (staffModel.getPassword().equals(password)) {
                         MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.OnLoginSuccesful(id, type);
+                        mainActivity.OnLoginSuccesful(staffModel);
                         progressDialog.dismiss();
                     } else {
                         MainActivity mainActivity = (MainActivity) getActivity();

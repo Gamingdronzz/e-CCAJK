@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+import com.mycca.Models.StaffModel;
+
 /**
  * Created by hp on 13-02-2018.
  */
@@ -11,14 +14,12 @@ import android.preference.PreferenceManager;
 public class Preferences {
     private static Preferences _instance;
 
-    public static final String PREF_STAFF_ID = "staffId";
-    public static final String PREF_STAFF_TYPE = "staffType";
+    public static final String PREF_STAFF_DATA = "staffData";
+    // public static final String PREF_STAFF_TYPE = "staffType";
+    // public static final String PREF_STAFF_ID = "staffId";
     public static final String PREF_STATE = "state";
-    public static final String PREF_APP_MODE = "appMode";
-    public static final String PREF_DEBUG_MODE = "debugMode";
+    public static final String PREF_APP_VERSION = "AppVersion";
     public static final String PREF_RECIEVE_NOTIFICATIONS = "recieveNotifications";
-
-    String debugAppMode = "debug", releaseAppMode = "release";
 
     public Preferences() {
         _instance = this;
@@ -72,18 +73,26 @@ public class Preferences {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putBoolean(key, value);
         editor.commit();
-        if (key.equals(PREF_DEBUG_MODE)) {
-            if (value)
-                setStringPref(context, PREF_APP_MODE, debugAppMode);
-            else
-                setStringPref(context, PREF_APP_MODE, releaseAppMode);
-        }
     }
 
-    public void clearPrefs(Context context) {
+    public StaffModel getStaffPref(Context context, String key) {
+        Gson gson = new Gson();
+        String json = getSharedPreferences(context).getString(key, null);
+        StaffModel staffModel = gson.fromJson(json, StaffModel.class);
+        return staffModel;
+    }
+
+    public void setStaffPref(Context context, String key, StaffModel value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.remove(PREF_STAFF_ID);
-        editor.remove(PREF_STAFF_TYPE);
+        Gson gson = new Gson();
+        String json = gson.toJson(value);
+        editor.putString(key, json);
+        editor.commit();
+    }
+
+    public void clearStaffPrefs(Context context) {
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.remove(PREF_STAFF_DATA);
         editor.commit();
     }
 

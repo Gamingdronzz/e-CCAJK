@@ -19,6 +19,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.LocationModel;
@@ -27,19 +38,8 @@ import com.mycca.R;
 import com.mycca.Tabs.Locator.TabAllLocations;
 import com.mycca.Tabs.Locator.TabNearby;
 import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.Preferences;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,6 +69,7 @@ public class LocatorFragment extends Fragment {
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
 
+    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
 
     public LocatorFragment() {
 
@@ -238,7 +239,7 @@ public class LocatorFragment extends Fragment {
     }
 
     private void checkNewLocationsinFirebase() {
-        DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
+       // DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -267,7 +268,7 @@ public class LocatorFragment extends Fragment {
     private void fetchLocationsFromFirebase() {
 
         locationModelArrayList = new ArrayList<>();
-        DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
+        //DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addChildEventListener(new ChildEventListener() {

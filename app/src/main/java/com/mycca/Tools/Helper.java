@@ -45,13 +45,10 @@ public class Helper {
     public final String SUCCESS = "success";
     public final String Nil = "Nil";
     private final String TAG = "Helper";
-    //private String appMode;
-    //private boolean debugMode = true;
+    private boolean debugMode = true;
     public ArrayList<LocationModel> allLocationModels;
 
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
-    public String[] errorCodesList = {"Error Code 1", "Error Code 2", "Error Code 3"};
-    public String[] errorMessageList = {"Message 1", "Message 2", "Message 3"};
 
     State stateList[] = {
             new State("05", "Jammu & Kashmir"),
@@ -99,7 +96,7 @@ public class Helper {
         return "https://www.google.co.in/";
     }
 
-    public String getAPIUrl(boolean debugMode) {
+    public String getAPIUrl() {
         if (debugMode) {
             return "http://jknccdirectorate.com/api/cca/debug/v1/";
         } else {
@@ -340,43 +337,6 @@ public class Helper {
 //                .show();
 //    }
 
-//    public void showAlertDialog(Context context, String message, String title, String neutralButtonText) {
-//        if (title == null) {
-//            title = "CCA JK";
-//        }
-//        if (message == null) {
-//            Log.d(TAG, "showAlertDialog: Message cant be null");
-//            return;
-//        }
-//        if (neutralButtonText == null) {
-//            neutralButtonText = "OK";
-//        }
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-//                context, R.style.MyAlertDialogStyle);
-//        alertDialog.setNeutralButton(neutralButtonText, null)
-//                .setMessage(message)
-//                .setTitle(title)
-//                .show();
-//    }
-
-//    public void showAlertDialog(Context context, String message, String title, String neutralButtonText, DialogInterface.OnClickListener neutralButtonClickListener) {
-//        if (title == null) {
-//            title = "CCA JK";
-//        }
-//        if (message == null) {
-//            Log.d(TAG, "showAlertDialog: Message cant be null");
-//            return;
-//        }
-//        if (neutralButtonText == null) {
-//            neutralButtonText = "OK";
-//        }
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-//                context, R.style.MyAlertDialogStyle);
-//        alertDialog.setNeutralButton(neutralButtonText, neutralButtonClickListener)
-//                .setMessage(message)
-//                .setTitle(title)
-//                .show();
-//
     public JSONObject getJson(String input) {
         try {
             try {
@@ -503,10 +463,44 @@ public class Helper {
             Log.d("Helper", "Adding Location = " + randomLatitude + " : " + randomLongitude);
         }
     }
-
     public void remove() {
         DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
         databaseReference.child("Locations").removeValue();
+    }*/
+
+   /* public void updateLocations() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(FireBaseHelper.ROOT_HOTSPOTS).child("05");
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                HashMap<String,Object> hashMap=new HashMap<>();
+                hashMap.put("StateID", "05");
+                FirebaseDatabase.getInstance().getReference().child(FireBaseHelper.ROOT_HOTSPOTS).child("05")
+                        .child(dataSnapshot.getKey()).updateChildren(hashMap);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }*/
 
     public ArrayList<LocationModel> getAllLocations() {
