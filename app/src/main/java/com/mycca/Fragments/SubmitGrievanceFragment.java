@@ -41,6 +41,7 @@ import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.mycca.Adapter.GrievanceAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
+import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
@@ -48,13 +49,13 @@ import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
 import com.mycca.Models.GrievanceType;
 import com.mycca.Models.SelectedImageModel;
+import com.mycca.Models.State;
 import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.DataSubmissionAndMail;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.PopUpWindows;
-import com.mycca.Tools.Preferences;
 import com.mycca.Tools.VolleyHelper;
 
 import org.json.JSONException;
@@ -67,39 +68,34 @@ import java.util.Map;
 
 
 public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse {
-    AutoCompleteTextView autoCompleteTextViewPensionerCode, inputEmail;
-    AutoCompleteTextView inputMobile;
+
+    AutoCompleteTextView autoCompleteTextViewPensionerCode, inputEmail, inputMobile;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     EditText inputDetails;
-    Spinner spinnerInputType, spinnerInputSubmittedBy;
+    Spinner spinnerInputType, spinnerInputSubmittedBy, spinnerCircle;
     Button submit, buttonChooseFile;
-
-    TextView removeAll;
+    TextView removeAll, textViewSelectedFileCount;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
-    TextView textViewSelectedFileCount;
-
-    ArrayList<GrievanceType> list = new ArrayList<>();
-    String TAG = "GrievanceModel";
-    String hint = "Pensioner Code";
-    String code, type;
-
-    GrievanceType grievanceType;
-
-
-    RecyclerView recyclerViewSelectedImages;
-    RecyclerViewAdapterSelectedImages adapterSelectedImages;
-    ArrayList<SelectedImageModel> selectedImageModelArrayList;
-    VolleyHelper volleyHelper;
-
 
     boolean isUploadedToFirebase = false, isUploadedToServer = false;
-    ArrayList<Uri> firebaseImageURLs;
-    int counterFirebaseImages;
     int counterUpload = 0;
     int counterServerImages = 0;
+    int counterFirebaseImages;
+    String TAG = "GrievanceModel";
+    String hint = "Pensioner Code";
+    String code, type, email;
+
+    GrievanceType grievanceType;
+    State state;
+    VolleyHelper volleyHelper;
+    ArrayList<GrievanceType> list = new ArrayList<>();
+    ArrayList<Uri> firebaseImageURLs;
+    ArrayList<SelectedImageModel> selectedImageModelArrayList;
+    RecyclerView recyclerViewSelectedImages;
+    RecyclerViewAdapterSelectedImages adapterSelectedImages;
 
 
     public SubmitGrievanceFragment() {
@@ -130,6 +126,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         autoCompleteTextViewPensionerCode = view.findViewById(R.id.autocomplete_pcode);
         inputMobile = view.findViewById(R.id.autocomplete_mobile);
         inputEmail = view.findViewById(R.id.autocomplete_email);
+        spinnerCircle = view.findViewById(R.id.spinner_grievance_circle);
         spinnerInputType = view.findViewById(R.id.spinner_type);
         inputDetails = view.findViewById(R.id.edittext_details);
         spinnerInputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
@@ -147,16 +144,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
 
-
         autoCompleteTextViewPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
-        ;
         inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
-        ;
         inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
         removeAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
-
         textViewSelectedFileCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
+
+        StatesAdapter statesAdapter = new StatesAdapter(getContext());
+        spinnerCircle.setAdapter(statesAdapter);
 
         if (type.equals(FireBaseHelper.getInstance(getContext()).GRIEVANCE_PENSION)) {
             list = Helper.getInstance().getPensionGrievanceTypelist();
@@ -165,7 +161,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             radioLayout.setVisibility(View.VISIBLE);
             list = Helper.getInstance().getGPFGrievanceTypelist();
         }
-
         GrievanceAdapter adapter = new GrievanceAdapter(getContext(), list);
         spinnerInputType.setAdapter(adapter);
 
@@ -211,8 +206,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     showConfirmSubmissionDialog();
             }
         });
-
-        //removeSelectedFile();
 
         selectedImageModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
@@ -305,7 +298,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private boolean checkInputBeforeSubmission() {
         code = autoCompleteTextViewPensionerCode.getText().toString();
-        String email = inputEmail.getText().toString();
+        email = inputEmail.getText().toString();
+        state = (State) spinnerCircle.getSelectedItem();
         grievanceType = (GrievanceType) spinnerInputType.getSelectedItem();
 
         if (code.length() != 15 && hint.equals("Pensioner Code")) {
@@ -359,8 +353,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         TextView mobNo = v.findViewById(R.id.textview_mobile_value);
         mobNo.setText(inputMobile.getText());
-        TextView email = v.findViewById(R.id.textview_email_value);
-        email.setText(inputEmail.getText());
+        TextView emailValue = v.findViewById(R.id.textview_email_value);
+        emailValue.setText(email);
+        TextView circle = v.findViewById(R.id.textview_circle_value);
+        circle.setText(state.getName());
         TextView grievance = v.findViewById(R.id.textview_grievance_value);
         grievance.setText(grievanceType.getName());
         TextView gr_by = v.findViewById(R.id.textview_submitted_by_value);
@@ -421,15 +417,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 grievanceType.getId(),
                 inputDetails.getText().toString().trim(),
                 spinnerInputSubmittedBy.getSelectedItem().toString(),
-                inputEmail.getText().toString(),
-                null,
-                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
-                0, new Date());
+                email, null, state.getCircleCode(), 0, new Date());
 
         try {
 
             Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                    FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES,
+                    FireBaseHelper.ROOT_GRIEVANCES,
                     grievanceModel,
                     getContext());
 
@@ -462,8 +455,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         imageModel,
                         true,
                         counterFirebaseImages++,
-                        FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES,
-                        Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
+                        FireBaseHelper.ROOT_GRIEVANCES,
+                        state.getCircleCode(),
                         code,
                         String.valueOf(grievanceType.getId()));
 
@@ -513,7 +506,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             try {
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                         firebaseImageURLs,
-                        autoCompleteTextViewPensionerCode.getText().toString(),
+                        code,
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();

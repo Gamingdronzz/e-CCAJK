@@ -121,6 +121,30 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_large">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingStart="@dimen/padding_small"
+                    android:text="Circle"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_15" />
+
+                <Spinner
+                    android:id="@+id/spinner_grievance_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:background="@drawable/bg_spinner"
+                    android:spinnerMode="dropdown"></Spinner>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,8 +168,6 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:background="@drawable/bg_spinner"
                     android:spinnerMode="dropdown"></Spinner>
-
-
             </LinearLayout>
 
 
@@ -210,30 +232,19 @@
                     android:textSize="@dimen/text_15"
                     android:textStyle="bold" />
 
-                <!--<ImageButton-->
-                <!--android:id="@+id/imageButton_removeAllFiles"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@color/colorAccentLight"-->
-                <!--android:layout_above="@+id/textview_add_inspection_image"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:padding="@dimen/padding_medium"-->
-                <!--app:srcCompat="@drawable/ic_close_black_24dp"-->
-                <!--android:layout_alignParentEnd="true"/>-->
-
                 <TextView
                     android:id="@+id/imageButton_removeAllFiles"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:textColor="@color/colorWhite"
-                    android:drawableTint="@color/colorPrimaryLight"
                     android:layout_toLeftOf="@id/imageButton_removeAllFiles"
                     android:background="@drawable/custom_button"
                     android:drawablePadding="@dimen/padding_medium"
+                    android:drawableTint="@color/colorPrimaryLight"
                     android:padding="@dimen/padding_medium"
-                    android:text="Remove All" />
+                    android:text="Remove All"
+                    android:textColor="@color/colorWhite" />
 
             </RelativeLayout>
 

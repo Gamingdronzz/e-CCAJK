@@ -84,6 +84,27 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/textview_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="Circle:"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/textview_circle_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:background="@color/colorOffWhite"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/textview_grievance_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

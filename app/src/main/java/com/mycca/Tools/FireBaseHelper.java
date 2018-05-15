@@ -98,7 +98,7 @@ public class FireBaseHelper {
 
             GrievanceModel grievanceModel = (GrievanceModel) model;
             setToken(grievanceModel.getPensionerIdentifier());
-            task = dbref.child(Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE))
+            task = dbref.child(grievanceModel.getState())
                     .child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType()))
                     .setValue(grievanceModel);
@@ -111,7 +111,7 @@ public class FireBaseHelper {
 
         } else {
             PanAdhaar panAdhaar = (PanAdhaar) model;
-            task = dbref.child(Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE))
+            task = dbref.child(panAdhaar.getState())
                     .child(panAdhaar.getPensionerIdentifier())
                     .setValue(panAdhaar);
         }

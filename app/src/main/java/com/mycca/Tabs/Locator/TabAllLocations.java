@@ -246,7 +246,7 @@ public class TabAllLocations extends Fragment {
         final View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_state, (ViewGroup) getView(), false);
 
         stateSpinner = viewInflated.findViewById(R.id.spinnerState);
-        GrievanceAdapter statesAdapter = new GrievanceAdapter(getContext(), FireBaseHelper.getInstance().statelist);
+        CustomAdapter statesAdapter = new CustomAdapter(getContext(), FireBaseHelper.getInstance().statelist);
         stateSpinner.setAdapter(statesAdapter);
 
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

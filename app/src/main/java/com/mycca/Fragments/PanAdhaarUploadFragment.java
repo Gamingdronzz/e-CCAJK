@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,24 +30,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.UploadTask;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
+import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.PanAdhaar;
 import com.mycca.Models.SelectedImageModel;
+import com.mycca.Models.State;
 import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.DataSubmissionAndMail;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.PopUpWindows;
-import com.mycca.Tools.Preferences;
 import com.mycca.Tools.VolleyHelper;
 import com.squareup.picasso.Picasso;
 
@@ -62,6 +63,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     ImageView imagePensionerCode, imageNumber, imageviewSelectedImage;
     TextView textViewFileName;
+    Spinner spinnerCircle;
     TextInputLayout textInputIdentifier, textInputNumber;
     AutoCompleteTextView inputPCode, inputNumber;
     Button buttonUpload, buttonChooseFile;
@@ -70,15 +72,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     ProgressDialog progressDialog;
 
     private static final String TAG = "PanAdhaarUpload";
-    String pensionerCode, number, fileChosedPath, root;
+    String pensionerCode, number, root, hint = "Pensioner Code";
     SelectedImageModel imageModel;
-    String hint = "Pensioner Code";
     ImagePicker imagePicker;
-    DatabaseReference dbref;
-
     boolean isUploadedToFirebase = false, isUploadedToServer = false;
     ArrayList<Uri> firebaseImageURLs;
     VolleyHelper volleyHelper;
+    State state;
 
     public PanAdhaarUploadFragment() {
 
@@ -103,6 +103,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         textInputNumber = view.findViewById(R.id.text_number);
         inputPCode = view.findViewById(R.id.autocomplete_pcode);
         inputNumber = view.findViewById(R.id.autocomplete_number);
+        spinnerCircle = view.findViewById(R.id.spinner_pan_adhaar_circle);
         textViewFileName = view.findViewById(R.id.textview_filename);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
         buttonChooseFile = view.findViewById(R.id.button_attach);
@@ -168,6 +169,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }
         });
 
+        StatesAdapter statesAdapter = new StatesAdapter(getContext());
+        spinnerCircle.setAdapter(statesAdapter);
+
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,7 +192,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void onCropImage(Uri imageUri) {
-                //File file = new File(imageUri.getPath());
                 Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
                 imageModel = new SelectedImageModel(imageUri);
                 textViewFileName.setError(null);
@@ -216,6 +219,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private boolean checkInputBeforeSubmission() {
         pensionerCode = inputPCode.getText().toString();
         number = inputNumber.getText().toString();
+        state = (State) spinnerCircle.getSelectedItem();
         //If Pensioner code is empty
         if (pensionerCode.trim().length() != 15 && hint.equals("Pensioner Code")) {
             inputPCode.setError("Enter Valid Pensioner Code");
@@ -314,15 +318,15 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         TextView pensionerValue = v.findViewById(R.id.textview_pensioner_code_confirm_value);
         pensionerValue.setText(pensionerCode);
 
-//        TextView pNo = v.findViewById(R.id.textview_pensioner_code_confirm_value);
-//        pNo.setText(hint + ": " + pensionerCode);
+        TextView circle = v.findViewById(R.id.textview_circle_value);
+        circle.setText(state.getName());
         TextView heading = v.findViewById(R.id.textview_mobile_no);
-        TextView value = v.findViewById(R.id.textview_mobile_value);
-        value.setText(inputNumber.getText());
         if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_PAN) || root.equals(FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR))
             heading.setText(root + " No:");
         else
             heading.setText("Applicant's Name: ");
+        TextView value = v.findViewById(R.id.textview_mobile_value);
+        value.setText(number);
         v.findViewById(R.id.textview_email).setVisibility(View.GONE);
         v.findViewById(R.id.textview_email_value).setVisibility(View.GONE);
         v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
@@ -339,7 +343,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
                 number,
                 null,
-                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
+                state.getCircleCode());
 
         Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(root, panAdhaar, getContext());
 
@@ -348,7 +352,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     uploadAllImagesToFirebase();
-                    //Toast.makeText(getActivity(), "Grievance Submitted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
@@ -363,7 +366,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 false,
                 0,
                 root,
-                Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
+                state.getCircleCode(),
                 pensionerCode);
 
         if (uploadTask != null) {
