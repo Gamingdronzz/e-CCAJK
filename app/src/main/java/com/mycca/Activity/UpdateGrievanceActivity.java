@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -138,7 +137,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
         try {
             dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
-                    .child(Preferences.getInstance().getStringPref(this, Preferences.PREF_STATE))
+                    .child(Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA).getState())
                     .child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType()))
                     .updateChildren(hashMap)
@@ -231,7 +230,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
         FirebaseNotificationHelper.initialize(fcmKey)
                 .defaultJson(false, getJsonBody())
-
                 .receiverFirebaseToken(token)
                 .send();
 
@@ -251,7 +249,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         return jsonObjectData.toString();
     }

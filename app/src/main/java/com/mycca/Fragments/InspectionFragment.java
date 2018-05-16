@@ -42,6 +42,7 @@ import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.InspectionModel;
 import com.mycca.Models.SelectedImageModel;
+import com.mycca.Models.StaffModel;
 import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.DataSubmissionAndMail;
@@ -68,10 +69,11 @@ import static com.mycca.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse {
 
     private static final String TAG = "Inspection";
-    String staffId;
-    int count;
-    boolean isCurrentLocationFound = false;
+    boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;;
     Double latitude, longitude;
+    int counterFirebaseImages;
+    int counterUpload = 0;
+    int counterServerImages = 0;
 
     AppCompatTextView textViewAddImage, textLocationCoordinates, textViewSelectedFileCount;
     EditText editTextLocationName;
@@ -80,21 +82,18 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     ImagePicker imagePicker;
     ProgressDialog progressDialog;
     View.OnClickListener getCoordinatesListener;
+    RecyclerView recyclerViewSelectedImages;
+    RecyclerViewAdapterSelectedImages adapterSelectedImages;
 
     Location mLastLocation;
     MyLocationManager myLocationManager;
     LocationCallback mLocationCallback;
-
-    RecyclerView recyclerViewSelectedImages;
-    RecyclerViewAdapterSelectedImages adapterSelectedImages;
-    ArrayList<SelectedImageModel> selectedImageModelArrayList;
-
-    boolean isUploadedToFirebase = false, isUploadedToServer = false;
-    ArrayList<Uri> firebaseImageURLs;
-    int counterFirebaseImages;
-    int counterUpload = 0;
-    int counterServerImages = 0;
     VolleyHelper volleyHelper;
+    StaffModel staffModel;
+
+    ArrayList<SelectedImageModel> selectedImageModelArrayList;
+    ArrayList<Uri> firebaseImageURLs;
+
 
     public InspectionFragment() {
 
@@ -183,63 +182,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
-    private void doSubmission() {
-        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-            @Override
-            public void OnConnectionAvailable() {
-                if (editTextLocationName.getText().toString().trim().isEmpty())
-                    editTextLocationName.setError("Location Name Required");
-                else if (!isCurrentLocationFound)
-                    Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
-                else if (selectedImageModelArrayList.size() == 0)
-                    Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
-                else {
-                    doSubmissionOnInternetAvailable();
-                }
-
-            }
-
-            @Override
-            public void OnConnectionNotAvailable() {
-                showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
-            }
-        });
-        connectionUtility.checkConnectionAvailability();
-    }
-
-    private void showNoInternetConnectionDialog(String message) {
-        Helper.getInstance().showFancyAlertDialog(this.getActivity(),
-                message,
-                "Inspection",
-                "OK",
-                null,
-                null,
-                null,
-                FancyAlertDialogType.ERROR);
-    }
-
-    private void doSubmissionOnInternetAvailable() {
-        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer);
-        if (isUploadedToFirebase) {
-            if (isUploadedToServer) {
-                sendFinalMail();
-            } else {
-                uploadImagesToServer();
-            }
-        } else {
-            uploadInspectionDataToFirebase();
-        }
-    }
-
-    private void removeAllSelectedImages() {
-        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
-            return;
-        }
-        selectedImageModelArrayList.clear();
-        adapterSelectedImages.notifyDataSetChanged();
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
         progressDialog.show();
@@ -294,7 +236,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         connectionUtility.checkConnectionAvailability();
     }
 
-
     private void showCoordinates(Location location) {
         isCurrentLocationFound = true;
         progressDialog.dismiss();
@@ -347,6 +288,63 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     }
 
+    private void removeAllSelectedImages() {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+    }
+
+    private void doSubmission() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                if (editTextLocationName.getText().toString().trim().isEmpty())
+                    editTextLocationName.setError("Location Name Required");
+                else if (!isCurrentLocationFound)
+                    Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
+                else if (selectedImageModelArrayList.size() == 0)
+                    Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
+                else {
+                    doSubmissionOnInternetAvailable();
+                }
+
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void showNoInternetConnectionDialog(String message) {
+        Helper.getInstance().showFancyAlertDialog(this.getActivity(),
+                message,
+                "Inspection",
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
+    }
+
+    private void doSubmissionOnInternetAvailable() {
+        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+                "Server = " + isUploadedToServer);
+        if (isUploadedToFirebase) {
+            if (isUploadedToServer) {
+                sendFinalMail();
+            } else {
+                uploadImagesToServer();
+            }
+        } else {
+            uploadInspectionDataToFirebase();
+        }
+    }
+
     private void uploadInspectionDataToFirebase() {
 
         Date date = new Date();
@@ -357,13 +355,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
 
-        staffId = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getId();
-        InspectionModel inspectionModel = new InspectionModel(staffId, locName, latitude, longitude, new Date());
+        staffModel= Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
+        InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
 
         Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                 FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
                 inspectionModel,
                 getContext(),
+                staffModel.getState(),
                 key);
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -382,23 +381,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         });
     }
 
-    private void sendFinalMail() {
-        progressDialog.setMessage("Almost Done..");
-        progressDialog.show();
-        String url;
-
-        url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
-
-        Map<String, String> params = new HashMap();
-
-        params.put("locationName", editTextLocationName.getText().toString());
-        params.put("staffID", staffId);
-        params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
-        params.put("fileCount", selectedImageModelArrayList.size() + "");
-
-        DataSubmissionAndMail.getInstance().sendMail(params, "send_inspection_mail-" + staffId, volleyHelper, url);
-    }
-
     private void uploadInspectionFiles(String key) {
         firebaseImageURLs = new ArrayList<>();
         UploadTask uploadTask;
@@ -410,7 +392,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     true,
                     counterFirebaseImages++,
                     FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
-                    Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE),
+                    staffModel.getState(),
                     key);
 
             if (uploadTask != null) {
@@ -444,7 +426,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Processing..");
         progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl()+ "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
 
         if (totalFilesToAttach != 0) {
             try {
@@ -460,6 +442,23 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             isUploadedToServer = true;
             doSubmission();
         }
+    }
+
+    private void sendFinalMail() {
+        progressDialog.setMessage("Almost Done..");
+        progressDialog.show();
+        String url;
+
+        url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
+
+        Map<String, String> params = new HashMap();
+
+        params.put("locationName", editTextLocationName.getText().toString());
+        params.put("staffID", staffModel.getId());
+        params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
+        params.put("fileCount", selectedImageModelArrayList.size() + "");
+
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_inspection_mail-" + staffModel.getId(), volleyHelper, url);
     }
 
     public void setSelectedFileCount(int count) {
@@ -563,7 +562,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     alertMessage.append(" has been succesfully submitted");
 
 
-
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), "Inspection", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
@@ -575,10 +573,10 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     progressDialog.dismiss();
                     Helper.getInstance().showFancyAlertDialog(getActivity(), "Inspection Submission Failed\nTry Again",
                             " Inspection", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                        }
-                    }, null, null, FancyAlertDialogType.ERROR);
+                                @Override
+                                public void OnClick() {
+                                }
+                            }, null, null, FancyAlertDialogType.ERROR);
                     //Toast.makeText(getContext(), "Inspection Submission Failed\nTry Again", Toast.LENGTH_SHORT).show();
                 }
             }

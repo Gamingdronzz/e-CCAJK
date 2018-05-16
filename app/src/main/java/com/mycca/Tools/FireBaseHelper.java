@@ -93,7 +93,7 @@ public class FireBaseHelper {
         Task task;
 
         if (root.equals(ROOT_SUGGESTIONS)) {
-            task = dbref.push().setValue((String) model);
+            task = dbref.push().setValue(model);
         }  else if (root.equals(ROOT_GRIEVANCES)) {
 
             GrievanceModel grievanceModel = (GrievanceModel) model;
@@ -105,8 +105,8 @@ public class FireBaseHelper {
 
         } else if (root.equals(ROOT_INSPECTION)) {
             InspectionModel inspectionModel = (InspectionModel) model;
-            task = dbref.child(Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE))
-                    .child(params[0])
+            task = dbref.child(params[0])
+                    .child(params[1])
                     .setValue(inspectionModel);
 
         } else {

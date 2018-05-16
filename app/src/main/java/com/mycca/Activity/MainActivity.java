@@ -39,6 +39,7 @@ import com.mycca.Fragments.SettingsFragment;
 import com.mycca.Fragments.SubmitGrievanceFragment;
 import com.mycca.Fragments.UpdateGrievanceFragment;
 import com.mycca.Models.StaffModel;
+import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
@@ -283,6 +284,7 @@ public class MainActivity extends AppCompatActivity
                         ShowFragment("Home", new HomeFragment(), null);
                         Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                         ManageNavigationView(false, false);
+                        GrievanceDataProvider.getInstance().setAllGrievanceList(null);
                     }
                 },
                 "NO",
