@@ -34,7 +34,7 @@ public class SplashActivity extends AppCompatActivity {
     DatabaseReference dbref;
     int currentAppVersion;
     String currentVersionName;
-    private String TAG = "Authentication";
+    private String TAG = "Splash";
 
 
     @Override

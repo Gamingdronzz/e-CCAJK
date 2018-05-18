@@ -173,12 +173,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                                     }
                                 }, null, null, FancyAlertDialogType.SUCCESS);
                             } else {
-                                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this,"Unable to update grievance", "Grievance Update", "OK", new IFancyAlertDialogListener() {
-                                    @Override
-                                    public void OnClick() {
-
-                                    }
-                                }, null, null, FancyAlertDialogType.ERROR);
+                                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this,"The app might be in maintenence. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
                                 Log.d(TAG, "onComplete: " + task.toString());
                             }
                         }
@@ -210,7 +205,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     private void getTokenAndSendNotification(final String fcmKey) {
         dbref.child(FireBaseHelper.getInstance(this).ROOT_TOKEN)
-                .child(GrievanceDataProvider.getInstance().selectedGrievance.getPensionerIdentifier())
+                .child(GrievanceDataProvider.getInstance().selectedGrievance.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

@@ -45,8 +45,6 @@ public class FireBaseHelper {
     public final static String ROOT_HOTSPOTS = "Wifi Locations";
     public final static String ROOT_GP = "GP Locations";
     public final static String ROOT_STAFF = "Staff Login";
-    public final static String ROOT_PASSWORD = "password";
-    public final static String ROOT_TYPE = "type";
     public final static String ROOT_INSPECTION = "Inspection";
     public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
@@ -65,7 +63,7 @@ public class FireBaseHelper {
         String version = Preferences.getInstance().getStringPref(context, Preferences.PREF_APP_VERSION);
         databaseReference = FirebaseDatabase.getInstance().getReference().child(version);
         storageReference = FirebaseStorage.getInstance().getReference().child(version);
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public static FireBaseHelper getInstance(Context context) {
@@ -76,31 +74,33 @@ public class FireBaseHelper {
         }
     }
 
-    public void setToken(String pensionercode) {
+    public void setToken() {
+        Log.d(TAG, "setToken: ");
         DatabaseReference dbref = databaseReference;
-
-        dbref.child(ROOT_TOKEN).child(pensionercode).
-                setValue(FirebaseInstanceId.getInstance().getToken())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Notification : Token added");
+        if (mAuth.getCurrentUser() != null) {
+            Log.d(TAG, "setToken: user found");
+            dbref.child(ROOT_TOKEN).child(mAuth.getCurrentUser().getUid()).
+                    setValue(FirebaseInstanceId.getInstance().getToken())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Token added");
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
-    public Task uploadDataToFirebase(String root, Object model, Context context, String... params) {
+    public Task uploadDataToFirebase(String root, Object model, String... params) {
         DatabaseReference dbref = databaseReference.child(root);
         Task task;
 
         if (root.equals(ROOT_SUGGESTIONS)) {
             task = dbref.push().setValue(model);
-        }  else if (root.equals(ROOT_GRIEVANCES)) {
+        } else if (root.equals(ROOT_GRIEVANCES)) {
 
             GrievanceModel grievanceModel = (GrievanceModel) model;
-            setToken(grievanceModel.getPensionerIdentifier());
             task = dbref.child(grievanceModel.getState())
                     .child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType()))

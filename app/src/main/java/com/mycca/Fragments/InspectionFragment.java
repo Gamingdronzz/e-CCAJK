@@ -229,7 +229,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-                showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates");
+                showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates");
                 progressDialog.dismiss();
             }
         });
@@ -314,13 +314,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-                showNoInternetConnectionDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
+                showErrorDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void showNoInternetConnectionDialog(String message) {
+    private void showErrorDialog(String message) {
         Helper.getInstance().showFancyAlertDialog(this.getActivity(),
                 message,
                 "Inspection",
@@ -361,7 +361,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                 FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
                 inspectionModel,
-                getContext(),
                 staffModel.getState(),
                 key);
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -375,8 +374,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                showNoInternetConnectionDialog("Some Error Occured\nError 3\nPlease Try Again");
-
+                progressDialog.dismiss();
+                showErrorDialog("The app might be in maintenence. Please try again later.");
             }
         });
     }
@@ -436,7 +435,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                showNoInternetConnectionDialog("Error 1\nPlease report this issue through feedback section");
+                showErrorDialog("Some Error Occured.\nPlease try Again");
             }
         } else {
             isUploadedToServer = true;

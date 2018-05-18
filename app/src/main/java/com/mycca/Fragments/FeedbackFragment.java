@@ -61,12 +61,11 @@ public class FeedbackFragment extends Fragment {
                 if (!etSuggestion.getText().toString().trim().isEmpty()) {
                     Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                             FireBaseHelper.getInstance(getContext()).ROOT_SUGGESTIONS,
-                            etSuggestion.getText().toString().trim(),
-                            getContext()
-                    );
+                            etSuggestion.getText().toString().trim());
                     task.addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
+
                             if (task.isSuccessful()) {
                                 Helper.getInstance().showFancyAlertDialog(getActivity(), "Your suggestion means a lot to us!<br><br><b>Thank you</b>", "Advice", "OK", new IFancyAlertDialogListener() {
                                     @Override
@@ -74,23 +73,29 @@ public class FeedbackFragment extends Fragment {
                                     }
                                 }, null, null, FancyAlertDialogType.SUCCESS);
                             } else {
-                                Helper.getInstance().showFancyAlertDialog(getActivity(), "You cannot submit suggestion without signing in",
-                                        "Sign in with google",
-                                        "Sign in",
-                                        new IFancyAlertDialogListener() {
-                                            @Override
-                                            public void OnClick() {
-                                                ((MainActivity) getActivity()).authenticateUser();
-                                            }
-                                        },
-                                        "Cancel",
-                                        new IFancyAlertDialogListener() {
-                                            @Override
-                                            public void OnClick() {
+                                if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
+                                    Helper.getInstance().showFancyAlertDialog(getActivity(), "You cannot submit suggestion without signing in",
+                                            "Sign in with google",
+                                            "Sign in",
+                                            new IFancyAlertDialogListener() {
+                                                @Override
+                                                public void OnClick() {
+                                                    ((MainActivity) getActivity()).authenticateUser();
+                                                }
+                                            },
+                                            "Cancel",
+                                            new IFancyAlertDialogListener() {
+                                                @Override
+                                                public void OnClick() {
 
-                                            }
-                                        },
-                                        FancyAlertDialogType.ERROR);
+                                                }
+                                            },
+                                            FancyAlertDialogType.ERROR);
+                                }
+                                else {
+                                    Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to submit", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                                }
+
                             }
                         }
                     });

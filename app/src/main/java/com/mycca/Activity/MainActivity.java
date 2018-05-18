@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = mAuth.getCurrentUser();
+                            FireBaseHelper.getInstance(MainActivity.this).setToken();
                             Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK", new IFancyAlertDialogListener() {
                                 @Override
                                 public void OnClick() {
@@ -555,6 +556,8 @@ public class MainActivity extends AppCompatActivity
                 Log.w(TAG, "Google sign in failed", e);
                 progressDialog.dismiss();
             }
+        }
+        else {
             List<Fragment> allFragments = getSupportFragmentManager().getFragments();
             for (Fragment frag : allFragments) {
                 frag.onActivityResult(requestCode, resultCode, data);

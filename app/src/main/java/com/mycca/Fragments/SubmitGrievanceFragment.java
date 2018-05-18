@@ -412,6 +412,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         //   dbref = FireBaseHelper.getInstance(getContext()).databaseReference.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES);
 
         final GrievanceModel grievanceModel = new GrievanceModel(
+                FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser().getUid(),
                 code,
                 inputMobile.getText().toString(),
                 grievanceType.getId(),
@@ -423,8 +424,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
             Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                     FireBaseHelper.ROOT_GRIEVANCES,
-                    grievanceModel,
-                    getContext());
+                    grievanceModel);
 
             task.addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -432,8 +432,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     if (task.isSuccessful()) {
                         uploadAllImagesToFirebase();
                     } else {
-                        Toast.makeText(getActivity(), "Unable to submit\nPlease Try Again", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
+                        Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to Submit", "OK", null, null, null, FancyAlertDialogType.ERROR);
                     }
                 }
             });

@@ -10,31 +10,24 @@ public class GrievanceModel {
 
     String details;
     String email;
-    long grievanceStatus;
-    long grievanceType;
-    boolean expanded;
     String mobile;
     String pensionerIdentifier;
     String state;
     String submittedBy;
     String message;
-    String token;
+    String uid;
     Date date;
+    long grievanceStatus;
+    long grievanceType;
+    boolean expanded;
     boolean highlighted = false;
-
-    public boolean isHighlighted() {
-        return highlighted;
-    }
-
-    public void setHighlighted(boolean highlighted) {
-        this.highlighted = highlighted;
-    }
 
     public GrievanceModel() {
 
     }
 
-    public GrievanceModel(String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
+    public GrievanceModel(String uid, String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
+        this.uid = uid;
         this.pensionerIdentifier = pensionerIdentifier;
         this.mobile = mobile;
         this.grievanceType = grievanceType;
@@ -47,8 +40,20 @@ public class GrievanceModel {
         this.date = date;
     }
 
-    public String getToken() {
-        return token;
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public boolean isHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
     }
 
     public boolean getExpanded() {
