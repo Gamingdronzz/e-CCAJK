@@ -178,7 +178,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                                     public void OnClick() {
 
                                     }
-                                }, null, null, FancyAlertDialogType.SUCCESS);
+                                }, null, null, FancyAlertDialogType.ERROR);
                                 Log.d(TAG, "onComplete: " + task.toString());
                             }
                         }

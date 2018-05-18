@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -32,6 +33,7 @@ public class FireBaseHelper {
 
     public DatabaseReference databaseReference;
     public StorageReference storageReference;
+    public FirebaseAuth mAuth;
 
     public final static String ROOT_GRIEVANCES = "Grievances";
     public final static String ROOT_APP_VERSION = "Latest Version";
@@ -63,6 +65,7 @@ public class FireBaseHelper {
         String version = Preferences.getInstance().getStringPref(context, Preferences.PREF_APP_VERSION);
         databaseReference = FirebaseDatabase.getInstance().getReference().child(version);
         storageReference = FirebaseStorage.getInstance().getReference().child(version);
+        mAuth=FirebaseAuth.getInstance();
     }
 
     public static FireBaseHelper getInstance(Context context) {

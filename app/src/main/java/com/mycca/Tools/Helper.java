@@ -229,6 +229,19 @@ public class Helper {
         return progressDialog;
     }
 
+    public boolean checkInput(String input) {
+
+        Log.d(TAG, "checkInput: = " + input);
+        boolean result;
+        if (input == null || input.trim().isEmpty()) {
+            result = false;
+        } else {
+            result = true;
+        }
+        Log.d(TAG, "checkInput: result = " + result);
+        return result;
+    }
+
     public void showGuide(Context context, View view, String title, String message) {
         new GuideView.Builder(context)
                 .setTitle(title)
@@ -324,19 +337,6 @@ public class Helper {
                 .build();
     }
 
-//    public void showAlertDialog(Context context, String message, String title, String positiveButtonText,
-//                                DialogInterface.OnClickListener positiveButtonOnClickListener,
-//                                String negativeButtonText) {
-//
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-//                context, R.style.MyAlertDialogStyle);
-//        alertDialog.setPositiveButton(positiveButtonText, positiveButtonOnClickListener)
-//                .setNegativeButton(negativeButtonText, null)
-//                .setMessage(message)
-//                .setTitle(title)
-//                .show();
-//    }
-
     public JSONObject getJson(String input) {
         try {
             try {
@@ -376,23 +376,6 @@ public class Helper {
         return BitmapFactory.decodeByteArray(inter, 0, inter.length);
     }
 
-//    public byte[] getByteArrayFromFilePath(String path) {
-//        if (path != null) {
-//
-//            File file = new File(path);
-//            try {
-//                byte[] data = FileUtils.readFileToByteArray(file);//Convert any file, image or video into byte array
-//                Log.v(TAG, "getByteArrayFromFile: " + " File = " + file.getName() + "\nLength = " + data.length + "Array =   " + data.toString());
-//                return data;
-//            } catch (IOException e) {
-//                Log.d(TAG, e.toString());
-//            }
-//
-//
-//        }
-//        return null;
-//    }
-
     public byte[] getByteArrayFromBitmapFile(String path) {
         if (path != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(path);
@@ -420,20 +403,6 @@ public class Helper {
     public Bitmap getBitmapFromResource(Context context, int res) {
         return BitmapFactory.decodeResource(context.getResources(), res);
     }
-
-    public boolean checkInput(String input) {
-
-        Log.d(TAG, "checkInput: = " + input);
-        boolean result;
-        if (input == null || input.trim().isEmpty()) {
-            result = false;
-        } else {
-            result = true;
-        }
-        Log.d(TAG, "checkInput: result = " + result);
-        return result;
-    }
-
 
     public void showSnackBar(CharSequence message, View view) {
         Snackbar.make(view.findViewById(R.id.fragmentPlaceholder), message, Snackbar.LENGTH_INDEFINITE)

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,31 +29,36 @@ import com.mycca.Tools.Preferences;
 public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
-    AppCompatImageButton imageButton;
     TextView tvSplashVersion;
     boolean showWelcomeScreen = false;
     DatabaseReference dbref;
     int currentAppVersion;
     String currentVersionName;
-    private String TAG = "Splash";
+    private String TAG = "Authentication";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        currentAppVersion = getAppVersion();
-        Preferences.getInstance().setStringPref(this,Preferences.PREF_APP_VERSION, String.valueOf(currentAppVersion));
-        currentVersionName = getAppVersionName();
-        Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
         bindVIews();
+        init();
         StartAnimations();
+    }
+
+    private void init() {
+        currentAppVersion = getAppVersion();
+        currentVersionName = getAppVersionName();
+        tvSplashVersion.setText("Version - " + currentVersionName);
+        Preferences.getInstance().setStringPref(this, Preferences.PREF_APP_VERSION, String.valueOf(currentAppVersion));
+        Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
+
+        dbref = FireBaseHelper.getInstance(this).databaseReference;
     }
 
     private void bindVIews() {
         imageView = findViewById(R.id.logo);
-        dbref = FireBaseHelper.getInstance(this).databaseReference;
         tvSplashVersion = findViewById(R.id.tv_splash_version);
-        tvSplashVersion.setText("Version - " + currentVersionName);
     }
 
     private void StartAnimations() {
@@ -88,34 +92,34 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkForUpdate() {
 
-            ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-                @Override
-                public void OnConnectionAvailable() {
-                    try {
-                        dbref.child(FireBaseHelper.getInstance(SplashActivity.this).ROOT_APP_VERSION)
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        checkVersion(dataSnapshot);
-                                    }
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                try {
+                    dbref.child(FireBaseHelper.getInstance(SplashActivity.this).ROOT_APP_VERSION)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    checkVersion(dataSnapshot);
+                                }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        Log.d(TAG, "onCancelled: " + databaseError.getMessage());
-                                    }
-                                });
-                    } catch (DatabaseException dbe) {
-                        dbe.printStackTrace();
-                    }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                                }
+                            });
+                } catch (DatabaseException dbe) {
+                    dbe.printStackTrace();
                 }
+            }
 
-                @Override
-                public void OnConnectionNotAvailable() {
-                    Log.d(TAG, "OnConnectionNotAvailable: ");
-                    LoadNextActivity();
-                }
-            });
-            connectionUtility.checkConnectionAvailability();
+            @Override
+            public void OnConnectionNotAvailable() {
+                Log.d(TAG, "OnConnectionNotAvailable: ");
+                LoadNextActivity();
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
 
     }
 
@@ -125,10 +129,8 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
         Log.d(TAG, "available Version = " + version);
 
-        if (currentAppVersion == -1) {
-            LoadNextActivity();
-        } else if (currentAppVersion == version) {
-            LoadNextActivity();
+        if (currentAppVersion == -1 || currentAppVersion == version) {
+           LoadNextActivity();
         } else {
             Helper.getInstance().showFancyAlertDialog(this,
                     "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
@@ -189,4 +191,5 @@ public class SplashActivity extends AppCompatActivity {
         }
         return "";
     }
+
 }

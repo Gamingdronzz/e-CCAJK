@@ -97,7 +97,7 @@ public class LoginFragment extends Fragment {
                     StaffModel staffModel=dataSnapshot.getValue(StaffModel.class);
                     if (staffModel.getPassword().equals(password)) {
                         MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.OnLoginSuccesful(staffModel);
+                        mainActivity.OnLoginSuccessful(staffModel);
                         progressDialog.dismiss();
                     } else {
                         MainActivity mainActivity = (MainActivity) getActivity();
