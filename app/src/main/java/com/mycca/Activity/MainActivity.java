@@ -32,13 +32,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.ShowcaseView.GuideView;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.BrowserFragment;
 import com.mycca.Fragments.ContactUsFragment;
@@ -56,7 +54,6 @@ import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
-import com.mycca.Tools.PopUpWindows;
 import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
@@ -80,7 +77,8 @@ public class MainActivity extends AppCompatActivity
     StaffModel staffModel;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
-    FirebaseUser currentUser;
+    GoogleSignInOptions gso;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,17 +92,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void showDrawer() {
-        drawerLayout.openDrawer(Gravity.START);
-        Helper.getInstance().showGuide(this, navigationView, "Navigation Menu", "This is Navigation Menu\nOpen this to perform various functions", new GuideView.GuideListener() {
-            @Override
-            public void onDismiss(View view) {
-                drawerLayout.closeDrawer(Gravity.START);
-            }
-        });
-
-    }
-
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -114,10 +101,11 @@ public class MainActivity extends AppCompatActivity
         frameLayout = findViewById(R.id.fragmentPlaceholder);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        progressDialog=Helper.getInstance().getProgressWindow(this,"Signing in...");
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Signing in...");
     }
 
     private void init() {
+
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -148,12 +136,14 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mAuth = FireBaseHelper.getInstance(this).mAuth;
-        currentUser = mAuth.getCurrentUser();
-        try {
-            if (currentUser == null)
-                showAuthDialog(false);
-        } catch (Exception e) {
-            Log.d(TAG, "no current user");
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG) == true) {
+            showAuthDialog(false);
+            Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SIGNIN_MSG, false);
         }
     }
 
@@ -166,7 +156,7 @@ public class MainActivity extends AppCompatActivity
                     new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
-                            authenticateUser();
+                            signInWithGoogle();
                         }
                     },
                     "Cancel",
@@ -185,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                     new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
-                            authenticateUser();
+                            signInWithGoogle();
                         }
                     },
                     "Skip",
@@ -199,16 +189,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void authenticateUser() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+    public void signInWithGoogle() {
 
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 
+    public void signOutFromGoogle() {
+        mAuth.signOut();
+        mGoogleSignInClient.signOut();
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -222,9 +212,8 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+
                             Log.d(TAG, "signInWithCredential:success");
-                            currentUser = mAuth.getCurrentUser();
                             FireBaseHelper.getInstance(MainActivity.this).setToken();
                             Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK", new IFancyAlertDialogListener() {
                                 @Override
@@ -232,9 +221,10 @@ public class MainActivity extends AppCompatActivity
 
                                 }
                             }, null, null, FancyAlertDialogType.SUCCESS);
-
+                            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
+                            if (f instanceof SettingsFragment)
+                                ((SettingsFragment) f).manageSignOut();
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Unable to Sign in", "OK", null, null, null, FancyAlertDialogType.ERROR);
 
@@ -333,7 +323,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.navmenu_tracking:
-                PopUpWindows.getInstance().showTrackWindow(this, frameLayout);
+                Helper.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
@@ -350,7 +340,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_login:
                 ShowFragment("CCA JK", new LoginFragment(), null);
-                PopUpWindows.getInstance().showLoginPopup(this, frameLayout);
+                //Helper.getInstance().showLoginPopup(this, frameLayout);
                 break;
             case R.id.navmenu_update_grievances:
                 if (checkCurrentUser()) {
@@ -385,7 +375,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private boolean checkCurrentUser() {
-        if (currentUser == null) {
+        if (mAuth.getCurrentUser() == null) {
             showAuthDialog(true);
             return false;
         } else
@@ -542,42 +532,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult()", Integer.toString(resultCode));
-
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                progressDialog.show();
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "signed in: " + account.getEmail());
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                Log.w(TAG, "Google sign in failed", e);
-                progressDialog.dismiss();
-            }
-        }
-        else {
-            List<Fragment> allFragments = getSupportFragmentManager().getFragments();
-            for (Fragment frag : allFragments) {
-                frag.onActivityResult(requestCode, resultCode, data);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
-
-        for (Fragment frag : allFragments) {
-            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
-            frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
 
@@ -598,37 +552,37 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: ");
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult()", Integer.toString(resultCode));
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                progressDialog.show();
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d(TAG, "signed in: " + account.getEmail());
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                Log.w(TAG, "Google sign in failed", e);
+                progressDialog.dismiss();
+            }
+        } else {
+            List<Fragment> allFragments = getSupportFragmentManager().getFragments();
+            for (Fragment frag : allFragments) {
+                frag.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: ");
-    }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG, "onRestart: ");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
+        for (Fragment frag : allFragments) {
+            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

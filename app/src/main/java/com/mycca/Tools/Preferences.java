@@ -18,8 +18,8 @@ public class Preferences {
     // public static final String PREF_STAFF_TYPE = "staffType";
     // public static final String PREF_STAFF_ID = "staffId";
     public static final String PREF_STATE = "state";
-    public static final String PREF_APP_VERSION = "AppVersion";
     public static final String PREF_RECIEVE_NOTIFICATIONS = "recieveNotifications";
+    public static final String PREF_SIGNIN_MSG = "signInMsg";
 
     public Preferences() {
         _instance = this;

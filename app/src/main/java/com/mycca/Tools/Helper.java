@@ -3,18 +3,32 @@ package com.mycca.Tools;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.linchaolong.android.imagepicker.ImagePicker;
+import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -45,6 +59,7 @@ public class Helper {
     public final String SUCCESS = "success";
     public final String Nil = "Nil";
     private final String TAG = "Helper";
+    String hint = "Pensioner Code";
     private boolean debugMode = true;
     public ArrayList<LocationModel> allLocationModels;
 
@@ -70,27 +85,6 @@ public class Helper {
     public String getPlayStoreURL() {
         return "market://details?id=com.mycca";
     }
-
-    /*public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-        if (debugMode) {
-            appMode = "debug";
-        } else {
-            appMode = "release";
-        }
-    }
-
-    public String getAppMode() {
-        return appMode;
-    }
-
-    public void setAppMode(String appMode) {
-        this.appMode = appMode;
-    }*/
 
     public String getConnectionCheckURL() {
         return "https://www.google.co.in/";
@@ -335,6 +329,80 @@ public class Helper {
                 .OnNegativeClicked(negativeButtonOnClickListener)
                 .OnPositiveClicked(positiveButtonOnClickListener)
                 .build();
+    }
+
+    public void showTrackWindow(final Activity context, View parent) {
+        final EditText editText;
+        final TextInputLayout textInputLayout;
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        editText = popupView.findViewById(R.id.edittext_pcode);
+        textInputLayout = popupView.findViewById(R.id.text_input_layout);
+
+        RadioGroup radioGroup = popupView.findViewById(R.id.groupNumberType);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonPensioner:
+                        hint = "Pensioner Code";
+                        editText.setFilters(Helper.getInstance().limitInputLength(15));
+                        break;
+                    //TODO
+                    //set place holder format
+                    case R.id.radioButtonHR:
+                        hint = "HR Number";
+                        editText.setFilters(new InputFilter[] {});
+                        break;
+                    case R.id.radioButtonStaff:
+                        hint = "Staff Number";
+                        editText.setFilters(new InputFilter[] {});
+                }
+                editText.setText("");
+                textInputLayout.setHint(hint);
+            }
+        });
+
+        Button track = popupView.findViewById(R.id.btn_check_status);
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String code = editText.getText().toString().trim();
+                if (code.length() != 15 && hint.equals("Pensioner Code")) {
+                    Toast.makeText(context, "Invalid Pensioner code!", Toast.LENGTH_LONG).show();
+                } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
+                    Toast.makeText(context, "Invalid HR Number!", Toast.LENGTH_LONG).show();
+                } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
+                    Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
+                    intent.putExtra("Code", editText.getText().toString());
+                    context.startActivity(intent);
+                }
+                editText.requestFocus();
+            }
+        });
+
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.update();
+        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
+    }
+
+    public AlertDialog.Builder getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
+        confirmDialog.setView(view);
+        confirmDialog.setPositiveButton("Confirm", yes);
+        confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        confirmDialog.show();
+        return confirmDialog;
     }
 
     public JSONObject getJson(String input) {

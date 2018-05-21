@@ -47,7 +47,6 @@ import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.DataSubmissionAndMail;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
-import com.mycca.Tools.PopUpWindows;
 import com.mycca.Tools.VolleyHelper;
 import com.squareup.picasso.Picasso;
 
@@ -260,7 +259,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         loadValues(v);
-        PopUpWindows.getInstance().getConfirmationDialog(getActivity(), v,
+        Helper.getInstance().getConfirmationDialog(getActivity(), v,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

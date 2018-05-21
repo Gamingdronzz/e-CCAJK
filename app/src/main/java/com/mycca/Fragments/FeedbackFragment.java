@@ -80,7 +80,7 @@ public class FeedbackFragment extends Fragment {
                                             new IFancyAlertDialogListener() {
                                                 @Override
                                                 public void OnClick() {
-                                                    ((MainActivity) getActivity()).authenticateUser();
+                                                    ((MainActivity) getActivity()).signInWithGoogle();
                                                 }
                                             },
                                             "Cancel",

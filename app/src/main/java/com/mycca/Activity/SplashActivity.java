@@ -24,7 +24,6 @@ import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -50,9 +49,7 @@ public class SplashActivity extends AppCompatActivity {
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
         tvSplashVersion.setText("Version - " + currentVersionName);
-        Preferences.getInstance().setStringPref(this, Preferences.PREF_APP_VERSION, String.valueOf(currentAppVersion));
         Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
-
         dbref = FireBaseHelper.getInstance(this).databaseReference;
     }
 
@@ -73,6 +70,19 @@ public class SplashActivity extends AppCompatActivity {
         imageView.clearAnimation();
         imageView.startAnimation(animationScale);
 
+        Thread thread = new Thread() {
+            public void run() {
+                super.run();
+                try {
+                   checkForUpdate();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                } finally {
+                }
+            }
+        };
+        thread.start();
+
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -80,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                checkForUpdate();
+                //checkForUpdate();
             }
 
             @Override
@@ -130,7 +140,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "available Version = " + version);
 
         if (currentAppVersion == -1 || currentAppVersion == version) {
-           LoadNextActivity();
+            LoadNextActivity();
         } else {
             Helper.getInstance().showFancyAlertDialog(this,
                     "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",

@@ -1,6 +1,7 @@
 package com.mycca.Tools;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -51,7 +52,7 @@ public class FireBaseHelper {
 
     public final static String GRIEVANCE_PENSION = "Pension";
     public final static String GRIEVANCE_GPF = "GPF";
-
+    public String version;
     private final String TAG = "firebaseHelper";
 
     //public GrievanceModel selectedGrievance;
@@ -60,7 +61,12 @@ public class FireBaseHelper {
 
     public FireBaseHelper(Context context) {
         _instance = this;
-        String version = Preferences.getInstance().getStringPref(context, Preferences.PREF_APP_VERSION);
+        try {
+            version = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            version = "2";
+            e.printStackTrace();
+        }
         databaseReference = FirebaseDatabase.getInstance().getReference().child(version);
         storageReference = FirebaseStorage.getInstance().getReference().child(version);
         mAuth = FirebaseAuth.getInstance();
