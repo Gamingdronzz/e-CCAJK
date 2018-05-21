@@ -38,6 +38,7 @@ import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Fragments.AboutUsFragment;
+import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
 import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
@@ -350,6 +351,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_inspection:
                 if (checkCurrentUser()) {
                     ShowFragment("Inspection", new InspectionFragment(), null);
+                }
+                break;
+            case R.id.navmenu_add_news:
+                if (checkCurrentUser()) {
+                    ShowFragment("Add Latest News", new AddNewsFragment(), null);
                 }
                 break;
             case R.id.navmenu_logout:

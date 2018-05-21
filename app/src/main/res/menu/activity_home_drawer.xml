@@ -15,6 +15,7 @@
         android:icon="@drawable/ic_drawable_web"
         android:title="Visit CCA JK Website" />
 
+
     <item android:title="Functions">
         <menu>
             <group android:checkableBehavior="single">
@@ -108,6 +109,12 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
+                    android:id="@+id/navmenu_latest_news"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_view_headline_black_24dp"
+                    android:title="Latest News" />
+                
+                <item
                     android:id="@+id/navmenu_contact_us"
                     android:checkable="true"
                     android:icon="@drawable/ic_contact_phone_black_24dp"
@@ -159,6 +166,12 @@
                     android:checkable="true"
                     android:icon="@drawable/ic_update_black_24dp"
                     android:title="Update Grievances" />
+
+                <item
+                    android:id="@+id/navmenu_add_news"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_view_headline_black_24dp"
+                    android:title="Add News" />
 
                 <item
                     android:id="@+id/navmenu_logout"

@@ -18,6 +18,7 @@ import com.mycca.Models.Contact;
 import com.mycca.Models.ContactBuilder;
 import com.mycca.Models.GrievanceModel;
 import com.mycca.Models.InspectionModel;
+import com.mycca.Models.NewsModel;
 import com.mycca.Models.PanAdhaar;
 import com.mycca.Models.SelectedImageModel;
 
@@ -47,6 +48,7 @@ public class FireBaseHelper {
     public final static String ROOT_GP = "GP Locations";
     public final static String ROOT_STAFF = "Staff Login";
     public final static String ROOT_INSPECTION = "Inspection";
+    public final static String ROOT_NEWS = "Latest News";
     public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
 
@@ -104,6 +106,10 @@ public class FireBaseHelper {
 
         if (root.equals(ROOT_SUGGESTIONS)) {
             task = dbref.push().setValue(model);
+        } else if (root.equals(ROOT_NEWS)) {
+            NewsModel newsModel = (NewsModel) model;
+            task = dbref.child(newsModel.getState())
+                    .push().setValue(newsModel);
         } else if (root.equals(ROOT_GRIEVANCES)) {
 
             GrievanceModel grievanceModel = (GrievanceModel) model;
