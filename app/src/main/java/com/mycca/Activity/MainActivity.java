@@ -42,14 +42,12 @@ import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
 import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
-import com.mycca.Fragments.HomeFragment;
 import com.mycca.Fragments.InspectionFragment;
 import com.mycca.Fragments.LatestNewsFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
 import com.mycca.Fragments.SettingsFragment;
-import com.mycca.Fragments.SubmitGrievanceFragment;
 import com.mycca.Fragments.UpdateGrievanceFragment;
 import com.mycca.Models.StaffModel;
 import com.mycca.Providers.GrievanceDataProvider;
@@ -90,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         bindViews();
         init();
         Log.d(TAG, "onCreate: created");
-        ShowFragment("Home", new HomeFragment(), null);
+        ShowFragment("Home", new LatestNewsFragment(), null);
 
     }
 
@@ -260,7 +258,7 @@ public class MainActivity extends AppCompatActivity
         Bundle bundle;
         switch (id) {
             case R.id.navmenu_home:
-                ShowFragment("Home", new HomeFragment(), null);
+                ShowFragment("Home", new LatestNewsFragment(), null);
                 break;
             case R.id.navmenu_visit_cca_website:
                 fragment = new BrowserFragment();
@@ -268,7 +266,7 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("url", "http://ccajk.gov.in");
                 ShowFragment("CCA J&K", fragment, bundle);
                 break;
-            case R.id.navmenu_pension:
+            /*case R.id.navmenu_pension:
                 if (checkCurrentUser()) {
                     fragment = new SubmitGrievanceFragment();
                     bundle = new Bundle();
@@ -283,7 +281,7 @@ public class MainActivity extends AppCompatActivity
                     bundle.putString("Type", FireBaseHelper.GRIEVANCE_GPF);
                     ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 }
-                break;
+                break;*/
             case R.id.navmenu_aadhaar:
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
@@ -324,12 +322,12 @@ public class MainActivity extends AppCompatActivity
                     ShowFragment("Upload Re-Employment Certificate", fragment, bundle);
                 }
                 break;
-            case R.id.navmenu_tracking:
+           /* case R.id.navmenu_tracking:
                 Helper.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_latest_news:
                 ShowFragment("Latest News", new LatestNewsFragment(), null);
-                break;
+                break;*/
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;
@@ -400,7 +398,7 @@ public class MainActivity extends AppCompatActivity
                 new IFancyAlertDialogListener() {
                     @Override
                     public void OnClick() {
-                        ShowFragment("Home", new HomeFragment(), null);
+                        ShowFragment("Home", new LatestNewsFragment(), null);
                         Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                         ManageNavigationView(false, false);
                         GrievanceDataProvider.getInstance().setAllGrievanceList(null);
@@ -522,7 +520,7 @@ public class MainActivity extends AppCompatActivity
             ManageNavigationView(true, false);
         }
 
-        ShowFragment("Home", new HomeFragment(), null);
+        ShowFragment("Home", new LatestNewsFragment(), null);
     }
 
     public void ManageNavigationView(boolean signedIn, boolean admin) {
@@ -547,17 +545,17 @@ public class MainActivity extends AppCompatActivity
 
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (f instanceof HomeFragment) {
+        } else if (f instanceof LatestNewsFragment) {
             doExit();
         } else if (f instanceof BrowserFragment) {
             if (((BrowserFragment) f).canGoBack()) {
                 ((BrowserFragment) f).goBack();
             } else {
                 ((BrowserFragment) f).stopLoading();
-                ShowFragment("Home", new HomeFragment(), null);
+                ShowFragment("Home", new LatestNewsFragment(), null);
             }
         } else {
-            ShowFragment("Home", new HomeFragment(), null);
+            ShowFragment("Home", new LatestNewsFragment(), null);
         }
     }
 

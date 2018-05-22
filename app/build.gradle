@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:support-vector-drawable:27.1.1'
+    compile 'com.github.dan-td:snappy-recyclerview:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     //Image processing and loading from path

@@ -16,7 +16,7 @@
         android:title="Visit CCA JK Website" />
 
 
-    <item android:title="Functions">
+    <!--<item android:title="Functions">
         <menu>
             <group android:checkableBehavior="single">
                 <item
@@ -41,7 +41,8 @@
             </group>
 
         </menu>
-    </item>
+    </item>-->
+
     <item
         android:checkable="true"
         android:title="Update Information">
@@ -80,7 +81,7 @@
         </menu>
     </item>
 
-    <item
+   <!-- <item
         android:checkable="true"
         android:title="Tracking">
         <menu>
@@ -100,7 +101,7 @@
             </group>
 
         </menu>
-    </item>
+    </item>-->
 
 
     <item
@@ -108,11 +109,11 @@
         android:title="Others">
         <menu>
             <group android:checkableBehavior="single">
-                <item
+                <!--<item
                     android:id="@+id/navmenu_latest_news"
                     android:checkable="true"
                     android:icon="@drawable/ic_view_headline_black_24dp"
-                    android:title="Latest News" />
+                    android:title="Latest News" />-->
                 
                 <item
                     android:id="@+id/navmenu_contact_us"

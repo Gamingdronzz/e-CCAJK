@@ -1,15 +1,91 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mycca.Fragments.LatestNewsFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_latest_news"
+    <!--  <android.support.v7.widget.RecyclerView
+          android:id="@+id/recycler_view_latest_news"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="@color/colorLightGray">
+
+      </android.support.v7.widget.RecyclerView>-->
+
+    <ImageView
+        android:id="@+id/image_cca"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/cca" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorLightGray">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
-    </android.support.v7.widget.RecyclerView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorLightGray"
+            android:fontFamily="@font/artifika"
+            android:padding="@dimen/padding_medium"
+            android:text="LATEST FROM CCA"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_20" />
 
-</FrameLayout>
+        <com.dant.centersnapreyclerview.SnappingRecyclerView
+            android:id="@+id/recycler_view_latest_news"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@color/colorLightGray"
+            app:anchor="center"
+            app:orientation="horizontal"
+            app:reverseLayout="true"
+            app:stackFromEnd="true" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_grievance_buttons"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/custom_button"
+        android:text="TRACK GRIEVANCES"
+        android:textColor="@color/colorWhite" />
+
+    <LinearLayout
+        android:id="@+id/layout_grievance_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_min"
+            android:layout_weight=".5"
+            android:background="@drawable/custom_button"
+            android:text="REGISTER PENSION GRIEVANCE"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_min"
+            android:layout_weight=".5"
+            android:background="@drawable/custom_button"
+            android:text="REGISTER GPF GRIEVANCE"
+            android:textColor="@color/colorWhite" />
+
+    </LinearLayout>
+
+</RelativeLayout>

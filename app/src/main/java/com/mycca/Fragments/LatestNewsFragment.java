@@ -3,7 +3,6 @@ package com.mycca.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,10 +52,10 @@ public class LatestNewsFragment extends Fragment {
         adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, getActivity());
 
         recyclerView.setAdapter(adapterNews);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        /*LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(linearLayoutManager);*/
         getNews();
     }
 
