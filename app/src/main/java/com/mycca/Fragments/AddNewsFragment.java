@@ -13,8 +13,11 @@ import android.widget.Button;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
+import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.Preferences;
@@ -25,6 +28,7 @@ public class AddNewsFragment extends Fragment {
 
     TextInputEditText textTitle, textDescription;
     Button add;
+    ProgressDialog progressDialog;
 
     public AddNewsFragment() {
     }
@@ -43,18 +47,55 @@ public class AddNewsFragment extends Fragment {
         textTitle = view.findViewById(R.id.text_add_news_headline);
         textDescription = view.findViewById(R.id.text_add_news_description);
         add = view.findViewById(R.id.button_add_news);
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
     }
 
     private void init() {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNewsToFireBase();
+                if (checkInput()) {
+                    progressDialog.show();
+                    checkConnection();
+                }
             }
         });
     }
 
-    public void addNewsToFireBase(){
+    private boolean checkInput() {
+
+        if (textTitle.getText().toString().trim().isEmpty()) {
+            textTitle.setError("Add Headline");
+            textTitle.requestFocus();
+            return false;
+        } else if (textDescription.getText().toString().trim().isEmpty()) {
+            textDescription.setError("Add Description");
+            textDescription.requestFocus();
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    private void checkConnection() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                addNewsToFireBase();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
+                Helper.getInstance().showFancyAlertDialog(getActivity(), "Please connect to internet", "No Internet", "OK", null, null, null, FancyAlertDialogType.ERROR);
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+
+    }
+
+    public void addNewsToFireBase() {
         NewsModel newsModel = new NewsModel(
                 new Date(),
                 textTitle.getText().toString(),
@@ -69,10 +110,10 @@ public class AddNewsFragment extends Fragment {
         task.addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
-                if(task.isSuccessful()){
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null,null,null, FancyAlertDialogType.SUCCESS);
-                }
-                else {
+                progressDialog.dismiss();
+                if (task.isSuccessful()) {
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null, null, null, FancyAlertDialogType.SUCCESS);
+                } else {
                     Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to add", "OK", null, null, null, FancyAlertDialogType.ERROR);
 
                 }

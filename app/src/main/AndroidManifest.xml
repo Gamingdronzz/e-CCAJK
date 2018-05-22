@@ -22,7 +22,6 @@
         android:roundIcon="@mipmap/ic_launcher_cca_new_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -35,16 +34,18 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notifications_none_black_24dp" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
         <activity
             android:name=".Activity.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar.Splash"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Splash"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,9 +58,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Home"
-             />
-
+            android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
             android:screenOrientation="portrait"
@@ -79,9 +78,9 @@
         <activity
             android:name=".Activity.UpdateGrievanceActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.StateSettingActivity"
-            android:screenOrientation="portrait"></activity>
-
+        <activity
+            android:name=".Activity.StateSettingActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".FirebaseService.MyFirebaseInstanceIdService">
             <intent-filter>
@@ -94,6 +93,7 @@
             </intent-filter>
         </service>
 
-
+        <activity android:name=".Activity.NewsActivity"></activity>
     </application>
+
 </manifest>

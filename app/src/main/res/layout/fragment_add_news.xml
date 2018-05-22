@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_large"
+    android:padding="@dimen/padding_medium"
     tools:context="com.mycca.Fragments.AddNewsFragment">
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_headline"
@@ -17,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_25"
+            android:textSize="@dimen/text_20"
             android:textStyle="bold" />
     </android.support.design.widget.TextInputLayout>
 
@@ -25,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_input_headline"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_xlarge"
+        android:layout_marginBottom="@dimen/margin_xxlarge"
         android:hint="Description">
 
         <android.support.design.widget.TextInputEditText
@@ -33,6 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorBlack"
+            android:scrollbars="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
             android:textSize="@dimen/text_20" />
     </android.support.design.widget.TextInputLayout>
 
@@ -44,4 +48,5 @@
         android:background="@drawable/custom_button"
         android:text="Add News"
         android:textColor="@color/colorWhite" />
+
 </RelativeLayout>

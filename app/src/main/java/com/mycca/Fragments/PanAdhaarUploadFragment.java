@@ -263,7 +263,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        uploadAdhaarOrPan();
                         doSubmission();
                     }
                 });

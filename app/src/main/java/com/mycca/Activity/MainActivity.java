@@ -44,6 +44,7 @@ import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
 import com.mycca.Fragments.HomeFragment;
 import com.mycca.Fragments.InspectionFragment;
+import com.mycca.Fragments.LatestNewsFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
@@ -325,6 +326,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_tracking:
                 Helper.getInstance().showTrackWindow(this, frameLayout);
+                break;
+            case R.id.navmenu_latest_news:
+                ShowFragment("Latest News", new LatestNewsFragment(), null);
                 break;
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
