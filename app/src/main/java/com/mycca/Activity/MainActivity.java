@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
                 .requestEmail()
                 .build();
 
-        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG) == true) {
+        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG)) {
             showAuthDialog(false);
             Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SIGNIN_MSG, false);
         }
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity
     public void ShowHotSpotLocations() {
         Log.d(TAG, "ShowHotSpotLocations: ");
         Bundle bundle = new Bundle();
-        bundle.putString("Locator", FireBaseHelper.getInstance(this).ROOT_HOTSPOTS);
+        bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
         ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
     }
 
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new SubmitGrievanceFragment();
                     bundle = new Bundle();
-                    bundle.putString("Type", FireBaseHelper.getInstance(this).GRIEVANCE_PENSION);
+                    bundle.putString("Type", FireBaseHelper.GRIEVANCE_PENSION);
                     ShowFragment("Pension Grievance Registeration", fragment, bundle);
                 }
                 break;
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new SubmitGrievanceFragment();
                     bundle = new Bundle();
-                    bundle.putString("Type", FireBaseHelper.getInstance(this).GRIEVANCE_GPF);
+                    bundle.putString("Type", FireBaseHelper.GRIEVANCE_GPF);
                     ShowFragment("GPF Grievance Registeration", fragment, bundle);
                 }
                 break;
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
                     bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_ADHAAR);
+                    bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
                     ShowFragment("Upload Aadhar", fragment, bundle);
                 }
                 break;
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
                     bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_PAN);
+                    bundle.putString("Root", FireBaseHelper.ROOT_PAN);
                     ShowFragment("Upload PAN", fragment, bundle);
                 }
                 break;
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
                     bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_LIFE);
+                    bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
                     ShowFragment("Upload Life Certificate", fragment, bundle);
                 }
                 break;
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
                     bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_RE_MARRIAGE);
+                    bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
                     ShowFragment("Upload Re-Marriage Certificate", fragment, bundle);
                 }
                 break;
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
                     bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.getInstance(this).ROOT_RE_EMPLOYMENT);
+                    bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
                     ShowFragment("Upload Re-Employment Certificate", fragment, bundle);
                 }
                 break;
@@ -335,12 +335,12 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.getInstance(this).ROOT_HOTSPOTS);
+                bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
                 ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_gp_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.getInstance(this).ROOT_GP);
+                bundle.putString("Locator", FireBaseHelper.ROOT_GP);
                 ShowFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity
         Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.invitation_title));
 
         List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
-        List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
+        List<LabeledIntent> intentList = new ArrayList<>();
         for (int i = 0; i < resInfo.size(); i++) {
             // Extract the label, append it, and repackage it in a LabeledIntent
             ResolveInfo ri = resInfo.get(i);

@@ -132,12 +132,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }
         });
 
-        if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR)) {
+        if (root.equals(FireBaseHelper.ROOT_ADHAAR)) {
 
             inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
             textInputNumber.setHint(root + " Number");
-        } else if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_PAN)) {
+        } else if (root.equals(FireBaseHelper.ROOT_PAN)) {
 
             inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
                 @Override
@@ -230,13 +230,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             return false;
         }
         //If Aadhar Number is not complete
-        else if ((root == FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR) && (number.length() != 12)) {
+        else if ((root.equals(FireBaseHelper.ROOT_ADHAAR)) && (number.length() != 12)) {
             inputNumber.setError("Invalid Aadhaar Number");
             inputNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
-        else if ((root == FireBaseHelper.getInstance(getContext()).ROOT_PAN) && (number.length() != 10)) {
+        else if ((root.equals(FireBaseHelper.ROOT_PAN)) && (number.length() != 10)) {
             inputNumber.setError("Invalid Pan Number");
             inputNumber.requestFocus();
             return false;
@@ -319,7 +319,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         TextView circle = v.findViewById(R.id.textview_circle_value);
         circle.setText(state.getName());
         TextView heading = v.findViewById(R.id.textview_mobile_no);
-        if (root.equals(FireBaseHelper.getInstance(getContext()).ROOT_PAN) || root.equals(FireBaseHelper.getInstance(getContext()).ROOT_ADHAAR))
+        if (root.equals(FireBaseHelper.ROOT_PAN) || root.equals(FireBaseHelper.ROOT_ADHAAR))
             heading.setText(root + " No:");
         else
             heading.setText("Applicant's Name: ");
@@ -352,7 +352,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     uploadAllImagesToFirebase();
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(getActivity(),"The app might be in maintenence. Please try again later.", "Unable to Upload", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to Upload", "OK", null, null, null, FancyAlertDialogType.ERROR);
                 }
             }
         });
