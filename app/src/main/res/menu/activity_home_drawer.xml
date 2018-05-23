@@ -16,7 +16,7 @@
         android:title="Visit CCA JK Website" />
 
 
-    <!--<item android:title="Functions">
+    <item android:title="Functions">
         <menu>
             <group android:checkableBehavior="single">
                 <item
@@ -41,7 +41,7 @@
             </group>
 
         </menu>
-    </item>-->
+    </item>
 
     <item
         android:checkable="true"
@@ -81,27 +81,19 @@
         </menu>
     </item>
 
-   <!-- <item
+    <item
         android:checkable="true"
         android:title="Tracking">
         <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/navmenu_tracking"
-                    android:checkable="true"
-                    android:icon="@drawable/ic_drawable_tracking"
-                    android:title="Track Grievance" />
 
-                <item
-                    android:id="@+id/navmenu_track_rti"
-                    android:checkable="true"
-                    android:icon="@drawable/ic_drawable_tracking"
-                    android:title="Track RTI"
-                    android:visible="false" />
-            </group>
+            <item
+                android:id="@+id/navmenu_tracking"
+                android:checkable="true"
+                android:icon="@drawable/ic_drawable_tracking"
+                android:title="Track Grievance" />
 
         </menu>
-    </item>-->
+    </item>
 
 
     <item
@@ -114,7 +106,7 @@
                     android:checkable="true"
                     android:icon="@drawable/ic_view_headline_black_24dp"
                     android:title="Latest News" />-->
-                
+
                 <item
                     android:id="@+id/navmenu_contact_us"
                     android:checkable="true"
@@ -184,7 +176,7 @@
 
     </item>
 
-    <item
+    <!--<item
         android:id="@+id/developer_section"
         android:checkable="true"
         android:title="Others">
@@ -192,21 +184,21 @@
             <group android:checkableBehavior="single">
 
                 <item
-                    android:id="@+id/action_settings"
-                    android:icon="@drawable/ic_settings_black_24dp"
+                    android:id="@+id/navmenu_settings"
                     android:checkable="true"
+                    android:icon="@drawable/ic_settings_black_24dp"
                     android:title="@string/action_settings" />
 
                 <item
-                    android:id="@+id/action_invite"
-                    android:icon="@drawable/ic_share_black_24dp"
+                    android:id="@+id/navmenu_invite"
                     android:checkable="true"
+                    android:icon="@drawable/ic_share_black_24dp"
                     android:title="Invite" />
 
                 <item
                     android:id="@+id/navmenu_feedback"
                     android:checkable="true"
-                    android:icon="@drawable/ic_inspection"
+                    android:icon="@drawable/ic_feedback_black_24dp"
                     android:title="Feedback" />
 
                 <item
@@ -217,7 +209,7 @@
             </group>
         </menu>
 
-    </item>
+    </item>-->
 
 
 </menu>

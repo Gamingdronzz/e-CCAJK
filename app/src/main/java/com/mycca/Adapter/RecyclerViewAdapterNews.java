@@ -24,16 +24,22 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
 
     ArrayList<NewsModel> newsModelArrayList;
     Activity context;
+    boolean home;
 
 
-    public RecyclerViewAdapterNews(ArrayList<NewsModel> newsModels, Activity context) {
+    public RecyclerViewAdapterNews(ArrayList<NewsModel> newsModels, Activity context, boolean home) {
         this.newsModelArrayList = newsModels;
         this.context = context;
+        this.home = home;
     }
 
     @Override
     public RecyclerViewAdapterNews.NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewAdapterNews.NewsViewHolder viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_latest_news, parent, false), new ViewClickListener());
+        RecyclerViewAdapterNews.NewsViewHolder viewHolder;
+        if (home)
+            viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_home_latest_news, parent, false), new ViewClickListener());
+        else
+            viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_latest_news, parent, false), new ViewClickListener());
         return viewHolder;
     }
 

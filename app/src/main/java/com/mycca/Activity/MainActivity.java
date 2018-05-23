@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -42,12 +43,13 @@ import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
 import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
+import com.mycca.Fragments.HomeFragment;
 import com.mycca.Fragments.InspectionFragment;
-import com.mycca.Fragments.LatestNewsFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
 import com.mycca.Fragments.SettingsFragment;
+import com.mycca.Fragments.SubmitGrievanceFragment;
 import com.mycca.Fragments.UpdateGrievanceFragment;
 import com.mycca.Models.StaffModel;
 import com.mycca.Providers.GrievanceDataProvider;
@@ -88,8 +90,33 @@ public class MainActivity extends AppCompatActivity
         bindViews();
         init();
         Log.d(TAG, "onCreate: created");
-        ShowFragment("Home", new LatestNewsFragment(), null);
+        ShowFragment("Home", new HomeFragment(), null);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                ShowFragment("Settings", new SettingsFragment(), null);
+                break;
+            case R.id.action_invite:
+                showInviteIntent();
+                break;
+            case R.id.action_about_us:
+                ShowFragment("About Us", new AboutUsFragment(), null);
+                break;
+            case R.id.action_feedback:
+                ShowFragment("Feedback", new FeedbackFragment(), null);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupToolbar() {
@@ -258,7 +285,7 @@ public class MainActivity extends AppCompatActivity
         Bundle bundle;
         switch (id) {
             case R.id.navmenu_home:
-                ShowFragment("Home", new LatestNewsFragment(), null);
+                ShowFragment("Home", new HomeFragment(), null);
                 break;
             case R.id.navmenu_visit_cca_website:
                 fragment = new BrowserFragment();
@@ -266,12 +293,12 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("url", "http://ccajk.gov.in");
                 ShowFragment("CCA J&K", fragment, bundle);
                 break;
-            /*case R.id.navmenu_pension:
+            case R.id.navmenu_pension:
                 if (checkCurrentUser()) {
                     fragment = new SubmitGrievanceFragment();
                     bundle = new Bundle();
                     bundle.putString("Type", FireBaseHelper.GRIEVANCE_PENSION);
-                    ShowFragment("Pension Grievance Registeration", fragment, bundle);
+                    ShowFragment("Register Pension Grievance", fragment, bundle);
                 }
                 break;
             case R.id.navmenu_gpf:
@@ -279,9 +306,9 @@ public class MainActivity extends AppCompatActivity
                     fragment = new SubmitGrievanceFragment();
                     bundle = new Bundle();
                     bundle.putString("Type", FireBaseHelper.GRIEVANCE_GPF);
-                    ShowFragment("GPF Grievance Registeration", fragment, bundle);
+                    ShowFragment("Register GPF Grievance", fragment, bundle);
                 }
-                break;*/
+                break;
             case R.id.navmenu_aadhaar:
                 if (checkCurrentUser()) {
                     fragment = new PanAdhaarUploadFragment();
@@ -322,12 +349,9 @@ public class MainActivity extends AppCompatActivity
                     ShowFragment("Upload Re-Employment Certificate", fragment, bundle);
                 }
                 break;
-           /* case R.id.navmenu_tracking:
+            case R.id.navmenu_tracking:
                 Helper.getInstance().showTrackWindow(this, frameLayout);
                 break;
-            case R.id.navmenu_latest_news:
-                ShowFragment("Latest News", new LatestNewsFragment(), null);
-                break;*/
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;
@@ -363,10 +387,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_logout:
                 logout();
                 break;
-            case R.id.action_settings:
+            /*case R.id.navmenu_settings:
                 ShowFragment("Settings", new SettingsFragment(), null);
                 break;
-            case R.id.action_invite:
+            case R.id.navmenu_invite:
                 showInviteIntent();
                 break;
             case R.id.navmenu_feedback:
@@ -374,7 +398,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_about_us:
                 ShowFragment("About Us", new AboutUsFragment(), null);
-                break;
+                break;*/
 
         }
 
@@ -398,7 +422,7 @@ public class MainActivity extends AppCompatActivity
                 new IFancyAlertDialogListener() {
                     @Override
                     public void OnClick() {
-                        ShowFragment("Home", new LatestNewsFragment(), null);
+                        ShowFragment("Home", new HomeFragment(), null);
                         Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                         ManageNavigationView(false, false);
                         GrievanceDataProvider.getInstance().setAllGrievanceList(null);
@@ -520,7 +544,7 @@ public class MainActivity extends AppCompatActivity
             ManageNavigationView(true, false);
         }
 
-        ShowFragment("Home", new LatestNewsFragment(), null);
+        ShowFragment("Home", new HomeFragment(), null);
     }
 
     public void ManageNavigationView(boolean signedIn, boolean admin) {
@@ -545,17 +569,17 @@ public class MainActivity extends AppCompatActivity
 
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (f instanceof LatestNewsFragment) {
+        } else if (f instanceof HomeFragment) {
             doExit();
         } else if (f instanceof BrowserFragment) {
             if (((BrowserFragment) f).canGoBack()) {
                 ((BrowserFragment) f).goBack();
             } else {
                 ((BrowserFragment) f).stopLoading();
-                ShowFragment("Home", new LatestNewsFragment(), null);
+                ShowFragment("Home", new HomeFragment(), null);
             }
         } else {
-            ShowFragment("Home", new LatestNewsFragment(), null);
+            ShowFragment("Home", new HomeFragment(), null);
         }
     }
 
