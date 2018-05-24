@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG)) {
             showAuthDialog(false);
@@ -218,7 +219,6 @@ public class MainActivity extends AppCompatActivity
 
     public void signInWithGoogle() {
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

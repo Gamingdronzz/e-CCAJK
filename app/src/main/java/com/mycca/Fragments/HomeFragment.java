@@ -101,6 +101,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //            }
 //        });
 
+        tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

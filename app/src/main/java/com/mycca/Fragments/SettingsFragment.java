@@ -90,14 +90,33 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mAuth.getCurrentUser() != null) {
-                    ((MainActivity) getActivity()).signOutFromGoogle();
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "", "Signed Out", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
+                    Helper.getInstance().showFancyAlertDialog(getActivity(),
+                            "Sign out from Google?",
+                            "Sign Out",
+                            "OK",
+                            new IFancyAlertDialogListener() {
+                                @Override
+                                public void OnClick() {
+                                    ((MainActivity) getActivity()).signOutFromGoogle();
+                                    Helper.getInstance().showFancyAlertDialog(getActivity(), "", "Signed Out", "OK", new IFancyAlertDialogListener() {
+                                        @Override
+                                        public void OnClick() {
 
-                        }
-                    }, null, null, FancyAlertDialogType.SUCCESS);
-                    manageSignOut();
+                                        }
+                                    }, null, null, FancyAlertDialogType.SUCCESS);
+                                    manageSignOut();
+                                }
+                            },
+                            "Cancel",
+                            new IFancyAlertDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            },
+                            FancyAlertDialogType.WARNING);
+
+
                 } else {
                     ((MainActivity) getActivity()).signInWithGoogle();
                 }
@@ -106,7 +125,7 @@ public class SettingsFragment extends Fragment {
     }
 
     public void manageSignOut() {
-         if (mAuth.getCurrentUser() == null){
+        if (mAuth.getCurrentUser() == null) {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawbale_login_24dp, 0, 0, 0);
             tvSignOut.setText("Sign In with Google");
             tvAccount.setVisibility(View.INVISIBLE);
