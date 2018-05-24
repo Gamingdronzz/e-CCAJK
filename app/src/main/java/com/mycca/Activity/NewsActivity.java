@@ -32,7 +32,7 @@ public class NewsActivity extends AppCompatActivity {
         headline.setText(newsModel.getHeadline());
         description.setText(newsModel.getDescription());
         description.setMovementMethod(new ScrollingMovementMethod());
-        date.setText(Helper.getInstance().formatDate(newsModel.getDate(), "dd MMM,yyyy"));
+        date.setText(Helper.getInstance().formatDate(newsModel.getDate(), "dd MMM, yyyy"));
     }
 
     private void bindViews() {

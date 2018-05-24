@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_news_headline"
+            android:layout_above="@id/textview_news_date"
             android:layout_marginTop="@dimen/margin_xlarge"
-            android:maxLines="8"
             android:text="details"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18" />

@@ -49,7 +49,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
 
         holder.viewClickListener.setPosition(position);
         holder.headline.setText(newsModel.getHeadline());
-        holder.date.setText(Helper.getInstance().formatDate(newsModel.getDate(), "dd/MM/yy"));
+        holder.date.setText(Helper.getInstance().formatDate(newsModel.getDate(), "dd-MM-yy"));
         holder.description.setText(newsModel.getDescription());
 
     /*    if (contact.isExpanded()) {
