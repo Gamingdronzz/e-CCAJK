@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard;
+package com.mycca.CustomObjects.ShowcaseCard;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -25,22 +25,20 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.mycca.CustomObjects.CustomShowCaseCard.position.Position;
-import com.mycca.CustomObjects.CustomShowCaseCard.position.ShowCasePosition;
-import com.mycca.CustomObjects.CustomShowCaseCard.position.ViewPosition;
-import com.mycca.CustomObjects.CustomShowCaseCard.radius.Radius;
-import com.mycca.CustomObjects.CustomShowCaseCard.radius.ShowCaseRadius;
-import com.mycca.CustomObjects.CustomShowCaseCard.radius.ViewRadius;
-import com.mycca.CustomObjects.CustomShowCaseCard.util.ActivityUtils;
-import com.mycca.CustomObjects.CustomShowCaseCard.util.MeasuredUtils;
-import com.mycca.CustomObjects.CustomShowCaseCard.util.NavigationBarUtils;
-import com.mycca.CustomObjects.CustomShowCaseCard.util.ViewUtils;
+import com.mycca.CustomObjects.ShowcaseCard.position.Position;
+import com.mycca.CustomObjects.ShowcaseCard.position.ShowCasePosition;
+import com.mycca.CustomObjects.ShowcaseCard.position.ViewPosition;
+import com.mycca.CustomObjects.ShowcaseCard.radius.Radius;
+import com.mycca.CustomObjects.ShowcaseCard.radius.ShowCaseRadius;
+import com.mycca.CustomObjects.ShowcaseCard.radius.ViewRadius;
+import com.mycca.CustomObjects.ShowcaseCard.util.ActivityUtils;
+import com.mycca.CustomObjects.ShowcaseCard.util.MeasuredUtils;
+import com.mycca.CustomObjects.ShowcaseCard.util.NavigationBarUtils;
+import com.mycca.CustomObjects.ShowcaseCard.util.ViewUtils;
 import com.mycca.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 public class ShowCaseView extends FrameLayout {
 
@@ -438,7 +436,7 @@ public class ShowCaseView extends FrameLayout {
         private Context context;
 
         @ColorRes
-        private int color = R.color.colorBlack;
+        private int color = R.color.colorTranslucentDarkBlack;
         private ShowCaseRadius radius = new Radius(128F);
         private TextView contentView;
         private String contentText;

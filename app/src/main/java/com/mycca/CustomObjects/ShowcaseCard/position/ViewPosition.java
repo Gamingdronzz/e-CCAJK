@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.position;
+package com.mycca.CustomObjects.ShowcaseCard.position;
 
 import android.app.Activity;
 import android.graphics.Point;
@@ -8,8 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ScrollView;
 
-import com.mycca.CustomObjects.CustomShowCaseCard.util.ViewUtils;
-
+import com.mycca.CustomObjects.ShowcaseCard.util.ViewUtils;
 
 public class ViewPosition implements ShowCasePosition {
 

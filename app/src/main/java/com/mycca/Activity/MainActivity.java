@@ -38,6 +38,9 @@ import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.CustomObjects.ShowcaseCard.ShowCaseView;
+import com.mycca.CustomObjects.ShowcaseCard.position.Center;
+import com.mycca.CustomObjects.ShowcaseCard.radius.Radius;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
@@ -132,6 +135,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init() {
+
+        new ShowCaseView.Builder(MainActivity.this)
+                .withTypedPosition(new Center())
+                .withTypedRadius(new Radius(200f))
+                .withContent(
+                        "Welcome to My CCA Android App\nTap anywhere to continue"
+                )
+                .build()
+                .show(MainActivity.this);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override

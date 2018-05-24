@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.widget;
+package com.mycca.CustomObjects.ShowcaseCard.widget;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;

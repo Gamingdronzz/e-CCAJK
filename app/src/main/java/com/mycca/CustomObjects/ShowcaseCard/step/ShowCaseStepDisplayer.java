@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.step;
+package com.mycca.CustomObjects.ShowcaseCard.step;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.widget.ScrollView;
 
-import com.mycca.CustomObjects.CustomShowCaseCard.ShowCaseView;
-import com.mycca.CustomObjects.CustomShowCaseCard.radius.Radius;
+import com.mycca.CustomObjects.ShowcaseCard.ShowCaseView;
+import com.mycca.CustomObjects.ShowcaseCard.radius.Radius;
 
 import java.util.ArrayList;
 import java.util.List;

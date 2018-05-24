@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.radius;
+package com.mycca.CustomObjects.ShowcaseCard.radius;
 
 public class Radius implements ShowCaseRadius {
 

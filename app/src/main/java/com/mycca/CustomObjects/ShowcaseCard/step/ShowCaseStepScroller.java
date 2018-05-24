@@ -1,14 +1,9 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.step;
+package com.mycca.CustomObjects.ShowcaseCard.step;
 
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.widget.ScrollView;
 
-/**
- * Created by Frank on 2017/08/17.
- * <p>
- * Handles scrolling to a {@link ShowCaseStep} if needed.
- */
 public class ShowCaseStepScroller {
 
     @NonNull

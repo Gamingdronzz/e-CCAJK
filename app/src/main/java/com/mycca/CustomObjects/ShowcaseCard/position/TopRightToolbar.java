@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.position;
+package com.mycca.CustomObjects.ShowcaseCard.position;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -7,11 +7,10 @@ import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.widget.ScrollView;
 
-import com.mycca.CustomObjects.CustomShowCaseCard.util.ActivityUtils;
-import com.mycca.CustomObjects.CustomShowCaseCard.util.NavigationBarUtils;
+import com.mycca.CustomObjects.ShowcaseCard.util.ActivityUtils;
+import com.mycca.CustomObjects.ShowcaseCard.util.NavigationBarUtils;
 
-
-public class TopRight implements ShowCasePosition {
+public class TopRightToolbar implements ShowCasePosition {
 
     @Override
     public PointF getPosition(Activity activity) {
@@ -21,12 +20,12 @@ public class TopRight implements ShowCasePosition {
             case Configuration.ORIENTATION_LANDSCAPE:
                 return new PointF(
                         width - NavigationBarUtils.navigationBarMarginForRightOrientation(activity),
-                        0F
+                        (float) ActivityUtils.statusBarHeight(activity)
                 );
             default:
                 return new PointF(
                         width,
-                        0F
+                        ActivityUtils.statusBarHeight(activity)
                 );
         }
     }

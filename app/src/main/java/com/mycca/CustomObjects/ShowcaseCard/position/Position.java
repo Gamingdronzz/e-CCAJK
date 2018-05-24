@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.position;
+package com.mycca.CustomObjects.ShowcaseCard.position;
 
 import android.app.Activity;
 import android.graphics.Point;

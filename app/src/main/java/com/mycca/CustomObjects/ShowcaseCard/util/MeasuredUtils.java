@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.util;
+package com.mycca.CustomObjects.ShowcaseCard.util;
 
 import android.view.View;
 import android.view.ViewTreeObserver;

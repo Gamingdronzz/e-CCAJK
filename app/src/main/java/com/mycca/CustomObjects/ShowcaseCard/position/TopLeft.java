@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.position;
+package com.mycca.CustomObjects.ShowcaseCard.position;
 
 import android.app.Activity;
 import android.graphics.Point;
@@ -6,7 +6,7 @@ import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.widget.ScrollView;
 
-import com.mycca.CustomObjects.CustomShowCaseCard.util.NavigationBarUtils;
+import com.mycca.CustomObjects.ShowcaseCard.util.NavigationBarUtils;
 
 
 public class TopLeft implements ShowCasePosition {

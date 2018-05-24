@@ -1,4 +1,4 @@
-package com.mycca.CustomObjects.CustomShowCaseCard.util;
+package com.mycca.CustomObjects.ShowcaseCard.util;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
