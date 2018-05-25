@@ -31,13 +31,13 @@ import java.util.HashMap;
 
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
-    private SliderLayout mDemoSlider;
+    SliderLayout mDemoSlider;
+    RecyclerView recyclerView;
     TextView tvLatestNews;
     //private TextView welcomeText, ccaDeskText;
     View view;
     final String TAG = "HomeFragment";
 
-    RecyclerView recyclerView;
     RecyclerViewAdapterNews adapterNews;
     ArrayList<NewsModel> newsModelArrayList;
 
@@ -59,6 +59,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void bindViews(View view) {
         //welcomeText = view.findViewById(R.id.textview_welcome_short);
         //ccaDeskText = view.findViewById(R.id.textview_cca_desk);
+        mDemoSlider = view.findViewById(R.id.slider);
         tvLatestNews = view.findViewById(R.id.tv_home_latest_news);
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
     }
@@ -181,7 +182,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void setupSlider() {
-        mDemoSlider = view.findViewById(R.id.slider);
+
         HashMap<String, Integer> file_maps = new HashMap<String, Integer>();
 
         file_maps.put("Deptt. of Telecomminication", R.drawable.communication);

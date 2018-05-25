@@ -40,7 +40,10 @@ import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.CustomObjects.ShowcaseCard.ShowCaseView;
 import com.mycca.CustomObjects.ShowcaseCard.position.Center;
-import com.mycca.CustomObjects.ShowcaseCard.radius.Radius;
+import com.mycca.CustomObjects.ShowcaseCard.position.TopLeftToolbar;
+import com.mycca.CustomObjects.ShowcaseCard.position.ViewPosition;
+import com.mycca.CustomObjects.ShowcaseCard.step.ShowCaseStep;
+import com.mycca.CustomObjects.ShowcaseCard.step.ShowCaseStepDisplayer;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
@@ -78,7 +81,9 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     CardDrawerLayout drawerLayout;
     Toolbar toolbar;
+    View viewTop, viewBottom;
 
+    ShowCaseStepDisplayer displayer;
     StaffModel staffModel;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
@@ -92,9 +97,13 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
-        Log.d(TAG, "onCreate: created");
         ShowFragment("Home", new HomeFragment(), null);
+        showTutorial();
 
+        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG)) {
+            showAuthDialog(false);
+            Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SIGNIN_MSG, false);
+        }
     }
 
     @Override
@@ -129,21 +138,14 @@ public class MainActivity extends AppCompatActivity
 
     private void bindViews() {
         frameLayout = findViewById(R.id.fragmentPlaceholder);
+        viewTop = findViewById(R.id.view_top);
+        viewBottom = findViewById(R.id.view_bottom);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         progressDialog = Helper.getInstance().getProgressWindow(this, "Signing in...");
     }
 
     private void init() {
-
-        new ShowCaseView.Builder(MainActivity.this)
-                .withTypedPosition(new Center())
-                .withTypedRadius(new Radius(200f))
-                .withContent(
-                        "Welcome to My CCA Android App\nTap anywhere to continue"
-                )
-                .build()
-                .show(MainActivity.this);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override
@@ -181,10 +183,24 @@ public class MainActivity extends AppCompatActivity
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG)) {
-            showAuthDialog(false);
-            Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SIGNIN_MSG, false);
-        }
+    }
+
+    private void showTutorial() {
+
+        displayer = new ShowCaseStepDisplayer.Builder(MainActivity.this).build();
+
+        displayer.addStep(new ShowCaseStep(new Center(), "Welcome to My CCA Android App\nTap anywhere to continue"));
+        displayer.addStep(new ShowCaseStep(new ViewPosition(viewTop), "Touch to open website"));
+        displayer.addStep(new ShowCaseStep(new ViewPosition(viewBottom), "Tap on news to view it in detail"));
+        displayer.addStep(new ShowCaseStep(new TopLeftToolbar(), "Tap here to navigate through main menu", new ShowCaseView.TouchListener() {
+            @Override
+            public void onTouchEvent() {
+                drawerLayout.openDrawer(GravityCompat.START);
+                displayer.dismiss();
+            }
+        })
+        );
+        displayer.start();
     }
 
     private void showAuthDialog(boolean skipped) {

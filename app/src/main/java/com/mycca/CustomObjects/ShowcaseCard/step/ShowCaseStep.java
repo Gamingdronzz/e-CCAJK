@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.mycca.CustomObjects.ShowcaseCard.ShowCaseView;
 import com.mycca.CustomObjects.ShowcaseCard.position.ShowCasePosition;
 import com.mycca.CustomObjects.ShowcaseCard.position.ViewPosition;
 
@@ -22,6 +23,8 @@ public class ShowCaseStep {
      */
     private String message;
 
+    private ShowCaseView.TouchListener touchListener;
+
     /**
      * A simple step item pointing to the position of viewToShowCase on the screen.
      *
@@ -32,7 +35,11 @@ public class ShowCaseStep {
         position = new ViewPosition(viewToShowCase);
         this.message = message;
     }
-
+    public ShowCaseStep(@NonNull View viewToShowCase, String message,ShowCaseView.TouchListener touchListener) {
+        position = new ViewPosition(viewToShowCase);
+        this.message = message;
+        this.touchListener = touchListener;
+    }
     /**
      * A simple step item pointing to a position on the screen.
      *
@@ -42,6 +49,12 @@ public class ShowCaseStep {
     public ShowCaseStep(ShowCasePosition position, String message) {
         this.position = position;
         this.message = message;
+    }
+
+    public ShowCaseStep(ShowCasePosition position, String message, ShowCaseView.TouchListener touchListener) {
+        this.position = position;
+        this.message = message;
+        this.touchListener = touchListener;
     }
 
     /**
@@ -73,5 +86,9 @@ public class ShowCaseStep {
 
     public String getMessage() {
         return message;
+    }
+
+    public ShowCaseView.TouchListener getTouchListener() {
+        return touchListener;
     }
 }

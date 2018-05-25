@@ -92,7 +92,7 @@ public class ShowCaseStepDisplayer {
     /**
      * Displays the next tip on the screen, or closes the tip screen if no more tips are left.
      */
-    private void tryShowNextTip() {
+    public void tryShowNextTip() {
 
         if (!isContextActive()) {
             return;
@@ -154,20 +154,30 @@ public class ShowCaseStepDisplayer {
         }
 
         final int myTipIndex = currentlyDisplayedTipIndex;
-        showCaseView = new ShowCaseView.Builder(context)
-                .withTypedPosition(item.getPosition())
-                .withTypedRadius(new Radius(showCaseRadius))
-                .dismissOnTouch(false)
-                .withTouchListener(new ShowCaseView.TouchListener() {
-                    @Override
-                    public void onTouchEvent() {
-                        if (myTipIndex == currentlyDisplayedTipIndex) {
-                            tryShowNextTip();
+        if (item.getTouchListener() == null) {
+            showCaseView = new ShowCaseView.Builder(context)
+                    .withTypedPosition(item.getPosition())
+                    .withTypedRadius(new Radius(showCaseRadius))
+                    .dismissOnTouch(false)
+                    .withTouchListener(new ShowCaseView.TouchListener() {
+                        @Override
+                        public void onTouchEvent() {
+                            if (myTipIndex == currentlyDisplayedTipIndex) {
+                                tryShowNextTip();
+                            }
                         }
-                    }
-                })
-                .withContent(item.getMessage())
-                .build();
+                    })
+                    .withContent(item.getMessage())
+                    .build();
+        } else {
+            showCaseView = new ShowCaseView.Builder(context)
+                    .withTypedPosition(item.getPosition())
+                    .withTypedRadius(new Radius(showCaseRadius))
+                    .dismissOnTouch(false)
+                    .withTouchListener(item.getTouchListener())
+                    .withContent(item.getMessage())
+                    .build();
+        }
 
         if (activity == null) {
             showCaseView.show(fragment);
