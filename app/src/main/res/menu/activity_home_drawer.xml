@@ -15,6 +15,12 @@
         android:icon="@drawable/ic_drawable_web"
         android:title="Visit CCA JK Website" />
 
+    <item
+        android:id="@+id/navmenu_latest_news"
+        android:checkable="true"
+        android:icon="@drawable/ic_news_icon"
+        android:title="Latest News" />
+
 
     <item android:title="Functions">
         <menu>

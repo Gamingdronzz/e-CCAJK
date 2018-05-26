@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:background="@color/colorWhite"
     tools:context=".Fragments.HomeFragment">
@@ -95,9 +96,9 @@
 
     </LinearLayout>-->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/slider"
         android:layout_marginTop="@dimen/margin_large"
         android:orientation="vertical">
@@ -105,23 +106,54 @@
         <TextView
             android:id="@+id/tv_home_latest_news"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/colorAccent"
             android:drawableTint="@color/colorWhite"
+            android:drawablePadding="@dimen/padding_medium"
+            android:layout_alignParentTop="true"
             android:padding="@dimen/padding_large"
             android:text="Latest From CCA"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_20" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_home_latest_news"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorLightGray">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_home_latest_news">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_home_latest_news"
+                android:layout_width="match_parent"
 
-    </LinearLayout>
+                android:layout_height="wrap_content"
+                android:background="@color/colorLightGray">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:background="@drawable/circular_background_simple_text"
+                app:srcCompat="@drawable/ic_arrow_left_black_24dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/imgButtonMoveLeft"
+                android:layout_margin="@dimen/margin_medium"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:background="@drawable/circular_background_simple_text"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/imgButtonMoveRight"
+                android:layout_margin="@dimen/margin_medium"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
 

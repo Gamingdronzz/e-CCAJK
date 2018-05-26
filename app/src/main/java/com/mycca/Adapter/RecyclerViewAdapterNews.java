@@ -2,10 +2,15 @@ package com.mycca.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -71,12 +76,22 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
 
         private TextView headline, date, description;
         private ViewClickListener viewClickListener;
+        private RelativeLayout relativeLayouthome;
 
         public NewsViewHolder(View itemView, ViewClickListener viewClickListener) {
             super(itemView);
             headline = itemView.findViewById(R.id.textview_news_headline);
             date = itemView.findViewById(R.id.textview_news_date);
             description = itemView.findViewById(R.id.textview_news_detail);
+            if(home)
+            {
+                Log.d("News", "NewsViewHolder: setting");
+                relativeLayouthome = itemView.findViewById(R.id.relativelayout_news_home);
+                Display display = context.getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                relativeLayouthome.setLayoutParams(new FrameLayout.LayoutParams(size.x-10, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
 
             this.viewClickListener = viewClickListener;
             itemView.setOnClickListener(viewClickListener);

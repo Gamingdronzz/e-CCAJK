@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //            }
 //        });
 
-        tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+        tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,6 +155,14 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                        if(newsModel.getHeadline().length() >= 40)
+                        {
+                            newsModel.setHeadline(newsModel.getHeadline().substring(0,40) + "...");
+                        }
+                        if(newsModel.getDescription().length() >= 60)
+                        {
+                            newsModel.setDescription(newsModel.getDescription().substring(0,60) + "...");
+                        }
                         newsModelArrayList.add(newsModel);
                         adapterNews.notifyDataSetChanged();
                     }

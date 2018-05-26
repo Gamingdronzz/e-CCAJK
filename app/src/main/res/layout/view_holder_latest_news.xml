@@ -11,24 +11,27 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/padding_medium">
 
         <TextView
             android:id="@+id/textview_news_headline"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="serif"
-            android:paddingRight="@dimen/padding_large"
             android:text="Headline"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
+            android:layout_alignParentTop="true"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_news_detail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingRight="@dimen/padding_xxxlarge"
+            android:paddingLeft="@dimen/padding_xxxlarge"
             android:layout_below="@+id/textview_news_headline"
             android:layout_marginTop="@dimen/margin_large"
             android:fontFamily="serif"
@@ -40,16 +43,19 @@
 
         <TextView
             android:id="@+id/textview_news_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/textview_news_detail"
+            android:textAlignment="viewEnd"
+            android:layout_below="@id/textview_news_headline"
             android:fontFamily="serif"
             android:text="date"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
+            android:paddingRight="@dimen/padding_xxxlarge"
+            android:paddingLeft="@dimen/padding_xxxlarge"
             android:textStyle="italic" />
+
+
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

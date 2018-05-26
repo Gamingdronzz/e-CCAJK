@@ -2,23 +2,24 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_medium"
     app:cardBackgroundColor="@color/colorWhite"
     app:cardCornerRadius="@dimen/corner_radius_large">
 
     <RelativeLayout
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/relativelayout_news_home"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="2dp"
-        android:padding="@dimen/padding_medium">
+        android:padding="@dimen/padding_min">
 
         <TextView
             android:id="@+id/textview_news_headline"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/padding_large"
+            android:paddingRight="@dimen/padding_xxxlarge"
+            android:paddingLeft="@dimen/padding_xxxlarge"
             android:text="Headline"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
@@ -26,25 +27,28 @@
 
         <TextView
             android:id="@+id/textview_news_detail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="detail"
             android:layout_below="@+id/textview_news_headline"
-            android:layout_above="@id/textview_news_date"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:text="details"
+            android:paddingRight="@dimen/padding_xxxlarge"
+            android:paddingLeft="@dimen/padding_xxxlarge"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18" />
 
         <TextView
             android:id="@+id/textview_news_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:textAlignment="viewEnd"
+            android:layout_below="@id/textview_news_detail"
             android:layout_alignParentEnd="true"
             android:text="date"
+            android:paddingRight="@dimen/padding_xxxlarge"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_15"
             android:textStyle="italic|bold" />
+
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

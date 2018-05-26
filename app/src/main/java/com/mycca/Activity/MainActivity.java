@@ -51,6 +51,7 @@ import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
 import com.mycca.Fragments.HomeFragment;
 import com.mycca.Fragments.InspectionFragment;
+import com.mycca.Fragments.LatestNewsFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
@@ -320,6 +321,10 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("url", "http://ccajk.gov.in");
                 ShowFragment("CCA J&K", fragment, bundle);
+                break;
+            case R.id.navmenu_latest_news:
+                fragment = new LatestNewsFragment();
+                ShowFragment("Latest News", fragment, null);
                 break;
             case R.id.navmenu_pension:
                 if (checkCurrentUser()) {
