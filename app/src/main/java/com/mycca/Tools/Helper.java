@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -27,8 +28,8 @@ import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.linchaolong.android.imagepicker.ImagePicker;
 import com.mycca.Activity.TrackGrievanceResultActivity;
+import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -278,6 +279,16 @@ public class Helper {
         imagePicker.startChooser(activity, callback);
         return imagePicker;
     }
+
+//    public com.linchaolong.android.imagepicker.ImagePicker showImageChooser(com.linchaolong.android.imagepicker.ImagePicker imagePicker, Activity activity, boolean cropimage, com.linchaolong.android.imagepicker.ImagePicker.Callback callback) {
+//        if (imagePicker == null) {
+//            imagePicker = new com.linchaolong.android.imagepicker.ImagePicker();
+//        }
+//        imagePicker.setTitle("Select Image");
+//        imagePicker.setCropImage(cropimage);
+//        imagePicker.startChooser(activity, callback);
+//        return imagePicker;
+//    }
 
     public boolean isTab(Context context) {
         boolean isTab = (context.getResources().getConfiguration().screenLayout

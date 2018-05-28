@@ -31,9 +31,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
-import com.linchaolong.android.imagepicker.ImagePicker;
-import com.linchaolong.android.imagepicker.cropper.CropImage;
-import com.linchaolong.android.imagepicker.cropper.CropImageView;
+import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
+import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
+import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -378,6 +378,11 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //TODO
+                    //getDownloadURL is deprecated use the below statement to get download url
+                    //check how to implement this and implement it
+                    //Task task = taskSnapshot.getStorage().getDownloadUrl();
+
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     firebaseImageURLs.add(downloadUrl);
                     isUploadedToFirebase = true;

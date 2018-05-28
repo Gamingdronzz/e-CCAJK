@@ -60,7 +60,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
-            android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
+            android:name=".CustomObjects.CustomImagePicker.Cropper.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
@@ -71,9 +71,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.TrackGrievanceResultActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activity.WelcomeScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.UpdateGrievanceActivity"
@@ -94,6 +91,16 @@
         </service>
 
         <activity android:name=".Activity.NewsActivity"></activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.mycca.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

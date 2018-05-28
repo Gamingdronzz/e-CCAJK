@@ -1,6 +1,7 @@
 package com.mycca.Fragments;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,18 +31,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.fxn.pix.Pix;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.storage.UploadTask;
-import com.linchaolong.android.imagepicker.ImagePicker;
-import com.linchaolong.android.imagepicker.cropper.CropImage;
-import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.mycca.Adapter.GrievanceAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.Adapter.StatesAdapter;
+import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
+import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
+import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
@@ -96,7 +98,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
 
-
+private int RC_IMAGE_PICKER = 106;
     public SubmitGrievanceFragment() {
 
     }
@@ -241,6 +243,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         inflater.inflate(R.menu.menu_form, menu);
     }
 
+
     private void showImageChooser() {
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
             @Override
@@ -263,7 +266,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 //                setupSelectedFile(file);
             }
 
-            @Override
+
+
+
+                        @Override
             public void cropConfig(CropImage.ActivityBuilder builder) {
                 builder
                         .setMultiTouchEnabled(false)
@@ -612,6 +618,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK && requestCode == RC_IMAGE_PICKER) {
+            ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+
+            for (String s :
+                    returnValue) {
+                Log.d(TAG, "onActivityResult: " + s);
+            }
+        }
     }
 
     @Override

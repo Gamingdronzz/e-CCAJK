@@ -44,17 +44,18 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
     implementation 'com.google.firebase:firebase-invites:15.0.1'
 
-    compile 'com.linchaolong.android:imagepicker:1.5'
+    //compile 'com.linchaolong.android:imagepicker:1.5'
     compile 'com.google.code.gson:gson:2.8.4'
     implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
     implementation 'com.github.warkiz.widget:indicatorseekbar:1.2.9'
     implementation 'com.squareup.picasso:picasso:2.3.2'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
-    implementation 'com.stephentuso:welcome:1.4.1'
     implementation 'com.android.volley:volley:1.0.0'
     implementation 'com.github.matthiasrobbers:shortbread:1.0.2'
     annotationProcessor 'com.github.matthiasrobbers:shortbread-compiler:1.0.2'
+
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
