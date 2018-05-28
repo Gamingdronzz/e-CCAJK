@@ -2,14 +2,10 @@ package com.mycca.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -55,16 +51,13 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
         holder.viewClickListener.setPosition(position);
         holder.headline.setText(newsModel.getHeadline());
         holder.date.setText(Helper.getInstance().formatDate(newsModel.getDate(), "dd-MM-yy"));
-        holder.description.setText(newsModel.getDescription());
 
-    /*    if (contact.isExpanded()) {
-            holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
-        } else {
-            holder.linearLayoutExpandableArea.setVisibility(View.GONE);
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
-        }
-*/
+        String desc = newsModel.getDescription();
+        if (home && desc.length() >= 57) {
+            holder.description.setText(desc.substring(0, 57) + "...");
+        } else
+            holder.description.setText(desc);
+
     }
 
     @Override
@@ -83,15 +76,14 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
             headline = itemView.findViewById(R.id.textview_news_headline);
             date = itemView.findViewById(R.id.textview_news_date);
             description = itemView.findViewById(R.id.textview_news_detail);
-            if(home)
-            {
+          /*  if (home) {
                 Log.d("News", "NewsViewHolder: setting");
                 relativeLayouthome = itemView.findViewById(R.id.relativelayout_news_home);
                 Display display = context.getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size);
-                relativeLayouthome.setLayoutParams(new FrameLayout.LayoutParams(size.x-10, ViewGroup.LayoutParams.WRAP_CONTENT));
-            }
+                relativeLayouthome.setLayoutParams(new FrameLayout.LayoutParams(size.x - 10, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }*/
 
             this.viewClickListener = viewClickListener;
             itemView.setOnClickListener(viewClickListener);
@@ -115,4 +107,5 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
             context.startActivity(intent);
         }
     }
+
 }

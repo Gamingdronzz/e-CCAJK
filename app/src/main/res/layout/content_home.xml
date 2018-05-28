@@ -16,11 +16,10 @@
         android:layout_marginTop="@dimen/margin_xxxxlarge" />
 
     <View
-        android:id="@+id/view_bottom"
+        android:id="@+id/view_news"
         android:layout_width="50dp"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+       android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/margin_xxxxxlarge"
         android:layout_marginBottom="@dimen/margin_xxxxxlarge" />
 

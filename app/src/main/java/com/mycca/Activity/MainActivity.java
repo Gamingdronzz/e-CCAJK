@@ -37,12 +37,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.ShowcaseCard.ShowCaseView;
-import com.mycca.CustomObjects.ShowcaseCard.position.Center;
-import com.mycca.CustomObjects.ShowcaseCard.position.TopLeftToolbar;
-import com.mycca.CustomObjects.ShowcaseCard.position.ViewPosition;
-import com.mycca.CustomObjects.ShowcaseCard.step.ShowCaseStep;
 import com.mycca.CustomObjects.ShowcaseCard.step.ShowCaseStepDisplayer;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
@@ -51,7 +48,6 @@ import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
 import com.mycca.Fragments.HomeFragment;
 import com.mycca.Fragments.InspectionFragment;
-import com.mycca.Fragments.LatestNewsFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
@@ -140,7 +136,7 @@ public class MainActivity extends AppCompatActivity
     private void bindViews() {
         frameLayout = findViewById(R.id.fragmentPlaceholder);
         viewTop = findViewById(R.id.view_top);
-        viewBottom = findViewById(R.id.view_bottom);
+        viewBottom = findViewById(R.id.view_news);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         progressDialog = Helper.getInstance().getProgressWindow(this, "Signing in...");
@@ -188,20 +184,44 @@ public class MainActivity extends AppCompatActivity
 
     private void showTutorial() {
 
-        displayer = new ShowCaseStepDisplayer.Builder(MainActivity.this).build();
+//        displayer = new ShowCaseStepDisplayer.Builder(MainActivity.this).build();
+//
+//        displayer.addStep(new ShowCaseStep(new Center(), "Welcome to My CCA Android App\nTap anywhere to continue"));
+//        displayer.addStep(new ShowCaseStep(new ViewPosition(viewTop), "Touch to open website"));
+//        displayer.addStep(new ShowCaseStep(new ViewPosition(viewBottom), "Tap on news to view it in detail"));
+//        displayer.addStep(new ShowCaseStep(new TopLeftToolbar(), "Tap here to navigate through main menu", new ShowCaseView.TouchListener() {
+//            @Override
+//            public void onTouchEvent() {
+//                drawerLayout.openDrawer(GravityCompat.START);
+//                displayer.dismiss();
+//            }
+//        })
+//        );
+//        displayer.start();
 
-        displayer.addStep(new ShowCaseStep(new Center(), "Welcome to My CCA Android App\nTap anywhere to continue"));
-        displayer.addStep(new ShowCaseStep(new ViewPosition(viewTop), "Touch to open website"));
-        displayer.addStep(new ShowCaseStep(new ViewPosition(viewBottom), "Tap on news to view it in detail"));
-        displayer.addStep(new ShowCaseStep(new TopLeftToolbar(), "Tap here to navigate through main menu", new ShowCaseView.TouchListener() {
-            @Override
-            public void onTouchEvent() {
-                drawerLayout.openDrawer(GravityCompat.START);
-                displayer.dismiss();
-            }
-        })
-        );
-        displayer.start();
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(this)
+                .title("Touch to open website")
+                .focusOn(viewTop)
+                .focusCircleRadiusFactor(.5)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(this)
+                .title("Tap to view in detail")
+                .focusCircleRadiusFactor(2)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle,Gravity.BOTTOM|Gravity.CENTER)
+                .focusOn(viewBottom)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(this)
+                .title("Welcome to My CCA Android App\nTap anywhere to continue")
+                .build();
+
+        FancyShowCaseQueue mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView3)
+                .add(fancyShowCaseView1)
+                .add(fancyShowCaseView2);
+
+        mQueue.show();
     }
 
     private void showAuthDialog(boolean skipped) {
@@ -322,10 +342,6 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("url", "http://ccajk.gov.in");
                 ShowFragment("CCA J&K", fragment, bundle);
                 break;
-            case R.id.navmenu_latest_news:
-                fragment = new LatestNewsFragment();
-                ShowFragment("Latest News", fragment, null);
-                break;
             case R.id.navmenu_pension:
                 if (checkCurrentUser()) {
                     fragment = new SubmitGrievanceFragment();
@@ -388,6 +404,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;
+            /*case R.id.navmenu_latest_news:
+                fragment = new LatestNewsFragment();
+                ShowFragment("Latest News", fragment, null);
+                break;*/
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
                 bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);

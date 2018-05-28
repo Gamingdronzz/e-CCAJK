@@ -5,16 +5,20 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +38,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     SliderLayout mDemoSlider;
     RecyclerView recyclerView;
     TextView tvLatestNews;
+    ImageButton moveRight, moveLeft;
+    LinearLayoutManager linearLayoutManager;
     //private TextView welcomeText, ccaDeskText;
     View view;
     final String TAG = "HomeFragment";
@@ -62,6 +68,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         mDemoSlider = view.findViewById(R.id.slider);
         tvLatestNews = view.findViewById(R.id.tv_home_latest_news);
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
+        moveRight = view.findViewById(R.id.img_btn_move_right);
+        moveLeft = view.findViewById(R.id.img_btn_move_left);
     }
 
     private void init() {
@@ -114,10 +122,26 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, getActivity(), true);
 
         recyclerView.setAdapter(adapterNews);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
+        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
         //linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        SnapHelper snapHelperStart = new GravitySnapHelper(Gravity.START);
+        snapHelperStart.attachToRecyclerView(recyclerView);
+
+        moveRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() -1);
+            }
+        });
+
+        moveLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.getLayoutManager().scrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1);
+            }
+        });
 
         getNews();
         setupSlider();
@@ -155,14 +179,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                        if(newsModel.getHeadline().length() >= 40)
-                        {
-                            newsModel.setHeadline(newsModel.getHeadline().substring(0,40) + "...");
-                        }
-                        if(newsModel.getDescription().length() >= 60)
-                        {
-                            newsModel.setDescription(newsModel.getDescription().substring(0,60) + "...");
-                        }
                         newsModelArrayList.add(newsModel);
                         adapterNews.notifyDataSetChanged();
                     }
@@ -249,4 +265,5 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     public void onPageScrollStateChanged(int state) {
 
     }
+
 }
