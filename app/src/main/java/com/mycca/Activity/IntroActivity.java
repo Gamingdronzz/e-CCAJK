@@ -21,7 +21,7 @@ public class IntroActivity extends OnboarderActivity {
         onboarderPages = new ArrayList<>();
 
         OnboarderPage onboarderPage1 = new OnboarderPage("Welcome", "Welcome to Official Android Application of\n" +
-                "Controller Communication Accounts", R.drawable.cca);
+                "Controller of Communication Accounts", R.drawable.cca);
         setOnboarderPageProperties(onboarderPage1);
 
         OnboarderPage onboarderPage2 = new OnboarderPage("Functions",
