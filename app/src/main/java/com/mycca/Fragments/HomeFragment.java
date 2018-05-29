@@ -18,17 +18,18 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
+import com.mycca.CustomObjects.GravitySnapHelper.GravitySnapHelper;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Preferences;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;

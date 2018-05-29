@@ -19,6 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar;
+import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBarType;
+import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorType;
+import com.mycca.CustomObjects.IndicatorSeekBar.TickType;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Models.LocationModel;
 import com.mycca.Providers.LocationDataProvider;
@@ -39,10 +43,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.warkiz.widget.IndicatorSeekBar;
-import com.warkiz.widget.IndicatorSeekBarType;
-import com.warkiz.widget.IndicatorType;
-import com.warkiz.widget.TickType;
 
 import java.util.ArrayList;
 

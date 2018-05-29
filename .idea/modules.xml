@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://G:\1.AndroidProjects\e-CCAJK\CCA JK.iml" filepath="G:\1.AndroidProjects\e-CCAJK\CCA JK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CCA JK.iml" filepath="$PROJECT_DIR$/CCA JK.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/e-CCAJK.iml" filepath="$PROJECT_DIR$/e-CCAJK.iml" />
-      <module fileurl="file://E:\Documents\AndroidStudioProjects\CCA JK\e-CCAJK.iml" filepath="E:\Documents\AndroidStudioProjects\CCA JK\e-CCAJK.iml" />
     </modules>
   </component>
 </project>

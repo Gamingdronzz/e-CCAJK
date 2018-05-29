@@ -36,15 +36,15 @@
         <!--app:seekBarRotation="CW270"-->
         <!--/>-->
         <!--</com.ccajk.CustomObjects.VerticalSeekBarWrapper>-->
-        <com.warkiz.widget.IndicatorSeekBar
+        <com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/textview_range"
-            android:paddingTop="@dimen/padding_medium"
-            android:paddingBottom="@dimen/padding_medium"
             android:layout_centerHorizontal="true"
             android:background="#88000000"
+            android:paddingBottom="@dimen/padding_medium"
+            android:paddingTop="@dimen/padding_medium"
             app:isb_indicator_color="@color/colorAccent"
             app:isb_indicator_stay="false"
             app:isb_indicator_text_color="@color/colorWhite"
@@ -59,7 +59,8 @@
             app:isb_track_background_bar_color="@color/colorWhite"
             app:isb_track_background_bar_size="@dimen/padding_xlarge"
             app:isb_track_progress_bar_color="@color/colorAccent"
-            app:isb_track_progress_bar_size="@dimen/margin_small"></com.warkiz.widget.IndicatorSeekBar>
+            app:isb_track_progress_bar_size="@dimen/margin_small">
+        </com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar>
 
         <TextView
             android:id="@+id/textview_range"
