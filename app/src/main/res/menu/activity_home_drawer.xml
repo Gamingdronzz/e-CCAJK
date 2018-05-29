@@ -105,11 +105,10 @@
                     android:id="@+id/navmenu_contact_us"
                     android:icon="@drawable/ic_contact_phone_black_24dp"
                     android:title="Contact Us" />
-               <!-- <item
+                <item
                     android:id="@+id/navmenu_latest_news"
                     android:icon="@drawable/ic_news_icon"
-                    android:title="Latest News" />-->
-
+                    android:title="Latest News" />
                 <item
                     android:id="@+id/navmenu_hotspot_locator"
                     android:icon="@drawable/ic_wifi_black_24dp"

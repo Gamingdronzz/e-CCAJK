@@ -48,6 +48,7 @@ import com.mycca.Fragments.ContactUsFragment;
 import com.mycca.Fragments.FeedbackFragment;
 import com.mycca.Fragments.HomeFragment;
 import com.mycca.Fragments.InspectionFragment;
+import com.mycca.Fragments.LatestNewsFragment;
 import com.mycca.Fragments.LocatorFragment;
 import com.mycca.Fragments.LoginFragment;
 import com.mycca.Fragments.PanAdhaarUploadFragment;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     View viewTop, viewBottom;
 
     ShowCaseStepDisplayer displayer;
+    FancyShowCaseQueue mQueue;
     StaffModel staffModel;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
@@ -95,11 +97,10 @@ public class MainActivity extends AppCompatActivity
         bindViews();
         init();
         ShowFragment("Home", new HomeFragment(), null);
-        showTutorial();
 
-        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SIGNIN_MSG)) {
-            showAuthDialog(false);
-            Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SIGNIN_MSG, false);
+        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SHOWCASE_TUTORIAL)) {
+            showTutorial();
+            //Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SHOWCASE_TUTORIAL, false);
         }
     }
 
@@ -206,20 +207,37 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(this)
-                .title("Tap to view in detail")
-                .focusCircleRadiusFactor(2)
-                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle,Gravity.BOTTOM|Gravity.CENTER)
+                .title("Tap to view news in detail")
+                .focusCircleRadiusFactor(4)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
                 .focusOn(viewBottom)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(this)
-                .title("Welcome to My CCA Android App\nTap anywhere to continue")
+                .title("Open Main Menu from here")
+                .focusRectAtPosition(0, 0, 500, 500)
+                .roundRectRadius(500)
                 .build();
 
-        FancyShowCaseQueue mQueue = new FancyShowCaseQueue()
-                .add(fancyShowCaseView3)
+        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(this)
+                .title("Open Secondary Menu from here")
+                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 500, 500)
+                .roundRectRadius(500)
+                .build();
+
+        mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2);
+                .add(fancyShowCaseView2)
+                .add(fancyShowCaseView3)
+                .add(fancyShowCaseView4);
+        mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                mQueue = null;
+                if (mAuth.getCurrentUser() == null)
+                    showAuthDialog(false);
+            }
+        });
 
         mQueue.show();
     }
@@ -404,10 +422,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_contact_us:
                 ShowFragment("Contact Us", new ContactUsFragment(), null);
                 break;
-            /*case R.id.navmenu_latest_news:
+            case R.id.navmenu_latest_news:
                 fragment = new LatestNewsFragment();
                 ShowFragment("Latest News", fragment, null);
-                break;*/
+                break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
                 bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
@@ -620,7 +638,9 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
 
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (mQueue != null) {
+            mQueue.cancel(true);
+        } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (f instanceof HomeFragment) {
             doExit();

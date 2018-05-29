@@ -1,7 +1,6 @@
 package com.mycca.Fragments;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.fxn.pix.Pix;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -98,7 +96,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
 
-private int RC_IMAGE_PICKER = 106;
+    private int RC_IMAGE_PICKER = 106;
+
     public SubmitGrievanceFragment() {
 
     }
@@ -267,9 +266,7 @@ private int RC_IMAGE_PICKER = 106;
             }
 
 
-
-
-                        @Override
+            @Override
             public void cropConfig(CropImage.ActivityBuilder builder) {
                 builder
                         .setMultiTouchEnabled(false)
@@ -619,14 +616,14 @@ private int RC_IMAGE_PICKER = 106;
         if (imagePicker != null)
             imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == RC_IMAGE_PICKER) {
+        /*if (resultCode == Activity.RESULT_OK && requestCode == RC_IMAGE_PICKER) {
             ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
 
             for (String s :
                     returnValue) {
                 Log.d(TAG, "onActivityResult: " + s);
             }
-        }
+        }*/
     }
 
     @Override

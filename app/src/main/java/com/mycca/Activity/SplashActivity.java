@@ -24,12 +24,12 @@ import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
+import com.mycca.Tools.Preferences;
 
 public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView tvSplashVersion;
-    boolean showWelcomeScreen = false;
     DatabaseReference dbref;
     int currentAppVersion;
     String currentVersionName;
@@ -173,8 +173,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
-        if (showWelcomeScreen) {
-            //intent.setClass(getApplicationContext(), WelcomeScreen.class);
+        if (Preferences.getInstance().getBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER)) {
+            intent.setClass(getApplicationContext(), IntroActivity.class);
         } else {
             intent.setClass(getApplicationContext(), MainActivity.class);
         }

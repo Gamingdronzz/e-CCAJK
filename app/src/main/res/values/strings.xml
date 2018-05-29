@@ -45,18 +45,39 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
-    <string name="reg_or_login_text1">SIGN IN TO REGISTER GRIEVANCES</string>
-
-    <string name="reg_or_login_text2">NOT YET REGISTERED?</string>
-    <string name="not_a_pensioner">Not a Pensioner ?</string>
-    <string name="title_activity_pan_adhaar_history">PanAdhaarHistoryActivity</string>
     <string name="about_us_string">This application is built by Gaming Dronzz.</string>
-    <string name="title_activity_ad">Ad</string>
 
+    <string name="tutorial_text1"><![CDATA[CCA pensioners can register their <b>Pensioner</b> or <b>GPF</b> grievances from this App
+<br>Select <b>Pension Grievance</b> or <b>GPF Grievance</b> option from the Main menu]]></string>
+
+    <string name="tutorial_text2">"Pensioners can also check the <b>Status</b> of their grievances
+<br/>Select <b>Track Grievance</b> option from the main menu</string>
+
+    <string name="tutorial_text3">Pensioners can <b>link</b> other information like <b>aadhaar pan etc</b>.
+<br/>Select options under <b>Update Information</b> section in the main menu</string>
+
+    <string name="tutorial_text4">Locate Hotspots from Wifi and GP LIT Locator in Main menu. Also find hotspots nearby your location. </string>
+    <string name="tutorial_text5"></string>
+    <string name="tutorial_text6"></string>
+
+
+    <!--invitation-->
+    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
+    <string name="invitation_title">My CCA</string>
+    <string name="invitation_message">Official Android Appication of CCA</string>
+    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
+
+    <!-- CropView -->
+    <string name="crop_image_activity_title"></string>
+    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">Crop</string>
+    <string name="pick_image_intent_chooser_title">Select source</string>
+    <string name="saving_image">Saving image ...</string>
+
+    <string name="title_activity_ad">Ad</string>
     <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
     <string name="start_level">Level 1</string>
     <string name="next_level">Next Level</string>
@@ -65,17 +86,5 @@
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
     <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
-
-    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
-    <string name="invitation_title">My CCA</string>
-    <string name="invitation_message">Official Android Appication of CCA</string>
-    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
-    <!-- CropView -->
-    <string name="crop_image_activity_title"></string>
-    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
-    <string name="crop_image_menu_rotate_right">Rotate</string>
-    <string name="crop_image_menu_crop">Crop</string>
-    <string name="pick_image_intent_chooser_title">Select source</string>
-    <string name="saving_image">Saving image ...</string>
 
 </resources>

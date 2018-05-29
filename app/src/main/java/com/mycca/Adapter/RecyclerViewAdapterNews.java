@@ -49,9 +49,12 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
         NewsModel newsModel = newsModelArrayList.get(position);
 
         holder.viewClickListener.setPosition(position);
-        holder.headline.setText(newsModel.getHeadline());
         holder.date.setText(Helper.getInstance().formatDate(newsModel.getDate(), "dd-MM-yy"));
-
+        String title = newsModel.getHeadline();
+        if (home && title.length() >= 70) {
+            holder.headline.setText(title.substring(0, 70) + "...");
+        } else
+            holder.headline.setText(title);
         String desc = newsModel.getDescription();
         if (home && desc.length() >= 57) {
             holder.description.setText(desc.substring(0, 57) + "...");
