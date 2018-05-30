@@ -37,10 +37,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.ShowcaseCard.step.ShowCaseStepDisplayer;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
@@ -81,8 +78,6 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     View viewTop, viewBottom;
 
-    ShowCaseStepDisplayer displayer;
-    FancyShowCaseQueue mQueue;
     StaffModel staffModel;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
@@ -97,11 +92,6 @@ public class MainActivity extends AppCompatActivity
         bindViews();
         init();
         ShowFragment("Home", new HomeFragment(), null);
-
-        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_SHOWCASE_TUTORIAL)) {
-            showTutorial();
-            //Preferences.getInstance().setBooleanPref(this, Preferences.PREF_SHOWCASE_TUTORIAL, false);
-        }
     }
 
     @Override
@@ -183,66 +173,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void showTutorial() {
-
-//        displayer = new ShowCaseStepDisplayer.Builder(MainActivity.this).build();
-//
-//        displayer.addStep(new ShowCaseStep(new Center(), "Welcome to My CCA Android App\nTap anywhere to continue"));
-//        displayer.addStep(new ShowCaseStep(new ViewPosition(viewTop), "Touch to open website"));
-//        displayer.addStep(new ShowCaseStep(new ViewPosition(viewBottom), "Tap on news to view it in detail"));
-//        displayer.addStep(new ShowCaseStep(new TopLeftToolbar(), "Tap here to navigate through main menu", new ShowCaseView.TouchListener() {
-//            @Override
-//            public void onTouchEvent() {
-//                drawerLayout.openDrawer(GravityCompat.START);
-//                displayer.dismiss();
-//            }
-//        })
-//        );
-//        displayer.start();
-
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(this)
-                .title("Touch to open website")
-                .focusOn(viewTop)
-                .focusCircleRadiusFactor(.5)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(this)
-                .title("Tap to view news in detail")
-                .focusCircleRadiusFactor(4)
-                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
-                .focusOn(viewBottom)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(this)
-                .title("Open Main Menu from here")
-                .focusRectAtPosition(0, 0, 500, 500)
-                .roundRectRadius(500)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(this)
-                .title("Open Secondary Menu from here")
-                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 500, 500)
-                .roundRectRadius(500)
-                .build();
-
-        mQueue = new FancyShowCaseQueue()
-                .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2)
-                .add(fancyShowCaseView3)
-                .add(fancyShowCaseView4);
-        mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                mQueue = null;
-                if (mAuth.getCurrentUser() == null)
-                    showAuthDialog(false);
-            }
-        });
-
-        mQueue.show();
-    }
-
-    private void showAuthDialog(boolean skipped) {
+    public void showAuthDialog(boolean skipped) {
         if (skipped) {
             Helper.getInstance().showFancyAlertDialog(this,
                     "Please Sign in with google to access this app feature.",
@@ -638,12 +569,13 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
 
-        if (mQueue != null) {
-            mQueue.cancel(true);
-        } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (f instanceof HomeFragment) {
-            doExit();
+            if (((HomeFragment) f).mQueue != null) {
+                ((HomeFragment) f).mQueue.cancel(true);
+            } else
+                doExit();
         } else if (f instanceof BrowserFragment) {
             if (((BrowserFragment) f).canGoBack()) {
                 ((BrowserFragment) f).goBack();

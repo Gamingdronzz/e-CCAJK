@@ -15,13 +15,11 @@ public class Preferences {
     private static Preferences _instance;
 
     public static final String PREF_STAFF_DATA = "staffData";
-    // public static final String PREF_STAFF_TYPE = "staffType";
-    // public static final String PREF_STAFF_ID = "staffId";
-    //public static final String PREF_SIGNIN_MSG = "signInMsg";
     public static final String PREF_STATE = "state";
     public static final String PREF_RECIEVE_NOTIFICATIONS = "recieveNotifications";
     public static final String PREF_SHOW_ONBOARDER = "onboarder";
-    public static final String PREF_SHOWCASE_TUTORIAL= "tutorial";
+    public static final String PREF_SHOWCASE_HOME= "home";
+
 
     public Preferences() {
         _instance = this;

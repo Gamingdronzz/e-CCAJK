@@ -49,16 +49,14 @@
 
     <string name="about_us_string">This application is built by Gaming Dronzz.</string>
 
-    <string name="tutorial_text1"><![CDATA[CCA pensioners can register their <b>Pensioner</b> or <b>GPF</b> grievances from this App
-<br>Select <b>Pension Grievance</b> or <b>GPF Grievance</b> option from the Main menu]]></string>
+    <string name="tutorial_text1">CCA pensioners can register their grievances using the Pension or GPF Grievance option from the Main menu</string>
 
-    <string name="tutorial_text2">"Pensioners can also check the <b>Status</b> of their grievances
-<br/>Select <b>Track Grievance</b> option from the main menu</string>
+    <string name="tutorial_text2">Pensioners can also check the <b>Status</b> of their grievances using Track Grievance option from the Main menu</string>
 
-    <string name="tutorial_text3">Pensioners can <b>link</b> other information like <b>aadhaar pan etc</b>.
-<br/>Select options under <b>Update Information</b> section in the main menu</string>
+    <string name="tutorial_text3">Pensioners can <b>link</b> other information like <b>aadhaar pan etc</b>. through Update Information section in the main menu</string>
 
-    <string name="tutorial_text4">Locate Hotspots from Wifi and GP LIT Locator in Main menu. Also find hotspots nearby your location. </string>
+    <string name="tutorial_text4">App features require google sign in. You can manually sign in and sign out using Settings option in Secondary menu</string>
+
     <string name="tutorial_text5"></string>
     <string name="tutorial_text6"></string>
 

@@ -1,6 +1,7 @@
 package com.mycca.Fragments;
 
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.GravitySnapHelper.GravitySnapHelper;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
@@ -37,6 +40,7 @@ import java.util.HashMap;
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     SliderLayout mDemoSlider;
+    public FancyShowCaseQueue mQueue;
     RecyclerView recyclerView;
     TextView tvLatestNews;
     ImageButton moveRight, moveLeft;
@@ -59,7 +63,10 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         view = inflater.inflate(R.layout.fragment_home, container, false);
         bindViews(view);
         init();
-        //Helper.getInstance().updateLocations();
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_SHOWCASE_HOME)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_SHOWCASE_HOME, false);
+        }
         return view;
     }
 
@@ -74,7 +81,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void init() {
-//        SpannableStringBuilder builder = new SpannableStringBuilder();
+        //        SpannableStringBuilder builder = new SpannableStringBuilder();
 //        SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
 //        builder.append(str1);
 //        SpannableString str2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
@@ -124,7 +131,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         recyclerView.setAdapter(adapterNews);
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
-        //linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         SnapHelper snapHelperStart = new GravitySnapHelper(Gravity.START);
@@ -133,7 +139,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         moveRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() -1);
+                recyclerView.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
             }
         });
 
@@ -237,6 +243,48 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         }
 
 
+    }
+
+    private void showTutorial() {
+
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("Touch to open website.Tap anywhere to continue")
+                .focusOn(mDemoSlider)
+                .focusCircleRadiusFactor(.5)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+                .title("Tap to view news in detail")
+                .focusOn(recyclerView)
+                .focusCircleRadiusFactor(.8)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+                .title("Open Main Menu from here")
+                .focusCircleAtPosition(0, 0, 200)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
+                .title("Open Secondary Menu from here")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels,0,200)
+                .build();
+
+        mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView1)
+                .add(fancyShowCaseView2)
+                .add(fancyShowCaseView3)
+                .add(fancyShowCaseView4);
+        mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                mQueue = null;
+                if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
+                    ((MainActivity) getActivity()).showAuthDialog(false);
+            }
+        });
+
+        mQueue.show();
     }
 
     @Override

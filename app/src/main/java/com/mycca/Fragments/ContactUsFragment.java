@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.mycca.Adapter.RecyclerViewAdapterContacts;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.Models.Contact;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
@@ -32,13 +35,14 @@ import static android.content.ContentValues.TAG;
  */
 public class ContactUsFragment extends Fragment {
 
-    AppCompatTextView textViewOfficeAddress, textviewHeadingOfficeAddress,textviewContactPersonHeading;
+    AppCompatTextView textViewOfficeAddress, textviewHeadingOfficeAddress, textviewContactPersonHeading;
     LinearLayout officeAddressLayout;
     AppCompatButton compatButtonLocateOnMap;
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
     boolean isTab;
+    FancyShowCaseQueue mQueue;
 
     public ContactUsFragment() {
     }
@@ -55,7 +59,7 @@ public class ContactUsFragment extends Fragment {
         else {
             init(false);
         }
-
+        showTutorial();
         return view;
 
     }
@@ -67,23 +71,21 @@ public class ContactUsFragment extends Fragment {
         textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
         textviewContactPersonHeading = view.findViewById(R.id.textview_contact_person_heading);
 
-        textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp,0,0,0);
+        textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
 
-        textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE)));
+        textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE)));
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
-        compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location,0,0,0);
+        compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
         compatButtonLocateOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String location = "32.707500,74.874217";
-                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q="+location+"(Office of CCA, JK)");
+                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(mapIntent);
-                }
-                else
-                {
-                    Toast.makeText(getContext(),"No Map Application Installed",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -92,7 +94,7 @@ public class ContactUsFragment extends Fragment {
 
     private void init(boolean isMultiColumn) {
 
-        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList(Preferences.getInstance().getStringPref(getContext(),Preferences.PREF_STATE));
+        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -121,6 +123,45 @@ public class ContactUsFragment extends Fragment {
         }
     }
 
+    private void showTutorial() {
+
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("Touch to open office address")
+                .focusOn(textviewHeadingOfficeAddress)
+                .focusCircleRadiusFactor(.5)
+                .showOnce("ContactUsOffice")
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+                .title("Tap on any contact to open contact information")
+                .focusOn(recyclerView)
+                .focusCircleRadiusFactor(.5)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP| Gravity.CENTER)
+                .showOnce("ContactUsInfo")
+                .build();
+
+
+        mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView1)
+                .add(fancyShowCaseView2);
+
+        mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                contactArrayList.get(0).setExpanded(true);
+                adapterContacts.notifyItemChanged(0);
+                new FancyShowCaseView.Builder(getActivity())
+                        .title("Tap on phone numbers to make call or on email to compose email")
+                        .focusOn( recyclerView.getChildAt(1))
+                        .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM| Gravity.CENTER)
+                        .showOnce("ContactUsCallEmail")
+                        .build()
+                        .show();
+            }
+        });
+
+        mQueue.show();
+    }
 
     private String getGeneralText(String prefState) {
         return getResources().getString(R.string.contact_info);

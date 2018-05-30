@@ -2,11 +2,11 @@ package com.mycca.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 
 import com.mycca.CustomObjects.Onboarder.OnboarderActivity;
 import com.mycca.CustomObjects.Onboarder.OnboarderPage;
 import com.mycca.R;
+import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +21,27 @@ public class IntroActivity extends OnboarderActivity {
         onboarderPages = new ArrayList<>();
 
         OnboarderPage onboarderPage1 = new OnboarderPage("Welcome", "Welcome to Official Android Application of\n" +
-                "Controller of Communication Accounts", R.drawable.cca);
+                "Controller of Communication Accounts", R.drawable.cca2);
         setOnboarderPageProperties(onboarderPage1);
 
         OnboarderPage onboarderPage2 = new OnboarderPage("Functions",
-                Html.fromHtml(getResources().getString(R.string.tutorial_text1)).toString(),
-                R.drawable.ic_pension);
+                getResources().getString(R.string.tutorial_text1),
+                R.drawable.drawable_functions);
         setOnboarderPageProperties(onboarderPage2);
 
         OnboarderPage onboarderPage3 = new OnboarderPage("Tracking",
                 getResources().getString(R.string.tutorial_text2),
-                R.drawable.ic_drawable_tracking);
+                R.drawable.drawable_track);
         setOnboarderPageProperties(onboarderPage3);
 
         OnboarderPage onboarderPage4 = new OnboarderPage("Add Other Information",
                 getResources().getString(R.string.tutorial_text3),
-                R.drawable.ic_drawable_pancard);
+                R.drawable.drawable_update_info);
         setOnboarderPageProperties(onboarderPage4);
 
-        OnboarderPage onboarderPage5 = new OnboarderPage("Locate Hotspots",
+        OnboarderPage onboarderPage5 = new OnboarderPage("Google Sign In",
                 getResources().getString(R.string.tutorial_text4),
-                R.drawable.ic_wifi);
+                R.drawable.index);
         setOnboarderPageProperties(onboarderPage5);
 
         onboarderPages.add(onboarderPage1);
@@ -55,7 +55,7 @@ public class IntroActivity extends OnboarderActivity {
 
     public void setOnboarderPageProperties(OnboarderPage onboarderPage) {
         onboarderPage.setTitleColor(R.color.colorPrimary);
-        onboarderPage.setDescriptionColor(R.color.colorWhite);
+        onboarderPage.setDescriptionColor(R.color.colorOffWhite);
         onboarderPage.setBackgroundColor(R.color.colorLightBlack);
         onboarderPage.setDescriptionTextSize(20);
         onboarderPage.setTitleTextSize(25);
@@ -64,14 +64,14 @@ public class IntroActivity extends OnboarderActivity {
 
     @Override
     public void onSkipButtonPressed() {
-        //Preferences.getInstance().setBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER,false);
+        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER,false);
         startActivity(new Intent(IntroActivity.this, MainActivity.class));
         finish();
     }
 
     @Override
     public void onFinishButtonPressed() {
-        // Preferences.getInstance().setBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER,false);
+        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER,false);
         startActivity(new Intent(IntroActivity.this, MainActivity.class));
         finish();
     }

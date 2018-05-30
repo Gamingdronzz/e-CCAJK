@@ -3,6 +3,7 @@ package com.mycca.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,6 +45,8 @@ import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
@@ -68,12 +71,14 @@ import java.util.Map;
 
 public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse {
 
+    View view;
     AutoCompleteTextView autoCompleteTextViewPensionerCode, inputEmail, inputMobile;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     EditText inputDetails;
     Spinner spinnerInputType, spinnerInputSubmittedBy, spinnerCircle;
     Button submit, buttonChooseFile;
+    //FloatingActionButton buttonChooseFile;
     TextView removeAll, textViewSelectedFileCount;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
@@ -106,12 +111,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_grievance, container, false);
+        view = inflater.inflate(R.layout.fragment_grievance, container, false);
         Bundle bundle = this.getArguments();
         type = bundle.getString("Type");
         bindViews(view);
         setHasOptionsMenu(true);
         init();
+        showTutorial();
         return view;
     }
 
@@ -242,6 +248,28 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         inflater.inflate(R.menu.menu_form, menu);
     }
 
+
+    private void showTutorial() {
+
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
+                .title("Add images using this button")
+                //.showOnce("ButtonAddFile")
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+                .focusOn(view.findViewById(R.id.action_clear_form_data))
+                .focusCircleRadiusFactor(4)
+                .title("Click to clear form data")
+                // .showOnce("ClearData")
+                .build();
+
+        FancyShowCaseQueue mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView1)
+                .add(fancyShowCaseView3);
+
+        mQueue.show();
+    }
 
     private void showImageChooser() {
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
