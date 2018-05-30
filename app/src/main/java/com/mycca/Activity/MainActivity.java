@@ -588,9 +588,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult()", Integer.toString(resultCode));
+        List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -599,12 +602,18 @@ public class MainActivity extends AppCompatActivity
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d(TAG, "signed in: " + account.getEmail());
                 firebaseAuthWithGoogle(account);
+                for (Fragment frag : allFragments) {
+                    if(frag instanceof HomeFragment)
+                    {
+                        ((HomeFragment)frag).setupWelcomeBar();
+                    }
+                }
+
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
                 progressDialog.dismiss();
             }
         } else {
-            List<Fragment> allFragments = getSupportFragmentManager().getFragments();
             for (Fragment frag : allFragments) {
                 frag.onActivityResult(requestCode, resultCode, data);
             }

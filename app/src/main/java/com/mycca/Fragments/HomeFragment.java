@@ -19,6 +19,8 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +44,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     SliderLayout mDemoSlider;
     public FancyShowCaseQueue mQueue;
     RecyclerView recyclerView;
-    TextView tvLatestNews;
+    TextView tvLatestNews,tvUserName;
     ImageButton moveRight, moveLeft;
     LinearLayoutManager linearLayoutManager;
     //private TextView welcomeText, ccaDeskText;
@@ -78,6 +80,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
         moveRight = view.findViewById(R.id.img_btn_move_right);
         moveLeft = view.findViewById(R.id.img_btn_move_left);
+        tvUserName = view.findViewById(R.id.tv_home_username);
     }
 
     private void init() {
@@ -312,6 +315,17 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageScrollStateChanged(int state) {
+
+    }
+
+    public void setupWelcomeBar()
+    {
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            tvUserName.setText("Welcome " + personName);
+            Log.d(TAG, "SetupWelcomeBar: Name = " + personName);
+        }
 
     }
 

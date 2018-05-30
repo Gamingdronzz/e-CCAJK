@@ -9,6 +9,16 @@
     android:background="@color/colorWhite"
     tools:context=".Fragments.HomeFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:textSize="@dimen/text_12"
+        android:textStyle="bold"
+        android:id="@+id/tv_home_username"
+        >
+
+    </TextView>
+
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/slider"
         android:layout_width="match_parent"
