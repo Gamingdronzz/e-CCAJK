@@ -64,6 +64,26 @@
         android:layout_marginTop="@dimen/margin_large"
         android:background="@color/colorGray" />
 
+    <TextView
+        android:id="@+id/tv_settings_view_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/padding_large"
+        android:drawableTint="@color/colorAccent"
+        android:paddingLeft="@dimen/padding_medium"
+        android:paddingRight="@dimen/padding_medium"
+        android:paddingTop="@dimen/padding_xlarge"
+        android:paddingBottom="@dimen/padding_large"
+        android:text="View Tutorials Again"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_20" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_large"
+        android:background="@color/colorGray" />
+
     <LinearLayout
         android:id="@+id/layout_settings_sign_in_out"
         android:layout_width="match_parent"
@@ -100,5 +120,6 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/margin_large"
         android:background="@color/colorGray" />
+
 
 </LinearLayout>

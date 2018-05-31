@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterContacts;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
@@ -59,7 +60,10 @@ public class ContactUsFragment extends Fragment {
         else {
             init(false);
         }
-        showTutorial();
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_CONTACT)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_CONTACT, false);
+        }
         return view;
 
     }
@@ -125,42 +129,44 @@ public class ContactUsFragment extends Fragment {
 
     private void showTutorial() {
 
+        contactArrayList.get(0).setExpanded(true);
+        adapterContacts.notifyItemChanged(0);
+
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
                 .title("Touch to open office address")
                 .focusOn(textviewHeadingOfficeAddress)
                 .focusCircleRadiusFactor(.5)
-                .showOnce("ContactUsOffice")
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
-                .title("Tap on any contact to open contact information")
+                .title("Tap on any contact to open or close contact information")
                 .focusOn(recyclerView)
-                .focusCircleRadiusFactor(.5)
-                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP| Gravity.CENTER)
-                .showOnce("ContactUsInfo")
+                .focusCircleRadiusFactor(.8)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
                 .build();
 
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+                .title("Tap on phone numbers to make call or on email to compose email")
+                .focusOn(recyclerView)
+                .focusCircleRadiusFactor(.6)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
+                .build();
 
-        mQueue = new FancyShowCaseQueue()
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2);
+                .add(fancyShowCaseView2)
+                .add(fancyShowCaseView3);
 
-        mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                contactArrayList.get(0).setExpanded(true);
+                ((MainActivity) getActivity()).mQueue = null;
+                contactArrayList.get(0).setExpanded(false);
                 adapterContacts.notifyItemChanged(0);
-                new FancyShowCaseView.Builder(getActivity())
-                        .title("Tap on phone numbers to make call or on email to compose email")
-                        .focusOn( recyclerView.getChildAt(1))
-                        .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM| Gravity.CENTER)
-                        .showOnce("ContactUsCallEmail")
-                        .build()
-                        .show();
             }
         });
 
-        mQueue.show();
+        ((MainActivity) getActivity()).mQueue.show();
     }
 
     private String getGeneralText(String prefState) {

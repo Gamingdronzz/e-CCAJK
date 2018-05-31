@@ -37,6 +37,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     View viewTop, viewBottom;
 
+    public FancyShowCaseQueue mQueue;
     StaffModel staffModel;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
@@ -246,13 +248,16 @@ public class MainActivity extends AppCompatActivity
 
                                 }
                             }, null, null, FancyAlertDialogType.SUCCESS);
+
                             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
                             if (f instanceof SettingsFragment)
                                 ((SettingsFragment) f).manageSignOut();
+                            else if (f instanceof HomeFragment)
+                                ((HomeFragment) f).setupWelcomeBar();
+
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Unable to Sign in", "OK", null, null, null, FancyAlertDialogType.ERROR);
-
                         }
 
                     }
@@ -569,13 +574,30 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
 
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (mQueue != null) {
+            Helper.getInstance().showFancyAlertDialog(this,
+                    "Skip CCA Tutorial Messages?",
+                    "CCA Help",
+                    "SKIP", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            mQueue.cancel(true);
+                            Preferences.getInstance().setTutorialPrefs(MainActivity.this);
+                        }
+                    },
+                    "CANCEL", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+
+                        }
+                    },
+                    FancyAlertDialogType.WARNING);
+
+        } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
+
         } else if (f instanceof HomeFragment) {
-            if (((HomeFragment) f).mQueue != null) {
-                ((HomeFragment) f).mQueue.cancel(true);
-            } else
-                doExit();
+            doExit();
         } else if (f instanceof BrowserFragment) {
             if (((BrowserFragment) f).canGoBack()) {
                 ((BrowserFragment) f).goBack();
@@ -583,11 +605,11 @@ public class MainActivity extends AppCompatActivity
                 ((BrowserFragment) f).stopLoading();
                 ShowFragment("Home", new HomeFragment(), null);
             }
+
         } else {
             ShowFragment("Home", new HomeFragment(), null);
         }
     }
-
 
 
     @Override
@@ -602,13 +624,6 @@ public class MainActivity extends AppCompatActivity
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d(TAG, "signed in: " + account.getEmail());
                 firebaseAuthWithGoogle(account);
-                for (Fragment frag : allFragments) {
-                    if(frag instanceof HomeFragment)
-                    {
-                        ((HomeFragment)frag).setupWelcomeBar();
-                    }
-                }
-
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
                 progressDialog.dismiss();

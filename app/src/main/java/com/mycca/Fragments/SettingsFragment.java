@@ -14,6 +14,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.mycca.Activity.IntroActivity;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Activity.StateSettingActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
@@ -28,7 +29,7 @@ public class SettingsFragment extends Fragment {
     FirebaseAuth mAuth;
     private Switch switchNotification;
     LinearLayout layoutChangeState, layoutSignInOut;
-    private TextView tvChangeState, tvCurrentState, tvSignOut, tvAccount;
+    private TextView tvChangeState, tvCurrentState, tvSignOut, tvAccount, tvHelp;
 
     public SettingsFragment() {
 
@@ -56,6 +57,9 @@ public class SettingsFragment extends Fragment {
         tvChangeState = view.findViewById(R.id.tv_settings_change_state);
         tvChangeState.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_place_black_24dp, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
 
+        tvHelp = view.findViewById(R.id.tv_settings_view_help);
+        tvHelp.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_live_help_black_24dp, 0, 0, 0);
+
         layoutSignInOut = view.findViewById(R.id.layout_settings_sign_in_out);
         tvSignOut = view.findViewById(R.id.tv_settings_sign_in_out);
         tvAccount = view.findViewById(R.id.tv_settings_account);
@@ -75,6 +79,15 @@ public class SettingsFragment extends Fragment {
                 } else {
                     Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, false);
                 }
+            }
+        });
+
+        tvHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Preferences.getInstance().clearTutorialPrefs(getContext());
+                startActivity(new Intent(getActivity(), IntroActivity.class));
+                getActivity().finish();
             }
         });
 

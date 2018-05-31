@@ -18,18 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar;
-import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBarType;
-import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorType;
-import com.mycca.CustomObjects.IndicatorSeekBar.TickType;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Models.LocationModel;
-import com.mycca.Providers.LocationDataProvider;
-import com.mycca.R;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.MapsHelper;
-import com.mycca.Tools.MyLocationManager;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -43,6 +31,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.mycca.Activity.MainActivity;
+import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
+import com.mycca.CustomObjects.FancyShowCase.FocusShape;
+import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar;
+import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBarType;
+import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorType;
+import com.mycca.CustomObjects.IndicatorSeekBar.TickType;
+import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.Models.LocationModel;
+import com.mycca.Providers.LocationDataProvider;
+import com.mycca.R;
+import com.mycca.Tools.Helper;
+import com.mycca.Tools.MapsHelper;
+import com.mycca.Tools.MyLocationManager;
+import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -96,6 +101,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Log.d(TAG, "onCreateView: tabnearby created");
         bindViews(view);
         init();
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_NEARBY)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_NEARBY, false);
+        }
         return view;
     }
 
@@ -293,6 +302,26 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         rlp.addRule(RelativeLayout.ALIGN_END, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         rlp.setMargins(20, 25, 0, 0);
+    }
+
+    private void showTutorial() {
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("Change radius for searching nearby hotspots")
+                .focusOn(seekBar)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .focusCircleRadiusFactor(.5)
+                .build();
+
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue().add(fancyShowCaseView1);
+
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                ((MainActivity) getActivity()).mQueue = null;
+            }
+        });
+
+        ((MainActivity) getActivity()).mQueue.show();
     }
 
     private void placeMarkerOnMyLocation(Location location) {

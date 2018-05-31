@@ -4,6 +4,7 @@ package com.mycca.Tabs.Locator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,16 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterHotspotLocation;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.Listeners.ClickListener;
 import com.mycca.Listeners.RecyclerViewTouchListeners;
 import com.mycca.Models.LocationModel;
 import com.mycca.Providers.LocationDataProvider;
 import com.mycca.R;
+import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -37,6 +43,7 @@ public class TabAllLocations extends Fragment {
     String TAG = "All Locations";
     RadioGroup radioGroup;
     Spinner districtSpinner, stateSpinner;
+    Button search, sort;
     RecyclerView recyclerView;
     RecyclerViewAdapterHotspotLocation adapter;
     String[] locations;
@@ -52,6 +59,10 @@ public class TabAllLocations extends Fragment {
         locatorType = getArguments().getString("Locator");
         Log.d(TAG, "onCreateView: locator type = " + locatorType);
         init(view);
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_LOCATOR)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_LOCATOR, false);
+        }
         return view;
     }
 
@@ -72,7 +83,7 @@ public class TabAllLocations extends Fragment {
             }
         });*/
 
-        Button search = view.findViewById(R.id.btn_search_loc);
+        search = view.findViewById(R.id.btn_search_loc);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +91,7 @@ public class TabAllLocations extends Fragment {
             }
         });
 
-        Button sort = view.findViewById(R.id.button_sort_loc);
+        sort = view.findViewById(R.id.button_sort_loc);
         sort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,13 +100,6 @@ public class TabAllLocations extends Fragment {
         });
 
         stateLocations = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
-//        if (locatorType.equals(FireBaseHelper.getInstance().ROOT_GP)) {
-//            Log.d(TAG, "init: GP");
-//            stateLocations = LocationDataProvider.getInstance().getGpLocationModelArrayList();
-//        } else {
-//            Log.d(TAG, "init: Hotspot");
-//            stateLocations = LocationDataProvider.getInstance().getHotspotLocationModelArrayList();
-//        }
         adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
 
         locations = new String[stateLocations.size()];
@@ -127,6 +131,48 @@ public class TabAllLocations extends Fragment {
             }
         }));
 
+    }
+
+    private void showTutorial() {
+
+        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
+                .title("View Nearby Hotspots")
+                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, 300, 300, 300)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("Click to search location")
+                .focusOn(search)
+                .focusCircleRadiusFactor(.5)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+                .title("Tap on location to open in Google Maps")
+                .focusOn(recyclerView)
+                .focusCircleRadiusFactor(.6)
+                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+                .title("Click to view locations districtwise")
+                .focusOn(sort)
+                .focusCircleRadiusFactor(.5)
+                .build();
+
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView4)
+                .add(fancyShowCaseView2)
+                .add(fancyShowCaseView1)
+                .add(fancyShowCaseView3);
+
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                ((MainActivity) getActivity()).mQueue = null;
+            }
+        });
+
+        ((MainActivity) getActivity()).mQueue.show();
     }
 
     private void ShowSortDialog() {

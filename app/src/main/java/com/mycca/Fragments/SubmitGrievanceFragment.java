@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.storage.UploadTask;
+import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.GrievanceAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.Adapter.StatesAdapter;
@@ -58,6 +59,7 @@ import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.DataSubmissionAndMail;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
+import com.mycca.Tools.Preferences;
 import com.mycca.Tools.VolleyHelper;
 
 import org.json.JSONException;
@@ -117,7 +119,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         bindViews(view);
         setHasOptionsMenu(true);
         init();
-        showTutorial();
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE, false);
+        }
         return view;
     }
 
@@ -254,21 +259,25 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
                 .title("Add images using this button")
-                //.showOnce("ButtonAddFile")
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
                 .focusOn(view.findViewById(R.id.action_clear_form_data))
                 .focusCircleRadiusFactor(4)
+                .fitSystemWindows(true)
                 .title("Click to clear form data")
-                // .showOnce("ClearData")
                 .build();
 
-        FancyShowCaseQueue mQueue = new FancyShowCaseQueue()
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView3);
-
-        mQueue.show();
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                ((MainActivity) getActivity()).mQueue = null;
+            }
+        });
+        ((MainActivity) getActivity()).mQueue.show();
     }
 
     private void showImageChooser() {

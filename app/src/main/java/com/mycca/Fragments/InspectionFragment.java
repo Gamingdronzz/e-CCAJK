@@ -32,13 +32,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
-
+import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
+import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.InspectionModel;
@@ -70,7 +73,8 @@ import static com.mycca.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse {
 
     private static final String TAG = "Inspection";
-    boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;;
+    boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;
+    ;
     Double latitude, longitude;
     int counterFirebaseImages;
     int counterUpload = 0;
@@ -107,6 +111,10 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
         init(view);
         getLocationCoordinates();
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION, false);
+        }
         return view;
     }
 
@@ -140,23 +148,19 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         editTextLocationName = view.findViewById(R.id.edittext_current_location_name);
         textLocationCoordinates = view.findViewById(R.id.textview_current_location_coordinates);
-        textLocationCoordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_location_black_24dp, 0, R.drawable.ic_refresh_black_24dp, 0);
+        textLocationCoordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_refresh_black_24dp, 0);
         textLocationCoordinates.setOnClickListener(getCoordinatesListener);
         textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
 
-
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
-
-
         upload = view.findViewById(R.id.button_upload);
-        upload.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_file_upload_black_24dp, 0, 0, 0);
+        upload.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_file_upload_black_24dp, 0, 0);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doSubmission();
             }
         });
-
 
         mLocationCallback = new LocationCallback() {
             @Override
@@ -166,12 +170,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 }
             }
         };
-//        mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(2000); // two minute interval
-//        mLocationRequest.setFastestInterval(2000);
-
-//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        //myLocationManager = new MyLocationManager(this, mLocationCallback, mFusedLocationClient, mLocationRequest);
         myLocationManager = new MyLocationManager(this, mLocationCallback);
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(),
                 "Getting Current Location Coordinates\nPlease Wait...");
@@ -179,13 +177,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         selectedImageModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        //recyclerViewSelectedImages.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
-        progressDialog.show();
 
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
@@ -204,7 +200,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
                             } else {
                                 Log.v(TAG, "Task is not Successful");
-                                progressDialog.dismiss();
                             }
                         }
                     });
@@ -221,7 +216,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                             Log.v(TAG, "On Task Failed");
                             if (e instanceof ResolvableApiException) {
                                 myLocationManager.onLocationAcccessRequestFailure(e);
-                                progressDialog.dismiss();
                             }
                         }
                     });
@@ -231,7 +225,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void OnConnectionNotAvailable() {
                 showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates");
-                progressDialog.dismiss();
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -239,7 +232,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void showCoordinates(Location location) {
         isCurrentLocationFound = true;
-        progressDialog.dismiss();
         mLastLocation = location;
         latitude = location.getLatitude();
         longitude = location.getLongitude();
@@ -247,8 +239,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
         textLocationCoordinates.setText("Current Location\n" + location.getLatitude() + " , " + location.getLongitude());
-        progressDialog.dismiss();
-
     }
 
     private void showImageChooser() {
@@ -356,7 +346,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
 
-        staffModel= Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
+        staffModel = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
 
         Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
@@ -463,6 +453,27 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     public void setSelectedFileCount(int count) {
         textViewSelectedFileCount.setText("Selected Files = " + count);
+    }
+
+    private void showTutorial() {
+
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("Click to refresh location")
+                .focusOn(textLocationCoordinates)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .build();
+
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView1);
+
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                ((MainActivity) getActivity()).mQueue = null;
+            }
+        });
+
+        ((MainActivity) getActivity()).mQueue.show();
     }
 
     @Override

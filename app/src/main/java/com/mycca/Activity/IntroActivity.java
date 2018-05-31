@@ -64,14 +64,14 @@ public class IntroActivity extends OnboarderActivity {
 
     @Override
     public void onSkipButtonPressed() {
-        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER,false);
+        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_HELP_ONBOARDER,false);
         startActivity(new Intent(IntroActivity.this, MainActivity.class));
         finish();
     }
 
     @Override
     public void onFinishButtonPressed() {
-        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER,false);
+        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_HELP_ONBOARDER,false);
         startActivity(new Intent(IntroActivity.this, MainActivity.class));
         finish();
     }

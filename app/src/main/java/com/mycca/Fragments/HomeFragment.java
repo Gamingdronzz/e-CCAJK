@@ -19,8 +19,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +34,6 @@ import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Preferences;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -44,7 +42,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     SliderLayout mDemoSlider;
     public FancyShowCaseQueue mQueue;
     RecyclerView recyclerView;
-    TextView tvLatestNews,tvUserName;
+    TextView tvLatestNews, tvUserName;
     ImageButton moveRight, moveLeft;
     LinearLayoutManager linearLayoutManager;
     //private TextView welcomeText, ccaDeskText;
@@ -65,9 +63,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         view = inflater.inflate(R.layout.fragment_home, container, false);
         bindViews(view);
         init();
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_SHOWCASE_HOME)) {
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_HOME)) {
             showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_SHOWCASE_HOME, false);
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_HOME, false);
         }
         return view;
     }
@@ -154,7 +152,16 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         });
 
         getNews();
+        setupWelcomeBar();
         setupSlider();
+    }
+
+    public void setupWelcomeBar() {
+        FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
+        if (user != null)
+            tvUserName.setText("Hello " + user.getDisplayName());
+        else
+            tvUserName.setText("Hello CCA User");
     }
 
     private void loadWebSite(String name) {
@@ -251,15 +258,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void showTutorial() {
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
-                .title("Touch to open website.Tap anywhere to continue")
+                .title("Open websites from here. Tap anywhere to continue")
                 .focusOn(mDemoSlider)
                 .focusCircleRadiusFactor(.5)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
-                .title("Tap to view news in detail")
+                .title("Tap on news to view in detail")
                 .focusOn(recyclerView)
-                .focusCircleRadiusFactor(.8)
+                .focusCircleRadiusFactor(.6)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
                 .build();
 
@@ -269,25 +276,25 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .build();
 
         final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
-                .title("Open Secondary Menu from here")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels,0,200)
+                .title("Touch here to open Secondary Menu for settings etc")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
                 .build();
 
-        mQueue = new FancyShowCaseQueue()
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3)
                 .add(fancyShowCaseView4);
-        mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                mQueue = null;
+                ((MainActivity) getActivity()).mQueue = null;
                 if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
                     ((MainActivity) getActivity()).showAuthDialog(false);
             }
         });
 
-        mQueue.show();
+        ((MainActivity) getActivity()).mQueue.show();
     }
 
     @Override
@@ -315,17 +322,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
-    }
-
-    public void setupWelcomeBar()
-    {
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
-        if (acct != null) {
-            String personName = acct.getDisplayName();
-            tvUserName.setText("Welcome " + personName);
-            Log.d(TAG, "SetupWelcomeBar: Name = " + personName);
-        }
 
     }
 

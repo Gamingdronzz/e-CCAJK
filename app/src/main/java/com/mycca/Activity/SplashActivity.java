@@ -173,7 +173,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
-        if (Preferences.getInstance().getBooleanPref(this,Preferences.PREF_SHOW_ONBOARDER)) {
+        if (Preferences.getInstance().getBooleanPref(this,Preferences.PREF_HELP_ONBOARDER)) {
             intent.setClass(getApplicationContext(), IntroActivity.class);
         } else {
             intent.setClass(getApplicationContext(), MainActivity.class);
