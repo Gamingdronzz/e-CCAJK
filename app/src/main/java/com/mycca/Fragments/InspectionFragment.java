@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
+import com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
@@ -80,7 +82,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     int counterUpload = 0;
     int counterServerImages = 0;
 
-    AppCompatTextView textViewAddImage, textLocationCoordinates, textViewSelectedFileCount;
+    AppCompatTextView textViewAddImage, textViewSelectedFileCount;
+    CircularProgressButton circularProgressButton;
     EditText editTextLocationName;
     Button upload;
     AppCompatTextView removeAll;
@@ -110,10 +113,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
         init(view);
-        getLocationCoordinates();
+
         if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION)) {
             showTutorial();
             Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION, false);
+        }
+        else
+        {
+            getLocationCoordinates();
         }
         return view;
     }
@@ -147,9 +154,10 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         });
 
         editTextLocationName = view.findViewById(R.id.edittext_current_location_name);
-        textLocationCoordinates = view.findViewById(R.id.textview_current_location_coordinates);
-        textLocationCoordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_refresh_black_24dp, 0);
-        textLocationCoordinates.setOnClickListener(getCoordinatesListener);
+        circularProgressButton = view.findViewById(R.id.textview_current_location_coordinates);
+        circularProgressButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_refresh_black_24dp, 0);
+        circularProgressButton.setOnClickListener(getCoordinatesListener);
+        circularProgressButton.setIndeterminateProgressMode(true);
         textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
 
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
@@ -182,7 +190,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
-
+        mLastLocation = null;
+        circularProgressButton.setProgress(1);
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -193,13 +202,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
                         @Override
                         public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                            Log.v(TAG, "On Task Complete");
                             if (task.isSuccessful()) {
-                                Log.v(TAG, "Task is Successful");
+                                Log.v(TAG, "Task is Successful\nRequesting Location Update");
                                 myLocationManager.requestLocationUpdates();
 
                             } else {
-                                Log.v(TAG, "Task is not Successful");
+                                Log.v(TAG, "Task UnSuccessful");
+                                circularProgressButton.setProgress(0);
                             }
                         }
                     });
@@ -214,6 +223,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.v(TAG, "On Task Failed");
+                            circularProgressButton.setProgress(0);
                             if (e instanceof ResolvableApiException) {
                                 myLocationManager.onLocationAcccessRequestFailure(e);
                             }
@@ -224,13 +234,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
+                circularProgressButton.setProgress(0);
                 showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates");
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void showCoordinates(Location location) {
+    private void showCoordinates(final Location location) {
         isCurrentLocationFound = true;
         mLastLocation = location;
         latitude = location.getLatitude();
@@ -238,7 +249,9 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         myLocationManager.cleanUp();
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
-        textLocationCoordinates.setText("Current Location\n" + location.getLatitude() + " , " + location.getLongitude());
+        circularProgressButton.setProgress(0);
+        circularProgressButton.setText(Html.fromHtml("Current Location<br><b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>"));
+        //textLocationCoordinates.setText(Html.fromHtml("Current Location\n<b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>"));
     }
 
     private void showImageChooser() {
@@ -459,7 +472,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
                 .title("Click to refresh location")
-                .focusOn(textLocationCoordinates)
+                .focusOn(circularProgressButton)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .build();
 
@@ -470,6 +483,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void onComplete() {
                 ((MainActivity) getActivity()).mQueue = null;
+                getLocationCoordinates();
             }
         });
 
