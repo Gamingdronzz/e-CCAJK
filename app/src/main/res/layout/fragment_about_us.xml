@@ -1,52 +1,76 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#dd000000"
-    android:orientation="vertical"
+    android:background="@color/colorWhite"
     tools:context=".Fragments.AboutUsFragment">
 
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="About Developer"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="@dimen/padding_large"
+            android:layout_marginRight="@dimen/padding_large"
+            android:background="@color/colorAccent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/about_us_string" />
+            android:padding="@dimen/padding_medium"
+            android:text="@string/about_us_string"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_15" />
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/layout_logo"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Gaming Dronzz"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                android:layout_margin="@dimen/margin_small" />
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="Disclaimer"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_18" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="#dd000000"
-                app:srcCompat="@drawable/ic_gaming_dronzz_logo"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="@dimen/padding_large"
+            android:layout_marginRight="@dimen/padding_large"
+            android:background="@color/colorAccent" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/padding_medium"
+            android:text="@string/disclaimer_content"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_15" />
 
-        </LinearLayout>
+    </LinearLayout>
 
+    <ImageView
+        android:id="@+id/img_about_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#dd000000"
+        app:srcCompat="@drawable/ic_gaming_dronzz_logo" />
 
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>
 

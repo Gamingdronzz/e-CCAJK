@@ -22,5 +22,5 @@
     <item
         android:id="@+id/action_about_us"
         android:icon="@drawable/ic_detail"
-        android:title="About Us" />
+        android:title="About" />
 </menu>

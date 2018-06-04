@@ -47,7 +47,12 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
-    <string name="about_us_string">This application is built by Gaming Dronzz.</string>
+    <string name="about_us_string">This application is  developed and maintained by GAMING DRONZZ, Jammu.</string>
+
+    <string name="disclaimer_content">This is the official android application of Controller Communication Accounts, Jammu and Kashmir.
+Information for this app is provided by Controller Communication Accounts, Jammu and Kashmir.
+While every care has been taken to provide correct and updated information, Gaming Dronzz is not responsible for any error/ omission or delay in updating data/information and so on.
+The users of the app are therefore requested to contact CCA J&amp;K.</string>
 
     <string name="tutorial_text1">CCA pensioners can register their grievances using the Pension or GPF Grievance option from the Main menu</string>
 
