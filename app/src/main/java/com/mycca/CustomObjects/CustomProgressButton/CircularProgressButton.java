@@ -198,7 +198,7 @@ public class CircularProgressButton extends android.support.v7.widget.AppCompatB
             mCornerRadius = attr.getDimension(R.styleable.CircularProgressButton_cpb_cornerRadius, 0);
             mPaddingProgress = attr.getDimensionPixelSize(R.styleable.CircularProgressButton_cpb_paddingProgress, 0);
 
-            int blue = getColor(R.color.cpb_blue);
+            int blue = getColor(R.color.colorAccent);
             int white = getColor(R.color.cpb_white);
             int grey = getColor(R.color.cpb_grey);
 

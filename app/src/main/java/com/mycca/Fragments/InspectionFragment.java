@@ -112,63 +112,35 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
-        init(view);
+        bindViews(view);
+        init();
 
         if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION)) {
             showTutorial();
             Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION, false);
-        }
-        else
-        {
+        } else {
             getLocationCoordinates();
         }
         return view;
     }
 
-    private void init(View view) {
-        volleyHelper = new VolleyHelper(this, getContext());
-        getCoordinatesListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getLocationCoordinates();
-            }
-        };
+    private void bindViews(View view) {
 
         textViewAddImage = view.findViewById(R.id.textview_add_inspection_image);
-        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
-        removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
-        removeAll.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_remove_circle_black_24dp, 0, 0);
-        removeAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                removeAllSelectedImages();
-
-            }
-        });
-        textViewAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageChooser();
-            }
-        });
-
         editTextLocationName = view.findViewById(R.id.edittext_current_location_name);
         circularProgressButton = view.findViewById(R.id.textview_current_location_coordinates);
-        circularProgressButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_refresh_black_24dp, 0);
-        circularProgressButton.setOnClickListener(getCoordinatesListener);
-        circularProgressButton.setIndeterminateProgressMode(true);
-        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
-
+        removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
         upload = view.findViewById(R.id.button_upload);
+        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
+
+        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
+        removeAll.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_remove_circle_black_24dp, 0, 0);
         upload.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_file_upload_black_24dp, 0, 0);
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSubmission();
-            }
-        });
+
+    }
+
+    private void init() {
 
         mLocationCallback = new LocationCallback() {
             @Override
@@ -179,13 +151,43 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             }
         };
         myLocationManager = new MyLocationManager(this, mLocationCallback);
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(),
-                "Getting Current Location Coordinates\nPlease Wait...");
-
+        volleyHelper = new VolleyHelper(this, getContext());
         selectedImageModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(),
+                "Getting Current Location Coordinates\nPlease Wait...");
+
+        getCoordinatesListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLocationCoordinates();
+            }
+        };
+        circularProgressButton.setOnClickListener(getCoordinatesListener);
+        circularProgressButton.setIndeterminateProgressMode(true);
+
+        removeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAllSelectedImages();
+            }
+        });
+        textViewAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageChooser();
+            }
+        });
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSubmission();
+            }
+        });
+
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -224,6 +226,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         public void onFailure(@NonNull Exception e) {
                             Log.v(TAG, "On Task Failed");
                             circularProgressButton.setProgress(0);
+                            circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh" ).toString());
                             if (e instanceof ResolvableApiException) {
                                 myLocationManager.onLocationAcccessRequestFailure(e);
                             }
@@ -250,7 +253,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
         circularProgressButton.setProgress(0);
-        circularProgressButton.setText(Html.fromHtml("Current Location<br><b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>"));
+        circularProgressButton.setIdleText(Html.fromHtml("Current Location<br><b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>").toString());
         //textLocationCoordinates.setText(Html.fromHtml("Current Location\n<b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>"));
     }
 
@@ -504,13 +507,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     case Activity.RESULT_OK: {
                         Log.v(TAG, "Resolution success");
                         myLocationManager.requestLocationUpdates();
-                        progressDialog.show();
                         break;
                     }
                     case Activity.RESULT_CANCELED: {
                         Log.v(TAG, "Resolution denied");
                         myLocationManager.ShowDialogOnLocationOff("Location not turned on! Inspection will not show nearby locations without location access\nTurn Location on and Refresh");
-                        progressDialog.dismiss();
                         break;
                     }
                     default: {

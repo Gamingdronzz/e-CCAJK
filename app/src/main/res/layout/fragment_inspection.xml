@@ -38,24 +38,32 @@
 
             </android.support.design.widget.TextInputLayout>
 
-
-            <com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton
-                android:id="@+id/textview_current_location_coordinates"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/buttons_inspection"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_medium"
-                android:layout_marginRight="@dimen/margin_medium"
-                android:background="@null"
-                android:drawablePadding="@dimen/padding_medium"
-                android:foregroundGravity="center_vertical"
-                android:gravity="center_vertical"
-                android:padding="@dimen/padding_medium"
-                android:text="Location Coordinates"
-                android:textSize="18sp">
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_medium">
 
-            </com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_drawable_location" />
+
+                <com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton
+                    android:id="@+id/textview_current_location_coordinates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="@dimen/margin_medium"
+                    android:layout_marginRight="@dimen/margin_medium"
+                    android:padding="@dimen/padding_medium"
+                    android:text="Location Coordinates"
+                    android:textAllCaps="false"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
             <!--<android.support.v7.widget.AppCompatTextView-->
             <!--android:id="@+id/textview_current_location_coordinates"-->
             <!--android:layout_width="match_parent"-->
