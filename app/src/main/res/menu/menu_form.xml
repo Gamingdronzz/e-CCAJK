@@ -6,5 +6,5 @@
         android:title="@string/action_clear_all"
         app:showAsAction="always"
         android:tooltipText="@string/action_clear_all"
-        android:icon="@drawable/ic_clear_all_black_24dp"/>
+        android:icon="@drawable/ic_clear_all_black_24dp" />
 </menu>

@@ -108,6 +108,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
             Intent intent = new Intent(context, NewsActivity.class);
             intent.putExtra("News", json);
             context.startActivity(intent);
+            //context.overridePendingTransition(R.anim.animated_dismissable_card_slide_up_anim, R.anim.animated_dismissable_card_stay_anim);
         }
     }
 

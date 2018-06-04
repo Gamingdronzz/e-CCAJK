@@ -39,7 +39,7 @@
             </android.support.design.widget.TextInputLayout>
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton
                 android:id="@+id/textview_current_location_coordinates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,11 +47,28 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_medium"
                 android:layout_marginRight="@dimen/margin_medium"
+                android:background="@null"
                 android:drawablePadding="@dimen/padding_medium"
                 android:foregroundGravity="center_vertical"
                 android:gravity="center_vertical"
                 android:padding="@dimen/padding_medium"
-                android:text="Location Coordinates" />
+                android:text="Location Coordinates"
+                android:textSize="18sp">
+
+            </com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton>
+            <!--<android.support.v7.widget.AppCompatTextView-->
+            <!--android:id="@+id/textview_current_location_coordinates"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_above="@+id/buttons_inspection"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginLeft="@dimen/margin_medium"-->
+            <!--android:layout_marginRight="@dimen/margin_medium"-->
+            <!--android:drawablePadding="@dimen/padding_medium"-->
+            <!--android:foregroundGravity="center_vertical"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:padding="@dimen/padding_medium"-->
+            <!--android:text="Location Coordinates" />-->
 
 
             <LinearLayout

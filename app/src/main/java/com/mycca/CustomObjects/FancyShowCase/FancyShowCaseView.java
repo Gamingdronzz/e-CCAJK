@@ -275,13 +275,14 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
                         mCenterX = mCalculator.getCircleCenterX();
                         mCenterY = mCalculator.getCircleCenterY();
                     }
-                    mImageView.setParameters(mBackgroundColor, mCalculator);
+
                     if (mFocusRectangleWidth > 0 && mFocusRectangleHeight > 0) {
                         mCalculator.setRectPosition(mFocusPositionX, mFocusPositionY, mFocusRectangleWidth, mFocusRectangleHeight);
                     }
                     if (mFocusCircleRadius > 0) {
                         mCalculator.setCirclePosition(mFocusPositionX, mFocusPositionY, mFocusCircleRadius);
                     }
+                    mImageView.setParameters(mBackgroundColor, mCalculator);
                     mImageView.setAnimationEnabled(mFocusAnimationEnabled);
                     mImageView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT));

@@ -65,7 +65,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     Spinner spinnerCircle;
     TextInputLayout textInputIdentifier, textInputNumber;
     AutoCompleteTextView inputPCode, inputNumber;
-    Button buttonUpload, buttonChooseFile;
+    Button buttonUpload, buttonAttachFile;
     RadioGroup radioGroup;
     LinearLayout linearLayout;
     ProgressDialog progressDialog;
@@ -105,7 +105,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         spinnerCircle = view.findViewById(R.id.spinner_pan_adhaar_circle);
         textViewFileName = view.findViewById(R.id.textview_filename);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
-        buttonChooseFile = view.findViewById(R.id.button_attach);
+        buttonAttachFile = view.findViewById(R.id.btn_attach_aadhar_pan);
         buttonUpload = view.findViewById(R.id.button_upload);
     }
 
@@ -160,8 +160,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
         imageNumber.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
 
-        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
-        buttonChooseFile.setOnClickListener(new View.OnClickListener() {
+        buttonAttachFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
+        buttonAttachFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showImageChooser();

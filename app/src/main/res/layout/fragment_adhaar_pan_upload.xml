@@ -167,7 +167,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/button_attach"
+        android:id="@+id/btn_attach_aadhar_pan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/button_upload"

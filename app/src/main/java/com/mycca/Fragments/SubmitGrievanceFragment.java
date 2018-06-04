@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -48,6 +49,7 @@ import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
+import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
@@ -80,7 +82,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     EditText inputDetails;
     Spinner spinnerInputType, spinnerInputSubmittedBy, spinnerCircle;
     Button submit, buttonChooseFile;
-    //FloatingActionButton buttonChooseFile;
+    //FloatingActionButton buttonAttachFile;
     TextView removeAll, textViewSelectedFileCount;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
@@ -93,6 +95,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     String TAG = "GrievanceModel";
     String hint = "Pensioner Code";
     String code, type, email;
+    View menuClearForm;
 
     GrievanceType grievanceType;
     State state;
@@ -119,10 +122,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         bindViews(view);
         setHasOptionsMenu(true);
         init();
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE)) {
-            showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE, false);
-        }
+
         return view;
     }
 
@@ -247,24 +247,41 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         return true;
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_form, menu);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+
+                menuClearForm = view.findViewById(R.id.action_clear_form_data);
+                // SOME OF YOUR TASK AFTER GETTING VIEW REFERENCE
+                if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE)) {
+                    showTutorial();
+                    Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE, false);
+                }
+            }
+        });
+
     }
 
 
     private void showTutorial() {
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
+                //.focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
+                .focusOn(view.findViewById(R.id.button_attach))
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .title("Add images using this button")
+                .fitSystemWindows(true)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
-                .focusOn(view.findViewById(R.id.action_clear_form_data))
-                .focusCircleRadiusFactor(4)
-                .fitSystemWindows(true)
+                .focusOn(menuClearForm)
+                .focusShape(FocusShape.CIRCLE)
+                .focusCircleRadiusFactor(1)
                 .title("Click to clear form data")
                 .build();
 

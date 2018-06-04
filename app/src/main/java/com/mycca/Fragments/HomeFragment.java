@@ -28,6 +28,7 @@ import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
+import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.GravitySnapHelper.GravitySnapHelper;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
@@ -73,7 +74,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void bindViews(View view) {
         //welcomeText = view.findViewById(R.id.textview_welcome_short);
         //ccaDeskText = view.findViewById(R.id.textview_cca_desk);
-        mDemoSlider = view.findViewById(R.id.slider);
+        mDemoSlider = view.findViewById(R.id.slider_home);
         tvLatestNews = view.findViewById(R.id.tv_home_latest_news);
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
         moveRight = view.findViewById(R.id.img_btn_move_right);
@@ -140,14 +141,14 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         moveRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
+                recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
             }
         });
 
         moveLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.getLayoutManager().scrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1);
+                recyclerView.smoothScrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1);
             }
         });
 
@@ -258,26 +259,26 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void showTutorial() {
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
-                .title("Open websites from here. Tap anywhere to continue")
+                .title("Tap on images to open respective websites. Tap anywhere to continue")
                 .focusOn(mDemoSlider)
-                .focusCircleRadiusFactor(.5)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
                 .title("Tap on news to view in detail")
                 .focusOn(recyclerView)
-                .focusCircleRadiusFactor(.6)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
                 .title("Open Main Menu from here")
-                .focusCircleAtPosition(0, 0, 200)
+                .focusCircleAtPosition(0, 0, 180)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
-                .title("Touch here to open Secondary Menu for settings etc")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
+                .title("Touch here to open Secondary Menu")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 180)
                 .build();
 
         ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
