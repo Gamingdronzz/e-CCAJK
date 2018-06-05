@@ -27,6 +27,7 @@ import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterHotspotLocation;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
+import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.Listeners.ClickListener;
 import com.mycca.Listeners.RecyclerViewTouchListeners;
 import com.mycca.Models.LocationModel;
@@ -135,35 +136,34 @@ public class TabAllLocations extends Fragment {
 
     private void showTutorial() {
 
-        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
-                .title("View Nearby Hotspots")
-                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, 300, 300, 300)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
-                .title("Click to search location")
-                .focusOn(search)
-                .focusCircleRadiusFactor(.5)
-                .build();
-
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
                 .title("Tap on location to open in Google Maps")
                 .focusOn(recyclerView)
                 .focusCircleRadiusFactor(.6)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
                 .build();
-
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("Click to search location")
+                .focusOn(search)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .fitSystemWindows(true)
+                .build();
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
                 .title("Click to view locations districtwise")
                 .focusOn(sort)
-                .focusCircleRadiusFactor(.5)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .fitSystemWindows(true)
+                .build();
+        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
+                .title("-------->\nSwipe to view nearby hotspots")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels * 1 / 6, 150)
                 .build();
 
         ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
-                .add(fancyShowCaseView4)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView1)
-                .add(fancyShowCaseView3);
+                .add(fancyShowCaseView3)
+                .add(fancyShowCaseView4);
 
         ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override

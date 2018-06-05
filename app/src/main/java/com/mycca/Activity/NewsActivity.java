@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.mycca.CustomObjects.DismissableActivity.AnimatedDismissableCard;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
 import com.mycca.Tools.Helper;
@@ -19,6 +18,7 @@ public class NewsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_news);
         //MyNewAnimatedCardBinding binding = DataBindingUtil.setContentView(R.layout.activity_news);
         //animatedCard = new AnimatedDismissableCard(this, binding.yourViewGroupLayout);
         getSupportActionBar().setTitle("Latest from CCA");

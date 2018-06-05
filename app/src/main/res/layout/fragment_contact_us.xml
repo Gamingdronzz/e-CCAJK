@@ -3,15 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccentLight"
     android:animateLayoutChanges="true"
+    android:background="@color/colorAccentLight"
     android:orientation="vertical"
     tools:context="com.mycca.Fragments.ContactUsFragment">
-
-    <!--  <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">-->
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textview_heading_office_address"
@@ -19,13 +14,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:drawablePadding="@dimen/padding_medium"
-        android:textAlignment="center"
-        android:text="Office Address"
         android:fontFamily="@font/artifika"
         android:padding="@dimen/padding_large"
+        android:text="Office Address"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_20"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
@@ -33,11 +28,11 @@
         android:background="@color/colorBlack"></View>
 
     <LinearLayout
+        android:id="@+id/linear_layout_office_Address_Area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorOffWhite"
-        android:orientation="vertical"
-        android:id="@+id/linear_layout_office_Address_Area">
+        android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_office_address"
@@ -51,20 +46,19 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_locate_on_map"
             android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_xxlarge"
-            android:paddingRight="@dimen/padding_xxlarge"
-            android:drawablePadding="@dimen/padding_large"
+            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/margin_large"
             android:layout_marginRight="@dimen/margin_large"
             android:background="@drawable/custom_button_rounded"
-            android:text="Locate on Map"
+            android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorWhite"
+            android:paddingLeft="@dimen/padding_xxlarge"
+            android:paddingRight="@dimen/padding_xxlarge"
+            android:text="Locate on Map"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_15"
-            />
+            android:textSize="@dimen/text_15" />
 
         <View
             android:layout_width="match_parent"
@@ -74,7 +68,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
 
         android:layout_width="match_parent"
@@ -83,19 +76,19 @@
         android:orientation="vertical">
 
         <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="3dp"-->
-            <!--android:background="@color/colorBlack"></View>-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="3dp"-->
+        <!--android:background="@color/colorBlack"></View>-->
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_contact_person_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:fontFamily="@font/artifika"
             android:drawablePadding="@dimen/padding_medium"
-            android:text="Contact Persons"
+            android:fontFamily="@font/artifika"
             android:padding="@dimen/padding_large"
+            android:text="Contact Persons"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
             android:textStyle="bold"></android.support.v7.widget.AppCompatTextView>
@@ -108,11 +101,11 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_contacts"
             android:layout_width="match_parent"
-            android:background="@color/colorOffWhite"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_office_address"
+            android:background="@color/colorOffWhite"
             android:paddingBottom="8dp"></android.support.v7.widget.RecyclerView>
 
-
     </LinearLayout>
+
 </LinearLayout>

@@ -43,7 +43,6 @@ public class ContactUsFragment extends Fragment {
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
     boolean isTab;
-    FancyShowCaseQueue mQueue;
 
     public ContactUsFragment() {
     }
@@ -80,6 +79,16 @@ public class ContactUsFragment extends Fragment {
         textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE)));
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
         compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
+
+    }
+
+    private void init(boolean isMultiColumn) {
+
+        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
+        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
+        recyclerView.setAdapter(adapterContacts);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         compatButtonLocateOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,14 +103,6 @@ public class ContactUsFragment extends Fragment {
 
             }
         });
-    }
-
-    private void init(boolean isMultiColumn) {
-
-        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
-        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
-        recyclerView.setAdapter(adapterContacts);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (!isMultiColumn) {
             textviewHeadingOfficeAddress.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +136,7 @@ public class ContactUsFragment extends Fragment {
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
                 .title("Touch to open office address")
                 .focusOn(textviewHeadingOfficeAddress)
-                .focusCircleRadiusFactor(.5)
+                //.focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())

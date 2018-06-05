@@ -2,6 +2,7 @@ package com.mycca.Fragments;
 
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,14 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.mycca.Activity.MainActivity;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
@@ -28,11 +37,6 @@ import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.Preferences;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,30 +170,66 @@ public class UpdateGrievanceFragment extends Fragment {
         dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
                 .child(Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
-                GrievanceDataProvider.getInstance().setAllGrievanceList(allGrievances);
-                GrievanceDataProvider.getInstance().setSubmittedGrievanceList(submittedGrievances);
-                GrievanceDataProvider.getInstance().setProcessingGrievanceList(processingGrievances);
-                GrievanceDataProvider.getInstance().setResolvedGrievanceList(resolvedGrievances);
-                setTabLayout();
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        progressDialog.dismiss();
+                        GrievanceDataProvider.getInstance().setAllGrievanceList(allGrievances);
+                        GrievanceDataProvider.getInstance().setSubmittedGrievanceList(submittedGrievances);
+                        GrievanceDataProvider.getInstance().setProcessingGrievanceList(processingGrievances);
+                        GrievanceDataProvider.getInstance().setResolvedGrievanceList(resolvedGrievances);
+                        setTabLayout();
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
 
     }
 
     private void setTabLayout() {
-        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+        final MyAdapter adapter = new MyAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
+        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE)) {
+            showTutorial();
+            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE, false);
+        }
     }
 
+    private void showTutorial() {
+
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+                .title("These are submitted grievances")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels*1/6, Resources.getSystem().getDisplayMetrics().heightPixels* 1 / 6, 150)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+                .title("-------->\nSwipe to view Greivances Under process")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels *1/2, Resources.getSystem().getDisplayMetrics().heightPixels * 1 / 6, 150)
+                .build();
+
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+                .title("-------->\nSwipe again to view Resolved Greivances")
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels * 1 / 6, 150)
+                .build();
+
+        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+                .add(fancyShowCaseView1)
+                .add(fancyShowCaseView2)
+                .add(fancyShowCaseView3);
+
+        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                ((MainActivity) getActivity()).mQueue = null;
+            }
+        });
+
+        ((MainActivity) getActivity()).mQueue.show();
+    }
 
     class MyAdapter extends FragmentPagerAdapter {
 

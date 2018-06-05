@@ -4,7 +4,6 @@ package com.mycca.Tabs.UpdateGrievance;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,13 +17,10 @@ import android.widget.TextView;
 
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
 
 
 //Our class extending fragment
@@ -45,10 +41,6 @@ public class TabSubmitted extends Fragment {
         bindViews(view);
         showEmptyListLayout(true);
         init();
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE)) {
-            showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE, false);
-        }
         return view;
     }
 
@@ -81,35 +73,8 @@ public class TabSubmitted extends Fragment {
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             }
-        }
-        else
+        } else
             showEmptyListLayout(true);
-    }
-
-    private void showTutorial() {
-
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
-                .title("View Greivances Under process")
-                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels /2, 300, 300, 300)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
-                .title("View Resolved Greivances")
-                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, 300, 400, 400)
-                .build();
-
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
-                .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2);
-
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
-            }
-        });
-
-        ((MainActivity) getActivity()).mQueue.show();
     }
 
     @Override

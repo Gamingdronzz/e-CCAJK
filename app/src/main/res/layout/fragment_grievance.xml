@@ -211,7 +211,6 @@
                     android:background="@drawable/bg_spinner"
                     android:spinnerMode="dropdown"></Spinner>
 
-
             </LinearLayout>
 
             <RelativeLayout
@@ -248,7 +247,6 @@
 
             </RelativeLayout>
 
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_selected_images"
                 android:layout_width="match_parent"
@@ -256,21 +254,20 @@
 
         </LinearLayout>
 
-
     </ScrollView>
 
-      <Button
-          android:id="@+id/button_attach"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_above="@id/button_submit"
-          android:layout_alignParentEnd="true"
-          android:layout_alignParentRight="true"
-          android:layout_margin="@dimen/margin_medium"
-          android:background="@drawable/custom_button_rounded"
-          android:drawableTint="@color/colorPrimary"
-          android:text="Add File"
-          android:textColor="@color/colorWhite" />
+    <Button
+        android:id="@+id/button_attach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_submit"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/custom_button_rounded"
+        android:drawableTint="@color/colorPrimary"
+        android:text="Add File"
+        android:textColor="@color/colorWhite" />
 
     <!--<android.support.design.widget.FloatingActionButton
         android:id="@+id/button_attach"

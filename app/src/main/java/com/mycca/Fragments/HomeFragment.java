@@ -262,6 +262,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .title("Tap on images to open respective websites. Tap anywhere to continue")
                 .focusOn(mDemoSlider)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .fitSystemWindows(true)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
@@ -269,16 +270,17 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .focusOn(recyclerView)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
+                .fitSystemWindows(true)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
                 .title("Open Main Menu from here")
-                .focusCircleAtPosition(0, 0, 180)
+                .focusCircleAtPosition(0, 0, 200)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
                 .title("Touch here to open Secondary Menu")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 180)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
                 .build();
 
         ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()

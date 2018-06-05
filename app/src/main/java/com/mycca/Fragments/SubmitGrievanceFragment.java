@@ -3,7 +3,6 @@ package com.mycca.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -273,21 +272,21 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
                 //.focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
                 .focusOn(view.findViewById(R.id.button_attach))
-                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .focusShape(FocusShape.CIRCLE)
                 .title("Add images using this button")
                 .fitSystemWindows(true)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
                 .focusOn(menuClearForm)
                 .focusShape(FocusShape.CIRCLE)
-                .focusCircleRadiusFactor(1)
+                .focusCircleRadiusFactor(2)
                 .title("Click to clear form data")
                 .build();
 
         ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
-                .add(fancyShowCaseView3);
+                .add(fancyShowCaseView2);
         ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
