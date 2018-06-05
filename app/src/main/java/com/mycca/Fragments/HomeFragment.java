@@ -1,7 +1,9 @@
 package com.mycca.Fragments;
 
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -43,7 +46,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     SliderLayout mDemoSlider;
     public FancyShowCaseQueue mQueue;
     RecyclerView recyclerView;
-    TextView tvLatestNews, tvUserName;
+    TextView tvLatestNews, tvUserName, tvVisit;
     ImageButton moveRight, moveLeft;
     LinearLayoutManager linearLayoutManager;
     //private TextView welcomeText, ccaDeskText;
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         moveRight = view.findViewById(R.id.img_btn_move_right);
         moveLeft = view.findViewById(R.id.img_btn_move_left);
         tvUserName = view.findViewById(R.id.tv_home_username);
+        tvVisit = view.findViewById(R.id.tv_home_visit);
     }
 
     private void init() {
@@ -120,7 +124,23 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //            }
 //        });
 
+        tvVisit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+
+        tvVisit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String location = "32.707500,74.874217";
+                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         tvLatestNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

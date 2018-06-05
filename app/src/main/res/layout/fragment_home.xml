@@ -13,13 +13,14 @@
         android:id="@+id/tv_home_username"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_weight="0.4"
         android:background="@color/colorAccent"
-        android:paddingLeft="@dimen/padding_medium"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_medium"
         android:text="Hello CCA User"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_15"/>
+        android:textSize="@dimen/text_20" />
 
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/slider_home"
@@ -27,6 +28,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:minHeight="100dp">
+
     </com.daimajia.slider.library.SliderLayout>
 
     <!--<LinearLayout
@@ -112,7 +114,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@+id/slider"
         android:layout_marginTop="@dimen/margin_large"
         android:layout_weight="2"
         android:orientation="vertical">
@@ -164,8 +165,21 @@
 
         </RelativeLayout>
 
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_home_visit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_weight=".4"
+        android:background="@color/colorAccent"
+        android:drawablePadding="@dimen/padding_medium"
+        android:drawableTint="@color/colorWhite"
+        android:padding="@dimen/padding_medium"
+        android:text="Visit Us"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_20" />
 
 </LinearLayout>
 
