@@ -578,6 +578,10 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
+    public class DateFormat
+    {
+        public static final String DD_MM_YYYY = "dd MMM, yyyy";
+    }
 
 }
 
