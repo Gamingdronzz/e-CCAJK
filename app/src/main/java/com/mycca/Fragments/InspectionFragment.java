@@ -76,7 +76,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private static final String TAG = "Inspection";
     boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;
-    ;
     Double latitude, longitude;
     int counterFirebaseImages;
     int counterUpload = 0;
@@ -101,7 +100,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     ArrayList<Uri> firebaseImageURLs;
-
+    Uri downloadUrl;
 
     public InspectionFragment() {
 
@@ -226,7 +225,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         public void onFailure(@NonNull Exception e) {
                             Log.v(TAG, "On Task Failed");
                             circularProgressButton.setProgress(0);
-                            circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh" ).toString());
+                            circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh").toString());
                             if (e instanceof ResolvableApiException) {
                                 myLocationManager.onLocationAcccessRequestFailure(e);
                             }
@@ -366,7 +365,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
 
         Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
+                FireBaseHelper.ROOT_INSPECTION,
                 inspectionModel,
                 staffModel.getState(),
                 key);
@@ -397,7 +396,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     imageModel,
                     true,
                     counterFirebaseImages++,
-                    FireBaseHelper.getInstance(getContext()).ROOT_INSPECTION,
+                    FireBaseHelper.ROOT_INSPECTION,
                     staffModel.getState(),
                     key);
 
@@ -412,14 +411,20 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        firebaseImageURLs.add(downloadUrl);
-                        Log.d(TAG, "onSuccess: " + downloadUrl);
-                        progressDialog.setMessage("Uploaded file " + (++counterUpload) + "/" + selectedImageModelArrayList.size());
-                        if (counterUpload == selectedImageModelArrayList.size()) {
-                            isUploadedToFirebase = true;
-                            doSubmission();
-                        }
+                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                downloadUrl = uri;
+                                Log.d(TAG, "onSuccess: " + downloadUrl);
+                                firebaseImageURLs.add(downloadUrl);
+                                progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
+                                Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
+                                if (counterUpload == selectedImageModelArrayList.size()) {
+                                    isUploadedToFirebase = true;
+                                    doSubmission();
+                                }
+                            }
+                        });
                     }
                 });
             }

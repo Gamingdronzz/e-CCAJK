@@ -76,6 +76,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     ImagePicker imagePicker;
     boolean isUploadedToFirebase = false, isUploadedToServer = false;
     ArrayList<Uri> firebaseImageURLs;
+    Uri downloadUrl;
     VolleyHelper volleyHelper;
     State state;
 
@@ -335,7 +336,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         v.findViewById(R.id.textview_grievance_details).setVisibility(View.GONE);
     }
 
-
     private void uploadDataToFirebase() {
         progressDialog.show();
         PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
@@ -378,21 +378,21 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //TODO
-                    //getDownloadURL is deprecated use the below statement to get download url
-                    //check how to implement this and implement it
-                    //Task task = taskSnapshot.getStorage().getDownloadUrl();
-
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    firebaseImageURLs.add(downloadUrl);
-                    isUploadedToFirebase = true;
-                    Log.d(TAG, "onSuccess: " + downloadUrl);
-                    doSubmission();
+                    //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            downloadUrl = uri;
+                            Log.d(TAG, "onSuccess: " + downloadUrl);
+                            firebaseImageURLs.add(downloadUrl);
+                            isUploadedToFirebase = true;
+                            doSubmission();
+                        }
+                    });
                 }
             });
         }
     }
-
 
     private void uploadImagesToServer() {
 
@@ -409,13 +409,11 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             e.printStackTrace();
             Helper.getInstance().showFancyAlertDialog(
                     getActivity(),
-                    "Error 1\nPlease report this issue through feedback section", root, "OK", null, null, null, FancyAlertDialogType.ERROR);
+                    "Some Error Occured", root, "OK", null, null, null, FancyAlertDialogType.ERROR);
         }
     }
 
-
     private void sendFinalMail() {
-
 
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();

@@ -101,6 +101,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     VolleyHelper volleyHelper;
     ArrayList<GrievanceType> list = new ArrayList<>();
     ArrayList<Uri> firebaseImageURLs;
+    Uri downloadUrl;
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
@@ -164,7 +165,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         StatesAdapter statesAdapter = new StatesAdapter(getContext());
         spinnerCircle.setAdapter(statesAdapter);
 
-        if (type.equals(FireBaseHelper.getInstance(getContext()).GRIEVANCE_PENSION)) {
+        if (type.equals(FireBaseHelper.GRIEVANCE_PENSION)) {
             list = Helper.getInstance().getPensionGrievanceTypelist();
             radioLayout.setVisibility(View.GONE);
         } else {
@@ -198,7 +199,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             }
         });
 
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getContext(), R.layout.simple_spinner, Helper.getInstance().submittedByList(type));
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(getContext(), R.layout.simple_spinner, Helper.getInstance().submittedByList(type));
         spinnerInputSubmittedBy.setAdapter(arrayAdapter1);
 
 
@@ -529,18 +530,23 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                                     new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                            Log.d(TAG, "onSuccess: " + downloadUrl);
-                                            firebaseImageURLs.add(downloadUrl);
-                                            progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
-                                            Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
-                                            if (counterUpload == selectedImageModelArrayList.size()) {
-                                                isUploadedToFirebase = true;
-                                                doSubmission();
-                                            }
+                                           // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    downloadUrl = uri;
+                                                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                                                    firebaseImageURLs.add(downloadUrl);
+                                                    progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
+                                                    Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
+                                                    if (counterUpload == selectedImageModelArrayList.size()) {
+                                                        isUploadedToFirebase = true;
+                                                        doSubmission();
+                                                    }
+                                                }
+                                            });
                                         }
-                                    }
-                            );
+                                    });
                 }
             }
         } else {

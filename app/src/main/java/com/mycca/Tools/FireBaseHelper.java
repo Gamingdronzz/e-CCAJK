@@ -24,11 +24,6 @@ import com.mycca.Models.SelectedImageModel;
 
 import java.util.ArrayList;
 
-
-/**
- * Created by hp on 06-03-2018.
- */
-
 public class FireBaseHelper {
 
     private static FireBaseHelper _instance;
@@ -133,7 +128,6 @@ public class FireBaseHelper {
         return task;
     }
 
-
     public UploadTask uploadFiles(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
         StorageReference sref;
         StringBuilder sb = new StringBuilder();
@@ -144,10 +138,9 @@ public class FireBaseHelper {
         } else {
             sref = storageReference.child(sb.toString());
         }
-        UploadTask uploadTask = sref.putFile(imageFile.getImageURI());
-        return uploadTask;
+        return sref.putFile(imageFile.getImageURI());
+        //return uploadTask;
     }
-
 
     public ArrayList<Contact> getContactsList(String stateId) {
         ArrayList<Contact> contactArrayList = new ArrayList<>();
