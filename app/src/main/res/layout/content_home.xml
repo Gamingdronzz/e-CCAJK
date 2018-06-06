@@ -9,20 +9,6 @@
     tools:context="com.mycca.Activity.MainActivity"
     tools:showIn="@layout/app_bar_home">
 
-    <View
-        android:id="@+id/view_top"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_xxxxlarge" />
-
-    <View
-        android:id="@+id/view_news"
-        android:layout_width="50dp"
-        android:layout_height="1dp"
-       android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/margin_xxxxxlarge"
-        android:layout_marginBottom="@dimen/margin_xxxxxlarge" />
-
     <FrameLayout
         android:id="@+id/fragmentPlaceholder"
         android:layout_width="match_parent"

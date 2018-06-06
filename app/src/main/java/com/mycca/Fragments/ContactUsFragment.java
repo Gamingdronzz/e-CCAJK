@@ -21,6 +21,7 @@ import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterContacts;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
+import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.Models.Contact;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
@@ -136,7 +137,7 @@ public class ContactUsFragment extends Fragment {
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
                 .title("Touch to open office address")
                 .focusOn(textviewHeadingOfficeAddress)
-                //.focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())

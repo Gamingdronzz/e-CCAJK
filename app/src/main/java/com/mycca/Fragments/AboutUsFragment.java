@@ -29,7 +29,7 @@ public class AboutUsFragment extends Fragment {
                 BrowserFragment fragment = new BrowserFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("url", "http://gamingdronzz.com");
-                mainActivity.ShowFragment("Gaming Dronzz", fragment, bundle);
+                mainActivity.showFragment("Gaming Dronzz", fragment, bundle);
 
             }
         });

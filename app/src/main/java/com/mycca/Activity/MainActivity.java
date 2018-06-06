@@ -77,7 +77,9 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     CardDrawerLayout drawerLayout;
     Toolbar toolbar;
-    View viewTop, viewBottom;
+    Fragment fragment;
+    Bundle bundle;
+    String title;
 
     public FancyShowCaseQueue mQueue;
     StaffModel staffModel;
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
-        ShowFragment("Home", new HomeFragment(), null);
+        showFragment("Home", new HomeFragment(), null);
     }
 
     @Override
@@ -106,19 +108,168 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                ShowFragment("Settings", new SettingsFragment(), null);
+                showFragment("Settings", new SettingsFragment(), null);
                 break;
             case R.id.action_invite:
                 showInviteIntent();
                 break;
             case R.id.action_about_us:
-                ShowFragment("About Us", new AboutUsFragment(), null);
+                showFragment("About Us", new AboutUsFragment(), null);
                 break;
             case R.id.action_feedback:
-                ShowFragment("Feedback", new FeedbackFragment(), null);
+                showFragment("Feedback", new FeedbackFragment(), null);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.navmenu_home:
+                showFragment("Home", new HomeFragment(), null);
+                break;
+            case R.id.navmenu_visit_cca_website:
+                fragment = new BrowserFragment();
+                bundle = new Bundle();
+                bundle.putString("url", "http://ccajk.gov.in");
+                showFragment("CCA J&K", fragment, bundle);
+                break;
+            case R.id.navmenu_pension:
+                fragment = new SubmitGrievanceFragment();
+                bundle = new Bundle();
+                bundle.putString("Type", FireBaseHelper.GRIEVANCE_PENSION);
+                title = "Register Pension Grievance";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_gpf:
+                fragment = new SubmitGrievanceFragment();
+                bundle = new Bundle();
+                bundle.putString("Type", FireBaseHelper.GRIEVANCE_GPF);
+                title = "Register GPF Grievance";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_aadhaar:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
+                title = "Upload Aadhar";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_pan:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.ROOT_PAN);
+                title = "Upload PAN";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_life_certificate:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
+                title = "Upload Life Certificate";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_remarriage_certificate:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
+                title = "Upload Re-Marriage Certificate";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_reemployment:
+                fragment = new PanAdhaarUploadFragment();
+                bundle = new Bundle();
+                bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
+                title = "Upload Re-Employment Certificate";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
+            case R.id.navmenu_tracking:
+                Helper.getInstance().showTrackWindow(this, frameLayout);
+                break;
+            case R.id.navmenu_contact_us:
+                showFragment("Contact Us", new ContactUsFragment(), null);
+                break;
+            case R.id.navmenu_latest_news:
+                fragment = new LatestNewsFragment();
+                showFragment("Latest News", fragment, null);
+                break;
+            case R.id.navmenu_hotspot_locator:
+                bundle = new Bundle();
+                bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
+                showFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
+                break;
+            case R.id.navmenu_gp_locator:
+                bundle = new Bundle();
+                bundle.putString("Locator", FireBaseHelper.ROOT_GP);
+                showFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
+                break;
+            case R.id.navmenu_login:
+                showFragment("CCA JK", new LoginFragment(), null);
+                break;
+            case R.id.navmenu_update_grievances:
+                fragment = new UpdateGrievanceFragment();
+                title = "Update Grievance Status";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, null);
+                }
+                break;
+            case R.id.navmenu_inspection:
+                fragment = new InspectionFragment();
+                title = "Inspection";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, null);
+                }
+                break;
+            case R.id.navmenu_add_news:
+                fragment = new AddNewsFragment();
+                title = "Add Latest News";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, null);
+                }
+                break;
+            case R.id.navmenu_logout:
+                logout();
+                break;
+            /*case R.id.navmenu_settings:
+                showFragment("Settings", new SettingsFragment(), null);
+                break;
+            case R.id.navmenu_invite:
+                showInviteIntent();
+                break;
+            case R.id.navmenu_feedback:
+                showFragment("Feedback", new FeedbackFragment(), null);
+                break;
+            case R.id.navmenu_about_us:
+                showFragment("About Us", new AboutUsFragment(), null);
+                break;*/
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi_black_24dp, shortLabel = "HotSpot Locations")
+    public void ShowHotSpotLocations() {
+        Log.d(TAG, "ShowHotSpotLocations: ");
+        Bundle bundle = new Bundle();
+        bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
+        showFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
     }
 
     private void setupToolbar() {
@@ -128,8 +279,6 @@ public class MainActivity extends AppCompatActivity
 
     private void bindViews() {
         frameLayout = findViewById(R.id.fragmentPlaceholder);
-        viewTop = findViewById(R.id.view_top);
-        viewBottom = findViewById(R.id.view_news);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         progressDialog = Helper.getInstance().getProgressWindow(this, "Signing in...");
@@ -173,6 +322,23 @@ public class MainActivity extends AppCompatActivity
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+    }
+
+    public void showFragment(String title, Fragment fragment, Bundle bundle) {
+        this.fragment = null;
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setSubtitle("");
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
+        navigationView.setCheckedItem(R.id.navmenu_home);
+    }
+
+    private boolean checkCurrentUser() {
+        if (mAuth.getCurrentUser() == null) {
+            showAuthDialog(true);
+            return false;
+        } else
+            return true;
     }
 
     public void showAuthDialog(boolean skipped) {
@@ -229,8 +395,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         Log.d(TAG, "firebaseAuthWithGoogle: " + credential.getSignInMethod());
         mAuth.signInWithCredential(credential)
@@ -242,12 +406,16 @@ public class MainActivity extends AppCompatActivity
 
                             Log.d(TAG, "signInWithCredential:success");
                             FireBaseHelper.getInstance(MainActivity.this).setToken();
-                            Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK", new IFancyAlertDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            }, null, null, FancyAlertDialogType.SUCCESS);
+                            Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK",
+                                    new IFancyAlertDialogListener() {
+                                        @Override
+                                        public void OnClick() {
+                                            if (fragment != null) {
+                                                showFragment(title, fragment, bundle);
+                                            }
+                                        }
+                                    },
+                                    null, null, FancyAlertDialogType.SUCCESS);
 
                             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
                             if (f instanceof SettingsFragment)
@@ -264,163 +432,6 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
-    @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi_black_24dp, shortLabel = "HotSpot Locations")
-    public void ShowHotSpotLocations() {
-        Log.d(TAG, "ShowHotSpotLocations: ");
-        Bundle bundle = new Bundle();
-        bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
-        ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
-    }
-
-    public void ShowFragment(String title, Fragment fragment, Bundle bundle) {
-        getSupportActionBar().setTitle(title);
-        getSupportActionBar().setSubtitle("");
-        fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
-        navigationView.setCheckedItem(R.id.navmenu_home);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Fragment fragment;
-        Bundle bundle;
-        switch (id) {
-            case R.id.navmenu_home:
-                ShowFragment("Home", new HomeFragment(), null);
-                break;
-            case R.id.navmenu_visit_cca_website:
-                fragment = new BrowserFragment();
-                bundle = new Bundle();
-                bundle.putString("url", "http://ccajk.gov.in");
-                ShowFragment("CCA J&K", fragment, bundle);
-                break;
-            case R.id.navmenu_pension:
-                if (checkCurrentUser()) {
-                    fragment = new SubmitGrievanceFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Type", FireBaseHelper.GRIEVANCE_PENSION);
-                    ShowFragment("Register Pension Grievance", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_gpf:
-                if (checkCurrentUser()) {
-                    fragment = new SubmitGrievanceFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Type", FireBaseHelper.GRIEVANCE_GPF);
-                    ShowFragment("Register GPF Grievance", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_aadhaar:
-                if (checkCurrentUser()) {
-                    fragment = new PanAdhaarUploadFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
-                    ShowFragment("Upload Aadhar", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_pan:
-                if (checkCurrentUser()) {
-                    fragment = new PanAdhaarUploadFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.ROOT_PAN);
-                    ShowFragment("Upload PAN", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_life_certificate:
-                if (checkCurrentUser()) {
-                    fragment = new PanAdhaarUploadFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
-                    ShowFragment("Upload Life Certificate", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_remarriage_certificate:
-                if (checkCurrentUser()) {
-                    fragment = new PanAdhaarUploadFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
-                    ShowFragment("Upload Re-Marriage Certificate", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_reemployment:
-                if (checkCurrentUser()) {
-                    fragment = new PanAdhaarUploadFragment();
-                    bundle = new Bundle();
-                    bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
-                    ShowFragment("Upload Re-Employment Certificate", fragment, bundle);
-                }
-                break;
-            case R.id.navmenu_tracking:
-                Helper.getInstance().showTrackWindow(this, frameLayout);
-                break;
-            case R.id.navmenu_contact_us:
-                ShowFragment("Contact Us", new ContactUsFragment(), null);
-                break;
-            case R.id.navmenu_latest_news:
-                fragment = new LatestNewsFragment();
-                ShowFragment("Latest News", fragment, null);
-                break;
-            case R.id.navmenu_hotspot_locator:
-                bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
-                ShowFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
-                break;
-            case R.id.navmenu_gp_locator:
-                bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.ROOT_GP);
-                ShowFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
-                break;
-            case R.id.navmenu_login:
-                ShowFragment("CCA JK", new LoginFragment(), null);
-                //Helper.getInstance().showLoginPopup(this, frameLayout);
-                break;
-            case R.id.navmenu_update_grievances:
-                if (checkCurrentUser()) {
-                    ShowFragment("Update Grievance Status", new UpdateGrievanceFragment(), null);
-                }
-                break;
-            case R.id.navmenu_inspection:
-                if (checkCurrentUser()) {
-                    ShowFragment("Inspection", new InspectionFragment(), null);
-                }
-                break;
-            case R.id.navmenu_add_news:
-                if (checkCurrentUser()) {
-                    ShowFragment("Add Latest News", new AddNewsFragment(), null);
-                }
-                break;
-            case R.id.navmenu_logout:
-                logout();
-                break;
-            /*case R.id.navmenu_settings:
-                ShowFragment("Settings", new SettingsFragment(), null);
-                break;
-            case R.id.navmenu_invite:
-                showInviteIntent();
-                break;
-            case R.id.navmenu_feedback:
-                ShowFragment("Feedback", new FeedbackFragment(), null);
-                break;
-            case R.id.navmenu_about_us:
-                ShowFragment("About Us", new AboutUsFragment(), null);
-                break;*/
-
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private boolean checkCurrentUser() {
-        if (mAuth.getCurrentUser() == null) {
-            showAuthDialog(true);
-            return false;
-        } else
-            return true;
-    }
-
     private void logout() {
         Helper.getInstance().showFancyAlertDialog(this,
                 "Do you want to logout?",
@@ -429,7 +440,7 @@ public class MainActivity extends AppCompatActivity
                 new IFancyAlertDialogListener() {
                     @Override
                     public void OnClick() {
-                        ShowFragment("Home", new HomeFragment(), null);
+                        showFragment("Home", new HomeFragment(), null);
                         Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                         ManageNavigationView(false, false);
                         GrievanceDataProvider.getInstance().setAllGrievanceList(null);
@@ -472,7 +483,6 @@ public class MainActivity extends AppCompatActivity
     private void showInviteIntent() {
 
         Resources resources = getResources();
-
         Intent emailIntent = new Intent();
         emailIntent.setAction(Intent.ACTION_SEND);
         // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
@@ -483,7 +493,6 @@ public class MainActivity extends AppCompatActivity
         PackageManager pm = getPackageManager();
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("text/plain");
-
 
         Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.invitation_title));
 
@@ -509,19 +518,15 @@ public class MainActivity extends AppCompatActivity
                 } else if (packageName.contains("mms") || packageName.contains("messaging") || packageName.contains("whatsapp")) {
                     intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
                 } else if (packageName.contains("android.gm")) { // If Gmail shows up twice, try removing this else-if clause and the reference to "android.gm" above
-
                     intent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.invitation_message));
                     intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.invitation_message_heading) + "<br><br>" + resources.getString(R.string.invitation_deep_link)));
                     intent.setType("message/rfc822");
                 } else {
-
                     intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
                 }
-
                 intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
             }
         }
-
         // convert intentList to array
         LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
 
@@ -551,7 +556,7 @@ public class MainActivity extends AppCompatActivity
             ManageNavigationView(true, false);
         }
 
-        ShowFragment("Home", new HomeFragment(), null);
+        showFragment("Home", new HomeFragment(), null);
     }
 
     public void ManageNavigationView(boolean signedIn, boolean admin) {
@@ -603,14 +608,12 @@ public class MainActivity extends AppCompatActivity
                 ((BrowserFragment) f).goBack();
             } else {
                 ((BrowserFragment) f).stopLoading();
-                ShowFragment("Home", new HomeFragment(), null);
+                showFragment("Home", new HomeFragment(), null);
             }
-
         } else {
-            ShowFragment("Home", new HomeFragment(), null);
+            showFragment("Home", new HomeFragment(), null);
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

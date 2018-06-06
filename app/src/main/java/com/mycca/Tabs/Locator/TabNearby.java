@@ -448,7 +448,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                                 null,
                                 null,
                                 null,
-                                FancyAlertDialogType.ERROR);
+                                FancyAlertDialogType.WARNING);
 
                         break;
                     }

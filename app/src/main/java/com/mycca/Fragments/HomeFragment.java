@@ -52,7 +52,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     //private TextView welcomeText, ccaDeskText;
     View view;
     final String TAG = "HomeFragment";
-
     RecyclerViewAdapterNews adapterNews;
     ArrayList<NewsModel> newsModelArrayList;
 
@@ -144,7 +143,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         tvLatestNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).ShowFragment("Latest News", new LatestNewsFragment(), null);
+                ((MainActivity) getActivity()).showFragment("Latest News", new LatestNewsFragment(), null);
             }
         });
 
@@ -161,7 +160,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         moveRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
+                if (linearLayoutManager.findLastVisibleItemPosition() - 1 >= 0)
+                    recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
             }
         });
 
@@ -195,15 +195,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         switch (name) {
             case "Digital India":
                 bundle.putString("url", "http://www.digitalindia.gov.in");
-                mainActivity.ShowFragment(name, browserFragment, bundle);
+                mainActivity.showFragment(name, browserFragment, bundle);
                 break;
             case "Swachh Bharat Abhiyan":
                 bundle.putString("url", "https://swachhbharat.mygov.in");
-                mainActivity.ShowFragment(name, browserFragment, bundle);
+                mainActivity.showFragment(name, browserFragment, bundle);
                 break;
             case "Controller of Communication Accounts":
                 bundle.putString("url", "http://ccajk.gov.in");
-                mainActivity.ShowFragment(name, browserFragment, bundle);
+                mainActivity.showFragment(name, browserFragment, bundle);
                 break;
         }
 
@@ -219,6 +219,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                         NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                         newsModelArrayList.add(newsModel);
                         adapterNews.notifyDataSetChanged();
+                        recyclerView.smoothScrollToPosition(newsModelArrayList.size()-1);
                     }
 
                     @Override
