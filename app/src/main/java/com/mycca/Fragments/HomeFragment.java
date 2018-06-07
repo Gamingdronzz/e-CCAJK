@@ -179,10 +179,11 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     public void setupWelcomeBar() {
         FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
-        if (user != null)
+        if (user != null) {
+            tvUserName.setVisibility(View.VISIBLE);
             tvUserName.setText("Hello " + user.getDisplayName());
-        else
-            tvUserName.setText("Hello CCA User");
+        } else
+            tvUserName.setVisibility(View.GONE);
     }
 
     private void loadWebSite(String name) {
@@ -219,7 +220,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                         NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                         newsModelArrayList.add(newsModel);
                         adapterNews.notifyDataSetChanged();
-                        recyclerView.smoothScrollToPosition(newsModelArrayList.size()-1);
+                        recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
                     }
 
                     @Override
