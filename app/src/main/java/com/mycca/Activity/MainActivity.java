@@ -444,6 +444,12 @@ public class MainActivity extends AppCompatActivity
                         Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                         ManageNavigationView(false, false);
                         GrievanceDataProvider.getInstance().setAllGrievanceList(null);
+                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Logged Out", "OK", new IFancyAlertDialogListener() {
+                            @Override
+                            public void OnClick() {
+                            }
+                        }, null, null, FancyAlertDialogType.SUCCESS);
+
                     }
                 },
                 "NO",
