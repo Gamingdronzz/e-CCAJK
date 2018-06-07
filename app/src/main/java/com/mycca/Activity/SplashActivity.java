@@ -106,7 +106,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void OnConnectionAvailable() {
                 try {
-                    dbref.child(FireBaseHelper.getInstance(SplashActivity.this).ROOT_APP_VERSION)
+                    dbref.child(FireBaseHelper.ROOT_APP_VERSION)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {

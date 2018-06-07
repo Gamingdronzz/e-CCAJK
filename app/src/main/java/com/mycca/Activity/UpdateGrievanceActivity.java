@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
@@ -186,7 +187,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     private void notifyPensioner() {
 
-        dbref.child("FCMServerKey").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("FCMServerKey").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
@@ -204,7 +205,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     }
 
     private void getTokenAndSendNotification(final String fcmKey) {
-        dbref.child(FireBaseHelper.getInstance(this).ROOT_TOKEN)
+        dbref.child(FireBaseHelper.ROOT_TOKEN)
                 .child(GrievanceDataProvider.getInstance().selectedGrievance.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

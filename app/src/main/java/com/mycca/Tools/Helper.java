@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -61,7 +60,7 @@ public class Helper {
     public final String Nil = "Nil";
     private final String TAG = "Helper";
     String hint = "Pensioner Code";
-    private boolean debugMode = true;
+    private boolean debugMode = false;
     public ArrayList<LocationModel> allLocationModels;
 
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
