@@ -69,7 +69,7 @@ public class LocatorFragment extends Fragment {
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
 
-    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     public LocatorFragment() {
 
@@ -108,13 +108,13 @@ public class LocatorFragment extends Fragment {
 
         manageNoLocationLayout(true);
 
-            //fetch from local storage
-            locationModelArrayList = getLocationsFromLocalStorage();
-            if (locationModelArrayList == null) {
-                checkConnection(false);
-            } else {
-                checkConnection(true);
-            }
+        //fetch from local storage
+        locationModelArrayList = getLocationsFromLocalStorage();
+        if (locationModelArrayList == null) {
+            checkConnection(false);
+        } else {
+            checkConnection(true);
+        }
     }
 
     private void setTabLayout() {
@@ -138,6 +138,7 @@ public class LocatorFragment extends Fragment {
                     ((TabNearby) fragment).startLocationProcess();
                 }
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -239,7 +240,7 @@ public class LocatorFragment extends Fragment {
     }
 
     private void checkNewLocationsinFirebase() {
-       // DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
+        // DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -278,8 +279,6 @@ public class LocatorFragment extends Fragment {
                             try {
                                 Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
                                 LocationModel location = dataSnapshot.getValue(LocationModel.class);
-
-                                //Log.d(TAG, "onChildAdded: " + location.getLatitude() + ":" + location.getLongitude());
                                 locationModelArrayList.add(location);
                             } catch (DatabaseException dbe) {
                                 dbe.printStackTrace();
@@ -314,7 +313,8 @@ public class LocatorFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: got locations from firebase");
                         setTabLayout();
-                        addLocationsToLocalStorage(locationModelArrayList);
+                        if (locationModelArrayList.size() > 0)
+                            addLocationsToLocalStorage(locationModelArrayList);
                     }
 
                     @Override
@@ -363,7 +363,6 @@ public class LocatorFragment extends Fragment {
         }
         return null;
     }
-
 
     class MyAdapter extends FragmentPagerAdapter {
         private Fragment mCurrentFragment;

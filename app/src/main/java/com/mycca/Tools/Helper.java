@@ -60,7 +60,7 @@ public class Helper {
     public final String Nil = "Nil";
     private final String TAG = "Helper";
     String hint = "Pensioner Code";
-    private boolean debugMode = false;
+    private boolean debugMode = true;
     public ArrayList<LocationModel> allLocationModels;
 
     String[] statuslist = {"Submitted", "Under Process", "Resolved"};
@@ -264,9 +264,13 @@ public class Helper {
     }
 
     public void hideKeyboardFrom(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)
-                activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager)
+                    activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     public ImagePicker showImageChooser(ImagePicker imagePicker, Activity activity, boolean cropimage, ImagePicker.Callback callback) {
@@ -363,11 +367,11 @@ public class Helper {
                     //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
-                        editText.setFilters(new InputFilter[] {});
+                        editText.setFilters(new InputFilter[]{});
                         break;
                     case R.id.radioButtonStaff:
                         hint = "Staff Number";
-                        editText.setFilters(new InputFilter[] {});
+                        editText.setFilters(new InputFilter[]{});
                 }
                 editText.setText("");
                 textInputLayout.setHint(hint);
@@ -577,8 +581,7 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public class DateFormat
-    {
+    public class DateFormat {
         public static final String DD_MM_YYYY = "dd MMM, yyyy";
     }
 

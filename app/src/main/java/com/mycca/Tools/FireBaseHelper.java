@@ -1,7 +1,6 @@
 package com.mycca.Tools;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -60,8 +59,8 @@ public class FireBaseHelper {
         _instance = this;
         try {
             version = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
-        } catch (PackageManager.NameNotFoundException e) {
-            version = "2";
+        } catch (Exception e) {
+            version = "5";
             e.printStackTrace();
         }
         databaseReference = FirebaseDatabase.getInstance().getReference().child(version);

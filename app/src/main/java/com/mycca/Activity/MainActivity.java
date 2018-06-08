@@ -636,6 +636,7 @@ public class MainActivity extends AppCompatActivity
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
                 progressDialog.dismiss();
+                Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Google sign in failed", "OK", null, null, null, FancyAlertDialogType.ERROR);
             }
         } else {
             for (Fragment frag : allFragments) {

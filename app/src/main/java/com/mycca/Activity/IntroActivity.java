@@ -18,6 +18,7 @@ public class IntroActivity extends OnboarderActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         onboarderPages = new ArrayList<>();
 
         OnboarderPage onboarderPage1 = new OnboarderPage("Welcome", "Welcome to Official Android Application of\n" +
@@ -64,22 +65,23 @@ public class IntroActivity extends OnboarderActivity {
 
     @Override
     public void onSkipButtonPressed() {
-        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_HELP_ONBOARDER,false);
         Preferences.getInstance().setTutorialPrefs(this);
-        startActivity(new Intent(IntroActivity.this, MainActivity.class));
-        finish();
+        nextActions();
     }
 
     @Override
     public void onFinishButtonPressed() {
-        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_HELP_ONBOARDER,false);
-        Preferences.getInstance().setTutorialPrefs(this);
-        startActivity(new Intent(IntroActivity.this, MainActivity.class));
-        finish();
+        nextActions();
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    public void nextActions(){
+        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_HELP_ONBOARDER,false);
+        startActivity(new Intent(IntroActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        finish();
     }
 }

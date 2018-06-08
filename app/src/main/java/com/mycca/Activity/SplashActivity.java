@@ -35,7 +35,6 @@ public class SplashActivity extends AppCompatActivity {
     String currentVersionName;
     private String TAG = "Splash";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +47,10 @@ public class SplashActivity extends AppCompatActivity {
     private void init() {
         currentAppVersion = getAppVersion();
         currentVersionName = getAppVersionName();
-        tvSplashVersion.setText("Version - " + currentVersionName);
+        if (currentVersionName.equals(""))
+            tvSplashVersion.setText("Version - N/A");
+        else
+            tvSplashVersion.setText("Version - " + currentVersionName);
         Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
         dbref = FireBaseHelper.getInstance(this).databaseReference;
     }
@@ -77,6 +79,7 @@ public class SplashActivity extends AppCompatActivity {
                     checkForUpdate();
                 } catch (Exception e1) {
                     e1.printStackTrace();
+                    LoadNextActivity();
                 } finally {
                 }
             }
@@ -115,11 +118,12 @@ public class SplashActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-                                    Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                                    LoadNextActivity();
                                 }
                             });
                 } catch (DatabaseException dbe) {
                     dbe.printStackTrace();
+                    LoadNextActivity();
                 }
             }
 
@@ -151,7 +155,6 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-
     private void ShowUpdateDialog(boolean updateAvailable) {
         if (updateAvailable) {
             Helper.getInstance().showFancyAlertDialog(this,
@@ -175,7 +178,7 @@ public class SplashActivity extends AppCompatActivity {
                     FancyAlertDialogType.WARNING);
         } else {
             Helper.getInstance().showFancyAlertDialog(this,
-                    "The Application is still in maintenance mode\nPlease wait for a while\n\nThank you for your paitence",
+                    "The Application is in maintenance\nPlease wait for a while\n\nThank you for your paitence",
                     "My CCA",
                     "OK",
                     new IFancyAlertDialogListener() {

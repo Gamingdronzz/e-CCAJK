@@ -3,6 +3,7 @@ package com.mycca.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,8 @@ public class SettingsFragment extends Fragment {
     FirebaseAuth mAuth;
     private Switch switchNotification;
     LinearLayout layoutChangeState, layoutSignInOut;
-    private TextView tvChangeState, tvCurrentState, tvSignOut, tvAccount, tvHelp;
+    private TextView tvCurrentState, tvSignOut, tvAccount, tvHelp;
+    MainActivity activity;
 
     public SettingsFragment() {
 
@@ -37,7 +39,7 @@ public class SettingsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         mAuth = FireBaseHelper.getInstance(getContext()).mAuth;
@@ -54,7 +56,7 @@ public class SettingsFragment extends Fragment {
 
         layoutChangeState = view.findViewById(R.id.layout_settings_change_state);
         tvCurrentState = view.findViewById(R.id.tv_settings_curent_state);
-        tvChangeState = view.findViewById(R.id.tv_settings_change_state);
+        TextView tvChangeState = view.findViewById(R.id.tv_settings_change_state);
         tvChangeState.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_place_black_24dp, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
 
         tvHelp = view.findViewById(R.id.tv_settings_view_help);
@@ -70,6 +72,7 @@ public class SettingsFragment extends Fragment {
 
     private void init() {
 
+        activity = (MainActivity) getActivity();
         switchNotification.setChecked(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS));
         switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -86,15 +89,15 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Preferences.getInstance().clearTutorialPrefs(getContext());
-                startActivity(new Intent(getActivity(), IntroActivity.class));
-                getActivity().finish();
+                startActivity(new Intent(activity, IntroActivity.class));
+                //activity.finish();
             }
         });
 
         layoutChangeState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), StateSettingActivity.class);
+                Intent intent = new Intent(activity, StateSettingActivity.class);
                 startActivity(intent);
             }
         });
@@ -110,7 +113,7 @@ public class SettingsFragment extends Fragment {
                             new IFancyAlertDialogListener() {
                                 @Override
                                 public void OnClick() {
-                                    ((MainActivity) getActivity()).signOutFromGoogle();
+                                    activity.signOutFromGoogle();
                                     Helper.getInstance().showFancyAlertDialog(getActivity(), "", "Signed Out", "OK", new IFancyAlertDialogListener() {
                                         @Override
                                         public void OnClick() {
@@ -128,10 +131,8 @@ public class SettingsFragment extends Fragment {
                                 }
                             },
                             FancyAlertDialogType.WARNING);
-
-
                 } else {
-                    ((MainActivity) getActivity()).signInWithGoogle();
+                    activity.signInWithGoogle();
                 }
             }
         });
