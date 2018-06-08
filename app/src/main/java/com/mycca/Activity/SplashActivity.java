@@ -74,7 +74,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 try {
-                   checkForUpdate();
+                    checkForUpdate();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 } finally {
@@ -134,6 +134,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkVersion(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.getValue() == null) {
+            Log.d(TAG, "checkVersion: Data snapshot null");
+            ShowUpdateDialog(false);
+            return;
+        }
         long version = (long) dataSnapshot.getValue();
 
         Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
@@ -142,9 +147,16 @@ public class SplashActivity extends AppCompatActivity {
         if (currentAppVersion == -1 || currentAppVersion == version) {
             LoadNextActivity();
         } else {
+            ShowUpdateDialog(true);
+        }
+    }
+
+
+    private void ShowUpdateDialog(boolean updateAvailable) {
+        if (updateAvailable) {
             Helper.getInstance().showFancyAlertDialog(this,
                     "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
-                    "Location",
+                    "My CCA",
                     "Update",
                     new IFancyAlertDialogListener() {
                         @Override
@@ -161,6 +173,19 @@ public class SplashActivity extends AppCompatActivity {
                         }
                     },
                     FancyAlertDialogType.WARNING);
+        } else {
+            Helper.getInstance().showFancyAlertDialog(this,
+                    "The Application is still in maintenance mode\nPlease wait for a while\n\nThank you for your paitence",
+                    "My CCA",
+                    "OK",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            finish();
+                        }
+                    },
+                    null, null,
+                    FancyAlertDialogType.WARNING);
         }
     }
 
@@ -173,7 +198,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void LoadNextActivity() {
         Intent intent = new Intent();
-        if (Preferences.getInstance().getBooleanPref(this,Preferences.PREF_HELP_ONBOARDER)) {
+        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_HELP_ONBOARDER)) {
             intent.setClass(getApplicationContext(), IntroActivity.class);
         } else {
             intent.setClass(getApplicationContext(), MainActivity.class);

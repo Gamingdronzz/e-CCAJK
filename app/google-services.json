@@ -15,12 +15,32 @@
       },
       "oauth_client": [
         {
+          "client_id": "158632546092-24s589afjhq637lcdnj0horlj9m3cm4r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycca",
+            "certificate_hash": "634c9ddbb970918b74c2648a899abe8b9eb2d7c5"
+          }
+        },
+        {
+          "client_id": "158632546092-v7p257qq46k93q405b6mdkvj36r8h1ut.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycca",
+            "certificate_hash": "6c105436dee38f5298f306c1274fb6ba6a73ded6"
+          }
+        },
+        {
           "client_id": "158632546092-kt7cm86d6k5c9355rb6046mvqctirmbv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mycca",
             "certificate_hash": "1fe9e2d5d99ee5315b81d031a7833cd3d04b45bd"
           }
+        },
+        {
+          "client_id": "158632546092-laat5nhh3lqcs6rl6t2km3b56de7ncg7.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "158632546092-laat5nhh3lqcs6rl6t2km3b56de7ncg7.apps.googleusercontent.com",
