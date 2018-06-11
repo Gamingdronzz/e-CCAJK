@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case R.id.navmenu_home:
@@ -586,24 +586,27 @@ public class MainActivity extends AppCompatActivity
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
 
         if (mQueue != null) {
-            Helper.getInstance().showFancyAlertDialog(this,
-                    "Skip CCA Tutorial Messages?",
-                    "CCA Help",
-                    "SKIP", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            mQueue.cancel(true);
-                            Preferences.getInstance().setTutorialPrefs(MainActivity.this);
-                        }
-                    },
-                    "CANCEL", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
+            try {
+                Helper.getInstance().showFancyAlertDialog(this,
+                        "Skip CCA Tutorial Messages?",
+                        "CCA Help",
+                        "SKIP", new IFancyAlertDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                mQueue.cancel(true);
+                                Preferences.getInstance().setTutorialPrefs(MainActivity.this);
+                            }
+                        },
+                        "CANCEL", new IFancyAlertDialogListener() {
+                            @Override
+                            public void OnClick() {
 
-                        }
-                    },
-                    FancyAlertDialogType.WARNING);
-
+                            }
+                        },
+                        FancyAlertDialogType.WARNING);
+            }catch (IllegalStateException ex){
+                ex.printStackTrace();
+            }
         } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
 

@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -50,11 +51,12 @@ public class TabAllLocations extends Fragment {
     String[] locations;
     ArrayList<LocationModel> stateLocations = new ArrayList<>();
     ArrayList<LocationModel> filteredLocations = new ArrayList<>();
+    MainActivity activity;
 
     String locatorType;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_all_locations, container, false);
         locatorType = getArguments().getString("Locator");
@@ -69,6 +71,7 @@ public class TabAllLocations extends Fragment {
 
     private void init(View view) {
 
+        activity= (MainActivity) getActivity();
         /*radioGroup = view.findViewById(R.id.search);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -123,7 +126,7 @@ public class TabAllLocations extends Fragment {
                 LocationModel location = stateLocations.get(position);
                 Uri uri = Uri.parse("geo:0,0?q=" + (location.getLatitude() + "," + location.getLongitude() + "(" + Uri.encode(location.getLocationName()) + ")"));
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                getContext().startActivity(intent);
+                activity.startActivity(intent);
             }
 
             @Override
@@ -136,47 +139,47 @@ public class TabAllLocations extends Fragment {
 
     private void showTutorial() {
 
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
                 .title("Tap on location to open in Google Maps")
                 .focusOn(recyclerView)
                 .focusCircleRadiusFactor(.6)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
                 .build();
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
                 .title("Click to search location")
                 .focusOn(search)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .fitSystemWindows(true)
                 .build();
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
                 .title("Click to view locations districtwise")
                 .focusOn(sort)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .fitSystemWindows(true)
                 .build();
-        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(activity)
                 .title("-------->\nSwipe to view nearby hotspots")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels * 1 / 6, 150)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+        activity.mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView3)
                 .add(fancyShowCaseView4);
 
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
+                activity.mQueue = null;
             }
         });
 
-        ((MainActivity) getActivity()).mQueue.show();
+        activity.mQueue.show();
     }
 
     private void ShowSortDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_sort_locations, (ViewGroup) getView(), false);
         final RadioGroup radioGroupSort = viewInflated.findViewById(R.id.radio_group_sort);
         builder.setView(viewInflated);
@@ -208,12 +211,12 @@ public class TabAllLocations extends Fragment {
     private void ShowSearchByNameDialog() {
 
         //radioGroup.clearCheck();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_search_by_name, (ViewGroup) getView(), false);
 
         final AutoCompleteTextView input = viewInflated.findViewById(R.id.input);
         input.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
-        ArrayAdapter<String> actAdapter = new ArrayAdapter<String>(getContext(),
+        ArrayAdapter<String> actAdapter = new ArrayAdapter<>(activity,
                 android.R.layout.simple_dropdown_item_1line, locations);
         input.setAdapter(actAdapter);
 

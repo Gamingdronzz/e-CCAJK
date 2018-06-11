@@ -13,12 +13,14 @@ import java.util.List;
 
 public class IntroActivity extends OnboarderActivity {
 
+    boolean fromSettings=false;
     List<OnboarderPage> onboarderPages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fromSettings = getIntent().getBooleanExtra("FromSettings", false);
         onboarderPages = new ArrayList<>();
 
         OnboarderPage onboarderPage1 = new OnboarderPage("Welcome", "Welcome to Official Android Application of\n" +
@@ -63,6 +65,12 @@ public class IntroActivity extends OnboarderActivity {
         onboarderPage.setMultilineDescriptionCentered(true);
     }
 
+    public void nextActions() {
+        Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
+        startActivity(new Intent(IntroActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        finish();
+    }
+
     @Override
     public void onSkipButtonPressed() {
         Preferences.getInstance().setTutorialPrefs(this);
@@ -79,9 +87,10 @@ public class IntroActivity extends OnboarderActivity {
 
     }
 
-    public void nextActions(){
-        Preferences.getInstance().setBooleanPref(this,Preferences.PREF_HELP_ONBOARDER,false);
-        startActivity(new Intent(IntroActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-        finish();
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (fromSettings)
+            Preferences.getInstance().setTutorialPrefs(this);
     }
 }

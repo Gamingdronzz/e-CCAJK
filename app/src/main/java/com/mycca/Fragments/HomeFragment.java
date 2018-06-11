@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,13 +55,14 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     final String TAG = "HomeFragment";
     RecyclerViewAdapterNews adapterNews;
     ArrayList<NewsModel> newsModelArrayList;
+    MainActivity activity;
 
     public HomeFragment() {
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -97,7 +99,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //        welcomeText.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
+//                Intent intent = new Intent(HomeFragment.this.activity, AboutUsActivity.class);
 //                intent.putExtra("Text", getString(R.string.welcome_full));
 //                intent.putExtra("Title", "Welcome to CCA JK");
 //                startActivity(intent);
@@ -116,13 +118,13 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //        ccaDeskText.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(HomeFragment.this.getActivity(), AboutUsActivity.class);
+//                Intent intent = new Intent(HomeFragment.this.activity, AboutUsActivity.class);
 //                intent.putExtra("Text", getString(R.string.from_cca_desk));
 //                intent.putExtra("Title", "From CCA's Desk");
 //                startActivity(intent);
 //            }
 //        });
-
+        activity = (MainActivity) getActivity();
         tvVisit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
 
@@ -132,7 +134,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 String location = "32.707500,74.874217";
                 Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
                     Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
@@ -143,12 +145,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         tvLatestNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).showFragment("Latest News", new LatestNewsFragment(), null);
+                activity.showFragment("Latest News", new LatestNewsFragment(), null);
             }
         });
 
         newsModelArrayList = new ArrayList<>();
-        adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, getActivity(), true);
+        adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, activity, true);
 
         recyclerView.setAdapter(adapterNews);
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
@@ -189,22 +191,20 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void loadWebSite(String name) {
 
         BrowserFragment browserFragment = new BrowserFragment();
-        MainActivity mainActivity = (MainActivity) getActivity();
-
 
         Bundle bundle = new Bundle();
         switch (name) {
             case "Digital India":
                 bundle.putString("url", "http://www.digitalindia.gov.in");
-                mainActivity.showFragment(name, browserFragment, bundle);
+                activity.showFragment(name, browserFragment, bundle);
                 break;
             case "Swachh Bharat Abhiyan":
                 bundle.putString("url", "https://swachhbharat.mygov.in");
-                mainActivity.showFragment(name, browserFragment, bundle);
+                activity.showFragment(name, browserFragment, bundle);
                 break;
             case "Controller of Communication Accounts":
                 bundle.putString("url", "http://ccajk.gov.in");
-                mainActivity.showFragment(name, browserFragment, bundle);
+                activity.showFragment(name, browserFragment, bundle);
                 break;
         }
 
@@ -247,7 +247,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     private void setupSlider() {
 
-        HashMap<String, Integer> file_maps = new HashMap<String, Integer>();
+        HashMap<String, Integer> file_maps = new HashMap<>();
 
         file_maps.put("Deptt. of Telecomminication", R.drawable.communication);
 
@@ -280,14 +280,14 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     private void showTutorial() {
 
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
                 .title("Tap on images to open respective websites. Tap anywhere to continue")
                 .focusOn(mDemoSlider)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .fitSystemWindows(true)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
                 .title("Tap on news to view in detail")
                 .focusOn(recyclerView)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
@@ -295,31 +295,31 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .fitSystemWindows(true)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
                 .title("Open Main Menu from here")
                 .focusCircleAtPosition(0, 0, 200)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(activity)
                 .title("Touch here to open Secondary Menu")
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
                 .build();
 
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+        activity.mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3)
                 .add(fancyShowCaseView4);
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
+                activity.mQueue = null;
                 if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
-                    ((MainActivity) getActivity()).showAuthDialog(false);
+                    activity.showAuthDialog(false);
             }
         });
 
-        ((MainActivity) getActivity()).mQueue.show();
+        activity.mQueue.show();
     }
 
     @Override

@@ -99,6 +99,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     String code, type, email;
     View menuClearForm;
 
+    MainActivity mainActivity;
     GrievanceType grievanceType;
     State state;
     VolleyHelper volleyHelper;
@@ -158,7 +159,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void init() {
 
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please wait...");
+        mainActivity = (MainActivity) getActivity();
+        progressDialog = Helper.getInstance().getProgressWindow(mainActivity, "Please wait...");
 
         autoCompleteTextViewPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
@@ -204,7 +206,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             }
         });
 
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(getContext(), R.layout.simple_spinner, Helper.getInstance().submittedByList(type));
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mainActivity, R.layout.simple_spinner, Helper.getInstance().submittedByList(type));
         spinnerInputSubmittedBy.setAdapter(arrayAdapter1);
 
 
@@ -275,7 +277,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void showTutorial() {
 
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(mainActivity)
                 //.focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
                 .focusOn(view.findViewById(R.id.button_attach))
                 .focusShape(FocusShape.CIRCLE)
@@ -283,27 +285,27 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 .fitSystemWindows(true)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(mainActivity)
                 .focusOn(menuClearForm)
                 .focusShape(FocusShape.CIRCLE)
                 .focusCircleRadiusFactor(2)
                 .title("Click to clear form data")
                 .build();
 
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+        mainActivity.mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2);
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+        mainActivity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
+                mainActivity.mQueue = null;
             }
         });
-        ((MainActivity) getActivity()).mQueue.show();
+        mainActivity.mQueue.show();
     }
 
     private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, mainActivity, true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
                 Log.d(TAG, "onPickImage: " + imageUri.getPath());
@@ -392,11 +394,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void showConfirmSubmissionDialog() {
-        Helper.getInstance().hideKeyboardFrom(getActivity());
+        Helper.getInstance().hideKeyboardFrom(mainActivity);
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         loadValues(v);
-        Helper.getInstance().getConfirmationDialog(getActivity(), v,
+        Helper.getInstance().getConfirmationDialog(mainActivity, v,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -437,13 +439,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
                                 doSubmissionOnInternetAvailable();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
                         }
                     });
                 } else
@@ -453,7 +455,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showFancyAlertDialog(getActivity(),
+                Helper.getInstance().showFancyAlertDialog(mainActivity,
                         "No Internet Connection\nPlease turn on internet connection before submitting " + type + " Grievance",
                         "Submit Grievance",
                         "OK",
@@ -509,7 +511,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         uploadAllImagesToFirebase();
                     } else {
                         progressDialog.dismiss();
-                        Helper.getInstance().showUpdateOrMaintenanceDialog(false,getActivity());
+                        Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
                     }
                 }
             });
@@ -550,7 +552,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                                     new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                           // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                            // Uri downloadUrl = taskSnapshot.getDownloadUrl();
                                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
@@ -591,7 +593,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                Helper.getInstance().showFancyAlertDialog(getActivity(),
+                Helper.getInstance().showFancyAlertDialog(mainActivity,
                         "Some Error Occured<br>Please try Again",
                         "Track Grievance",
                         "OK",
@@ -664,7 +666,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             "<b>" + grievanceType.getName() + "</b><br>" +
                             " has been succesfully submitted";
 
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+                    Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, "Grievance Submission", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
 
@@ -674,7 +676,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Grievance Submission Failed<br>Try Again", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+                    Helper.getInstance().showFancyAlertDialog(mainActivity, "Grievance Submission Failed<br>Try Again", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
 
@@ -692,7 +694,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
-            imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
+            imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
 
         /*if (resultCode == Activity.RESULT_OK && requestCode == RC_IMAGE_PICKER) {
             ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
@@ -713,7 +715,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         switch (requestCode) {
             default: {
                 if (imagePicker != null)
-                    imagePicker.onRequestPermissionsResult(this.getActivity(), requestCode, permissions, grantResults);
+                    imagePicker.onRequestPermissionsResult(mainActivity, requestCode, permissions, grantResults);
             }
 
         }
@@ -724,7 +726,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
         progressDialog.dismiss();
-        Helper.getInstance().showFancyAlertDialog(getActivity(), "Some Error Occured Please be patient we are getting things fixed", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+        Helper.getInstance().showFancyAlertDialog(mainActivity, "Some Error Occured Please be patient we are getting things fixed", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
             @Override
             public void OnClick() {
 

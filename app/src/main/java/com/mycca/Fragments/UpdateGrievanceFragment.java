@@ -4,6 +4,7 @@ package com.mycca.Fragments;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -50,6 +51,7 @@ public class UpdateGrievanceFragment extends Fragment {
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
     ProgressDialog progressDialog;
+    MainActivity activity;
 
     public final static int INT_UPDATE_GRIEVANCE_TAB_ITEMS = 3;
     String TAG = "UpdateGrievanceFragment";
@@ -64,7 +66,7 @@ public class UpdateGrievanceFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_update, container, false);
         bindViews(view);
@@ -95,10 +97,11 @@ public class UpdateGrievanceFragment extends Fragment {
                 init();
             }
         });
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Checking for Intenet Connectivity...");
     }
 
     private void init() {
+        activity= (MainActivity) getActivity();
+        progressDialog = Helper.getInstance().getProgressWindow(activity, "Checking for Intenet Connectivity...");
         progressDialog.show();
         checkConnection();
     }
@@ -201,39 +204,39 @@ public class UpdateGrievanceFragment extends Fragment {
 
     private void showTutorial() {
 
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
                 .title("These are submitted grievances")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels*1/6, Resources.getSystem().getDisplayMetrics().heightPixels* 1 / 6, 150)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels/6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
                 .title("-------->\nSwipe to view Greivances Under process")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels *1/2, Resources.getSystem().getDisplayMetrics().heightPixels * 1 / 6, 150)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels /2, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
                 .title("-------->\nSwipe again to view Resolved Greivances")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels * 1 / 6, 150)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+        activity.mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3);
 
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+       activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
+               activity.mQueue = null;
             }
         });
 
-        ((MainActivity) getActivity()).mQueue.show();
+      activity.mQueue.show();
     }
 
     class MyAdapter extends FragmentPagerAdapter {
 
-        public MyAdapter(FragmentManager fm) {
+        MyAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -241,14 +244,11 @@ public class UpdateGrievanceFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    TabSubmitted tabSubmitted = new TabSubmitted();
-                    return tabSubmitted;
+                    return new TabSubmitted();
                 case 1:
-                    TabUnderProcess tabUnderProcess = new TabUnderProcess();
-                    return tabUnderProcess;
+                    return new TabUnderProcess();
                 case 2:
-                    TabResolved tabResolved = new TabResolved();
-                    return tabResolved;
+                    return new TabResolved();
             }
             return null;
         }

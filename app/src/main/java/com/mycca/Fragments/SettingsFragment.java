@@ -69,7 +69,6 @@ public class SettingsFragment extends Fragment {
 
     }
 
-
     private void init() {
 
         activity = (MainActivity) getActivity();
@@ -89,8 +88,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Preferences.getInstance().clearTutorialPrefs(getContext());
-                startActivity(new Intent(activity, IntroActivity.class));
-                //activity.finish();
+                startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings",true));
             }
         });
 

@@ -4,6 +4,7 @@ package com.mycca.Fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
@@ -44,12 +45,13 @@ public class ContactUsFragment extends Fragment {
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
     boolean isTab;
+    MainActivity activity;
 
     public ContactUsFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: done");
         View view = inflater.inflate(R.layout.fragment_contact_us, container, false);
@@ -85,6 +87,7 @@ public class ContactUsFragment extends Fragment {
 
     private void init(boolean isMultiColumn) {
 
+        activity = (MainActivity) getActivity();
         contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
         recyclerView.setAdapter(adapterContacts);
@@ -96,10 +99,10 @@ public class ContactUsFragment extends Fragment {
                 String location = "32.707500,74.874217";
                 Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
-                    Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "No Map Application Installed", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -117,15 +120,13 @@ public class ContactUsFragment extends Fragment {
 
     }
 
-    private boolean ManageOfficeAddress() {
+    private void ManageOfficeAddress() {
         if (officeAddressLayout.getVisibility() == View.GONE) {
             officeAddressLayout.setVisibility(View.VISIBLE);
             textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_office, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
-            return false;
         } else {
             officeAddressLayout.setVisibility(View.GONE);
             textviewHeadingOfficeAddress.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_office, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
-            return true;
         }
     }
 
@@ -134,41 +135,41 @@ public class ContactUsFragment extends Fragment {
         contactArrayList.get(0).setExpanded(true);
         adapterContacts.notifyItemChanged(0);
 
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
                 .title("Touch to open office address")
                 .focusOn(textviewHeadingOfficeAddress)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
                 .title("Tap on any contact to open or close contact information")
                 .focusOn(recyclerView)
                 .focusCircleRadiusFactor(.8)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
                 .build();
 
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(getActivity())
+        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
                 .title("Tap on phone numbers to make call or on email to compose email")
                 .focusOn(recyclerView)
                 .focusCircleRadiusFactor(.6)
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
                 .build();
 
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue()
+        activity.mQueue = new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3);
 
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
             @Override
             public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
+                activity.mQueue = null;
                 contactArrayList.get(0).setExpanded(false);
                 adapterContacts.notifyItemChanged(0);
             }
         });
 
-        ((MainActivity) getActivity()).mQueue.show();
+        activity.mQueue.show();
     }
 
     private String getGeneralText(String prefState) {

@@ -31,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
     String currentVersionName;
     private String TAG = "Splash";
 
+    Animation animationScale;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void init() {
+        Helper.versionChecked=false;
         currentAppVersion = Helper.getInstance().getAppVersion(this);
         currentVersionName = getAppVersionName();
         if (currentVersionName.equals(""))
@@ -58,7 +61,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void StartAnimations() {
         final Animation animationAlpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
-        final Animation animationScale = AnimationUtils.loadAnimation(this, R.anim.scale);
+        animationScale = AnimationUtils.loadAnimation(this, R.anim.scale);
         final Animation animationBounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         animationAlpha.reset();
@@ -68,27 +71,15 @@ public class SplashActivity extends AppCompatActivity {
         imageView.clearAnimation();
         imageView.startAnimation(animationScale);
 
-        Thread thread = new Thread() {
-            public void run() {
-                super.run();
-                try {
-                    checkForUpdate();
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                    LoadNextActivity();
-                }
-            }
-        };
-        thread.start();
-
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                //checkForUpdate();
+                checkForUpdate();
             }
 
             @Override
