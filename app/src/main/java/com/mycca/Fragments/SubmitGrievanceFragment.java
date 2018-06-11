@@ -35,7 +35,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.GrievanceAdapter;
@@ -114,11 +117,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_grievance, container, false);
         Bundle bundle = this.getArguments();
-        type = bundle.getString("Type");
+        if (bundle != null) {
+            type = bundle.getString("Type");
+        }
         bindViews(view);
         setHasOptionsMenu(true);
         init();
@@ -427,7 +432,22 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                doSubmissionOnInternetAvailable();
+                Log.d(TAG, "version checked =" + Helper.versionChecked);
+                if (!Helper.versionChecked) {
+                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                                doSubmissionOnInternetAvailable();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        }
+                    });
+                } else
+                    doSubmissionOnInternetAvailable();
             }
 
             @Override
@@ -489,7 +509,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         uploadAllImagesToFirebase();
                     } else {
                         progressDialog.dismiss();
-                        Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to Submit", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                        Helper.getInstance().showUpdateOrMaintenanceDialog(false,getActivity());
                     }
                 }
             });
@@ -639,13 +659,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
-                    StringBuilder alertMessage = new StringBuilder();
-                    alertMessage.append(type);
-                    alertMessage.append(" Grievance for<br>");
-                    alertMessage.append("<b>" + grievanceType.getName() + "</b><br>");
-                    alertMessage.append(" has been succesfully submitted");
+                    String alertMessage = type +
+                            " Grievance for<br>" +
+                            "<b>" + grievanceType.getName() + "</b><br>" +
+                            " has been succesfully submitted";
 
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), "Grievance Submission", "OK", new IFancyAlertDialogListener() {
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, "Grievance Submission", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
 

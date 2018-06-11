@@ -1,12 +1,14 @@
 package com.mycca.Fragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,15 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
+import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.R;
+import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 
@@ -29,6 +36,7 @@ public class FeedbackFragment extends Fragment {
     String TAG = "feedback";
     private Button btnRateApplication, btnSuggestion, btnReportIssue;
     private TextInputEditText etSuggestion;
+    Activity activity;
     //etCauseOfIssue;
     //private Spinner spinnerErrorType;
 
@@ -36,9 +44,8 @@ public class FeedbackFragment extends Fragment {
 
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feedback, container, false);
         setHasOptionsMenu(true);
@@ -55,78 +62,16 @@ public class FeedbackFragment extends Fragment {
 
     private void init() {
 
+        activity = getActivity();
         btnSuggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!etSuggestion.getText().toString().trim().isEmpty()) {
-                    Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                            FireBaseHelper.getInstance(getContext()).ROOT_SUGGESTIONS,
-                            etSuggestion.getText().toString().trim());
-                    task.addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task task) {
-
-                            if (task.isSuccessful()) {
-                                Helper.getInstance().showFancyAlertDialog(getActivity(), "Your suggestion means a lot to us!<br><br><b>Thank you</b>", "Advice", "OK", new IFancyAlertDialogListener() {
-                                    @Override
-                                    public void OnClick() {
-                                    }
-                                }, null, null, FancyAlertDialogType.SUCCESS);
-                            } else {
-                                if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
-                                    Helper.getInstance().showFancyAlertDialog(getActivity(), "You cannot submit suggestion without signing in",
-                                            "Sign in with google",
-                                            "Sign in",
-                                            new IFancyAlertDialogListener() {
-                                                @Override
-                                                public void OnClick() {
-                                                    ((MainActivity) getActivity()).signInWithGoogle();
-                                                }
-                                            },
-                                            "Cancel",
-                                            new IFancyAlertDialogListener() {
-                                                @Override
-                                                public void OnClick() {
-
-                                                }
-                                            },
-                                            FancyAlertDialogType.ERROR);
-                                }
-                                else {
-                                    Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to submit", "OK", null, null, null, FancyAlertDialogType.ERROR);
-                                }
-
-                            }
-                        }
-                    });
+                    submitSuggestion();
                 } else
                     etSuggestion.setError("No Suggestion!");
             }
         });
-
-//        btnReportIssue.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-//                        FireBaseHelper.getInstance(getContext()).ROOT_ERROR_REPORT,
-//                        null,
-//                        getContext(),
-//                        spinnerErrorType.getSelectedItem().toString(),
-//                        Helper.getInstance().errorMessageList[spinnerErrorType.getSelectedItemPosition()],
-//                        etCauseOfIssue.getText().toString().trim());
-//
-//                task.addOnCompleteListener(new OnCompleteListener() {
-//                    @Override
-//                    public void onComplete(@NonNull Task task) {
-//                        if (task.isSuccessful()) {
-//                            Toast.makeText(getContext(), "Thankyou for Reporting", Toast.LENGTH_SHORT).show();
-//                        }else {
-//                            Log.d(TAG, task.getResult().toString());
-//                        }
-//                    }
-//                });
-//            }
-//        });
 
         btnRateApplication.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,9 +87,87 @@ public class FeedbackFragment extends Fragment {
                     Uri.parse(Helper.getInstance().getPlayStoreURL())));
         } catch (android.content.ActivityNotFoundException e) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + getActivity().getPackageName())));
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + activity.getPackageName())));
         }
     }
 
+    private void submitSuggestion() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                Log.d(TAG, "version checked= " + Helper.versionChecked);
+                if (!Helper.versionChecked) {
+                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                                submit();
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        }
+                    });
+                } else
+                    submit();
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().showFancyAlertDialog(getActivity(),
+                        "No Internet Connection\nPlease turn on internet connection before submitting ",
+                        "My CCA",
+                        "OK",
+                        null,
+                        null,
+                        null,
+                        FancyAlertDialogType.ERROR);
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void submit() {
+        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                FireBaseHelper.ROOT_SUGGESTIONS,
+                etSuggestion.getText().toString().trim());
+
+        task.addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+
+                if (task.isSuccessful()) {
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Your suggestion means a lot to us!<br><br><b>Thank you</b>", "Advice", "OK", new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                        }
+                    }, null, null, FancyAlertDialogType.SUCCESS);
+                } else {
+                    if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
+                        Helper.getInstance().showFancyAlertDialog(getActivity(), "You cannot submit suggestion without signing in",
+                                "Sign in with google",
+                                "Sign in",
+                                new IFancyAlertDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+                                        ((MainActivity) activity).signInWithGoogle();
+                                    }
+                                },
+                                "Cancel",
+                                new IFancyAlertDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                    }
+                                },
+                                FancyAlertDialogType.ERROR);
+                    } else {
+                        Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                    }
+
+                }
+            }
+        });
+    }
 }

@@ -32,6 +32,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
@@ -108,7 +111,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
         bindViews(view);
@@ -306,16 +309,28 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
+                Log.d(TAG, "version checked =" + Helper.versionChecked);
                 if (editTextLocationName.getText().toString().trim().isEmpty())
                     editTextLocationName.setError("Location Name Required");
                 else if (!isCurrentLocationFound)
                     Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
                 else if (selectedImageModelArrayList.size() == 0)
                     Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
-                else {
-                    doSubmissionOnInternetAvailable();
-                }
+                else if (!Helper.versionChecked) {
+                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                                doSubmissionOnInternetAvailable();
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        }
+                    });
+                } else
+                    doSubmissionOnInternetAvailable();
             }
 
             @Override

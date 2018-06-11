@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
@@ -34,7 +38,7 @@ public class AddNewsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_add_news, container, false);
@@ -82,7 +86,22 @@ public class AddNewsFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                addNewsToFireBase();
+                Log.d("News", "version checked= "+ Helper.versionChecked);
+                if (!Helper.versionChecked) {
+                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                                addNewsToFireBase();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        }
+                    });
+                } else
+                    addNewsToFireBase();
             }
 
             @Override
@@ -114,7 +133,7 @@ public class AddNewsFragment extends Fragment {
                 if (task.isSuccessful()) {
                     Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null, null, null, FancyAlertDialogType.SUCCESS);
                 } else {
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to add", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                    Helper.getInstance().showUpdateOrMaintenanceDialog(false,getActivity());
 
                 }
             }

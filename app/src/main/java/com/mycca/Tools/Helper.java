@@ -5,11 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +30,7 @@ import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
 import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
@@ -36,7 +40,6 @@ import com.mycca.CustomObjects.FancyAlertDialog.Icon;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.CustomObjects.ShowcaseView.GuideView;
 import com.mycca.Models.GrievanceType;
-import com.mycca.Models.LocationModel;
 import com.mycca.Models.State;
 import com.mycca.R;
 
@@ -47,6 +50,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /*
  * Created by hp on 09-02-2018.
@@ -55,17 +59,16 @@ import java.util.Date;
 
 public class Helper {
 
+    public static boolean versionChecked = false;
     private static Helper _instance;
     public final String SUCCESS = "success";
     public final String Nil = "Nil";
     private final String TAG = "Helper";
-    String hint = "Pensioner Code";
-    private boolean debugMode = true;
-    public ArrayList<LocationModel> allLocationModels;
+    private String hint = "Pensioner Code";
 
-    String[] statuslist = {"Submitted", "Under Process", "Resolved"};
+    private String[] statuslist = {"Submitted", "Under Process", "Resolved"};
 
-    State stateList[] = {
+    private State stateList[] = {
             new State("05", "Jammu & Kashmir"),
             new State("100", "Haryana")
     };
@@ -86,11 +89,12 @@ public class Helper {
         return "market://details?id=com.mycca";
     }
 
-    public String getConnectionCheckURL() {
+    String getConnectionCheckURL() {
         return "https://www.google.co.in/";
     }
 
     public String getAPIUrl() {
+        boolean debugMode = true;
         if (debugMode) {
             return "http://jknccdirectorate.com/api/cca/debug/v1/";
         } else {
@@ -201,20 +205,92 @@ public class Helper {
 
     public String[] submittedByList(String type) {
         String first;
-        if (type == FireBaseHelper.GRIEVANCE_PENSION)
+        if (type.equals(FireBaseHelper.GRIEVANCE_PENSION))
             first = "Pensioner";
         else
-            first = "GPF Benificiary";
+            first = "GPF Beneficiary";
         return new String[]{first, "Other"};
     }
 
     public String formatDate(Date date, String format) {
-        SimpleDateFormat dt = new SimpleDateFormat(format);
+        SimpleDateFormat dt = new SimpleDateFormat(format, Locale.ENGLISH);
         return dt.format(date);
     }
 
     public InputFilter[] limitInputLength(int length) {
         return new InputFilter[]{new InputFilter.LengthFilter(length)};
+    }
+
+    public boolean onLatestVersion(DataSnapshot dataSnapshot, final Activity activity) {
+
+        int version = getAppVersion(activity);
+        if (dataSnapshot.getValue() == null) {
+            Log.d(TAG, "onLatestVersion: Data snapshot null");
+            showUpdateOrMaintenanceDialog(false, activity);
+        }
+        long newVersion = (long) dataSnapshot.getValue();
+
+        if (version == -1 || newVersion == version) {
+            versionChecked = true;
+            return true;
+        } else {
+            showUpdateOrMaintenanceDialog(true, activity);
+        }
+        return false;
+    }
+
+    public int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public void showUpdateOrMaintenanceDialog(boolean updateAvailable, final Activity activity) {
+        if (updateAvailable) {
+            Helper.getInstance().showFancyAlertDialog(activity,
+                    "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
+                    "My CCA",
+                    "Update",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            showGooglePlayStore(activity);
+                            activity.finish();
+                        }
+                    },
+                    "Cancel",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            activity.finish();
+                        }
+                    },
+                    FancyAlertDialogType.WARNING);
+        } else {
+            Helper.getInstance().showFancyAlertDialog(activity,
+                    "The Application is in maintenance\nPlease wait for a while\n\nThank you for your patience",
+                    "My CCA",
+                    "OK",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            activity.finish();
+                        }
+                    },
+                    null, null,
+                    FancyAlertDialogType.WARNING);
+        }
+    }
+
+    private void showGooglePlayStore(Activity activity) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(getPlayStoreURL()));
+        activity.startActivity(intent);
+
     }
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
@@ -227,11 +303,7 @@ public class Helper {
 
         Log.d(TAG, "checkInput: = " + input);
         boolean result;
-        if (input == null || input.trim().isEmpty()) {
-            result = false;
-        } else {
-            result = true;
-        }
+        result = !(input == null || input.trim().isEmpty());
         Log.d(TAG, "checkInput: result = " + result);
         return result;
     }
@@ -264,12 +336,11 @@ public class Helper {
     }
 
     public void hideKeyboardFrom(Activity activity) {
-        try {
-            InputMethodManager inputMethodManager = (InputMethodManager)
-                    activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-        } catch (NullPointerException e){
-            e.printStackTrace();
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        View focusedView = activity.getCurrentFocus();
+        if (inputMethodManager != null && focusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         }
     }
 
@@ -363,8 +434,6 @@ public class Helper {
                         hint = "Pensioner Code";
                         editText.setFilters(Helper.getInstance().limitInputLength(15));
                         break;
-                    //TODO
-                    //set place holder format
                     case R.id.radioButtonHR:
                         hint = "HR Number";
                         editText.setFilters(new InputFilter[]{});
@@ -405,7 +474,7 @@ public class Helper {
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
     }
 
-    public AlertDialog.Builder getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
+    public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
         confirmDialog.setView(view);
         confirmDialog.setPositiveButton("Confirm", yes);
@@ -416,7 +485,6 @@ public class Helper {
             }
         });
         confirmDialog.show();
-        return confirmDialog;
     }
 
     public JSONObject getJson(String input) {
@@ -434,7 +502,7 @@ public class Helper {
         }
     }
 
-    public byte[] getByteArrayFromBitmap(Bitmap image) {
+    private byte[] getByteArrayFromBitmap(Bitmap image) {
         if (image == null) {
             return null;
         }
@@ -469,8 +537,7 @@ public class Helper {
 
     public Bitmap createBitmapFromByteArray(byte[] array) {
         if (array != null) {
-            Bitmap bmp = BitmapFactory.decodeByteArray(array, 0, array.length);
-            return bmp;
+            return BitmapFactory.decodeByteArray(array, 0, array.length);
         }
         return null;
     }
@@ -553,12 +620,6 @@ public class Helper {
 
 
     }*/
-
-    public ArrayList<LocationModel> getAllLocations() {
-        //TODO
-        //Fetch locations models from local memory here
-        return allLocationModels;
-    }
 
     public static double distance(double lat1, double lng1, double lat2, double lng2) {
 

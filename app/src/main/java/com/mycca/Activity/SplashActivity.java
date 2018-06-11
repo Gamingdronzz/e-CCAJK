@@ -3,7 +3,6 @@ package com.mycca.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,11 +13,8 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
@@ -45,7 +41,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void init() {
-        currentAppVersion = getAppVersion();
+        currentAppVersion = Helper.getInstance().getAppVersion(this);
         currentVersionName = getAppVersionName();
         if (currentVersionName.equals(""))
             tvSplashVersion.setText("Version - N/A");
@@ -80,7 +76,6 @@ public class SplashActivity extends AppCompatActivity {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     LoadNextActivity();
-                } finally {
                 }
             }
         };
@@ -108,23 +103,20 @@ public class SplashActivity extends AppCompatActivity {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                try {
-                    dbref.child(FireBaseHelper.ROOT_APP_VERSION)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    checkVersion(dataSnapshot);
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    LoadNextActivity();
-                                }
-                            });
-                } catch (DatabaseException dbe) {
-                    dbe.printStackTrace();
-                    LoadNextActivity();
-                }
+                Log.d(TAG, "version checked =" + Helper.versionChecked);
+                FireBaseHelper.getInstance(SplashActivity.this).checkForUpdate(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (Helper.getInstance().onLatestVersion(dataSnapshot, SplashActivity.this))
+                            LoadNextActivity();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        LoadNextActivity();
+                    }
+                });
             }
 
             @Override
@@ -134,68 +126,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
         connectionUtility.checkConnectionAvailability();
-
-    }
-
-    private void checkVersion(DataSnapshot dataSnapshot) {
-        if (dataSnapshot.getValue() == null) {
-            Log.d(TAG, "checkVersion: Data snapshot null");
-            ShowUpdateDialog(false);
-            return;
-        }
-        long version = (long) dataSnapshot.getValue();
-
-        Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
-        Log.d(TAG, "available Version = " + version);
-
-        if (currentAppVersion == -1 || currentAppVersion == version) {
-            LoadNextActivity();
-        } else {
-            ShowUpdateDialog(true);
-        }
-    }
-
-    private void ShowUpdateDialog(boolean updateAvailable) {
-        if (updateAvailable) {
-            Helper.getInstance().showFancyAlertDialog(this,
-                    "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
-                    "My CCA",
-                    "Update",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            showGooglePlayStore();
-                            finish();
-                        }
-                    },
-                    "Cancel",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            finish();
-                        }
-                    },
-                    FancyAlertDialogType.WARNING);
-        } else {
-            Helper.getInstance().showFancyAlertDialog(this,
-                    "The Application is in maintenance\nPlease wait for a while\n\nThank you for your paitence",
-                    "My CCA",
-                    "OK",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            finish();
-                        }
-                    },
-                    null, null,
-                    FancyAlertDialogType.WARNING);
-        }
-    }
-
-    private void showGooglePlayStore() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(Helper.getInstance().getPlayStoreURL()));
-        startActivity(intent);
 
     }
 
@@ -210,16 +140,6 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    private int getAppVersion() {
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
     private String getAppVersionName() {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -229,5 +149,34 @@ public class SplashActivity extends AppCompatActivity {
         }
         return "";
     }
+
+//    private void onLatestVersion(DataSnapshot dataSnapshot) {
+//        if (dataSnapshot.getValue() == null) {
+//            Log.d(TAG, "onLatestVersion: Data snapshot null");
+//            ShowUpdateDialog(false);
+//            return;
+//        }
+//        long version = (long) dataSnapshot.getValue();
+//
+//        Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
+//        Log.d(TAG, "available Version = " + version);
+//
+//        if (currentAppVersion == -1 || currentAppVersion == version) {
+//            LoadNextActivity();
+//        } else {
+//            ShowUpdateDialog(true);
+//        }
+//    }
+
+//    private int getAppVersion() {
+//        try {
+//            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+//            return packageInfo.versionCode;
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return -1;
+//    }
+
 
 }

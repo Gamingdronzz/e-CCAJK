@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -28,11 +29,11 @@ public class FireBaseHelper {
     private static FireBaseHelper _instance;
 
     public DatabaseReference databaseReference;
-    public StorageReference storageReference;
+    private StorageReference storageReference;
     public FirebaseAuth mAuth;
 
     public final static String ROOT_GRIEVANCES = "Grievances";
-    public final static String ROOT_APP_VERSION = "Latest Version";
+    private final static String ROOT_APP_VERSION = "Latest Version";
     public final static String ROOT_ADHAAR = "Aadhaar";
     public final static String ROOT_PAN = "Pan";
     public final static String ROOT_LIFE = "Life Certificate";
@@ -57,12 +58,10 @@ public class FireBaseHelper {
 
     public FireBaseHelper(Context context) {
         _instance = this;
-        try {
-            version = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
-        } catch (Exception e) {
+
+        version = String.valueOf(Helper.getInstance().getAppVersion(context));
+        if (version.equals("-1"))
             version = "5";
-            e.printStackTrace();
-        }
         databaseReference = FirebaseDatabase.getInstance().getReference().child(version);
         storageReference = FirebaseStorage.getInstance().getReference().child(version);
         mAuth = FirebaseAuth.getInstance();
@@ -98,31 +97,37 @@ public class FireBaseHelper {
         DatabaseReference dbref = databaseReference.child(root);
         Task task;
 
-        if (root.equals(ROOT_SUGGESTIONS)) {
-            task = dbref.push().setValue(model);
-        } else if (root.equals(ROOT_NEWS)) {
-            NewsModel newsModel = (NewsModel) model;
-            task = dbref.child(newsModel.getState())
-                    .push().setValue(newsModel);
-        } else if (root.equals(ROOT_GRIEVANCES)) {
+        switch (root) {
+            case ROOT_SUGGESTIONS:
+                task = dbref.push().setValue(model);
+                break;
+            case ROOT_NEWS:
+                NewsModel newsModel = (NewsModel) model;
+                task = dbref.child(newsModel.getState())
+                        .push().setValue(newsModel);
+                break;
+            case ROOT_GRIEVANCES:
 
-            GrievanceModel grievanceModel = (GrievanceModel) model;
-            task = dbref.child(grievanceModel.getState())
-                    .child(grievanceModel.getPensionerIdentifier())
-                    .child(String.valueOf(grievanceModel.getGrievanceType()))
-                    .setValue(grievanceModel);
+                GrievanceModel grievanceModel = (GrievanceModel) model;
+                task = dbref.child(grievanceModel.getState())
+                        .child(grievanceModel.getPensionerIdentifier())
+                        .child(String.valueOf(grievanceModel.getGrievanceType()))
+                        .setValue(grievanceModel);
 
-        } else if (root.equals(ROOT_INSPECTION)) {
-            InspectionModel inspectionModel = (InspectionModel) model;
-            task = dbref.child(params[0])
-                    .child(params[1])
-                    .setValue(inspectionModel);
+                break;
+            case ROOT_INSPECTION:
+                InspectionModel inspectionModel = (InspectionModel) model;
+                task = dbref.child(params[0])
+                        .child(params[1])
+                        .setValue(inspectionModel);
 
-        } else {
-            PanAdhaar panAdhaar = (PanAdhaar) model;
-            task = dbref.child(panAdhaar.getState())
-                    .child(panAdhaar.getPensionerIdentifier())
-                    .setValue(panAdhaar);
+                break;
+            default:
+                PanAdhaar panAdhaar = (PanAdhaar) model;
+                task = dbref.child(panAdhaar.getState())
+                        .child(panAdhaar.getPensionerIdentifier())
+                        .setValue(panAdhaar);
+                break;
         }
         return task;
     }
@@ -131,14 +136,13 @@ public class FireBaseHelper {
         StorageReference sref;
         StringBuilder sb = new StringBuilder();
         for (String param : params)
-            sb.append(param + "/");
+            sb.append(param).append("/");
         if (multiple) {
             sref = storageReference.child(sb + "File" + count);
         } else {
             sref = storageReference.child(sb.toString());
         }
         return sref.putFile(imageFile.getImageURI());
-        //return uploadTask;
     }
 
     public ArrayList<Contact> getContactsList(String stateId) {
@@ -160,6 +164,11 @@ public class FireBaseHelper {
         contactArrayList.add(new ContactBuilder().setName("Smt. Nirmal Sharma").setDesignation("Consultant(Pen)").setOfficeContact("2477284").setStateId(stateId).createContact());
         contactArrayList.add(new ContactBuilder().setName("Sh Neeraj Koul").setDesignation("Consultant (Pension)").setOfficeContact("2477284").setStateId(stateId).setMobileContact("9419286585").createContact());
         return contactArrayList;
+    }
+
+    public void checkForUpdate(ValueEventListener valueEventListener){
+        databaseReference.child(FireBaseHelper.ROOT_APP_VERSION)
+                .addListenerForSingleValueEvent(valueEventListener);
     }
 
 }

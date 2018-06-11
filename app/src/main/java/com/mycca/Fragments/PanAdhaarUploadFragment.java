@@ -30,11 +30,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
+import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
-import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
@@ -85,7 +88,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_adhaar_pan_upload, container, false);
         root = this.getArguments().getString("Root");
@@ -133,29 +136,33 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }
         });
 
-        if (root.equals(FireBaseHelper.ROOT_ADHAAR)) {
+        switch (root) {
+            case FireBaseHelper.ROOT_ADHAAR:
 
-            inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
-            inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
-            textInputNumber.setHint(root + " Number");
-        } else if (root.equals(FireBaseHelper.ROOT_PAN)) {
+                inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
+                inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
+                textInputNumber.setHint(root + " Number");
+                break;
+            case FireBaseHelper.ROOT_PAN:
 
-            inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
-                @Override
-                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    if (source.equals("")) { // for backspace
-                        return source;
+                inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        if (source.equals("")) { // for backspace
+                            return source;
+                        }
+                        if (source.toString().matches("[a-zA-Z0-9]+")) {
+                            return source;
+                        }
+                        return "";
                     }
-                    if (source.toString().matches("[a-zA-Z0-9]+")) {
-                        return source;
-                    }
-                    return "";
-                }
-            }});
-            textInputNumber.setHint(root + " Number");
-        } else {
-            linearLayout.setVisibility(View.GONE);
-            textInputNumber.setHint("Applicant's Name");
+                }});
+                textInputNumber.setHint(root + " Number");
+                break;
+            default:
+                linearLayout.setVisibility(View.GONE);
+                textInputNumber.setHint("Applicant's Name");
+                break;
         }
 
         imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
@@ -273,7 +280,22 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                doSubmissionOnInternetAvailable();
+                Log.d(TAG, "version checked = " + Helper.versionChecked);
+                if (!Helper.versionChecked) {
+                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                                doSubmissionOnInternetAvailable();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        }
+                    });
+                } else
+                    doSubmissionOnInternetAvailable();
             }
 
             @Override
@@ -475,14 +497,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
-                    StringBuilder alertMessage = new StringBuilder();
-
-                    alertMessage.append(root + " update request for<br>");
-                    alertMessage.append("<b>" + pensionerCode + "</b>");
-                    alertMessage.append("<br>has been submitted succesfully");
+                    String alertMessage = (root + " update request for<br>") +
+                            "<b>" + pensionerCode + "</b>" +
+                            "<br>has been submitted succesfully";
 
 
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage.toString(), root
+                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, root
                             + " Update", "OK", new IFancyAlertDialogListener() {
                         @Override
                         public void OnClick() {
