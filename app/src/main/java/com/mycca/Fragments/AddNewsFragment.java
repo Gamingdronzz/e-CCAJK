@@ -122,11 +122,11 @@ public class AddNewsFragment extends Fragment {
                 Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState()
         );
 
-        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                 FireBaseHelper.ROOT_NEWS,
-                newsModel
-        );
-        task.addOnCompleteListener(new OnCompleteListener() {
+                newsModel);
+
+        task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task task) {
                 progressDialog.dismiss();

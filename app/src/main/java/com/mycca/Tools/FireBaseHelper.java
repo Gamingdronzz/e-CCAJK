@@ -93,9 +93,9 @@ public class FireBaseHelper {
         }
     }
 
-    public Task uploadDataToFirebase(String root, Object model, String... params) {
+    public Task<Void> uploadDataToFirebase(String root, Object model, String... params) {
         DatabaseReference dbref = databaseReference.child(root);
-        Task task;
+        Task<Void> task;
 
         switch (root) {
             case ROOT_SUGGESTIONS:

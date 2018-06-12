@@ -2,6 +2,7 @@ package com.mycca.Fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,17 +31,16 @@ public class LoginFragment extends Fragment {
 
 
     ImageView close;
-
+    MainActivity mainActivity;
     AutoCompleteTextView completeTextViewUserID;
     EditText editTextPassword;
 
     public LoginFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         init(view);
@@ -48,6 +48,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void init(View view) {
+        mainActivity = (MainActivity) getActivity();
         completeTextViewUserID = view.findViewById(R.id.autocomplete_user_id);
         completeTextViewUserID.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         editTextPassword = view.findViewById(R.id.edittext_password);
@@ -90,17 +91,14 @@ public class LoginFragment extends Fragment {
                     return;
                 }
                 if (dataSnapshot.getValue() == null) {
-                    MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.OnLoginFailure("No user found");
                     progressDialog.dismiss();
                 } else {
                     StaffModel staffModel=dataSnapshot.getValue(StaffModel.class);
                     if (staffModel.getPassword().equals(password)) {
-                        MainActivity mainActivity = (MainActivity) getActivity();
                         mainActivity.OnLoginSuccessful(staffModel);
                         progressDialog.dismiss();
                     } else {
-                        MainActivity mainActivity = (MainActivity) getActivity();
                         mainActivity.OnLoginFailure("Password Mismatch");
                         progressDialog.dismiss();
                     }

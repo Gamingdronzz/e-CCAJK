@@ -45,7 +45,6 @@ import java.util.HashMap;
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     SliderLayout mDemoSlider;
-    public FancyShowCaseQueue mQueue;
     RecyclerView recyclerView;
     TextView tvLatestNews, tvUserName, tvVisit;
     ImageButton moveRight, moveLeft;
@@ -124,6 +123,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //                startActivity(intent);
 //            }
 //        });
+
         activity = (MainActivity) getActivity();
         tvVisit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
@@ -183,7 +183,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
         if (user != null) {
             tvUserName.setVisibility(View.VISIBLE);
-            tvUserName.setText("Hello " + user.getDisplayName());
+            String username = "Hello " + user.getDisplayName();
+            tvUserName.setText(username);
         } else
             tvUserName.setVisibility(View.GONE);
     }
@@ -217,10 +218,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                        newsModelArrayList.add(newsModel);
-                        adapterNews.notifyDataSetChanged();
-                        recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
+                        if (dataSnapshot.getValue() != null) {
+                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                            newsModelArrayList.add(newsModel);
+                            adapterNews.notifyDataSetChanged();
+                            recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
+                        }
                     }
 
                     @Override

@@ -76,7 +76,8 @@ public class LocatorFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locator_layout, container, false);
 
-        locatorType = getArguments().getString("Locator");
+        if (getArguments() != null)
+            locatorType = getArguments().getString("Locator");
         bindViews(view);
         init();
         return view;
@@ -241,6 +242,7 @@ public class LocatorFragment extends Fragment {
                             }
                         } catch (DatabaseException dbe) {
                             dbe.printStackTrace();
+                            setTabLayout();
                         }
                     }
 

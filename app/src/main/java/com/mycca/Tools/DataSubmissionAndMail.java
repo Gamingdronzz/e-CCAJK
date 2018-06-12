@@ -7,15 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by hp on 01-05-2018.
- */
-
 public class DataSubmissionAndMail {
 
     private static DataSubmissionAndMail _instance;
 
-    public DataSubmissionAndMail() {
+    private DataSubmissionAndMail() {
         _instance = this;
     }
 
@@ -27,14 +23,13 @@ public class DataSubmissionAndMail {
         }
     }
 
-
     public void uploadImagesToServer(String url,ArrayList<Uri> firebaseImageURLs, String folderName, VolleyHelper volleyHelper) throws Exception {
         Log.d("Data Submission", "uploadImagesToServer: Starting Upload");
         for (int i = 0; i < firebaseImageURLs.size(); i++) {
 
             Log.d("Data Submission", "uploadAllImagesToServer: Current = " + i);
 
-            Map<String, String> params = new HashMap();
+            Map<String, String> params = new HashMap<String, String>();
             params.put("pensionerCode", folderName);
             params.put("image", firebaseImageURLs.get(i).toString());
             params.put("imageName", "image-" + i);
@@ -44,7 +39,6 @@ public class DataSubmissionAndMail {
 
         }
     }
-
 
     public void sendMail(Map<String, String> hashMap, String tag, VolleyHelper volleyHelper,String url) {
         if (volleyHelper.countRequestsInFlight(tag) == 0)

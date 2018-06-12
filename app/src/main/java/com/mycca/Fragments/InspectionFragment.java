@@ -380,7 +380,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         staffModel = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
 
-        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                 FireBaseHelper.ROOT_INSPECTION,
                 inspectionModel,
                 staffModel.getState(),
@@ -397,7 +397,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
-                showErrorDialog("The app might be in maintenence. Please try again later.");
+                Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
             }
         });
     }
@@ -420,7 +420,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(getContext(), "Unable to Upload file", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Unable to Upload file, Try again", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onFailure: " + exception.getMessage());
                         progressDialog.dismiss();
                     }
@@ -463,7 +463,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                showErrorDialog("Some Error Occured.\nPlease try Again");
+                showErrorDialog("Some Error Occurred.\nPlease try Again");
             }
         } else {
             isUploadedToServer = true;
@@ -478,7 +478,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
 
-        Map<String, String> params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
 
         params.put("locationName", editTextLocationName.getText().toString());
         params.put("staffID", staffModel.getId());
@@ -489,7 +489,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
     public void setSelectedFileCount(int count) {
-        textViewSelectedFileCount.setText("Selected Files = " + count);
+        String text = "Selected Files = " + count;
+        textViewSelectedFileCount.setText(text);
     }
 
     private void showTutorial() {
@@ -573,12 +574,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     }
 
-
     @Override
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
         progressDialog.dismiss();
-        Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Some Error Occurred\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -613,14 +613,20 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         }
                     }, null, null, FancyAlertDialogType.SUCCESS);
                     isUploadedToServer = isUploadedToFirebase = false;
+
+
                 } else {
                     progressDialog.dismiss();
                     Helper.getInstance().showFancyAlertDialog(mainActivity, "Inspection Submission Failed\nTry Again",
-                            " Inspection", "OK", new IFancyAlertDialogListener() {
+                            " Inspection",
+                            "OK",
+                            new IFancyAlertDialogListener() {
                                 @Override
                                 public void OnClick() {
                                 }
-                            }, null, null, FancyAlertDialogType.ERROR);
+                            },
+                            null, null,
+                            FancyAlertDialogType.ERROR);
                 }
             }
         } catch (JSONException jse) {

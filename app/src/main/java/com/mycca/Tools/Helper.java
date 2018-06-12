@@ -222,13 +222,20 @@ public class Helper {
     }
 
     public boolean onLatestVersion(DataSnapshot dataSnapshot, final Activity activity) {
-
+        long newVersion;
         int version = getAppVersion(activity);
         if (dataSnapshot.getValue() == null) {
             Log.d(TAG, "onLatestVersion: Data snapshot null");
             showUpdateOrMaintenanceDialog(false, activity);
+            return false;
         }
-        long newVersion = (long) dataSnapshot.getValue();
+        try {
+            newVersion = (long) dataSnapshot.getValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showUpdateOrMaintenanceDialog(false, activity);
+            return false;
+        }
 
         if (version == -1 || newVersion == version) {
             versionChecked = true;

@@ -326,8 +326,10 @@ public class MainActivity extends AppCompatActivity
 
     public void showFragment(String title, Fragment fragment, Bundle bundle) {
         this.fragment = null;
-        getSupportActionBar().setTitle(title);
-        getSupportActionBar().setSubtitle("");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+            getSupportActionBar().setSubtitle("");
+        }
         fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentPlaceholder, fragment).commit();
         navigationView.setCheckedItem(R.id.navmenu_home);
@@ -554,7 +556,7 @@ public class MainActivity extends AppCompatActivity
 
     public void OnLoginSuccessful(StaffModel staffModel) {
         this.staffModel = staffModel;
-        Toast.makeText(this, "Succesfully Logged In", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_SHORT).show();
         Preferences.getInstance().setStaffPref(this, Preferences.PREF_STAFF_DATA, staffModel);
         if (staffModel.getType() == TYPE_ADMIN) {
             ManageNavigationView(true, true);
@@ -584,7 +586,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
-
         if (mQueue != null) {
             try {
                 Helper.getInstance().showFancyAlertDialog(this,
@@ -604,8 +605,9 @@ public class MainActivity extends AppCompatActivity
                             }
                         },
                         FancyAlertDialogType.WARNING);
-            }catch (IllegalStateException ex){
-                ex.printStackTrace();
+            } catch (Exception e) {
+                showFragment("Home", new HomeFragment(), null);
+                Preferences.getInstance().setTutorialPrefs(MainActivity.this);
             }
         } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);

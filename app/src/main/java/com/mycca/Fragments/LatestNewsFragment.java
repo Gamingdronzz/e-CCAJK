@@ -2,6 +2,7 @@ package com.mycca.Fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
 import com.mycca.Models.NewsModel;
@@ -35,7 +37,7 @@ public class LatestNewsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_latest_news, container, false);
         bindViews(view);
@@ -67,9 +69,15 @@ public class LatestNewsFragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                        newsModelArrayList.add(newsModel);
-                        adapterNews.notifyDataSetChanged();
+                        if (dataSnapshot.getValue() != null) {
+                            try {
+                                NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                                newsModelArrayList.add(newsModel);
+                                adapterNews.notifyDataSetChanged();
+                            } catch (DatabaseException dbe) {
+                                dbe.printStackTrace();
+                            }
+                        }
                     }
 
                     @Override

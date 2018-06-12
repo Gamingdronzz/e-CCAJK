@@ -100,13 +100,13 @@ public class FeedbackFragment extends Fragment {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, activity))
                                 submit();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, activity);
                         }
                     });
                 } else
@@ -129,11 +129,11 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void submit() {
-        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                 FireBaseHelper.ROOT_SUGGESTIONS,
                 etSuggestion.getText().toString().trim());
 
-        task.addOnCompleteListener(new OnCompleteListener() {
+        task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task task) {
 
@@ -145,7 +145,7 @@ public class FeedbackFragment extends Fragment {
                     }, null, null, FancyAlertDialogType.SUCCESS);
                 } else {
                     if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
-                        Helper.getInstance().showFancyAlertDialog(getActivity(), "You cannot submit suggestion without signing in",
+                        Helper.getInstance().showFancyAlertDialog(activity, "You cannot submit suggestion without signing in",
                                 "Sign in with google",
                                 "Sign in",
                                 new IFancyAlertDialogListener() {
@@ -163,7 +163,7 @@ public class FeedbackFragment extends Fragment {
                                 },
                                 FancyAlertDialogType.ERROR);
                     } else {
-                        Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        Helper.getInstance().showUpdateOrMaintenanceDialog(false, activity);
                     }
 
                 }

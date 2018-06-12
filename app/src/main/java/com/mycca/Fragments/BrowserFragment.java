@@ -1,9 +1,11 @@
 package com.mycca.Fragments;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -28,9 +30,6 @@ import com.mycca.R;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class BrowserFragment extends Fragment {
 
 
@@ -40,13 +39,10 @@ public class BrowserFragment extends Fragment {
     ActionBar actionBar;
     private boolean hasStopped = false;
 
-    public BrowserFragment() {
-        // Required empty public constructor
-    }
-
+    public BrowserFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_browser, container, false);
         setHasOptionsMenu(true);
@@ -59,12 +55,16 @@ public class BrowserFragment extends Fragment {
 
     private void init(View view) {
         Bundle args = getArguments();
-        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if ( getActivity() != null) {
+            actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        }
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setMax(100);
         progressBar.setVisibility(View.GONE);
         webView = view.findViewById(R.id.webview_cca);
-        url = args.getString("url");
+        if (args != null) {
+            url = args.getString("url");
+        }
     }
 
     @Override
@@ -77,7 +77,6 @@ public class BrowserFragment extends Fragment {
             default:
                 break;
         }
-
         return true;
     }
 
@@ -87,6 +86,7 @@ public class BrowserFragment extends Fragment {
         inflater.inflate(R.menu.menu_browser, menu);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setupWebview() {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -120,8 +120,7 @@ public class BrowserFragment extends Fragment {
             }
 
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                //Toast.makeText(getContext(), "We are getting things fixed..", Toast.LENGTH_SHORT).show();
-                setSubtitle("Some Error Occured. Please Refresh");
+               setSubtitle("Some Error Occurred. Please Refresh");
                 progressBar.setVisibility(View.GONE);
             }
 

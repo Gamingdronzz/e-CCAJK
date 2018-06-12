@@ -33,9 +33,6 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ContactUsFragment extends Fragment {
 
     AppCompatTextView textViewOfficeAddress, textviewHeadingOfficeAddress, textviewContactPersonHeading;

@@ -44,7 +44,8 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_grievance_result);
-        getSupportActionBar().setTitle("Track Grievance");
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Track Grievance");
         init();
     }
 
@@ -124,10 +125,11 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     private void getGrievances() {
         Log.d(TAG, "getGrievances for: " + pensionerCode);
-        try {
-            dbref.child(FireBaseHelper.getInstance(this).ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(final DataSnapshot dataSnapshot1, String s) {
+
+        dbref.child(FireBaseHelper.ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(final DataSnapshot dataSnapshot1, String s) {
+                try {
                     Log.d(TAG, "state key:" + dataSnapshot1.getKey());
                     dbref.child(FireBaseHelper.ROOT_GRIEVANCES).child(dataSnapshot1.getKey()).child(pensionerCode)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -145,105 +147,101 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
                                 }
                             });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ManageNoGrievanceLayout(true);
                 }
+            }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-            dbref.child(FireBaseHelper.getInstance(this).ROOT_GRIEVANCES).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "Dismissed Progress");
-                    progressDialog.dismiss();
-                }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        dbref.child(FireBaseHelper.ROOT_GRIEVANCES).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "Dismissed Progress");
+                progressDialog.dismiss();
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-        } catch (DatabaseException dbe) {
-            dbe.printStackTrace();
-        }
+            }
+        });
     }
 
     private void getGrievanceOfPensioner(String key) {
 
-        try {
-            dbref.child(FireBaseHelper.getInstance(TrackGrievanceResultActivity.this).ROOT_GRIEVANCES)
-                    .child(key)
-                    .child(pensionerCode)
-                    .addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            Log.d(TAG, "grievance key:" + dataSnapshot.getKey());
-                            try {
-                                //int size = grievanceModelArrayList.size();
-                                GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
-
-                                if (grievanceType != -1) {
-                                    if (model.getGrievanceType() == grievanceType) {
-                                        model.setExpanded(true);
-                                        model.setHighlighted(true);
-                                    }
-                                }
-                                grievanceModelArrayList.add(model);
-                                Log.d(TAG, "arraylist size:" + grievanceModelArrayList.size());
-                                adapterTracking.notifyDataSetChanged();
-                            } catch (DatabaseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                            Log.d(TAG, "ChildChanged\n" + dataSnapshot);
+        dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
+                .child(key)
+                .child(pensionerCode)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        Log.d(TAG, "grievance key:" + dataSnapshot.getKey());
+                        try {
+                            //int size = grievanceModelArrayList.size();
                             GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
-                            int counter = 0;
-                            for (GrievanceModel gm : grievanceModelArrayList) {
-                                if (gm.getGrievanceType() == model.getGrievanceType()) {
-                                    grievanceModelArrayList.remove(gm);
+
+                            if (grievanceType != -1) {
+                                if (model.getGrievanceType() == grievanceType) {
                                     model.setExpanded(true);
                                     model.setHighlighted(true);
-                                    grievanceModelArrayList.add(counter,model);
-                                    break;
                                 }
-                                counter++;
                             }
+                            grievanceModelArrayList.add(model);
+                            Log.d(TAG, "arraylist size:" + grievanceModelArrayList.size());
                             adapterTracking.notifyDataSetChanged();
+                        } catch (DatabaseException e) {
+                            e.printStackTrace();
                         }
+                    }
 
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        Log.d(TAG, "ChildChanged\n" + dataSnapshot);
+                        GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
+                        int counter = 0;
+                        for (GrievanceModel gm : grievanceModelArrayList) {
+                            if (gm.getGrievanceType() == model.getGrievanceType()) {
+                                grievanceModelArrayList.remove(gm);
+                                model.setExpanded(true);
+                                model.setHighlighted(true);
+                                grievanceModelArrayList.add(counter, model);
+                                break;
+                            }
+                            counter++;
                         }
+                        adapterTracking.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                        }
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d(TAG, "onCancelled: " + databaseError.getMessage());
-                            progressDialog.dismiss();
-                        }
-                    });
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    }
 
-        } catch (DatabaseException dbe) {
-            dbe.printStackTrace();
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                        progressDialog.dismiss();
+                    }
+                });
     }
 
     private void ManageNoGrievanceLayout(boolean show) {

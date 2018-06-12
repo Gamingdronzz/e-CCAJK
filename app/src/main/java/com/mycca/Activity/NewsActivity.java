@@ -21,7 +21,8 @@ public class NewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_news);
         //MyNewAnimatedCardBinding binding = DataBindingUtil.setContentView(R.layout.activity_news);
         //animatedCard = new AnimatedDismissableCard(this, binding.yourViewGroupLayout);
-        getSupportActionBar().setTitle("Latest from CCA");
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Latest from CCA");
         bindViews();
         init();
     }
