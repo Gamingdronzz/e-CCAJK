@@ -27,9 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.LocationModel;
@@ -50,10 +50,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by balpreet on 4/20/2018.
- */
-
 public class LocatorFragment extends Fragment {
 
     public TabLayout tabLayout;
@@ -68,7 +64,7 @@ public class LocatorFragment extends Fragment {
     RelativeLayout relativeLayoutNoInternet;
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
-
+    MainActivity activity;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     public LocatorFragment() {
@@ -76,7 +72,7 @@ public class LocatorFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locator_layout, container, false);
 
@@ -93,8 +89,14 @@ public class LocatorFragment extends Fragment {
         linearLayoutTab = view.findViewById(R.id.linear_layout_locator_fragment);
         textViewLocatorInfo = view.findViewById(R.id.textview_locator_info);
         imageButtonRefresh = view.findViewById(R.id.image_btn_refresh_tab_all);
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Getting Locations...");
+    }
 
+    private void init() {
+
+        activity = (MainActivity) getActivity();
+        manageNoLocationLayout(true);
+
+        progressDialog = Helper.getInstance().getProgressWindow(activity, "Getting Locations...");
         imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,11 +104,6 @@ public class LocatorFragment extends Fragment {
             }
         });
         textViewLocatorInfo.setText(textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh");
-    }
-
-    private void init() {
-
-        manageNoLocationLayout(true);
 
         //fetch from local storage
         locationModelArrayList = getLocationsFromLocalStorage();
@@ -144,17 +141,11 @@ public class LocatorFragment extends Fragment {
 
             }
         });
-
         progressDialog.dismiss();
     }
 
     public void setData() {
         LocationDataProvider.getInstance().setLocationModelArrayList(locatorType, locationModelArrayList);
-//        if (locatorType.equals(FireBaseHelper.getInstance(getContext()).ROOT_GP)) {
-//            LocationDataProvider.getInstance().setGpLocationModelArrayList(locationModelArrayList);
-//        } else if (locatorType.equals(FireBaseHelper.getInstance(getContext()).ROOT_HOTSPOTS)) {
-//            LocationDataProvider.getInstance().setHotspotLocationModelArrayList(locationModelArrayList);
-//        }
     }
 
     private void manageNoLocationLayout(boolean show) {
@@ -179,14 +170,11 @@ public class LocatorFragment extends Fragment {
             if (arrayList != null)
                 Log.d(TAG, "Getting Locations From Local Storage: size = " + arrayList.size());
             return arrayList;
-        } catch (JsonIOException jioe) {
-            jioe.printStackTrace();
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
         }
         return null;
     }
-
 
     private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
         try {
@@ -194,8 +182,6 @@ public class LocatorFragment extends Fragment {
             String jsonObject = gson.toJson(locationModels);
             Log.d(TAG, "adding LocationsToLocalStorage: ");
             writeToFile(jsonObject);
-        } catch (JsonIOException jioe) {
-            jioe.printStackTrace();
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
         }
@@ -240,7 +226,6 @@ public class LocatorFragment extends Fragment {
     }
 
     private void checkNewLocationsinFirebase() {
-        // DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
         databaseReference.child(locatorType)
                 .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -327,14 +312,12 @@ public class LocatorFragment extends Fragment {
     private void writeToFile(String jsonObject) {
 
         String filename = locatorType + " " + Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
-        FileOutputStream outputStream = null;
+        FileOutputStream outputStream;
         try {
-            outputStream = getActivity().openFileOutput(filename + ".json", Context.MODE_PRIVATE);
+            outputStream = activity.openFileOutput(filename + ".json", Context.MODE_PRIVATE);
             outputStream.write(jsonObject.getBytes());
             Log.d(TAG, "writeToFile: ");
             outputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -345,16 +328,15 @@ public class LocatorFragment extends Fragment {
 
         String filename = locatorType + " " + Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
         try {
-            File file = new File(getActivity().getFilesDir(), filename + ".json");
+            File file = new File(activity.getFilesDir(), filename + ".json");
             Log.d(TAG, "readFromFile: file path = " + file.getPath());
-            FileInputStream fin = getActivity().openFileInput(file.getName());
+            FileInputStream fin = activity.openFileInput(file.getName());
             int size = fin.available();
             byte[] buffer = new byte[size];
             fin.read(buffer);
             Log.d(TAG, "readFromFile: ");
             fin.close();
-            String json = new String(buffer);
-            return json;
+            return new String(buffer);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -364,14 +346,53 @@ public class LocatorFragment extends Fragment {
         return null;
     }
 
+    //    private void showTutorial() {
+//
+//        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
+//                .title("Tap on location to open in Google Maps")
+//                .focusOn(viewPager)
+//                .focusCircleRadiusFactor(.6)
+//                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
+//                .build();
+//        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
+//                .title("Click to search location")
+//                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 12 * 11, Resources.getSystem().getDisplayMetrics().widthPixels / 2, 100)
+//                .fitSystemWindows(true)
+//                .build();
+//        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
+//                .title("Click to view locations districtwise")
+//                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 12 * 11, Resources.getSystem().getDisplayMetrics().widthPixels / 2, 100)
+//                .fitSystemWindows(true)
+//                .build();
+//        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(activity)
+//                .title("-------->\nSwipe to view nearby hotspots")
+//                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
+//                .build();
+//
+//        activity.mQueue = new FancyShowCaseQueue()
+//                .add(fancyShowCaseView2)
+//                .add(fancyShowCaseView1)
+//                .add(fancyShowCaseView3)
+//                .add(fancyShowCaseView4);
+//
+//        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
+//            @Override
+//            public void onComplete() {
+//                activity.mQueue = null;
+//            }
+//        });
+//
+//        activity.mQueue.show();
+//    }
+
     class MyAdapter extends FragmentPagerAdapter {
         private Fragment mCurrentFragment;
 
-        public Fragment getCurrentFragment() {
+        Fragment getCurrentFragment() {
             return mCurrentFragment;
         }
 
-        public MyAdapter(FragmentManager fm) {
+        MyAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -436,7 +457,7 @@ public class LocatorFragment extends Fragment {
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 

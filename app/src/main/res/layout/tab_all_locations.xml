@@ -3,7 +3,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:tag="alllocationsfragment">
 
     <LinearLayout
@@ -26,7 +25,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"></View>
+            android:background="@color/colorWhite"/>
 
         <Button
             android:id="@+id/button_sort_loc"
@@ -40,7 +39,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"></View>
+            android:background="@color/colorWhite"/>
 
     </LinearLayout>
 
@@ -76,10 +75,6 @@
         android:layout_above="@+id/buttons_bar"
         android:background="@color/colorLightGray"
         android:paddingBottom="@dimen/padding_medium"
-        android:paddingTop="@dimen/padding_medium">
-
-    </android.support.v7.widget.RecyclerView>
-
-
+        android:paddingTop="@dimen/padding_medium"/>
 
 </RelativeLayout>

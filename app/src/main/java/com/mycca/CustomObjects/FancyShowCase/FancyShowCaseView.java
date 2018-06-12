@@ -2,6 +2,7 @@ package com.mycca.CustomObjects.FancyShowCase;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mycca.R;
+
 /**
  * Created by faruktoptas on 05/03/17.
  * FancyShowCaseView class
@@ -249,7 +251,7 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
         mCalculator = new Calculator(mActivity, mFocusShape, mView, mFocusCircleRadiusFactor,
                 mFitSystemWindows);
 
-        ViewGroup androidContent = (ViewGroup) mActivity.findViewById(android.R.id.content);
+        ViewGroup androidContent = mActivity.findViewById(android.R.id.content);
         mRoot = (ViewGroup) androidContent.getParent().getParent();
         mRoot.postDelayed(new Runnable() {
             @Override
@@ -257,7 +259,7 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
                 if (mActivity == null || mActivity.isFinishing()) {
                     return;
                 }
-                FancyShowCaseView visibleView = (FancyShowCaseView) mRoot.findViewWithTag(CONTAINER_TAG);
+                FancyShowCaseView visibleView = mRoot.findViewWithTag(CONTAINER_TAG);
                 setClickable(!mEnableTouchOnFocusedView);
                 if (visibleView == null) {
                     setTag(CONTAINER_TAG);
@@ -312,6 +314,7 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
         if (mEnableTouchOnFocusedView) {
             // the purpose of the touch listener is just to store the touch X,Y coordinates
             setOnTouchListener(new OnTouchListener() {
+                @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     // if touch position is on focused view pass the touch to the focused view
@@ -369,9 +372,9 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
      * @param activity should be used to find FancyShowCaseView inside it
      */
     public static Boolean isVisible(@NonNull Activity activity) {
-        ViewGroup androidContent = (ViewGroup) activity.findViewById(android.R.id.content);
+        ViewGroup androidContent = activity.findViewById(android.R.id.content);
         ViewGroup mRoot = (ViewGroup) androidContent.getParent().getParent();
-        FancyShowCaseView mContainer = (FancyShowCaseView) mRoot.findViewWithTag(CONTAINER_TAG);
+        FancyShowCaseView mContainer = mRoot.findViewWithTag(CONTAINER_TAG);
         return mContainer != null;
     }
 
@@ -381,9 +384,9 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
      * @param activity should be used to hide FancyShowCaseView inside it
      */
     public static void hideCurrent(@NonNull Activity activity) {
-        ViewGroup androidContent = (ViewGroup) activity.findViewById(android.R.id.content);
+        ViewGroup androidContent = activity.findViewById(android.R.id.content);
         ViewGroup mRoot = (ViewGroup) androidContent.getParent().getParent();
-        FancyShowCaseView mContainer = (FancyShowCaseView) mRoot.findViewWithTag(CONTAINER_TAG);
+        FancyShowCaseView mContainer = mRoot.findViewWithTag(CONTAINER_TAG);
         mContainer.hide();
     }
 
@@ -474,8 +477,8 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
     private void inflateTitleView() {
         inflateCustomView(R.layout.fancy_showcase_view_layout_title, new OnViewInflateListener() {
             @Override
-            public void onViewInflated(View view) {
-                TextView textView = (TextView) view.findViewById(R.id.fscv_title);
+            public void onViewInflated(@NonNull View view) {
+                TextView textView = view.findViewById(R.id.fscv_title);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     textView.setTextAppearance(mTitleStyle);
@@ -509,11 +512,7 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        if (Build.VERSION.SDK_INT < 16) {
-                            getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        } else {
-                            getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                         final int revealRadius = (int) Math.hypot(
                                 getWidth(), getHeight());
@@ -550,24 +549,27 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void doCircularExitAnimation() {
+        Animator exitAnimator;
         final int revealRadius = (int) Math.hypot(getWidth(), getHeight());
-        Animator exitAnimator = ViewAnimationUtils.createCircularReveal(this,
-                mCenterX, mCenterY, revealRadius, 0f);
-        exitAnimator.setDuration(mAnimationDuration);
-        exitAnimator.setInterpolator(AnimationUtils.loadInterpolator(mActivity,
-                android.R.interpolator.decelerate_cubic));
-        exitAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                removeView();
-                if (mAnimationListener != null) {
-                    mAnimationListener.onExitAnimationEnd();
+        if (this.isAttachedToWindow()) {
+            exitAnimator = ViewAnimationUtils.createCircularReveal(this,
+                    mCenterX, mCenterY, revealRadius, 0f);
+
+
+            exitAnimator.setDuration(mAnimationDuration);
+            exitAnimator.setInterpolator(AnimationUtils.loadInterpolator(mActivity,
+                    android.R.interpolator.decelerate_cubic));
+            exitAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    removeView();
+                    if (mAnimationListener != null) {
+                        mAnimationListener.onExitAnimationEnd();
+                    }
                 }
-            }
-        });
-        exitAnimator.start();
-
-
+            });
+            exitAnimator.start();
+        }
     }
 
     /**
@@ -592,8 +594,8 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
      * Removes FancyShowCaseView view from activity root view
      */
     public void removeView() {
-        if (mImageView!=null)
-            mImageView=null;
+        if (mImageView != null)
+            mImageView = null;
         mRoot.removeView(this);
         if (mDismissListener != null) {
             mDismissListener.onDismiss(mId);
@@ -610,11 +612,7 @@ public class FancyShowCaseView extends FrameLayout implements ViewTreeObserver.O
 
     @Override
     public void onGlobalLayout() {
-        if (Build.VERSION.SDK_INT < 16) {
-            mView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-        } else {
-            mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        }
+        mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         focus();
     }
 
