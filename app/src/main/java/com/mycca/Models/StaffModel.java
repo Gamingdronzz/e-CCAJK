@@ -5,19 +5,29 @@ package com.mycca.Models;
  */
 
 public class StaffModel {
-    String id;
-    String password;
-    long type;
-    String state;
+    private String id;
+    private String password;
+    private long type;
+    private String state;
+    private String name;
 
     public StaffModel() {
     }
 
-    public StaffModel(String id, String password, long type, String state) {
+    public StaffModel(String id, String password, long type, String state, String name) {
         this.id = id;
         this.password = password;
         this.type = type;
         this.state = state;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {

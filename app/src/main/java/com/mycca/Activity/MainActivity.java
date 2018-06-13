@@ -34,6 +34,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
@@ -221,7 +225,11 @@ public class MainActivity extends AppCompatActivity
                 showFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
-                showFragment("CCA JK", new LoginFragment(), null);
+                fragment = new LoginFragment();
+                title = "CCA JK";
+                if (checkCurrentUser()) {
+                    showFragment(title, fragment, null);
+                }
                 break;
             case R.id.navmenu_update_grievances:
                 fragment = new UpdateGrievanceFragment();
@@ -394,6 +402,12 @@ public class MainActivity extends AppCompatActivity
     public void signOutFromGoogle() {
         mAuth.signOut();
         mGoogleSignInClient.signOut();
+
+        if (staffModel != null) {
+            Preferences.getInstance().clearStaffPrefs(MainActivity.this);
+            ManageNavigationView(false, false);
+            GrievanceDataProvider.getInstance().setAllGrievanceList(null);
+        }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -419,6 +433,7 @@ public class MainActivity extends AppCompatActivity
                                     },
                                     null, null, FancyAlertDialogType.SUCCESS);
 
+                            //tryLogin();
                             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
                             if (f instanceof SettingsFragment)
                                 ((SettingsFragment) f).manageSignOut();
@@ -542,6 +557,31 @@ public class MainActivity extends AppCompatActivity
         startActivity(openInChooser);
     }
 
+    private void tryLogin() {
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(FireBaseHelper.ROOT_STAFF)
+                .child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.getValue() != null) {
+                    try {
+                        StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
+                        OnLoginSuccessful(staffModel);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void OnLoginFailure(String message) {
         Helper.getInstance().showFancyAlertDialog(this,
                 message,
@@ -556,7 +596,7 @@ public class MainActivity extends AppCompatActivity
 
     public void OnLoginSuccessful(StaffModel staffModel) {
         this.staffModel = staffModel;
-        Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Staff Successfully Logged In", Toast.LENGTH_SHORT).show();
         Preferences.getInstance().setStaffPref(this, Preferences.PREF_STAFF_DATA, staffModel);
         if (staffModel.getType() == TYPE_ADMIN) {
             ManageNavigationView(true, true);

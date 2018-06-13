@@ -7,12 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,11 +29,11 @@ import com.mycca.Tools.Helper;
  */
 public class LoginFragment extends Fragment {
 
-
-    ImageView close;
     MainActivity mainActivity;
-    AutoCompleteTextView completeTextViewUserID;
+    TextView textViewUserID;
     EditText editTextPassword;
+
+    FirebaseAuth mAuth;
 
     public LoginFragment() {
     }
@@ -48,9 +48,14 @@ public class LoginFragment extends Fragment {
     }
 
     private void init(View view) {
+
         mainActivity = (MainActivity) getActivity();
-        completeTextViewUserID = view.findViewById(R.id.autocomplete_user_id);
-        completeTextViewUserID.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        mAuth = FireBaseHelper.getInstance(getContext()).mAuth;
+
+        textViewUserID = view.findViewById(R.id.tv_user_id);
+        textViewUserID.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        textViewUserID.setText(mAuth.getCurrentUser().getEmail());
+
         editTextPassword = view.findViewById(R.id.edittext_password);
         editTextPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password, 0, 0, 0);
 
@@ -66,12 +71,9 @@ public class LoginFragment extends Fragment {
 
     private void tryLogin() {
         Helper.getInstance().hideKeyboardFrom(getActivity());
-        final String id = completeTextViewUserID.getText().toString();
+
         final String password = editTextPassword.getText().toString();
-        if (!Helper.getInstance().checkInput(id)) {
-            Toast.makeText(getContext(), "Please input User ID", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
         if (!Helper.getInstance().checkInput(password)) {
             Toast.makeText(getContext(), "Please input Password", Toast.LENGTH_SHORT).show();
             return;
@@ -82,7 +84,7 @@ public class LoginFragment extends Fragment {
 
         FirebaseDatabase.getInstance().getReference()
                 .child(FireBaseHelper.ROOT_STAFF)
-                .child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
@@ -94,7 +96,7 @@ public class LoginFragment extends Fragment {
                     mainActivity.OnLoginFailure("No user found");
                     progressDialog.dismiss();
                 } else {
-                    StaffModel staffModel=dataSnapshot.getValue(StaffModel.class);
+                    StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
                     if (staffModel.getPassword().equals(password)) {
                         mainActivity.OnLoginSuccessful(staffModel);
                         progressDialog.dismiss();

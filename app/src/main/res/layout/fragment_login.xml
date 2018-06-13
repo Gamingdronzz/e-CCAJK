@@ -10,15 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:background="@drawable/custom_layout_background_primary"
         android:layout_marginEnd="@dimen/margin_large"
         android:layout_marginStart="@dimen/margin_large"
+        android:background="@drawable/custom_layout_background_primary"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/elevation_large">
+            android:elevation="@dimen/elevation_large"
+            tools:targetApi="lollipop">
 
             <TextView
                 android:layout_width="match_parent"
@@ -28,17 +29,6 @@
                 android:textSize="@dimen/text_20"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/imageview_close_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/margin_small"
-                android:padding="@dimen/padding_large"
-                android:tint="@color/colorBlack" />
-
         </RelativeLayout>
 
 
@@ -46,31 +36,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorOffWhite"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
+                android:id="@+id/tv_user_id"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_medium"
-                android:layout_height="wrap_content">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autocomplete_user_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/padding_medium"
-                    android:drawableTint="@color/colorPrimary"
-                    android:hint="User ID"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/colorBlack" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/padding_medium"
+                android:drawableTint="@color/colorPrimary"
+                android:padding="@dimen/padding_large"
+                android:textColor="@color/colorBlack" />
 
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_medium"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="Enter Password"
+                android:padding="@dimen/padding_medium">
 
                 <EditText
                     android:id="@+id/edittext_password"
@@ -78,7 +60,6 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/padding_medium"
                     android:drawableTint="@color/colorPrimary"
-                    android:hint="Password"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
