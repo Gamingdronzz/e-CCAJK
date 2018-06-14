@@ -31,11 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
-import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar;
 import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBarType;
 import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorType;
@@ -47,7 +43,6 @@ import com.mycca.R;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.MapsHelper;
 import com.mycca.Tools.MyLocationManager;
-import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -76,7 +71,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
     private GoogleMap mMap;
     private Location mLastLocation;
-    private LatLng latLng;
+    Activity activity;
     View mapView;
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -95,21 +90,22 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
-        locatorType = getArguments().getString("Locator");
+        if (getArguments() != null)
+            locatorType = getArguments().getString("Locator");
         Log.d(TAG, "onCreateView: tabnearby created");
         bindViews(view);
         init();
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_NEARBY)) {
-            showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_NEARBY, false);
-        }
         return view;
     }
 
     private void init() {
         Log.d(TAG, "init: tabnearby init");
+
+        activity = getActivity();
+        progressDialog = Helper.getInstance().getProgressWindow(activity, "");
+
         buttonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,7 +169,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                                 }
                             }
                         });
-                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                        task.addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
                             @Override
                             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                                 Log.v(TAG, "On Task Success");
@@ -184,7 +180,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                             }
                         });
 
-                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                        task.addOnFailureListener(activity, new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Log.v(TAG, "On Task Failed");
@@ -209,7 +205,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location);
         mapsHelper = new MapsHelper(view.getContext());
         buttonRefresh = view.findViewById(R.id.image_btn_refresh);
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "");
         seekBar = view.findViewById(R.id.seekBar);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -242,7 +237,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     }
                 }
             });
-            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+            task.addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
                 public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                     Log.v(TAG, "On Task Success");
@@ -253,7 +248,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 }
             });
 
-            task.addOnFailureListener(getActivity(), new OnFailureListener() {
+            task.addOnFailureListener(activity, new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.v(TAG, "On Task Failed");
@@ -304,45 +299,37 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         rlp.setMargins(20, 25, 0, 0);
     }
 
-    private void showTutorial() {
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(getActivity())
-                .title("Change radius for searching nearby hotspots")
-                .focusOn(seekBar)
-                .focusShape(FocusShape.ROUNDED_RECTANGLE)
-                .focusCircleRadiusFactor(.5)
-                .build();
-
-        ((MainActivity) getActivity()).mQueue = new FancyShowCaseQueue().add(fancyShowCaseView1);
-
-        ((MainActivity) getActivity()).mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                ((MainActivity) getActivity()).mQueue = null;
-            }
-        });
-
-        ((MainActivity) getActivity()).mQueue.show();
-    }
-
     private void placeMarkerOnMyLocation(Location location) {
         Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
         mLastLocation = location;
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
+        mapsHelper.AnimateCamera(locationModels, 12, mMap, mLastLocation, seekBarValue);
         Log.v(TAG, "Animating through Callback ");
     }
 
     private int getZoomValue(int seekBarValue) {
-        return 12 - seekBarValue;
+        switch (seekBarValue) {
+            case 1:
+                return 10;
+            case 2:
+            case 3:
+                return 9;
+            case 4:
+            case 5:
+                return 8;
+
+        }
+        return 1;
+        // return 12 - seekBarValue;
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
         if (mLastLocation == null) {
-            Toast.makeText(this.getActivity(), "Please Enable Location and Internet", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.activity, "Please Enable Location and Internet", Toast.LENGTH_LONG).show();
             return false;
         }
         return false;
@@ -350,7 +337,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this.getActivity(), "You are here", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.activity, "You are here", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -362,7 +349,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         for (String s : permissions) {
             Log.v(TAG, "Premissions = " + s);
         }
@@ -389,7 +376,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                                 }
                             }
                         });
-                        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                        task.addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
                             @Override
                             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                                 Log.v(TAG, "On Task Success");
@@ -400,7 +387,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                             }
                         });
 
-                        task.addOnFailureListener(getActivity(), new OnFailureListener() {
+                        task.addOnFailureListener(activity, new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Log.v(TAG, "On Task Failed");
@@ -416,7 +403,6 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     } else {
                         locationManager.ShowDialogOnPermissionDenied("Location Permission denied !\nHotspot Locator will not work without location access.\n\nDo you want to grant location acces ?");
                     }
-                    return;
                 }
             }
         }
@@ -441,7 +427,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     case Activity.RESULT_CANCELED: {
                         // The user was asked to change settings, but chose not to
                         Log.v(TAG, "Resolution denied");
-                        Helper.getInstance().showFancyAlertDialog(getActivity(),
+                        Helper.getInstance().showFancyAlertDialog(activity,
                                 "LOCATION OFF!\nUnable to get nearby locations without location access.",
                                 "Nearby Locations",
                                 "OK",

@@ -3,8 +3,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <RelativeLayout
         android:id="@+id/fragment_nearby"
@@ -59,8 +59,7 @@
             app:isb_track_background_bar_color="@color/colorWhite"
             app:isb_track_background_bar_size="@dimen/padding_xlarge"
             app:isb_track_progress_bar_color="@color/colorAccent"
-            app:isb_track_progress_bar_size="@dimen/margin_small">
-        </com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar>
+            app:isb_track_progress_bar_size="@dimen/margin_small"/>
 
         <TextView
             android:id="@+id/textview_range"
