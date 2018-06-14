@@ -28,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -455,15 +454,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showFancyAlertDialog(mainActivity,
+                Helper.getInstance().showErrorDialog(
                         "No Internet Connection\nPlease turn on internet connection before submitting " + type + " Grievance",
                         "Submit Grievance",
-                        "OK",
-                        null,
-                        null,
-                        null,
-                        FancyAlertDialogType.ERROR);
-
+                        mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -500,7 +494,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         try {
 
-            Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+            Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                     FireBaseHelper.ROOT_GRIEVANCES,
                     grievanceModel);
 
@@ -543,7 +537,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(getContext(), "Unable to Upload file", Toast.LENGTH_SHORT).show();
+                                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Submission Error", mainActivity);
                                     Log.d(TAG, "onFailure: " + exception.getMessage());
                                     progressDialog.dismiss();
                                 }
@@ -593,15 +587,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                Helper.getInstance().showFancyAlertDialog(mainActivity,
-                        "Some Error Occured<br>Please try Again",
-                        "Track Grievance",
-                        "OK",
-                        null,
-                        null,
-                        null,
-                        FancyAlertDialogType.ERROR);
-
+                Helper.getInstance().showErrorDialog("Some Error Occured", "Error", mainActivity);
             }
         } else {
             isUploadedToServer = true;
@@ -615,7 +601,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
-        Map<String, String> params = new HashMap();
+        Map<String, String> params = new HashMap<>();
         String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
 
         params.put("pensionerCode", pensionerCode);
@@ -655,6 +641,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         doSubmission();
                     }
                 } else {
+                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Submission Error", mainActivity);
                     Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
                     progressDialog.dismiss();
                 }
@@ -676,12 +663,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(mainActivity, "Grievance Submission Failed<br>Try Again", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
+                    Helper.getInstance().showErrorDialog("Grievance Submission Failed<br>Try Again", "Submission Error", mainActivity);
 
-                        }
-                    }, null, null, FancyAlertDialogType.ERROR);
                 }
             }
         } catch (JSONException jse) {
@@ -726,13 +709,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
         progressDialog.dismiss();
-        Helper.getInstance().showFancyAlertDialog(mainActivity, "Some Error Occured Please be patient we are getting things fixed", "Grievance Submission", "OK", new IFancyAlertDialogListener() {
-            @Override
-            public void OnClick() {
-
-            }
-        }, null, null, FancyAlertDialogType.ERROR);
-        //Toast.makeText(getContext(), "Some Error Occured\nPlease be patient we are getting things fixed", Toast.LENGTH_SHORT).show();
+        Helper.getInstance().showErrorDialog("Some Error Occured Please be patient we are getting things fixed", "Submission Error", mainActivity);
     }
 
 

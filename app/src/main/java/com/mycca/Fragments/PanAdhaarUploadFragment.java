@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -91,7 +90,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_adhaar_pan_upload, container, false);
-        root = this.getArguments().getString("Root");
+        if (this.getArguments() != null)
+            root = this.getArguments().getString("Root");
         bindViews(view);
         init();
         return view;
@@ -307,14 +307,10 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void showNoInternetConnectionDialog() {
-        Helper.getInstance().showFancyAlertDialog(this.getActivity(),
+        Helper.getInstance().showErrorDialog(
                 "No Internet Connection\nPlease turn on internet connection before updating " + root,
                 "Update " + root,
-                "OK",
-                null,
-                null,
-                null,
-                FancyAlertDialogType.ERROR);
+                getActivity());
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -342,10 +338,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         TextView circle = v.findViewById(R.id.textview_circle_value);
         circle.setText(state.getName());
         TextView heading = v.findViewById(R.id.textview_mobile_no);
+        String text;
         if (root.equals(FireBaseHelper.ROOT_PAN) || root.equals(FireBaseHelper.ROOT_ADHAAR))
-            heading.setText(root + " No:");
+            text = root + " No:";
         else
-            heading.setText("Applicant's Name: ");
+            text = "Applicant's Name: ";
+        heading.setText(text);
+
         TextView value = v.findViewById(R.id.textview_mobile_value);
         value.setText(number);
         v.findViewById(R.id.textview_email).setVisibility(View.GONE);
@@ -365,7 +364,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 null,
                 state.getCircleCode());
 
-        Task task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(root, panAdhaar);
+        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(root, panAdhaar);
 
         task.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -374,7 +373,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     uploadAllImagesToFirebase();
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "The app might be in maintenence. Please try again later.", "Unable to Upload", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                    Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
                 }
             }
         });
@@ -393,14 +392,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(getContext(), "Unable to Upload file", Toast.LENGTH_SHORT).show();
+                    Helper.getInstance().showErrorDialog("Unable to Upload file", "Update Error", getActivity());
                     Log.d(TAG, "onFailure: " + exception.getMessage());
                     progressDialog.dismiss();
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -429,9 +427,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     volleyHelper);
         } catch (Exception e) {
             e.printStackTrace();
-            Helper.getInstance().showFancyAlertDialog(
-                    getActivity(),
-                    "Some Error Occured", root, "OK", null, null, null, FancyAlertDialogType.ERROR);
+            Helper.getInstance().showErrorDialog("Some Error Occured", "Update Error", getActivity());
         }
     }
 
@@ -440,7 +436,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php";
-        Map<String, String> params = new HashMap();
+        Map<String, String> params = new HashMap<>();
 
         params.put("pensionerCode", pensionerCode);
         params.put("personType", hint);
@@ -492,6 +488,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     doSubmission();
                 } else {
                     Log.d(TAG, "onResponse: Image upload failed");
+                    Helper.getInstance().showErrorDialog("File Uploading Failed", "Update Error", getActivity());
                     progressDialog.dismiss();
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
@@ -499,7 +496,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     progressDialog.dismiss();
                     String alertMessage = (root + " update request for<br>") +
                             "<b>" + pensionerCode + "</b>" +
-                            "<br>has been submitted succesfully";
+                            "<br>has been submitted successfully";
 
 
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, root
@@ -508,16 +505,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                         public void OnClick() {
                         }
                     }, null, null, FancyAlertDialogType.SUCCESS);
-                    //Toast.makeText(getContext(), root + " Update " + root + " Request Submitted Succesfully", Toast.LENGTH_SHORT).show();
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), root + " update request failed", root
-                            + " Update", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                        }
-                    }, null, null, FancyAlertDialogType.ERROR);
+                    Helper.getInstance().showErrorDialog(root + " update request failed",
+                            "Update Error",
+                            getActivity());
                 }
             }
         } catch (JSONException jse) {

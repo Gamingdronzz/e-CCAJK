@@ -256,43 +256,6 @@ public class Helper {
         return -1;
     }
 
-    public void showUpdateOrMaintenanceDialog(boolean updateAvailable, final Activity activity) {
-        if (updateAvailable) {
-            Helper.getInstance().showFancyAlertDialog(activity,
-                    "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
-                    "My CCA",
-                    "Update",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            showGooglePlayStore(activity);
-                            activity.finish();
-                        }
-                    },
-                    "Cancel",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            activity.finish();
-                        }
-                    },
-                    FancyAlertDialogType.WARNING);
-        } else {
-            Helper.getInstance().showFancyAlertDialog(activity,
-                    "The Application is in maintenance\nPlease wait for a while\n\nThank you for your patience",
-                    "My CCA",
-                    "OK",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            activity.finish();
-                        }
-                    },
-                    null, null,
-                    FancyAlertDialogType.WARNING);
-        }
-    }
-
     private void showGooglePlayStore(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(getPlayStoreURL()));
@@ -361,16 +324,6 @@ public class Helper {
         return imagePicker;
     }
 
-//    public com.linchaolong.android.imagepicker.ImagePicker showImageChooser(com.linchaolong.android.imagepicker.ImagePicker imagePicker, Activity activity, boolean cropimage, com.linchaolong.android.imagepicker.ImagePicker.Callback callback) {
-//        if (imagePicker == null) {
-//            imagePicker = new com.linchaolong.android.imagepicker.ImagePicker();
-//        }
-//        imagePicker.setTitle("Select Image");
-//        imagePicker.setCropImage(cropimage);
-//        imagePicker.startChooser(activity, callback);
-//        return imagePicker;
-//    }
-
     public boolean isTab(Context context) {
         boolean isTab = (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
@@ -422,6 +375,55 @@ public class Helper {
                 .OnPositiveClicked(positiveButtonOnClickListener)
                 .build();
     }
+
+    public void showUpdateOrMaintenanceDialog(boolean updateAvailable, final Activity activity) {
+        if (updateAvailable) {
+            Helper.getInstance().showFancyAlertDialog(activity,
+                    "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
+                    "My CCA",
+                    "Update",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            showGooglePlayStore(activity);
+                            activity.finish();
+                        }
+                    },
+                    "Cancel",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            activity.finish();
+                        }
+                    },
+                    FancyAlertDialogType.WARNING);
+        } else {
+            Helper.getInstance().showFancyAlertDialog(activity,
+                    "The Application is in maintenance\nPlease wait for a while\n\nThank you for your patience",
+                    "My CCA",
+                    "OK",
+                    new IFancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            activity.finish();
+                        }
+                    },
+                    null, null,
+                    FancyAlertDialogType.WARNING);
+        }
+    }
+
+    public void showErrorDialog(String message, String title, Activity activity) {
+        showFancyAlertDialog(activity,
+                message,
+                title,
+                "OK",
+                null,
+                null,
+                null,
+                FancyAlertDialogType.ERROR);
+    }
+
 
     public void showTrackWindow(final Activity context, View parent) {
         final EditText editText;

@@ -241,7 +241,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void OnConnectionNotAvailable() {
                 circularProgressButton.setProgress(0);
-                showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates");
+                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates","Inspection",mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -336,21 +336,10 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-                showErrorDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection");
+                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection","Inspection",mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
-    }
-
-    private void showErrorDialog(String message) {
-        Helper.getInstance().showFancyAlertDialog(mainActivity,
-                message,
-                "Inspection",
-                "OK",
-                null,
-                null,
-                null,
-                FancyAlertDialogType.ERROR);
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -420,7 +409,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(getContext(), "Unable to Upload file, Try again", Toast.LENGTH_SHORT).show();
+                        Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again","Inspection",mainActivity);
                         Log.d(TAG, "onFailure: " + exception.getMessage());
                         progressDialog.dismiss();
                     }
@@ -463,7 +452,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                showErrorDialog("Some Error Occurred.\nPlease try Again");
+                Helper.getInstance().showErrorDialog("Some Error Occurred.\nPlease try Again","Inspection",mainActivity);
             }
         } else {
             isUploadedToServer = true;
@@ -478,7 +467,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
 
         params.put("locationName", editTextLocationName.getText().toString());
         params.put("staffID", staffModel.getId());
@@ -596,10 +585,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     }
                 } else {
                     Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
+                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again","Inspection",mainActivity);
                     progressDialog.dismiss();
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
+
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+
                     progressDialog.dismiss();
                     String alertMessage = "Inspection data for" +
                             "<br><b>" + editTextLocationName.getText() + "</b><br>" +
@@ -614,24 +606,16 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     }, null, null, FancyAlertDialogType.SUCCESS);
                     isUploadedToServer = isUploadedToFirebase = false;
 
-
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(mainActivity, "Inspection Submission Failed\nTry Again",
-                            " Inspection",
-                            "OK",
-                            new IFancyAlertDialogListener() {
-                                @Override
-                                public void OnClick() {
-                                }
-                            },
-                            null, null,
-                            FancyAlertDialogType.ERROR);
+                    Helper.getInstance().showErrorDialog("Inspection Submission Failed\nTry Again","Inspection",mainActivity);
                 }
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
         }
     }
+
+
 }
 

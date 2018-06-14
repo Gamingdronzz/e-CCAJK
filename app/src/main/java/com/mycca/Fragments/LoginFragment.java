@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
@@ -82,9 +83,10 @@ public class LoginFragment extends Fragment {
         final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Logging In...");
         progressDialog.show();
 
-        FirebaseDatabase.getInstance().getReference()
+        final DatabaseReference dbref = FirebaseDatabase.getInstance().getReference()
                 .child(FireBaseHelper.ROOT_STAFF)
-                .child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(mAuth.getCurrentUser().getUid());
+        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
@@ -112,5 +114,47 @@ public class LoginFragment extends Fragment {
 
             }
         });
+    //        final ChildEventListener childEventListener=new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                try {
+//                    if (dataSnapshot.child("id").getValue() == mAuth.getCurrentUser().getEmail()) {
+//                        progressDialog.dismiss();
+//                        dbref.removeEventListener(this);
+//                        if (dataSnapshot.child("password").getValue() == password) {
+//                            StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
+//                            mainActivity.OnLoginSuccessful(staffModel);
+//                        } else {
+//                            mainActivity.OnLoginFailure("Password Mismatch");
+//                        }
+//                    }
+//                } catch (DatabaseException dbe) {
+//                    mainActivity.OnLoginFailure("No user found");
+//                    dbe.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//        dbref.addChildEventListener(childEventListener);
+
     }
 }

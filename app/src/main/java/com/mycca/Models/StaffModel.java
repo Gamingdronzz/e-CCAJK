@@ -1,8 +1,5 @@
 package com.mycca.Models;
 
-/**
- * Created by hp on 14-05-2018.
- */
 
 public class StaffModel {
     private String id;
