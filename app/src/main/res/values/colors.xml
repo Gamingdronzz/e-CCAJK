@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#ee8317</color>
     <color name="colorPrimaryDark">#b35f0a</color>
     <color name="colorPrimaryLight">#eca864</color>
     <color name="colorAccent">#399236</color>
     <color name="colorAccentLight">#80bf7e</color>
     <color name="colorAccentDark">#12660f</color>
+    <color name="colorSecondary">#0D47A1</color>
+
     <color name="colorGray">#6c6c6c</color>
     <color name="colorIcons">#212121</color>
     <color name="colorLightGray">#cecbcb</color>
@@ -14,10 +17,7 @@
     <color name="colorRed">#ff0000</color>
     <color name="colorLightRed">#e64d4d</color>
     <color name="colorMaroon">#c11010</color>
-    <color name="colorTextBack">#E1BEE7</color>
-    <color name="colorHeadingBack">#CE93D8</color>
-    <color name="colorDarkBlue">#000080</color>
-    <color name="colorSecondaryText">#757575</color>
+    <color name="colorNavyBlue">#000080</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
     <color name="colorLightBlack">#333333</color>
@@ -25,6 +25,7 @@
     <color name="colorGreen">#399236</color>
     <color name="colorTransparentBlack">#14000000</color>
     <color name="colorTranslucentDarkBlack">#dd000000</color>
+    <color name="colorTranslucentBlack">#bb000000</color>
     <color name="inactive_indicator">#4D000000</color>
 
     <color name="cpb_grey">#ffdedede</color>

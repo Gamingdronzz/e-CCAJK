@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,9 +83,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     RadioGroup radioGroup;
     EditText inputDetails;
     Spinner spinnerInputType, spinnerInputSubmittedBy, spinnerCircle;
-    Button submit, buttonChooseFile;
-    //FloatingActionButton buttonAttachFile;
-    TextView removeAll, textViewSelectedFileCount;
+    Button submit;// buttonChooseFile;
+    FloatingActionButton buttonChooseFile,removeAll;
+    TextView  textViewSelectedFileCount;//removeAll;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
@@ -152,6 +153,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         radioGroup = view.findViewById(R.id.groupNumberType);
         buttonChooseFile = view.findViewById(R.id.button_attach);
+        //removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         submit = view.findViewById(R.id.button_submit);
     }
@@ -165,8 +167,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
         inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
         inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
-        removeAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
-        textViewSelectedFileCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
+        //removeAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
+        //textViewSelectedFileCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
 
         StatesAdapter statesAdapter = new StatesAdapter(getContext());
         spinnerCircle.setAdapter(statesAdapter);
@@ -209,7 +211,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         spinnerInputSubmittedBy.setAdapter(arrayAdapter1);
 
 
-        buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
+        //buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
         buttonChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,7 +237,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 removeAllSelectedImages();
             }
         });
-
         firebaseImageURLs = new ArrayList<>();
 
     }
@@ -346,7 +347,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     public void setSelectedFileCount(int count) {
-        textViewSelectedFileCount.setText(" = " + count);
+        textViewSelectedFileCount.setText(count + " Files Selected" );
     }
 
     private void removeAllSelectedImages() {

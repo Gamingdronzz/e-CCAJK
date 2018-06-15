@@ -5,24 +5,23 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_large"
     android:animateLayoutChanges="true"
-    android:elevation="@dimen/elevation_medium"
     android:background="@drawable/custom_layout_background_square_corners"
+    android:elevation="@dimen/elevation_medium"
     android:orientation="vertical">
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_min"
-        >
+        android:padding="@dimen/padding_min">
 
         <ImageButton
             android:id="@+id/imageview_selected_image"
             android:layout_width="108dp"
             android:layout_height="192dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:background="@drawable/small_cover" />
+            android:background="@drawable/small_cover"
+            android:scaleType="fitCenter" />
         <!--<TextView-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
@@ -37,26 +36,24 @@
         <!--android:textSize="40sp"/>-->
 
 
-
         <ImageButton
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|top"
+            android:layout_gravity="end|top"
             android:background="@null"
-            android:tint="@color/colorLightRed"
-            app:srcCompat="@drawable/ic_triangle"
-             />
+            android:tint="@color/colorPrimaryLight"
+            app:srcCompat="@drawable/ic_triangle" />
 
         <ImageButton
-            android:padding="@dimen/padding_small"
-            android:layout_width="wrap_content"
-            android:layout_gravity="right|top"
-            app:srcCompat="@drawable/ic_close_black_48dp"
             android:id="@+id/imageview_overlay_remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
             android:background="@null"
+            android:padding="@dimen/padding_small"
             android:tint="@color/colorBlack"
-            android:layout_height="wrap_content" />
+            app:srcCompat="@drawable/ic_close_black_48dp" />
 
     </FrameLayout>
 
