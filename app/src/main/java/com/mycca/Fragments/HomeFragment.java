@@ -128,26 +128,18 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         tvVisit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
 
-        tvVisit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String location = "32.707500,74.874217";
-                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                } else {
-                    Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
-                }
+        tvVisit.setOnClickListener(v -> {
+            String location = "32.707500,74.874217";
+            Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
             }
         });
 
-        tvLatestNews.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.showFragment("Latest News", new LatestNewsFragment(), null);
-            }
-        });
+        tvLatestNews.setOnClickListener(v -> activity.showFragment("Latest News", new LatestNewsFragment(), null));
 
         newsModelArrayList = new ArrayList<>();
         adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, activity, true);
@@ -159,20 +151,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         SnapHelper snapHelperStart = new GravitySnapHelper(Gravity.START);
         snapHelperStart.attachToRecyclerView(recyclerView);
 
-        moveRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (linearLayoutManager.findLastVisibleItemPosition() - 1 >= 0)
-                    recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
-            }
+        moveRight.setOnClickListener(v -> {
+            if (linearLayoutManager.findLastVisibleItemPosition() - 1 >= 0)
+                recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
         });
 
-        moveLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerView.smoothScrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1);
-            }
-        });
+        moveLeft.setOnClickListener(v -> recyclerView.smoothScrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1));
 
         getNews();
         setupWelcomeBar();
@@ -308,21 +292,18 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
                 .build();
 
-        activity.mQueue = new FancyShowCaseQueue()
+        activity.setmQueue( new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3)
-                .add(fancyShowCaseView4);
-        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                activity.mQueue = null;
-                if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
-                    activity.showAuthDialog(false);
-            }
+                .add(fancyShowCaseView4));
+        activity.getmQueue().setCompleteListener(() -> {
+            activity.setmQueue(null);
+            if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
+                activity.showAuthDialog(false);
         });
 
-        activity.mQueue.show();
+        activity.getmQueue().show();
     }
 
     @Override

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My CCA JK</string>
 
-    <string name="welcome_short">The office of CCA, J&amp;K came into existence on 1st October 2000 as a field unit of Department of Telecommunication. Inititally this office known as DOT - CELL and subsequently it is named as Office of Controller of Communication Accounts Jammu and Kashmir. This office shifted in the current key on 1-11-2011..</string>
+    <string name="welcome_short">The office of CCA, J&amp;K came into existence on 1st October 2000 as a field unit of Department of Telecommunication. Initially this office known as DOT &#8211; CELL and subsequently it is named as Office of Controller of Communication Accounts Jammu and Kashmir. This office shifted in the current key on 1.11.2011..</string>
 
     <string name="welcome_full">Telecommunications, a vital infrastructure for development of the country was taken as a priority sector by the Government. The telecom sector which was earlier a Government monopoly was restructured and opened up for private participation. National Telecom Policy 1994 and then New Telecom Policy 1999 were framed with laudable objectives of providing world class widest permissible range of telecom services for all, telephone on demand as early as possible and to achieve universal service covering all villages at affordable and reasonable prices. There was a huge resources gap estimated for these objectives. Private investment and association of the private sector was envisaged in a big way to bridge this resource gap. Private initiative was sought to be used to augment the Government efforts to raise additional resources for achieving the desired objectives.
 \n\n\tWith effect from 1st October, 2000, the incumbent government operator Department of Telecom Services and Department of Telecom Operations were constituted as a company under the Indian Companies Act, 1956 christened Bharat Sanchar Nigam Limited (BSNL) covering operations in the entire country except in Mumbai and Delhi Service Areas where the telecom operations were already transferred to a company, the Mahanagar Telephone Nigam Limited in 1986.
@@ -26,26 +26,9 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-    <string name="action_refresh">Refresh</string>
-    <string name="action_clear_all">Clear All</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_login">Sign in</string>
-
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
     <string name="about_us_string">This application is  developed and maintained by GAMING DRONZZ, Jammu.</string>
 
@@ -62,23 +45,36 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
 
     <string name="tutorial_text4">App features require google sign in. You can manually sign in and sign out using Settings option in Secondary menu</string>
 
-    <string name="tutorial_text5"></string>
-    <string name="tutorial_text6"></string>
-
-
     <!--invitation-->
     <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
     <string name="invitation_title">My CCA</string>
     <string name="invitation_message">Official Android Appication of CCA</string>
     <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
 
+    <string name="add_image">Add Image</string>
+    <string name="remove">Remove All</string>
+    <string name="clear">Clear All</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_clear_all">Clear Form Data</string>
+    <string name="circle">Circle</string>
+    <string name="gtype">Grievance Type</string>
+    <string name="submitted_by">Grievance Submitted By</string>
+    <string name="gdetails">Grievance Details</string>
+    <string name="upload_using">Upload Using</string>
+    <string name="p_code">Pensioner Code</string>
+    <string name="hr_num">HR Number</string>
+    <string name="staff_num">Staff Number</string>
+    <string name="mobile_num">Mobile Number</string>
+    <string name="email">E-Mail</string>
+    <string name="submit">Submit</string>
     <!-- CropView -->
-    <string name="crop_image_activity_title"></string>
+    <string name="crop_image_activity_title">Crop</string>
     <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
     <string name="crop_image_menu_rotate_right">Rotate</string>
     <string name="crop_image_menu_crop">Crop</string>
     <string name="pick_image_intent_chooser_title">Select source</string>
-    <string name="saving_image">Saving image ...</string>
+    <string name="saving_image">Saving image …</string>
 
     <string name="title_activity_ad">Ad</string>
     <string name="interstitial_ad_sample">Interstitial Ad Sample</string>

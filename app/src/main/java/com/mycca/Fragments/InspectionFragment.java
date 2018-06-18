@@ -28,9 +28,6 @@ import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +40,6 @@ import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
@@ -162,34 +158,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog = Helper.getInstance().getProgressWindow(mainActivity,
                 "Getting Current Location Coordinates\nPlease Wait...");
 
-        getCoordinatesListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getLocationCoordinates();
-            }
-        };
+        getCoordinatesListener = v -> getLocationCoordinates();
         circularProgressButton.setOnClickListener(getCoordinatesListener);
         circularProgressButton.setIndeterminateProgressMode(true);
 
-        removeAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeAllSelectedImages();
-            }
-        });
-        textViewAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageChooser();
-            }
-        });
+        removeAll.setOnClickListener(v -> removeAllSelectedImages());
+        textViewAddImage.setOnClickListener(v -> showImageChooser());
 
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSubmission();
-            }
-        });
+        upload.setOnClickListener(v -> doSubmission());
 
     }
 
@@ -204,35 +180,24 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
                 Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
                 if (task != null) {
-                    task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                            if (task.isSuccessful()) {
-                                Log.v(TAG, "Task is Successful\nRequesting Location Update");
-                                myLocationManager.requestLocationUpdates();
+                    task.addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Log.v(TAG, "Task is Successful\nRequesting Location Update");
+                            myLocationManager.requestLocationUpdates();
 
-                            } else {
-                                Log.v(TAG, "Task UnSuccessful");
-                                circularProgressButton.setProgress(0);
-                            }
-                        }
-                    });
-                    task.addOnSuccessListener(mainActivity, new OnSuccessListener<LocationSettingsResponse>() {
-                        @Override
-                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                            Log.v(TAG, "On Task Success");
-                        }
-                    });
-
-                    task.addOnFailureListener(mainActivity, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.v(TAG, "On Task Failed");
+                        } else {
+                            Log.v(TAG, "Task UnSuccessful");
                             circularProgressButton.setProgress(0);
-                            circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh").toString());
-                            if (e instanceof ResolvableApiException) {
-                                myLocationManager.onLocationAcccessRequestFailure(e);
-                            }
+                        }
+                    });
+                    task.addOnSuccessListener(mainActivity, locationSettingsResponse -> Log.v(TAG, "On Task Success"));
+
+                    task.addOnFailureListener(mainActivity, e -> {
+                        Log.v(TAG, "On Task Failed");
+                        circularProgressButton.setProgress(0);
+                        circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh").toString());
+                        if (e instanceof ResolvableApiException) {
+                            myLocationManager.onLocationAcccessRequestFailure(e);
                         }
                     });
                 }
@@ -241,7 +206,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void OnConnectionNotAvailable() {
                 circularProgressButton.setProgress(0);
-                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates","Inspection",mainActivity);
+                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates", "Inspection", mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -336,7 +301,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
-                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection","Inspection",mainActivity);
+                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection", "Inspection", mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -374,20 +339,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 inspectionModel,
                 staffModel.getState(),
                 key);
-        task.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadInspectionFiles(key);
-                }
+        task.addOnCompleteListener(task1 -> {
+            if (task1.isSuccessful()) {
+                uploadInspectionFiles(key);
             }
         });
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
-            }
+        task.addOnFailureListener(e -> {
+            progressDialog.dismiss();
+            Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
         });
     }
 
@@ -406,32 +365,21 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     key);
 
             if (uploadTask != null) {
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again","Inspection",mainActivity);
-                        Log.d(TAG, "onFailure: " + exception.getMessage());
-                        progressDialog.dismiss();
+                uploadTask.addOnFailureListener(exception -> {
+                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Inspection", mainActivity);
+                    Log.d(TAG, "onFailure: " + exception.getMessage());
+                    progressDialog.dismiss();
+                }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                    downloadUrl = uri;
+                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                    firebaseImageURLs.add(downloadUrl);
+                    progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
+                    Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
+                    if (counterUpload == selectedImageModelArrayList.size()) {
+                        isUploadedToFirebase = true;
+                        doSubmission();
                     }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                downloadUrl = uri;
-                                Log.d(TAG, "onSuccess: " + downloadUrl);
-                                firebaseImageURLs.add(downloadUrl);
-                                progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
-                                Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
-                                if (counterUpload == selectedImageModelArrayList.size()) {
-                                    isUploadedToFirebase = true;
-                                    doSubmission();
-                                }
-                            }
-                        });
-                    }
-                });
+                }));
             }
         }
     }
@@ -452,7 +400,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                Helper.getInstance().showErrorDialog("Some Error Occurred.\nPlease try Again","Inspection",mainActivity);
+                Helper.getInstance().showErrorDialog("Some Error Occurred.\nPlease try Again", "Inspection", mainActivity);
             }
         } else {
             isUploadedToServer = true;
@@ -490,18 +438,15 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .build();
 
-        mainActivity.mQueue = new FancyShowCaseQueue()
-                .add(fancyShowCaseView1);
+        mainActivity.setmQueue(new FancyShowCaseQueue()
+                .add(fancyShowCaseView1));
 
-        mainActivity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                mainActivity.mQueue = null;
-                getLocationCoordinates();
-            }
+        mainActivity.getmQueue().setCompleteListener(() -> {
+            mainActivity.setmQueue(null);
+            getLocationCoordinates();
         });
 
-        mainActivity.mQueue.show();
+        mainActivity.getmQueue().show();
     }
 
     @Override
@@ -585,7 +530,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     }
                 } else {
                     Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
-                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again","Inspection",mainActivity);
+                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Inspection", mainActivity);
                     progressDialog.dismiss();
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
@@ -599,16 +544,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                             " has been successfully submitted";
 
 
-                    Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, "Inspection", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                        }
+                    Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, "Inspection", "OK", () -> {
                     }, null, null, FancyAlertDialogType.SUCCESS);
                     isUploadedToServer = isUploadedToFirebase = false;
 
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog("Inspection Submission Failed\nTry Again","Inspection",mainActivity);
+                    Helper.getInstance().showErrorDialog("Inspection Submission Failed\nTry Again", "Inspection", mainActivity);
                 }
             }
         } catch (JSONException jse) {

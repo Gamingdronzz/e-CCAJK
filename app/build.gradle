@@ -21,6 +21,10 @@ android {
         }
     }
     buildToolsVersion '27.0.3'
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -44,7 +48,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
     implementation 'com.google.firebase:firebase-invites:15.0.1'
 
-    implementation 'com.robertlevonyan.view:CustomFloatingActionButton:2.0.5'
+    implementation 'com.github.asyl.animation:arcanimator:1.0.0'
     //compile 'com.linchaolong.android:imagepicker:1.5'
     implementation 'com.google.code.gson:gson:2.8.4'
     //implementation 'com.github.rubensousa:gravitysnaphelper:1.5'

@@ -1,15 +1,16 @@
 package com.mycca.Fragments;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -22,18 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,11 +44,13 @@ import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.CustomObjects.fabrevealmenu.listeners.OnFABMenuSelectedListener;
+import com.mycca.CustomObjects.fabrevealmenu.model.FABMenuItem;
+import com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
 import com.mycca.Models.GrievanceType;
@@ -75,17 +73,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse {
+public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    View view;
-    AutoCompleteTextView autoCompleteTextViewPensionerCode, inputEmail, inputMobile;
+    View view, menuClearForm;
+    TextInputEditText inputPensionerCode, inputEmail, inputMobile, inputDetails;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
-    EditText inputDetails;
     Spinner spinnerInputType, spinnerInputSubmittedBy, spinnerCircle;
-    Button submit;// buttonChooseFile;
-    FloatingActionButton buttonChooseFile,removeAll;
-    TextView  textViewSelectedFileCount;//removeAll;
+    Button submit;
+    FloatingActionButton buttonChooseFile;
+    TextView textViewSelectedFileCount;
     LinearLayout radioLayout;
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
@@ -94,10 +91,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     int counterUpload = 0;
     int counterServerImages = 0;
     int counterFirebaseImages;
-    String TAG = "GrievanceModel";
+    String TAG = "Grievance";
     String hint = "Pensioner Code";
     String code, type, email;
-    View menuClearForm;
 
     MainActivity mainActivity;
     GrievanceType grievanceType;
@@ -105,12 +101,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     VolleyHelper volleyHelper;
     ArrayList<GrievanceType> list = new ArrayList<>();
     ArrayList<Uri> firebaseImageURLs;
+    private ArrayList<FABMenuItem> items;
     Uri downloadUrl;
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
-
-    private int RC_IMAGE_PICKER = 106;
 
     public SubmitGrievanceFragment() {
 
@@ -140,21 +135,17 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         radioLayout = view.findViewById(R.id.layout_radio);
         textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
-        autoCompleteTextViewPensionerCode = view.findViewById(R.id.autocomplete_pcode);
-        inputMobile = view.findViewById(R.id.autocomplete_mobile);
-        inputEmail = view.findViewById(R.id.autocomplete_email);
+        inputPensionerCode = view.findViewById(R.id.et_grievance_pcode);
+        inputMobile = view.findViewById(R.id.et_grievance_mobile);
+        inputEmail = view.findViewById(R.id.et_grievance_email);
         spinnerCircle = view.findViewById(R.id.spinner_grievance_circle);
         spinnerInputType = view.findViewById(R.id.spinner_type);
-        inputDetails = view.findViewById(R.id.edittext_details);
+        inputDetails = view.findViewById(R.id.et_grievance_details);
         spinnerInputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
         textViewSelectedFileCount = view.findViewById(R.id.textview_selected_file_count_grievance);
 
-        //textViewFileName = view.findViewById(R.id.textview_file_name);
-
         radioGroup = view.findViewById(R.id.groupNumberType);
         buttonChooseFile = view.findViewById(R.id.button_attach);
-        //removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
-        removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         submit = view.findViewById(R.id.button_submit);
     }
 
@@ -162,13 +153,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         mainActivity = (MainActivity) getActivity();
         progressDialog = Helper.getInstance().getProgressWindow(mainActivity, "Please wait...");
+        initItems();
 
-        autoCompleteTextViewPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        inputPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
         inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
         inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
-        //removeAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
-        //textViewSelectedFileCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
 
         StatesAdapter statesAdapter = new StatesAdapter(getContext());
         spinnerCircle.setAdapter(statesAdapter);
@@ -183,47 +173,48 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         GrievanceAdapter adapter = new GrievanceAdapter(getContext(), list);
         spinnerInputType.setAdapter(adapter);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioButtonPensioner:
-                        hint = "Pensioner Code";
-                        autoCompleteTextViewPensionerCode.setFilters(Helper.getInstance().limitInputLength(15));
-                        break;
-                    //TODO
-                    //set place holder format
-                    case R.id.radioButtonHR:
-                        hint = "HR Number";
-                        autoCompleteTextViewPensionerCode.setFilters(new InputFilter[]{});
-                        break;
-                    case R.id.radioButtonStaff:
-                        hint = "Staff Number";
-                        autoCompleteTextViewPensionerCode.setFilters(new InputFilter[]{});
-                }
-                autoCompleteTextViewPensionerCode.setText("");
-                autoCompleteTextViewPensionerCode.setError(null);
-                textInputIdentifier.setHint(hint);
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radioButtonPensioner:
+                    hint = "Pensioner Code";
+                    inputPensionerCode.setFilters(Helper.getInstance().limitInputLength(15));
+                    break;
+                case R.id.radioButtonHR:
+                    hint = "HR Number";
+                    inputPensionerCode.setFilters(new InputFilter[]{});
+                    break;
+                case R.id.radioButtonStaff:
+                    hint = "Staff Number";
+                    inputPensionerCode.setFilters(new InputFilter[]{});
             }
+            inputPensionerCode.setText("");
+            inputPensionerCode.setError(null);
+            textInputIdentifier.setHint(hint);
         });
 
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mainActivity, R.layout.simple_spinner, Helper.getInstance().submittedByList(type));
         spinnerInputSubmittedBy.setAdapter(arrayAdapter1);
 
 
-        //buttonChooseFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
-        buttonChooseFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageChooser();
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
+        try {
+            if (buttonChooseFile != null && fabMenu != null) {
+                //attach menu to fab
+                mainActivity.setFabRevealMenu(fabMenu);
+                //set menu items from arrylist
+                fabMenu.setMenuItems(items);
+                //attach menu to fab
+                fabMenu.bindAnchorView(buttonChooseFile);
+                //set menu item selection
+                fabMenu.setOnFABMenuSelectedListener(this);
             }
-        });
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkInputBeforeSubmission())
-                    showConfirmSubmissionDialog();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        submit.setOnClickListener(v -> {
+            if (checkInputBeforeSubmission())
+                showConfirmSubmissionDialog();
         });
 
         selectedImageModelArrayList = new ArrayList<>();
@@ -231,14 +222,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        removeAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeAllSelectedImages();
-            }
-        });
         firebaseImageURLs = new ArrayList<>();
-
+        setSelectedFileCount(0);
     }
 
     @Override
@@ -259,16 +244,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_form, menu);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
+        new Handler().post(() -> {
 
-                menuClearForm = view.findViewById(R.id.action_clear_form_data);
-                // SOME OF YOUR TASK AFTER GETTING VIEW REFERENCE
-                if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE)) {
-                    showTutorial();
-                    Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE, false);
-                }
+            menuClearForm = view.findViewById(R.id.action_clear_form_data);
+            // SOME OF YOUR TASK AFTER GETTING VIEW REFERENCE
+            if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE)) {
+                showTutorial();
+                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE, false);
             }
         });
 
@@ -278,7 +260,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void showTutorial() {
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(mainActivity)
-                //.focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels - 200, Resources.getSystem().getDisplayMetrics().heightPixels - 250, 100)
                 .focusOn(view.findViewById(R.id.button_attach))
                 .focusShape(FocusShape.CIRCLE)
                 .title("Add images using this button")
@@ -292,16 +273,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 .title("Click to clear form data")
                 .build();
 
-        mainActivity.mQueue = new FancyShowCaseQueue()
+        mainActivity.setmQueue(new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2);
-        mainActivity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                mainActivity.mQueue = null;
-            }
-        });
-        mainActivity.mQueue.show();
+                .add(fancyShowCaseView2));
+        mainActivity.getmQueue().setCompleteListener(() -> mainActivity.setmQueue(null));
+        mainActivity.getmQueue().show();
     }
 
     private void showImageChooser() {
@@ -347,7 +323,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     public void setSelectedFileCount(int count) {
-        textViewSelectedFileCount.setText(count + " Files Selected" );
+        String text = count + " Files Selected";
+        textViewSelectedFileCount.setText(text);
     }
 
     private void removeAllSelectedImages() {
@@ -360,22 +337,22 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private boolean checkInputBeforeSubmission() {
-        code = autoCompleteTextViewPensionerCode.getText().toString();
+        code = inputPensionerCode.getText().toString();
         email = inputEmail.getText().toString();
         state = (State) spinnerCircle.getSelectedItem();
         grievanceType = (GrievanceType) spinnerInputType.getSelectedItem();
 
         if (code.length() != 15 && hint.equals("Pensioner Code")) {
-            autoCompleteTextViewPensionerCode.setError("Enter Valid Pensioner Code");
-            autoCompleteTextViewPensionerCode.requestFocus();
+            inputPensionerCode.setError("Enter Valid Pensioner Code");
+            inputPensionerCode.requestFocus();
             return false;
         } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
-            autoCompleteTextViewPensionerCode.setError("Enter Valid HR Number");
-            autoCompleteTextViewPensionerCode.requestFocus();
+            inputPensionerCode.setError("Enter Valid HR Number");
+            inputPensionerCode.requestFocus();
             return false;
         } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
-            autoCompleteTextViewPensionerCode.setError("Enter Valid Staff Number");
-            autoCompleteTextViewPensionerCode.requestFocus();
+            inputPensionerCode.setError("Enter Valid Staff Number");
+            inputPensionerCode.requestFocus();
             return false;
         } else if (inputMobile.getText().toString().length() < 10) {
             inputMobile.setError("Enter Valid Mobile No");
@@ -399,12 +376,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         loadValues(v);
         Helper.getInstance().getConfirmationDialog(mainActivity, v,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        doSubmission();
-                    }
-                });
+                (dialog, which) -> doSubmission());
     }
 
     private void loadValues(View v) {
@@ -499,15 +471,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     FireBaseHelper.ROOT_GRIEVANCES,
                     grievanceModel);
 
-            task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        uploadAllImagesToFirebase();
-                    } else {
-                        progressDialog.dismiss();
-                        Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
-                    }
+            task.addOnCompleteListener(task1 -> {
+                if (task1.isSuccessful()) {
+                    uploadAllImagesToFirebase();
+                } else {
+                    progressDialog.dismiss();
+                    Helper.getInstance().showUpdateOrMaintenanceDialog(false, mainActivity);
                 }
             });
         } catch (DatabaseException dbe) {
@@ -535,34 +504,25 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
                 if (uploadTask != null) {
                     uploadTask.addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Submission Error", mainActivity);
-                                    Log.d(TAG, "onFailure: " + exception.getMessage());
-                                    progressDialog.dismiss();
-                                }
+                            exception -> {
+                                Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Submission Error", mainActivity);
+                                Log.d(TAG, "onFailure: " + exception.getMessage());
+                                progressDialog.dismiss();
                             })
                             .addOnSuccessListener(
-                                    new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    downloadUrl = uri;
-                                                    Log.d(TAG, "onSuccess: " + downloadUrl);
-                                                    firebaseImageURLs.add(downloadUrl);
-                                                    progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
-                                                    Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
-                                                    if (counterUpload == selectedImageModelArrayList.size()) {
-                                                        isUploadedToFirebase = true;
-                                                        doSubmission();
-                                                    }
-                                                }
-                                            });
-                                        }
+                                    taskSnapshot -> {
+                                        // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                                            downloadUrl = uri;
+                                            Log.d(TAG, "onSuccess: " + downloadUrl);
+                                            firebaseImageURLs.add(downloadUrl);
+                                            progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
+                                            Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
+                                            if (counterUpload == selectedImageModelArrayList.size()) {
+                                                isUploadedToFirebase = true;
+                                                doSubmission();
+                                            }
+                                        });
                                     });
                 }
             }
@@ -603,7 +563,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
         Map<String, String> params = new HashMap<>();
-        String pensionerCode = autoCompleteTextViewPensionerCode.getText().toString();
+        String pensionerCode = inputPensionerCode.getText().toString();
 
         params.put("pensionerCode", pensionerCode);
         params.put("personType", hint);
@@ -619,13 +579,25 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void clearFormData() {
-        autoCompleteTextViewPensionerCode.setText("");
+        inputPensionerCode.setText("");
         inputMobile.setText("");
         inputEmail.setText("");
         spinnerInputType.setSelection(0);
         spinnerInputSubmittedBy.setSelection(0);
         inputDetails.setText("");
         removeAllSelectedImages();
+    }
+
+    private void initItems() {
+        items = new ArrayList<>();
+        items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem("Remove All", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach");
     }
 
     @Override
@@ -654,13 +626,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             "<b>" + grievanceType.getName() + "</b><br>" +
                             " has been succesfully submitted";
 
-                    Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, "Grievance Submission", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
+                    Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, "Grievance Submission", "OK", () -> {
 
-                        }
                     }, null, null, FancyAlertDialogType.SUCCESS);
-                    //Toast.makeText(getContext(), "Grievance Submitted Succesfully", Toast.LENGTH_SHORT).show();
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
@@ -679,15 +647,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
-
-        /*if (resultCode == Activity.RESULT_OK && requestCode == RC_IMAGE_PICKER) {
-            ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
-
-            for (String s :
-                    returnValue) {
-                Log.d(TAG, "onActivityResult: " + s);
-            }
-        }*/
     }
 
     @Override
@@ -714,4 +673,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
 
+    @Override
+    public void onMenuItemSelected(View view, int id) {
+        switch (items.get(id).getTitle()) {
+            case "Add Image":
+                showImageChooser();
+                break;
+            case "Remove All":
+                removeAllSelectedImages();
+                break;
+        }
+    }
 }

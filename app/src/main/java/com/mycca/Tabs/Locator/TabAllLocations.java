@@ -1,7 +1,6 @@
 package com.mycca.Tabs.Locator;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -59,7 +58,8 @@ public class TabAllLocations extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_all_locations, container, false);
-        locatorType = getArguments().getString("Locator");
+        if (getArguments() != null)
+            locatorType = getArguments().getString("Locator");
         Log.d(TAG, "onCreateView: locator type = " + locatorType);
         init(view);
         if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_LOCATOR)) {
@@ -71,7 +71,7 @@ public class TabAllLocations extends Fragment {
 
     private void init(View view) {
 
-        activity= (MainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         /*radioGroup = view.findViewById(R.id.search);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -88,20 +88,10 @@ public class TabAllLocations extends Fragment {
         });*/
 
         search = view.findViewById(R.id.btn_search_loc);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShowSearchByNameDialog();
-            }
-        });
+        search.setOnClickListener(v -> ShowSearchByNameDialog());
 
         sort = view.findViewById(R.id.button_sort_loc);
-        sort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShowSortDialog();
-            }
-        });
+        sort.setOnClickListener(v -> ShowSortDialog());
 
         stateLocations = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
         adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
@@ -162,20 +152,15 @@ public class TabAllLocations extends Fragment {
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
-        activity.mQueue = new FancyShowCaseQueue()
+        activity.setmQueue(new FancyShowCaseQueue()
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView3)
-                .add(fancyShowCaseView4);
+                .add(fancyShowCaseView4));
 
-        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                activity.mQueue = null;
-            }
-        });
+        activity.getmQueue().setCompleteListener(() -> activity.setmQueue(null));
 
-        activity.mQueue.show();
+        activity.getmQueue().show();
     }
 
     private void ShowSortDialog() {
@@ -183,28 +168,20 @@ public class TabAllLocations extends Fragment {
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_sort_locations, (ViewGroup) getView(), false);
         final RadioGroup radioGroupSort = viewInflated.findViewById(R.id.radio_group_sort);
         builder.setView(viewInflated);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBName) {
-                    LocationDataProvider.getInstance().sortByName(stateLocations);
-                    //adapter.notifyDataSetChanged();
-                }
-                if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBDistrict) {
-                    LocationDataProvider.getInstance().sortByDistrict(stateLocations);
-                    //adapter.notifyDataSetChanged();
-                }
-                adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
-                recyclerView.setAdapter(adapter);
-                dialog.dismiss();
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBName) {
+                LocationDataProvider.getInstance().sortByName(stateLocations);
+                //adapter.notifyDataSetChanged();
             }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBDistrict) {
+                LocationDataProvider.getInstance().sortByDistrict(stateLocations);
+                //adapter.notifyDataSetChanged();
             }
+            adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
+            recyclerView.setAdapter(adapter);
+            dialog.dismiss();
         });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
@@ -221,20 +198,12 @@ public class TabAllLocations extends Fragment {
         input.setAdapter(actAdapter);
 
         builder.setView(viewInflated);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String name = input.getText().toString();
-                FilterLocationsByName(name);
-                dialog.dismiss();
-            }
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            String name = input.getText().toString();
+            FilterLocationsByName(name);
+            dialog.dismiss();
         });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 

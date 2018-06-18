@@ -91,16 +91,11 @@ public class UpdateGrievanceFragment extends Fragment {
         relativeLayoutNoInternet = view.findViewById(R.id.layout_no_internet_update_grievance_fragment);
         linearLayoutTab = view.findViewById(R.id.linear_layout_update_grievance_fragment);
         imageButtonRefresh = view.findViewById(R.id.image_btn_refresh_update_grievance_fragment);
-        imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                init();
-            }
-        });
+        imageButtonRefresh.setOnClickListener(v -> init());
     }
 
     private void init() {
-        activity= (MainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         progressDialog = Helper.getInstance().getProgressWindow(activity, "Checking for Intenet Connectivity...");
         progressDialog.show();
         checkConnection();
@@ -206,12 +201,12 @@ public class UpdateGrievanceFragment extends Fragment {
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
                 .title("These are submitted grievances")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels/6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
                 .title("-------->\nSwipe to view Greivances Under process")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels /2, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
+                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 2, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
@@ -219,19 +214,14 @@ public class UpdateGrievanceFragment extends Fragment {
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
-        activity.mQueue = new FancyShowCaseQueue()
+        activity.setmQueue(new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
-                .add(fancyShowCaseView3);
+                .add(fancyShowCaseView3));
 
-       activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-               activity.mQueue = null;
-            }
-        });
+        activity.getmQueue().setCompleteListener(() -> activity.setmQueue(null));
 
-      activity.mQueue.show();
+        activity.getmQueue().show();
     }
 
     class MyAdapter extends FragmentPagerAdapter {

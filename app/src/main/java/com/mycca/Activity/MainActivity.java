@@ -28,10 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -40,9 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
@@ -76,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     final int TYPE_STAFF = 2;
     private static final int RC_SIGN_IN = 420;
     String TAG = "MainActivity";
+    String title;
 
     FrameLayout frameLayout;
     NavigationView navigationView;
@@ -83,9 +82,9 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     Fragment fragment;
     Bundle bundle;
-    String title;
 
-    public FancyShowCaseQueue mQueue;
+    FancyShowCaseQueue mQueue;
+    FABRevealMenu fabRevealMenu;
     StaffModel staffModel;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
@@ -357,40 +356,22 @@ public class MainActivity extends AppCompatActivity
                     "Please Sign in with google to access this app feature.",
                     "Login with google",
                     "Sign in",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            signInWithGoogle();
-                        }
-                    },
+                    () -> signInWithGoogle(),
                     "Cancel",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
+                    () -> {
 
-                        }
                     },
                     FancyAlertDialogType.WARNING);
-        } else {
-            Helper.getInstance().showFancyAlertDialog(this,
-                    "Most App functions require you to authenticate yourself with google. Please Sign in to access all app features.",
-                    "Login with google",
-                    "Sign in",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            signInWithGoogle();
-                        }
-                    },
-                    "Skip",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                        }
-                    },
-                    FancyAlertDialogType.WARNING
-            );
-        }
+        } else Helper.getInstance().showFancyAlertDialog(this,
+                "Most App functions require you to authenticate yourself with google. Please Sign in to access all app features.",
+                "Login with google",
+                "Sign in",
+                () -> signInWithGoogle(),
+                "Skip",
+                () -> {
+                },
+                FancyAlertDialogType.WARNING
+        );
     }
 
     public void signInWithGoogle() {
@@ -414,38 +395,32 @@ public class MainActivity extends AppCompatActivity
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         Log.d(TAG, "firebaseAuthWithGoogle: " + credential.getSignInMethod());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
-                        if (task.isSuccessful()) {
+                .addOnCompleteListener(this, task -> {
+                    progressDialog.dismiss();
+                    if (task.isSuccessful()) {
 
-                            Log.d(TAG, "signInWithCredential:success");
-                            FireBaseHelper.getInstance(MainActivity.this).setToken();
-                            Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK",
-                                    new IFancyAlertDialogListener() {
-                                        @Override
-                                        public void OnClick() {
-                                            if (fragment != null) {
-                                                showFragment(title, fragment, bundle);
-                                            }
-                                        }
-                                    },
-                                    null, null, FancyAlertDialogType.SUCCESS);
+                        Log.d(TAG, "signInWithCredential:success");
+                        FireBaseHelper.getInstance(MainActivity.this).setToken();
+                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK",
+                                () -> {
+                                    if (fragment != null) {
+                                        showFragment(title, fragment, bundle);
+                                    }
+                                },
+                                null, null, FancyAlertDialogType.SUCCESS);
 
-                            //tryLogin();
-                            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
-                            if (f instanceof SettingsFragment)
-                                ((SettingsFragment) f).manageSignOut();
-                            else if (f instanceof HomeFragment)
-                                ((HomeFragment) f).setupWelcomeBar();
+                        //tryLogin();
+                        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
+                        if (f instanceof SettingsFragment)
+                            ((SettingsFragment) f).manageSignOut();
+                        else if (f instanceof HomeFragment)
+                            ((HomeFragment) f).setupWelcomeBar();
 
-                        } else {
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Unable to Sign in", "OK", null, null, null, FancyAlertDialogType.ERROR);
-                        }
-
+                    } else {
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Unable to Sign in", "OK", null, null, null, FancyAlertDialogType.ERROR);
                     }
+
                 });
     }
 
@@ -454,27 +429,18 @@ public class MainActivity extends AppCompatActivity
                 "Do you want to logout?",
                 "MY CCA JK",
                 "YES",
-                new IFancyAlertDialogListener() {
-                    @Override
-                    public void OnClick() {
-                        showFragment("Home", new HomeFragment(), null);
-                        Preferences.getInstance().clearStaffPrefs(MainActivity.this);
-                        ManageNavigationView(false, false);
-                        GrievanceDataProvider.getInstance().setAllGrievanceList(null);
-                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Logged Out", "OK", new IFancyAlertDialogListener() {
-                            @Override
-                            public void OnClick() {
-                            }
-                        }, null, null, FancyAlertDialogType.SUCCESS);
+                () -> {
+                    showFragment("Home", new HomeFragment(), null);
+                    Preferences.getInstance().clearStaffPrefs(MainActivity.this);
+                    ManageNavigationView(false, false);
+                    GrievanceDataProvider.getInstance().setAllGrievanceList(null);
+                    Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Logged Out", "OK", () -> {
+                    }, null, null, FancyAlertDialogType.SUCCESS);
 
-                    }
                 },
                 "NO",
-                new IFancyAlertDialogListener() {
-                    @Override
-                    public void OnClick() {
+                () -> {
 
-                    }
                 },
                 FancyAlertDialogType.WARNING);
 
@@ -487,18 +453,10 @@ public class MainActivity extends AppCompatActivity
                 "Do you want to exit?",
                 "MY CCA JK",
                 "YES",
-                new IFancyAlertDialogListener() {
-                    @Override
-                    public void OnClick() {
-                        finish();
-                    }
-                },
+                () -> finish(),
                 "NO",
-                new IFancyAlertDialogListener() {
-                    @Override
-                    public void OnClick() {
+                () -> {
 
-                    }
                 },
                 FancyAlertDialogType.WARNING);
     }
@@ -623,6 +581,22 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public FABRevealMenu getFabRevealMenu() {
+        return fabRevealMenu;
+    }
+
+    public void setFabRevealMenu(FABRevealMenu fabRevealMenu) {
+        this.fabRevealMenu = fabRevealMenu;
+    }
+
+    public FancyShowCaseQueue getmQueue() {
+        return mQueue;
+    }
+
+    public void setmQueue(FancyShowCaseQueue mQueue) {
+        this.mQueue = mQueue;
+    }
+
     @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
@@ -631,24 +605,20 @@ public class MainActivity extends AppCompatActivity
                 Helper.getInstance().showFancyAlertDialog(this,
                         "Skip CCA Tutorial Messages?",
                         "CCA Help",
-                        "SKIP", new IFancyAlertDialogListener() {
-                            @Override
-                            public void OnClick() {
-                                mQueue.cancel(true);
-                                Preferences.getInstance().setTutorialPrefs(MainActivity.this);
-                            }
+                        "SKIP", () -> {
+                            mQueue.cancel(true);
+                            Preferences.getInstance().setTutorialPrefs(MainActivity.this);
                         },
-                        "CANCEL", new IFancyAlertDialogListener() {
-                            @Override
-                            public void OnClick() {
+                        "CANCEL", () -> {
 
-                            }
                         },
                         FancyAlertDialogType.WARNING);
             } catch (Exception e) {
                 showFragment("Home", new HomeFragment(), null);
                 Preferences.getInstance().setTutorialPrefs(MainActivity.this);
             }
+        } else if (fabRevealMenu != null && fabRevealMenu.isShowing()) {
+            fabRevealMenu.closeMenu();
         } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
 

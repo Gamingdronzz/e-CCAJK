@@ -90,28 +90,20 @@ public class ContactUsFragment extends Fragment {
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        compatButtonLocateOnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String location = "32.707500,74.874217";
-                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                } else {
-                    Toast.makeText(activity, "No Map Application Installed", Toast.LENGTH_SHORT).show();
-                }
-
+        compatButtonLocateOnMap.setOnClickListener(v -> {
+            String location = "32.707500,74.874217";
+            Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                Toast.makeText(activity, "No Map Application Installed", Toast.LENGTH_SHORT).show();
             }
+
         });
 
         if (!isMultiColumn) {
-            textviewHeadingOfficeAddress.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ManageOfficeAddress();
-                }
-            });
+            textviewHeadingOfficeAddress.setOnClickListener(v -> ManageOfficeAddress());
         }
         ManageOfficeAddress();
 
@@ -152,21 +144,18 @@ public class ContactUsFragment extends Fragment {
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
                 .build();
 
-        activity.mQueue = new FancyShowCaseQueue()
+        activity.setmQueue( new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
-                .add(fancyShowCaseView3);
+                .add(fancyShowCaseView3));
 
-        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                activity.mQueue = null;
-                contactArrayList.get(0).setExpanded(false);
-                adapterContacts.notifyItemChanged(0);
-            }
+        activity.getmQueue().setCompleteListener(() -> {
+            activity.setmQueue( null);
+            contactArrayList.get(0).setExpanded(false);
+            adapterContacts.notifyItemChanged(0);
         });
 
-        activity.mQueue.show();
+        activity.getmQueue().show();
     }
 
     private String getGeneralText(String prefState) {
