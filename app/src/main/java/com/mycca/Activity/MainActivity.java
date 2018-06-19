@@ -32,10 +32,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
@@ -463,27 +465,46 @@ public class MainActivity extends AppCompatActivity
 
     private void tryLogin() {
 
-        FirebaseDatabase.getInstance().getReference()
-                .child(FireBaseHelper.ROOT_STAFF)
-                .child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        final DatabaseReference dbref = FirebaseDatabase.getInstance().getReference()
+                .child(FireBaseHelper.ROOT_STAFF);
 
-                if (dataSnapshot.getValue() != null) {
-                    try {
+        final ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                try {
+                    if (dataSnapshot.child("id").getValue() == mAuth.getCurrentUser().getEmail()) {
+                        progressDialog.dismiss();
+                        dbref.removeEventListener(this);
                         StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
                         OnLoginSuccessful(staffModel);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
+                } catch (DatabaseException dbe) {
+                    dbe.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        dbref.addChildEventListener(childEventListener);
     }
 
     public void OnLoginFailure(String message) {
