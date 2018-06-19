@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -44,6 +47,9 @@ import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.CustomObjects.fabrevealmenu.listeners.OnFABMenuSelectedListener;
+import com.mycca.CustomObjects.fabrevealmenu.model.FABMenuItem;
+import com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.InspectionModel;
 import com.mycca.Models.SelectedImageModel;
@@ -71,7 +77,7 @@ import static com.mycca.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse {
+public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
     private static final String TAG = "Inspection";
     boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;
@@ -80,12 +86,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     int counterUpload = 0;
     int counterServerImages = 0;
 
-    AppCompatTextView textViewAddImage, textViewSelectedFileCount;
+    AppCompatTextView textViewSelectedFileCount;
     CircularProgressButton circularProgressButton;
     EditText editTextLocationName;
     Button upload;
-    AppCompatTextView removeAll;
+    FloatingActionButton fab;
     ImagePicker imagePicker;
+    ImageView imgLoc;
     ProgressDialog progressDialog;
     View.OnClickListener getCoordinatesListener;
     RecyclerView recyclerViewSelectedImages;
@@ -101,6 +108,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     ArrayList<Uri> firebaseImageURLs;
     Uri downloadUrl;
+    private ArrayList<FABMenuItem> items;
 
     public InspectionFragment() {
 
@@ -112,7 +120,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
         bindViews(view);
-        init();
+        init(view);
 
         if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION)) {
             showTutorial();
@@ -125,22 +133,18 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void bindViews(View view) {
 
-        textViewAddImage = view.findViewById(R.id.textview_add_inspection_image);
+        fab = view.findViewById(R.id.fab_inspection);
+        //imgLoc = view.findViewById(R.id.img_inspection_location);
         editTextLocationName = view.findViewById(R.id.edittext_current_location_name);
         circularProgressButton = view.findViewById(R.id.textview_current_location_coordinates);
-        removeAll = view.findViewById(R.id.imageButton_removeAllFiles);
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
         upload = view.findViewById(R.id.button_upload);
         textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
-
-        textViewAddImage.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_add_circle_black_24dp, 0, 0);
-        removeAll.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_remove_circle_black_24dp, 0, 0);
-        upload.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_file_upload_black_24dp, 0, 0);
-
     }
 
-    private void init() {
+    private void init(View view) {
         mainActivity = (MainActivity) getActivity();
+        initItems();
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -149,6 +153,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 }
             }
         };
+
         myLocationManager = new MyLocationManager(this, mLocationCallback);
         volleyHelper = new VolleyHelper(this, getContext());
         selectedImageModelArrayList = new ArrayList<>();
@@ -159,14 +164,30 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 "Getting Current Location Coordinates\nPlease Wait...");
 
         getCoordinatesListener = v -> getLocationCoordinates();
+
         circularProgressButton.setOnClickListener(getCoordinatesListener);
         circularProgressButton.setIndeterminateProgressMode(true);
 
-        removeAll.setOnClickListener(v -> removeAllSelectedImages());
-        textViewAddImage.setOnClickListener(v -> showImageChooser());
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
+        try {
+            if (fab != null && fabMenu != null) {
+                mainActivity.setFabRevealMenu(fabMenu);
+                fabMenu.setMenuItems(items);
+                fabMenu.bindAnchorView(fab);
+                fabMenu.setOnFABMenuSelectedListener(this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         upload.setOnClickListener(v -> doSubmission());
 
+    }
+
+    private void initItems() {
+        items = new ArrayList<>();
+        items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem("Remove All", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -269,6 +290,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         }
         selectedImageModelArrayList.clear();
         adapterSelectedImages.notifyDataSetChanged();
+        textViewSelectedFileCount.setText(getResources().getString(R.string.no_image));
     }
 
     private void doSubmission() {
@@ -559,5 +581,16 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
 
+    @Override
+    public void onMenuItemSelected(View view, int id) {
+        switch (items.get(id).getTitle()) {
+            case "Add Image":
+                showImageChooser();
+                break;
+            case "Remove All":
+                removeAllSelectedImages();
+                break;
+        }
+    }
 }
 

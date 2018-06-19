@@ -1,19 +1,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLightGray"
     tools:context="com.mycca.Fragments.PanAdhaarUploadFragment">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="?android:attr/actionBarSize"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:background="@color/colorWhite">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="?attr/actionBarSize"
-            android:layout_marginTop="@dimen/margin_xxlarge"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/padding_large"
+                android:paddingRight="@dimen/padding_large">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:text="@string/circle"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_15" />
+
+                <Spinner
+                    android:id="@+id/spinner_pan_adhaar_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:background="@drawable/bg_spinner"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginBottom="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:background="@color/colorLightGray" />
 
             <LinearLayout
                 android:id="@+id/layout_radio_group"
@@ -24,10 +63,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/padding_large"
-                    android:text="Upload Using"
+                    android:paddingStart="@dimen/padding_large"
+                    android:text="@string/upload_using"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/text_15" />
+                    android:textSize="@dimen/text_15"
+                    tools:ignore="RtlSymmetry" />
 
                 <RadioGroup
                     android:id="@+id/groupNumberType"
@@ -42,115 +82,81 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:checked="true"
-                        android:text="Pensioner Code" />
+                        android:text="@string/p_code" />
 
                     <RadioButton
                         android:id="@+id/radioButtonHR"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="HR Number" />
+                        android:text="@string/hr_num" />
 
                 </RadioGroup>
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_pensioner_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/p_code">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/et_pan_adhaar_pcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/padding_large"
+                    android:drawableTint="@color/colorAccent"
+                    android:inputType="number"
+                    android:maxLength="15"
+                    android:singleLine="true"
+                    tools:targetApi="m" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
                 android:layout_marginTop="@dimen/margin_medium"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_medium">
+                android:background="@color/colorLightGray" />
 
-                <ImageView
-                    android:id="@+id/image_pcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:tint="@color/colorAccent" />
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/text_input_pensioner_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Pensioner Code">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/autocomplete_pcode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLength="15"
-                        android:singleLine="true" />
-
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
-
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_large">
+                android:layout_marginTop="@dimen/margin_medium">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingStart="@dimen/padding_small"
-                    android:text="Circle"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/text_15" />
-
-                <Spinner
-                    android:id="@+id/spinner_pan_adhaar_circle"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/et_pan_adhaar_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_medium"
-                    android:background="@drawable/bg_spinner"
-                    android:spinnerMode="dropdown"></Spinner>
+                    android:drawablePadding="@dimen/padding_large"
+                    android:drawableTint="@color/colorAccent"
+                    android:singleLine="true"
+                    tools:targetApi="m" />
 
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_medium">
-
-                <ImageView
-                    android:id="@+id/image_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:tint="@color/colorAccent" />
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/text_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/autocomplete_number"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true" />
-
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
-
+                android:layout_height="3dp"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:background="@color/colorLightGray" />
 
             <TextView
                 android:id="@+id/textview_filename"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_medium"
-                android:background="@color/colorPrimaryLight"
-                android:padding="@dimen/padding_small"
-                android:text="NO FILE SELECTED"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_large"
+                android:background="@color/colorOffWhite"
+                android:drawablePadding="@dimen/padding_medium"
+                android:gravity="center"
+                android:padding="@dimen/padding_medium"
+                android:text="@string/no_image"
                 android:textAlignment="center"
                 android:textColor="@color/colorBlack"
-                android:textSize="@dimen/text_15" />
+                android:textSize="@dimen/text_15"
+                android:textStyle="bold" />
 
 
             <ImageView
@@ -166,19 +172,33 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/btn_attach_aadhar_pan"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_aadhar_pan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/button_upload"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/margin_medium"
-        android:layout_marginEnd="@dimen/margin_medium"
-        android:background="@drawable/custom_button_rounded"
-        android:drawableTint="@color/colorPrimary"
-        android:text="Add File"
-        android:textColor="@color/colorWhite" />
+        android:layout_margin="@dimen/margin_large"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:tint="@color/colorWhite"
+        app:srcCompat="@drawable/ic_view_menu_black_24dp"
+        tools:targetApi="m" />
+
+    <com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu
+        android:id="@+id/fabMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:foregroundTint="@color/colorWhite"
+        app:animateItems="true"
+        app:menuBackgroundColor="@color/colorPrimaryLight"
+        app:menuDirection="up"
+        app:menuSize="normal"
+        app:menuTitleDisabledTextColor="@color/colorAccent"
+        app:menuTitleTextColor="@color/colorWhite"
+        app:showOverlay="true"
+        app:showTitle="true"
+        tools:targetApi="lollipop" />
 
     <Button
         android:id="@+id/button_upload"
@@ -186,7 +206,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/custom_button"
-        android:text="UPLOAD"
+        android:text="@string/submit"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18" />
 

@@ -120,15 +120,14 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         if (bundle != null) {
             type = bundle.getString("Type");
         }
-        bindViews(view);
+        bindViews();
         setHasOptionsMenu(true);
         init();
-
         return view;
     }
 
 
-    private void bindViews(View view) {
+    private void bindViews() {
 
         volleyHelper = new VolleyHelper(this, getContext());
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
@@ -592,12 +591,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         items = new ArrayList<>();
         items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
         items.add(new FABMenuItem("Remove All", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "onDetach");
     }
 
     @Override

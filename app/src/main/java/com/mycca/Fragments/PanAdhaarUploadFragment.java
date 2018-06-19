@@ -1,22 +1,21 @@
 package com.mycca.Fragments;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,21 +24,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
+import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
+import com.mycca.CustomObjects.fabrevealmenu.listeners.OnFABMenuSelectedListener;
+import com.mycca.CustomObjects.fabrevealmenu.model.FABMenuItem;
+import com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.PanAdhaar;
 import com.mycca.Models.SelectedImageModel;
@@ -60,14 +59,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse {
+public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    ImageView imagePensionerCode, imageNumber, imageviewSelectedImage;
+    ImageView imageviewSelectedImage;
     TextView textViewFileName;
     Spinner spinnerCircle;
     TextInputLayout textInputIdentifier, textInputNumber;
-    AutoCompleteTextView inputPCode, inputNumber;
-    Button buttonUpload, buttonAttachFile;
+    TextInputEditText inputPCode, inputNumber;
+    Button buttonUpload;
+    FloatingActionButton fab;
     RadioGroup radioGroup;
     LinearLayout linearLayout;
     ProgressDialog progressDialog;
@@ -81,6 +81,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     Uri downloadUrl;
     VolleyHelper volleyHelper;
     State state;
+    MainActivity mainActivity;
+    private ArrayList<FABMenuItem> items;
 
     public PanAdhaarUploadFragment() {
 
@@ -93,47 +95,45 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         if (this.getArguments() != null)
             root = this.getArguments().getString("Root");
         bindViews(view);
-        init();
+        init(view);
         return view;
     }
 
     private void bindViews(View view) {
         linearLayout = view.findViewById(R.id.layout_radio_group);
-        imagePensionerCode = view.findViewById(R.id.image_pcode);
-        imageNumber = view.findViewById(R.id.image_number);
         radioGroup = view.findViewById(R.id.groupNumberType);
         textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
         textInputNumber = view.findViewById(R.id.text_number);
-        inputPCode = view.findViewById(R.id.autocomplete_pcode);
-        inputNumber = view.findViewById(R.id.autocomplete_number);
+        inputPCode = view.findViewById(R.id.et_pan_adhaar_pcode);
+        inputNumber = view.findViewById(R.id.et_pan_adhaar_number);
         spinnerCircle = view.findViewById(R.id.spinner_pan_adhaar_circle);
         textViewFileName = view.findViewById(R.id.textview_filename);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
-        buttonAttachFile = view.findViewById(R.id.btn_attach_aadhar_pan);
+        fab = view.findViewById(R.id.fab_aadhar_pan);
         buttonUpload = view.findViewById(R.id.button_upload);
     }
 
-    private void init() {
+    private void init(View view) {
+        mainActivity = (MainActivity) getActivity();
         progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
         volleyHelper = new VolleyHelper(this, getContext());
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioButtonPensioner:
-                        hint = "Pensioner Code";
-                        inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
-                        break;
+        initItems();
 
-                    case R.id.radioButtonHR:
-                        hint = "HR Number";
-                        inputPCode.setFilters(new InputFilter[]{});
-                        break;
-                }
-                inputPCode.setText("");
-                inputPCode.setError(null);
-                textInputIdentifier.setHint(hint);
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radioButtonPensioner:
+                    hint = "Pensioner Code";
+                    inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
+                    break;
+
+                case R.id.radioButtonHR:
+                    hint = "HR Number";
+                    inputPCode.setFilters(new InputFilter[]{});
+                    break;
             }
+            inputPCode.setText("");
+            inputPCode.setError(null);
+            textInputIdentifier.setHint(hint);
         });
 
         switch (root) {
@@ -145,17 +145,14 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 break;
             case FireBaseHelper.ROOT_PAN:
 
-                inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), new InputFilter() {
-                    @Override
-                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                        if (source.equals("")) { // for backspace
-                            return source;
-                        }
-                        if (source.toString().matches("[a-zA-Z0-9]+")) {
-                            return source;
-                        }
-                        return "";
+                inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), (source, start, end, dest, dstart, dend) -> {
+                    if (source.equals("")) { // for backspace
+                        return source;
                     }
+                    if (source.toString().matches("[a-zA-Z0-9]+")) {
+                        return source;
+                    }
+                    return "";
                 }});
                 textInputNumber.setHint(root + " Number");
                 break;
@@ -165,26 +162,28 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 break;
         }
 
-        imagePensionerCode.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_person_black_24dp));
-        imageNumber.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.ic_card_black_24dp));
+        inputPCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        inputNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_card_black_24dp, 0, 0, 0);
 
-        buttonAttachFile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attach_file_black_24dp, 0, 0, 0);
-        buttonAttachFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageChooser();
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
+        try {
+            if (fab != null && fabMenu != null) {
+                mainActivity.setFabRevealMenu(fabMenu);
+                fabMenu.setMenuItems(items);
+                fabMenu.bindAnchorView(fab);
+                fabMenu.setOnFABMenuSelectedListener(this);
             }
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         StatesAdapter statesAdapter = new StatesAdapter(getContext());
         spinnerCircle.setAdapter(statesAdapter);
 
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkInputBeforeSubmission())
-                    showConfirmSubmissionDialog();
-            }
+        buttonUpload.setOnClickListener(v -> {
+            if (checkInputBeforeSubmission())
+                showConfirmSubmissionDialog();
         });
 
         firebaseImageURLs = new ArrayList<>();
@@ -202,7 +201,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
                 imageModel = new SelectedImageModel(imageUri);
                 textViewFileName.setError(null);
-                textViewFileName.setText(root + ".jpg");
+                String text = root + ".jpg";
+                textViewFileName.setText(text);
             }
 
             @Override
@@ -221,6 +221,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
             }
         });
+    }
+
+    private void initItems() {
+        items = new ArrayList<>();
+        items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem("Remove Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
     private boolean checkInputBeforeSubmission() {
@@ -256,7 +262,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         //if no file selected
         else if (imageModel == null) {
             textViewFileName.setError("");
-            textViewFileName.setText("NO FILE SELECTED");
+            textViewFileName.setText(getResources().getString(R.string.no_image));
             return false;
         }
         return true;
@@ -268,12 +274,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
         loadValues(v);
         Helper.getInstance().getConfirmationDialog(getActivity(), v,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        doSubmission();
-                    }
-                });
+                (dialog, which) -> doSubmission());
     }
 
     private void doSubmission() {
@@ -366,15 +367,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(root, panAdhaar);
 
-        task.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    uploadAllImagesToFirebase();
-                } else {
-                    progressDialog.dismiss();
-                    Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
-                }
+        task.addOnCompleteListener(task1 -> {
+            if (task1.isSuccessful()) {
+                uploadAllImagesToFirebase();
+            } else {
+                progressDialog.dismiss();
+                Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
             }
         });
     }
@@ -389,28 +387,17 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 pensionerCode);
 
         if (uploadTask != null) {
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Helper.getInstance().showErrorDialog("Unable to Upload file", "Update Error", getActivity());
-                    Log.d(TAG, "onFailure: " + exception.getMessage());
-                    progressDialog.dismiss();
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            downloadUrl = uri;
-                            Log.d(TAG, "onSuccess: " + downloadUrl);
-                            firebaseImageURLs.add(downloadUrl);
-                            isUploadedToFirebase = true;
-                            doSubmission();
-                        }
-                    });
-                }
-            });
+            uploadTask.addOnFailureListener(exception -> {
+                Helper.getInstance().showErrorDialog("Unable to Upload file", "Update Error", getActivity());
+                Log.d(TAG, "onFailure: " + exception.getMessage());
+                progressDialog.dismiss();
+            }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                downloadUrl = uri;
+                Log.d(TAG, "onSuccess: " + downloadUrl);
+                firebaseImageURLs.add(downloadUrl);
+                isUploadedToFirebase = true;
+                doSubmission();
+            }));
         }
     }
 
@@ -500,11 +487,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
 
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, root
-                            + " Update", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                        }
-                    }, null, null, FancyAlertDialogType.SUCCESS);
+                                    + " Update", "OK", () -> {
+                            },
+                            null, null, FancyAlertDialogType.SUCCESS);
                     isUploadedToServer = isUploadedToFirebase = false;
                 } else {
                     progressDialog.dismiss();
@@ -515,6 +500,19 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onMenuItemSelected(View view, int id) {
+        switch (items.get(id).getTitle()) {
+            case "Add Image":
+                showImageChooser();
+                break;
+            case "Remove Image":
+                imageviewSelectedImage.setImageResource(0);
+                textViewFileName.setText(getResources().getString(R.string.no_image));
+                break;
         }
     }
 }

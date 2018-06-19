@@ -6,143 +6,121 @@
     android:layout_height="match_parent"
     tools:context="com.mycca.Fragments.InspectionFragment">
 
-    <ScrollView
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textinput_location_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/margin_large"
+        android:padding="@dimen/padding_medium">
 
-        <LinearLayout
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edittext_current_location_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:hint="@string/location_hint"
+            android:padding="@dimen/padding_medium"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/text_18"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textinput_location_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recycler_view_selected_images_inspection"
-                android:layout_marginTop="@dimen/margin_large"
-                android:padding="@dimen/padding_medium">
+    </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/edittext_current_location_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:hint="Enter Location Name"
-                    android:padding="@dimen/padding_medium"
-                    android:textAlignment="textStart"
-                    android:textSize="@dimen/text_18"
-                    android:textStyle="bold"
-                    tools:ignore="RtlCompat" />
+    <LinearLayout
+        android:id="@+id/layout_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textinput_location_name"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_medium">
 
-            </android.support.design.widget.TextInputLayout>
+        <ImageView
+            android:id="@+id/img_inspection_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:tint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_drawable_location" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_medium">
+        <com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton
+            android:id="@+id/textview_current_location_coordinates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginRight="@dimen/margin_medium"
+            android:padding="@dimen/padding_medium"
+            android:text="@string/location"
+            android:textAllCaps="false"
+            android:textSize="15sp" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:tint="@color/colorAccent"
-                    app:srcCompat="@drawable/ic_drawable_location" />
+    </LinearLayout>
 
-                <com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton
-                    android:id="@+id/textview_current_location_coordinates"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_medium"
-                    android:layout_marginRight="@dimen/margin_medium"
-                    android:padding="@dimen/padding_medium"
-                    android:text="Location Coordinates"
-                    android:textAllCaps="false"
-                    android:textSize="15sp" />
+    <!--<android.support.v7.widget.AppCompatTextView-->
+    <!--android:id="@+id/textview_current_location_coordinates"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_above="@+id/buttons_inspection"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginLeft="@dimen/margin_medium"-->
+    <!--android:layout_marginRight="@dimen/margin_medium"-->
+    <!--android:drawablePadding="@dimen/padding_medium"-->
+    <!--android:foregroundGravity="center_vertical"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:padding="@dimen/padding_medium"-->
+    <!--android:text="Location Coordinates" />-->
 
-            </LinearLayout>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textview_selected_image_count_inspection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_current_location"
+        android:layout_marginTop="@dimen/margin_large"
+        android:background="@color/colorPrimaryLight"
+        android:padding="@dimen/padding_medium"
+        android:text="@string/no_image"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_15"
+        android:textStyle="bold" />
 
-            <!--<android.support.v7.widget.AppCompatTextView-->
-            <!--android:id="@+id/textview_current_location_coordinates"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_above="@+id/buttons_inspection"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="@dimen/margin_medium"-->
-            <!--android:layout_marginRight="@dimen/margin_medium"-->
-            <!--android:drawablePadding="@dimen/padding_medium"-->
-            <!--android:foregroundGravity="center_vertical"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:padding="@dimen/padding_medium"-->
-            <!--android:text="Location Coordinates" />-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_selected_images_inspection"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/textview_selected_image_count_inspection"
+        android:background="@color/colorOffWhite">
 
+    </android.support.v7.widget.RecyclerView>
 
-            <LinearLayout
-                android:id="@+id/buttons_inspection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/button_upload"
-                android:layout_margin="@dimen/margin_small"
-                android:orientation="horizontal">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_inspection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_upload"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/margin_large"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:tint="@color/colorWhite"
+        app:srcCompat="@drawable/ic_view_menu_black_24dp"
+        tools:targetApi="m" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/imageButton_removeAllFiles"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_small"
-                    android:layout_weight="3"
-                    android:background="@drawable/custom_button_primary_light"
-                    android:clickable="true"
-                    android:drawableTint="@color/colorBlack"
-                    android:padding="@dimen/padding_medium"
-                    android:text="Remove All Files"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorBlack" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textview_add_inspection_image"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_small"
-                    android:layout_weight="3"
-                    android:background="@drawable/custom_button_primary_light"
-                    android:clickable="true"
-                    android:drawableTint="@color/colorBlack"
-                    android:padding="@dimen/padding_medium"
-                    android:text="Add Image"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorBlack" />
-
-
-            </LinearLayout>
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textview_selected_image_count_inspection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/recycler_view_selected_images_inspection"
-                android:layout_centerVertical="true"
-                android:background="@color/colorPrimaryLight"
-                android:padding="@dimen/padding_medium"
-                android:text="No Image Selected"
-                android:textAlignment="center"
-                android:textSize="@dimen/text_15"
-                android:textStyle="bold" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_selected_images_inspection"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_above="@id/button_upload"
-                android:background="@color/colorOffWhite">
-
-            </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
-
-    </ScrollView>
+    <com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu
+        android:id="@+id/fabMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:foregroundTint="@color/colorWhite"
+        app:animateItems="true"
+        app:menuBackgroundColor="@color/colorPrimaryLight"
+        app:menuDirection="up"
+        app:menuSize="normal"
+        app:menuTitleDisabledTextColor="@color/colorAccent"
+        app:menuTitleTextColor="@color/colorWhite"
+        app:showOverlay="true"
+        app:showTitle="true"
+        tools:targetApi="lollipop" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_upload"
@@ -151,8 +129,10 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/custom_button"
         android:drawableTint="@color/colorPrimaryLight"
-        android:text="UPLOAD"
+        android:text="@string/submit"
         android:textColor="@color/colorOffWhite"
-        android:textSize="@dimen/text_20" />
+        android:textStyle="bold"
+        android:textSize="@dimen/text_18"
+        tools:targetApi="m" />
 
 </RelativeLayout>
