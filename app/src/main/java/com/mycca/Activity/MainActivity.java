@@ -461,60 +461,6 @@ public class MainActivity extends AppCompatActivity
                 FancyAlertDialogType.WARNING);
     }
 
-    private void showInviteIntent() {
-
-        Resources resources = getResources();
-        Intent emailIntent = new Intent();
-        emailIntent.setAction(Intent.ACTION_SEND);
-        // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
-        //emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.share_email_native)));
-        //emailIntent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.share_email_subject));
-        emailIntent.setType("message/rfc822");
-
-        PackageManager pm = getPackageManager();
-        Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        sendIntent.setType("text/plain");
-
-        Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.invitation_title));
-
-        List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
-        List<LabeledIntent> intentList = new ArrayList<>();
-        for (int i = 0; i < resInfo.size(); i++) {
-            // Extract the label, append it, and repackage it in a LabeledIntent
-            ResolveInfo ri = resInfo.get(i);
-            String packageName = ri.activityInfo.packageName;
-            if (packageName.contains("android.email")) {
-                emailIntent.setPackage(packageName);
-            } else if (packageName.contains("com.twitter.android") || packageName.contains("com.facebook") || packageName.contains("mms") || packageName.contains("messaging") || packageName.contains("com.whatsapp") || packageName.contains("com.google.android.gm")) {
-
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
-                intent.setAction(Intent.ACTION_SEND);
-                intent.setType("text/plain");
-
-                if (packageName.contains("twitter")) {
-                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_deep_link));
-                } else if (packageName.contains("facebook")) {
-                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
-                } else if (packageName.contains("mms") || packageName.contains("messaging") || packageName.contains("whatsapp")) {
-                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
-                } else if (packageName.contains("android.gm")) { // If Gmail shows up twice, try removing this else-if clause and the reference to "android.gm" above
-                    intent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.invitation_message));
-                    intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.invitation_message_heading) + "<br><br>" + resources.getString(R.string.invitation_deep_link)));
-                    intent.setType("message/rfc822");
-                } else {
-                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
-                }
-                intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
-            }
-        }
-        // convert intentList to array
-        LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
-
-        openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
-        startActivity(openInChooser);
-    }
-
     private void tryLogin() {
 
         FirebaseDatabase.getInstance().getReference()
@@ -595,6 +541,60 @@ public class MainActivity extends AppCompatActivity
 
     public void setmQueue(FancyShowCaseQueue mQueue) {
         this.mQueue = mQueue;
+    }
+
+    private void showInviteIntent() {
+
+        Resources resources = getResources();
+        Intent emailIntent = new Intent();
+        emailIntent.setAction(Intent.ACTION_SEND);
+        // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.share_email_native)));
+        //emailIntent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.share_email_subject));
+        emailIntent.setType("message/rfc822");
+
+        PackageManager pm = getPackageManager();
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+
+        Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.invitation_title));
+
+        List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
+        List<LabeledIntent> intentList = new ArrayList<>();
+        for (int i = 0; i < resInfo.size(); i++) {
+            // Extract the label, append it, and repackage it in a LabeledIntent
+            ResolveInfo ri = resInfo.get(i);
+            String packageName = ri.activityInfo.packageName;
+            if (packageName.contains("android.email")) {
+                emailIntent.setPackage(packageName);
+            } else if (packageName.contains("com.twitter.android") || packageName.contains("com.facebook") || packageName.contains("mms") || packageName.contains("messaging") || packageName.contains("com.whatsapp") || packageName.contains("com.google.android.gm")) {
+
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
+                intent.setAction(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+
+                if (packageName.contains("twitter")) {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_deep_link));
+                } else if (packageName.contains("facebook")) {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
+                } else if (packageName.contains("mms") || packageName.contains("messaging") || packageName.contains("whatsapp")) {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
+                } else if (packageName.contains("android.gm")) { // If Gmail shows up twice, try removing this else-if clause and the reference to "android.gm" above
+                    intent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.invitation_message));
+                    intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(resources.getString(R.string.invitation_message_heading) + "<br><br>" + resources.getString(R.string.invitation_deep_link)));
+                    intent.setType("message/rfc822");
+                } else {
+                    intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.invitation_message_heading) + "\n\n" + resources.getString(R.string.invitation_deep_link));
+                }
+                intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
+            }
+        }
+        // convert intentList to array
+        LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
+
+        openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+        startActivity(openInChooser);
     }
 
     @Override

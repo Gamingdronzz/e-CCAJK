@@ -1,19 +1,15 @@
 package com.mycca.Adapter;
 
-import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mycca.Activity.UpdateGrievanceActivity;
@@ -24,16 +20,11 @@ import com.mycca.Tools.Helper;
 
 import java.util.ArrayList;
 
-
-/**
- * Created by hp on 13-02-2018.
- */
-
 public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder> {
 
-    ArrayList<GrievanceModel> grievanceModelArrayList;
-    AppCompatActivity appCompatActivity;
-    String TAG = "Grievance";
+    private ArrayList<GrievanceModel> grievanceModelArrayList;
+    private AppCompatActivity appCompatActivity;
+    private String TAG = "Grievance";
 
     public static final int REQUEST_UPDATE = 299;
 
@@ -43,18 +34,18 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         this.appCompatActivity = appCompatActivity;
     }
 
+    @NonNull
     @Override
-    public RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder viewHolder = new GrievanaceUpdateViewHolder
                 (LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_grievance_item, parent, false),
-                        appCompatActivity,
                         new CustomClickListener(),
                         new CustomUpdateClickListener());
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(GrievanaceUpdateViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GrievanaceUpdateViewHolder holder, int position) {
         GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
 
         holder.customClickListener.setPosition(position);
@@ -80,26 +71,21 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         return grievanceModelArrayList.size();
     }
 
-    public static class GrievanaceUpdateViewHolder extends RecyclerView.ViewHolder {
+    static class GrievanaceUpdateViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView textViewPensionerCode;
-        public TextView textViewGrievanceType;
-        public TextView textViewGrievanceSubtype;
-        public LinearLayout expandableArea;
-
-        public TextView textViewStatus;
-
-        public TextView textViewPensionerMobile, textViewDateOfGrievance;
-
-        public AppCompatButton updateGrievance;
+        TextView textViewPensionerCode;
+        TextView textViewGrievanceType;
+        TextView textViewGrievanceSubtype;
+        LinearLayout expandableArea;
+        TextView textViewStatus;
+        TextView textViewPensionerMobile, textViewDateOfGrievance;
+        AppCompatButton updateGrievance;
 
         CustomClickListener customClickListener;
         CustomUpdateClickListener customUpdateClickListener;
 
 
-        public GrievanaceUpdateViewHolder(View itemView, Context context,
-                                          CustomClickListener customClickListener,
-                                          CustomUpdateClickListener customUpdateClickListener) {
+        GrievanaceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener) {
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
@@ -127,7 +113,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
     class CustomClickListener implements View.OnClickListener {
 
-
         private int position;
 
         public void setPosition(int position) {
@@ -139,53 +124,6 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).getExpanded());
             Log.d(TAG, "onClick: " + position);
             notifyItemChanged(position);
-        }
-    }
-
-    class CustomSpinnerItemSelectedListener implements Spinner.OnItemSelectedListener {
-        private int position;
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Log.d(TAG, "onItemSelected: " + position);
-            GrievanceModel grievanceModel = grievanceModelArrayList.get(this.position);
-            grievanceModel.setGrievanceStatus(position);
-            notifyItemChanged(position);
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    }
-
-    class CustomEditTextListener implements TextWatcher {
-        private int position;
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.d(TAG, "afterTextChanged: " + s);
-            GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
-            grievanceModel.setMessage(s.toString());
-            notifyItemChanged(position);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
         }
     }
 
@@ -207,3 +145,50 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
 
 }
+
+//class CustomSpinnerItemSelectedListener implements Spinner.OnItemSelectedListener {
+//    private int position;
+//
+//    public void setPosition(int position) {
+//        this.position = position;
+//    }
+//
+//    @Override
+//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        Log.d(TAG, "onItemSelected: " + position);
+//        GrievanceModel grievanceModel = grievanceModelArrayList.get(this.position);
+//        grievanceModel.setGrievanceStatus(position);
+//        notifyItemChanged(position);
+//    }
+//
+//    @Override
+//    public void onNothingSelected(AdapterView<?> parent) {
+//
+//    }
+//}
+//
+//class CustomEditTextListener implements TextWatcher {
+//    private int position;
+//
+//    public void setPosition(int position) {
+//        this.position = position;
+//    }
+//
+//    @Override
+//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//    }
+//
+//    @Override
+//    public void onTextChanged(CharSequence s, int start, int before, int count) {
+//        Log.d(TAG, "afterTextChanged: " + s);
+//        GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
+//        grievanceModel.setMessage(s.toString());
+//        notifyItemChanged(position);
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable s) {
+//
+//    }
+//}

@@ -9,6 +9,7 @@ import com.mycca.R;
 public class AboutUsActivity extends AppCompatActivity {
 
     TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,8 +18,9 @@ public class AboutUsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        getSupportActionBar().setTitle(getIntent().getStringExtra("Title"));
-        textView=findViewById(R.id.display);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(getIntent().getStringExtra("Title"));
+        textView = findViewById(R.id.display);
         textView.setText(getIntent().getStringExtra("Text"));
     }
 }

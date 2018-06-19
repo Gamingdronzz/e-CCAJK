@@ -243,7 +243,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         Log.d(TAG, "getLocationCoordinates: " + latitude + "," + longitude);
         circularProgressButton.setProgress(0);
         circularProgressButton.setIdleText(Html.fromHtml("Current Location<br><b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>").toString());
-        //textLocationCoordinates.setText(Html.fromHtml("Current Location\n<b>" + location.getLatitude() + " , " + location.getLongitude() + "</b>"));
     }
 
     private void showImageChooser() {

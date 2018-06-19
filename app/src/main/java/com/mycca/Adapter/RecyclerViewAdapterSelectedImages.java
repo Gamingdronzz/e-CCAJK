@@ -1,8 +1,7 @@
 package com.mycca.Adapter;
 
 
-
-
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,14 +19,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by hp on 13-02-2018.
- */
 
 public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<RecyclerViewAdapterSelectedImages.SelectedImageViewHolder> {
 
-    ArrayList<SelectedImageModel> selectedImageModelArrayList;
-    Fragment fragment;
+    private ArrayList<SelectedImageModel> selectedImageModelArrayList;
+    private Fragment fragment;
 
 
     public RecyclerViewAdapterSelectedImages(ArrayList<SelectedImageModel> selectedImageModelArrayList, Fragment fragment) {
@@ -35,18 +31,18 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
         this.fragment = fragment;
     }
 
+    @NonNull
     @Override
-    public RecyclerViewAdapterSelectedImages.SelectedImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewAdapterSelectedImages.SelectedImageViewHolder viewHolder = new SelectedImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_selected_image, parent, false),new RemoveClickListener());
-        return viewHolder;
+    public RecyclerViewAdapterSelectedImages.SelectedImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SelectedImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_selected_image, parent, false), new RemoveClickListener());
     }
 
     @Override
-    public void onBindViewHolder(SelectedImageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SelectedImageViewHolder holder, int position) {
         SelectedImageModel selectedImageModel = selectedImageModelArrayList.get(position);
         holder.removeClickListener.setPosition(position);
-        //holder.selectedImageTitle.setText(selectedImageModel.getSelectedImageName());
-        holder.selectedImageTitle.setText("File-"+(position+1));
+        String filename = "File-" + (position + 1);
+        holder.selectedImageTitle.setText(filename);
         Picasso.with(fragment.getContext()).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
     }
 
@@ -55,14 +51,14 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
         return selectedImageModelArrayList.size();
     }
 
-    public class SelectedImageViewHolder extends RecyclerView.ViewHolder {
+    class SelectedImageViewHolder extends RecyclerView.ViewHolder {
 
         private TextView selectedImageTitle;
         ImageButton overlayRemoveImage;
         private ImageButton selectedImage;
         private RemoveClickListener removeClickListener;
 
-        public SelectedImageViewHolder(View itemView,RemoveClickListener removeClickListener) {
+        SelectedImageViewHolder(View itemView, RemoveClickListener removeClickListener) {
             super(itemView);
             selectedImageTitle = itemView.findViewById(R.id.textview_selected_image_name);
             //selectedImageTitle.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_close_black_24dp,0);
@@ -88,13 +84,10 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
             notifyItemRemoved(position);
             notifyDataSetChanged();
 
-            if(fragment instanceof InspectionFragment)
-            {
+            if (fragment instanceof InspectionFragment) {
                 InspectionFragment inspectionFragment = (InspectionFragment) fragment;
                 inspectionFragment.setSelectedFileCount(selectedImageModelArrayList.size());
-            }
-            else if(fragment instanceof SubmitGrievanceFragment)
-            {
+            } else if (fragment instanceof SubmitGrievanceFragment) {
                 SubmitGrievanceFragment submitGrievanceFragment = (SubmitGrievanceFragment) fragment;
                 submitGrievanceFragment.setSelectedFileCount(selectedImageModelArrayList.size());
             }

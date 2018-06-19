@@ -6,10 +6,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.mycca.Tools.FireBaseHelper;
 
-/**
- * Created by hp on 08-05-2018.
- */
-
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     @Override

@@ -22,10 +22,6 @@ import com.mycca.Tools.Preferences;
 
 import java.util.Random;
 
-/**
- * Created by hp on 10-05-2018.
- */
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCM Service";
@@ -87,7 +83,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-            notificationManager.createNotificationChannel(mChannel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(mChannel);
+            }
         }
         if (notificationManager != null) {
             notificationManager.notify(notifyID /* ID of notification */, notificationBuilder.build());

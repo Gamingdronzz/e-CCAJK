@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,13 +54,10 @@ public class AddNewsFragment extends Fragment {
     }
 
     private void init() {
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkInput()) {
-                    progressDialog.show();
-                    checkConnection();
-                }
+        add.setOnClickListener(v -> {
+            if (checkInput()) {
+                progressDialog.show();
+                checkConnection();
             }
         });
     }
@@ -86,7 +82,7 @@ public class AddNewsFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                Log.d("News", "version checked= "+ Helper.versionChecked);
+                Log.d("News", "version checked= " + Helper.versionChecked);
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
@@ -126,16 +122,13 @@ public class AddNewsFragment extends Fragment {
                 FireBaseHelper.ROOT_NEWS,
                 newsModel);
 
-        task.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                progressDialog.dismiss();
-                if (task.isSuccessful()) {
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null, null, null, FancyAlertDialogType.SUCCESS);
-                } else {
-                    Helper.getInstance().showUpdateOrMaintenanceDialog(false,getActivity());
+        task.addOnCompleteListener(task1 -> {
+            progressDialog.dismiss();
+            if (task1.isSuccessful()) {
+                Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null, null, null, FancyAlertDialogType.SUCCESS);
+            } else {
+                Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
 
-                }
             }
         });
     }

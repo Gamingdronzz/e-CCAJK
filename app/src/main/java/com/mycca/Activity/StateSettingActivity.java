@@ -30,22 +30,21 @@ public class StateSettingActivity extends AppCompatActivity {
         RecyclerViewAdapterStates adapter = new RecyclerViewAdapterStates();
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerView,
-                new ClickListener() {
-                    @Override
-                    public void onClick(View view, int position) {
-                        State state = Helper.getInstance().getStatelist()[position];
-                        Preferences.getInstance().setStringPref(StateSettingActivity.this,
-                                Preferences.PREF_STATE,
-                                state.getCircleCode());
-                        Log.d("Settings", "onClick: " + state.getName() + " " + state.getCircleCode());
-                        finish();
-                    }
+        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                State state = Helper.getInstance().getStatelist()[position];
+                Preferences.getInstance().setStringPref(StateSettingActivity.this,
+                        Preferences.PREF_STATE,
+                        state.getCircleCode());
+                Log.d("Settings", "onClick: " + state.getName() + " " + state.getCircleCode());
+                finish();
+            }
 
-                    @Override
-                    public void onLongClick(View view, int position) {
+            @Override
+            public void onLongClick(View view, int position) {
 
-                    }
-                }));
+            }
+        }));
     }
 }

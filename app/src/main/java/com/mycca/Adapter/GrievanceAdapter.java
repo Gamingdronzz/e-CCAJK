@@ -12,13 +12,9 @@ import com.mycca.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by hp on 16-03-2018.
- */
-
 public class GrievanceAdapter extends BaseAdapter {
-    Context context;
-    ArrayList<GrievanceType> types;
+    private Context context;
+    private ArrayList<GrievanceType> types;
 
     public GrievanceAdapter(Context context, ArrayList<GrievanceType> types) {
         this.context = context;
@@ -43,10 +39,12 @@ public class GrievanceAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
-        GrievanceType type=types.get(position);
-        TextView textView = convertView.findViewById(R.id.spinner_item);
-        textView.setText(type.getName());
+        if (inflater != null) {
+            convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
+            GrievanceType type = types.get(position);
+            TextView textView = convertView.findViewById(R.id.spinner_item);
+            textView.setText(type.getName());
+        }
         return convertView;
     }
 }

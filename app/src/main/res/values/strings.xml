@@ -71,6 +71,11 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="no_image">NO IMAGE SELECTED</string>
     <string name="location">Location Coordinates</string>
     <string name="location_hint">Enter Location Name</string>
+    <string name="no_internet">Internet Connection Not Available</string>
+    <string name="no_grievance">No Grievances Registered</string>
+    <string name="n_a">Not Available</string>
+    <string name="sign_in">Sign In with Google</string>
+    <string name="sign_out">Sign Out</string>
     <!-- CropView -->
     <string name="crop_image_activity_title">Crop</string>
     <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>

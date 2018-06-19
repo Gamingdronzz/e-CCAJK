@@ -144,13 +144,13 @@ public class ContactUsFragment extends Fragment {
                 .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
                 .build();
 
-        activity.setmQueue( new FancyShowCaseQueue()
+        activity.setmQueue(new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3));
 
         activity.getmQueue().setCompleteListener(() -> {
-            activity.setmQueue( null);
+            activity.setmQueue(null);
             contactArrayList.get(0).setExpanded(false);
             adapterContacts.notifyItemChanged(0);
         });

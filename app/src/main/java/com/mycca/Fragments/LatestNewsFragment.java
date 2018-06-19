@@ -47,7 +47,6 @@ public class LatestNewsFragment extends Fragment {
 
     private void bindViews(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_latest_news);
-
     }
 
     private void init() {

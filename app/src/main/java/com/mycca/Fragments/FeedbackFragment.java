@@ -14,14 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
@@ -63,22 +61,14 @@ public class FeedbackFragment extends Fragment {
     private void init() {
 
         activity = getActivity();
-        btnSuggestion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!etSuggestion.getText().toString().trim().isEmpty()) {
-                    submitSuggestion();
-                } else
-                    etSuggestion.setError("No Suggestion!");
-            }
+        btnSuggestion.setOnClickListener(v -> {
+            if (!etSuggestion.getText().toString().trim().isEmpty()) {
+                submitSuggestion();
+            } else
+                etSuggestion.setError("No Suggestion!");
         });
 
-        btnRateApplication.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rateApplication();
-            }
-        });
+        btnRateApplication.setOnClickListener(v -> rateApplication());
     }
 
     private void rateApplication() {
@@ -133,40 +123,26 @@ public class FeedbackFragment extends Fragment {
                 FireBaseHelper.ROOT_SUGGESTIONS,
                 etSuggestion.getText().toString().trim());
 
-        task.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task task) {
+        task.addOnCompleteListener((Task<Void> task1) -> {
 
-                if (task.isSuccessful()) {
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), "Your suggestion means a lot to us!<br><br><b>Thank you</b>", "Advice", "OK", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                        }
-                    }, null, null, FancyAlertDialogType.SUCCESS);
+            if (task1.isSuccessful()) {
+                Helper.getInstance().showFancyAlertDialog(getActivity(), "Your suggestion means a lot to us!<br><br><b>Thank you</b>", "Advice", "OK", () -> {},
+                        null, null, FancyAlertDialogType.SUCCESS);
+            } else {
+                if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
+                    Helper.getInstance().showFancyAlertDialog(activity, "You cannot submit suggestion without signing in",
+                            "Sign in with google",
+                            "Sign in",
+                            () -> ((MainActivity) activity).signInWithGoogle(),
+                            "Cancel",
+                            () -> {
+
+                            },
+                            FancyAlertDialogType.ERROR);
                 } else {
-                    if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
-                        Helper.getInstance().showFancyAlertDialog(activity, "You cannot submit suggestion without signing in",
-                                "Sign in with google",
-                                "Sign in",
-                                new IFancyAlertDialogListener() {
-                                    @Override
-                                    public void OnClick() {
-                                        ((MainActivity) activity).signInWithGoogle();
-                                    }
-                                },
-                                "Cancel",
-                                new IFancyAlertDialogListener() {
-                                    @Override
-                                    public void OnClick() {
-
-                                    }
-                                },
-                                FancyAlertDialogType.ERROR);
-                    } else {
-                        Helper.getInstance().showUpdateOrMaintenanceDialog(false, activity);
-                    }
-
+                    Helper.getInstance().showUpdateOrMaintenanceDialog(false, activity);
                 }
+
             }
         });
     }

@@ -292,7 +292,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
                 .build();
 
-        activity.setmQueue( new FancyShowCaseQueue()
+        activity.setmQueue(new FancyShowCaseQueue()
                 .add(fancyShowCaseView1)
                 .add(fancyShowCaseView2)
                 .add(fancyShowCaseView3)

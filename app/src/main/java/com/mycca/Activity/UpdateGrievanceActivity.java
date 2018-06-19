@@ -2,18 +2,14 @@ package com.mycca.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
@@ -22,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
@@ -78,40 +73,37 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
 
     private void init() {
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.simple_spinner, Helper.getInstance().getStatusList());
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner, Helper.getInstance().getStatusList());
         statusSpinner.setAdapter(arrayAdapter);
 
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-                    @Override
-                    public void OnConnectionAvailable() {
-                        Log.d(TAG, "version checked = " + Helper.versionChecked);
-                        if (!Helper.versionChecked) {
-                            FireBaseHelper.getInstance(UpdateGrievanceActivity.this).checkForUpdate(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (Helper.getInstance().onLatestVersion(dataSnapshot, UpdateGrievanceActivity.this))
-                                        updateGrievance();
-                                }
+        update.setOnClickListener(v -> {
+            ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+                @Override
+                public void OnConnectionAvailable() {
+                    Log.d(TAG, "version checked = " + Helper.versionChecked);
+                    if (!Helper.versionChecked) {
+                        FireBaseHelper.getInstance(UpdateGrievanceActivity.this).checkForUpdate(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (Helper.getInstance().onLatestVersion(dataSnapshot, UpdateGrievanceActivity.this))
+                                    updateGrievance();
+                            }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    Helper.getInstance().showUpdateOrMaintenanceDialog(false, UpdateGrievanceActivity.this);
-                                }
-                            });
-                        } else updateGrievance();
-                    }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Helper.getInstance().showUpdateOrMaintenanceDialog(false, UpdateGrievanceActivity.this);
+                            }
+                        });
+                    } else updateGrievance();
+                }
 
-                    @Override
-                    public void OnConnectionNotAvailable() {
-                        showNoInternetConnectionDialog();
-                    }
-                });
-                connectionUtility.checkConnectionAvailability();
+                @Override
+                public void OnConnectionNotAvailable() {
+                    showNoInternetConnectionDialog();
+                }
+            });
+            connectionUtility.checkConnectionAvailability();
 
-            }
         });
 
     }
@@ -149,40 +141,34 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
                     .child(grievanceModel.getPensionerIdentifier())
                     .child(String.valueOf(grievanceModel.getGrievanceType()))
                     .updateChildren(hashMap)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            progressDialog.dismiss();
-                            if (task.isSuccessful()) {
+                    .addOnCompleteListener(task -> {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
 
-                                //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
-                                GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
-                                model.setGrievanceStatus(status);
-                                model.setMessage(message);
-                                model.setExpanded(true);
+                            //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
+                            GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
+                            model.setGrievanceStatus(status);
+                            model.setMessage(message);
+                            model.setExpanded(true);
 
-                                String alertMessage = Helper.getInstance().getGrievanceCategory(model.getGrievanceType()) +
-                                        " Grievance status of<br>" +
-                                        "<b>" + model.getPensionerIdentifier() + "</b><br>" +
-                                        "for<br>" +
-                                        "<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>" +
-                                        "has been succesfully updated to<br>" +
-                                        "<b>" + Helper.getInstance().getStatusString(model.getGrievanceStatus()) + "</b>";
+                            String alertMessage = Helper.getInstance().getGrievanceCategory(model.getGrievanceType()) +
+                                    " Grievance status of<br>" +
+                                    "<b>" + model.getPensionerIdentifier() + "</b><br>" +
+                                    "for<br>" +
+                                    "<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>" +
+                                    "has been succesfully updated to<br>" +
+                                    "<b>" + Helper.getInstance().getStatusString(model.getGrievanceStatus()) + "</b>";
 
-                                notifyPensioner();
-                                setResult(Activity.RESULT_OK);
-                                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage, "Grievance Update", "OK", new IFancyAlertDialogListener() {
-                                    @Override
-                                    public void OnClick() {
+                            notifyPensioner();
+                            setResult(Activity.RESULT_OK);
+                            Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage, "Grievance Update", "OK", () -> {
 
-                                        finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
-                                        finish();
-                                    }
-                                }, null, null, FancyAlertDialogType.SUCCESS);
-                            } else {
-                                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, "The app might be in maintenence. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
-                                Log.d(TAG, "onComplete: " + task.toString());
-                            }
+                                finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
+                                finish();
+                            }, null, null, FancyAlertDialogType.SUCCESS);
+                        } else {
+                            Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, "The app might be in maintenence. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                            Log.d(TAG, "onComplete: " + task.toString());
                         }
                     });
         } catch (DatabaseException dbe) {

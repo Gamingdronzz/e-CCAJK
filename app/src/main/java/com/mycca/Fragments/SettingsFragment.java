@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import com.mycca.Activity.IntroActivity;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Activity.StateSettingActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
@@ -73,65 +71,44 @@ public class SettingsFragment extends Fragment {
 
         activity = (MainActivity) getActivity();
         switchNotification.setChecked(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS));
-        switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, true);
-                } else {
-                    Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, false);
-                }
+        switchNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, true);
+            } else {
+                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, false);
             }
         });
 
-        tvHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Preferences.getInstance().clearTutorialPrefs(getContext());
-                startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings",true));
-            }
+        tvHelp.setOnClickListener(v -> {
+            Preferences.getInstance().clearTutorialPrefs(getContext());
+            startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings", true));
         });
 
-        layoutChangeState.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity, StateSettingActivity.class);
-                startActivity(intent);
-            }
+        layoutChangeState.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, StateSettingActivity.class);
+            startActivity(intent);
         });
 
-        layoutSignInOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null) {
-                    Helper.getInstance().showFancyAlertDialog(getActivity(),
-                            "Sign out from Google?",
-                            "Sign Out",
-                            "OK",
-                            new IFancyAlertDialogListener() {
-                                @Override
-                                public void OnClick() {
-                                    activity.signOutFromGoogle();
-                                    Helper.getInstance().showFancyAlertDialog(getActivity(), "", "Signed Out", "OK", new IFancyAlertDialogListener() {
-                                        @Override
-                                        public void OnClick() {
+        layoutSignInOut.setOnClickListener(v -> {
+            if (mAuth.getCurrentUser() != null) {
+                Helper.getInstance().showFancyAlertDialog(getActivity(),
+                        "Sign out from Google?",
+                        "Sign Out",
+                        "OK",
+                        () -> {
+                            activity.signOutFromGoogle();
+                            Helper.getInstance().showFancyAlertDialog(getActivity(), "", "Signed Out", "OK", () -> {
 
-                                        }
-                                    }, null, null, FancyAlertDialogType.SUCCESS);
-                                    manageSignOut();
-                                }
-                            },
-                            "Cancel",
-                            new IFancyAlertDialogListener() {
-                                @Override
-                                public void OnClick() {
+                            }, null, null, FancyAlertDialogType.SUCCESS);
+                            manageSignOut();
+                        },
+                        "Cancel",
+                        () -> {
 
-                                }
-                            },
-                            FancyAlertDialogType.WARNING);
-                } else {
-                    activity.signInWithGoogle();
-                }
+                        },
+                        FancyAlertDialogType.WARNING);
+            } else {
+                activity.signInWithGoogle();
             }
         });
     }
@@ -139,13 +116,14 @@ public class SettingsFragment extends Fragment {
     public void manageSignOut() {
         if (mAuth.getCurrentUser() == null) {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawbale_login_24dp, 0, 0, 0);
-            tvSignOut.setText("Sign In with Google");
+            tvSignOut.setText(getResources().getString(R.string.sign_in));
             tvAccount.setVisibility(View.INVISIBLE);
         } else {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_logout, 0, 0, 0);
-            tvSignOut.setText("Sign Out");
+            tvSignOut.setText(getResources().getString(R.string.sign_out));
+            String user = "Signed In: " + mAuth.getCurrentUser().getEmail();
             tvAccount.setVisibility(View.VISIBLE);
-            tvAccount.setText("Signed In: " + mAuth.getCurrentUser().getEmail());
+            tvAccount.setText(user);
         }
     }
 
@@ -154,7 +132,8 @@ public class SettingsFragment extends Fragment {
         super.onResume();
         String circleCode = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
         Log.d("Settings", "onResume: " + circleCode);
-        tvCurrentState.setText("Current State: " + Helper.getInstance().getStateName(circleCode));
+        String state = "Current State: " + Helper.getInstance().getStateName(circleCode);
+        tvCurrentState.setText(state);
     }
 
 }

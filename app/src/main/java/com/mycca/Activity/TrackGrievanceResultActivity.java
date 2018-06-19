@@ -77,7 +77,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         }));
 
         ManageNoGrievanceLayout(true);
-        textView.setText("No Grievances Registered");
+        textView.setText(getResources().getString(R.string.no_grievance));
 
         progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
         progressDialog.show();
@@ -92,7 +92,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
             public void OnConnectionNotAvailable() {
                 onConnectionNotAvailable();
                 ManageNoGrievanceLayout(true);
-                textView.setText("No Internet Connection");
+                textView.setText(getResources().getString(R.string.no_internet));
             }
         });
         connectionUtility.checkConnectionAvailability();

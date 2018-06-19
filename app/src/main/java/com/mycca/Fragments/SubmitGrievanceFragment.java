@@ -200,7 +200,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             if (buttonChooseFile != null && fabMenu != null) {
                 //attach menu to fab
                 mainActivity.setFabRevealMenu(fabMenu);
-                //set menu items from arrylist
+                //set menu items from arraylist
                 fabMenu.setMenuItems(items);
                 //attach menu to fab
                 fabMenu.bindAnchorView(buttonChooseFile);

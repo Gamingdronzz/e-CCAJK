@@ -98,13 +98,9 @@ public class LocatorFragment extends Fragment {
         manageNoLocationLayout(true);
 
         progressDialog = Helper.getInstance().getProgressWindow(activity, "Getting Locations...");
-        imageButtonRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkConnection(false);
-            }
-        });
-        textViewLocatorInfo.setText(textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh");
+        imageButtonRefresh.setOnClickListener(v -> checkConnection(false));
+        String noInternet = textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh";
+        textViewLocatorInfo.setText(noInternet);
 
         //fetch from local storage
         locationModelArrayList = getLocationsFromLocalStorage();
@@ -347,45 +343,6 @@ public class LocatorFragment extends Fragment {
         }
         return null;
     }
-
-    //    private void showTutorial() {
-//
-//        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
-//                .title("Tap on location to open in Google Maps")
-//                .focusOn(viewPager)
-//                .focusCircleRadiusFactor(.6)
-//                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
-//                .build();
-//        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
-//                .title("Click to search location")
-//                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 12 * 11, Resources.getSystem().getDisplayMetrics().widthPixels / 2, 100)
-//                .fitSystemWindows(true)
-//                .build();
-//        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
-//                .title("Click to view locations districtwise")
-//                .focusRectAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 12 * 11, Resources.getSystem().getDisplayMetrics().widthPixels / 2, 100)
-//                .fitSystemWindows(true)
-//                .build();
-//        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(activity)
-//                .title("-------->\nSwipe to view nearby hotspots")
-//                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
-//                .build();
-//
-//        activity.mQueue = new FancyShowCaseQueue()
-//                .add(fancyShowCaseView2)
-//                .add(fancyShowCaseView1)
-//                .add(fancyShowCaseView3)
-//                .add(fancyShowCaseView4);
-//
-//        activity.mQueue.setCompleteListener(new com.mycca.CustomObjects.FancyShowCase.OnCompleteListener() {
-//            @Override
-//            public void onComplete() {
-//                activity.mQueue = null;
-//            }
-//        });
-//
-//        activity.mQueue.show();
-//    }
 
     class MyAdapter extends FragmentPagerAdapter {
         private Fragment mCurrentFragment;

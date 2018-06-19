@@ -73,16 +73,17 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     ProgressDialog progressDialog;
 
     private static final String TAG = "PanAdhaarUpload";
-    String pensionerCode, number, root, hint = "Pensioner Code";
+    private String pensionerCode, number, root, hint = "Pensioner Code";
+    private boolean isUploadedToFirebase = false, isUploadedToServer = false;
+    private ArrayList<FABMenuItem> items;
     SelectedImageModel imageModel;
     ImagePicker imagePicker;
-    boolean isUploadedToFirebase = false, isUploadedToServer = false;
     ArrayList<Uri> firebaseImageURLs;
     Uri downloadUrl;
     VolleyHelper volleyHelper;
     State state;
     MainActivity mainActivity;
-    private ArrayList<FABMenuItem> items;
+
 
     public PanAdhaarUploadFragment() {
 

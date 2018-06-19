@@ -19,18 +19,15 @@ public class AboutUsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about_us, container, false);
         imageViewLogo = view.findViewById(R.id.img_about_logo);
-        imageViewLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity mainActivity = (MainActivity) getActivity();
-                BrowserFragment fragment = new BrowserFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("url", "http://gamingdronzz.com");
-                if (mainActivity != null) {
-                    mainActivity.showFragment("Gaming Dronzz", fragment, bundle);
-                }
-
+        imageViewLogo.setOnClickListener(v -> {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            BrowserFragment fragment = new BrowserFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("url", "http://gamingdronzz.com");
+            if (mainActivity != null) {
+                mainActivity.showFragment("Gaming Dronzz", fragment, bundle);
             }
+
         });
         return view;
     }

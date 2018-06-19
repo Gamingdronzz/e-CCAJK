@@ -43,13 +43,15 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void init() {
-        Helper.versionChecked=false;
+        Helper.versionChecked = false;
         currentAppVersion = Helper.getInstance().getAppVersion(this);
         currentVersionName = getAppVersionName();
+        String text;
         if (currentVersionName.equals(""))
-            tvSplashVersion.setText("Version - N/A");
+            text = "Version - N/A";
         else
-            tvSplashVersion.setText("Version - " + currentVersionName);
+            text = "Version - " + currentVersionName;
+        tvSplashVersion.setText(text);
         Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
         dbref = FireBaseHelper.getInstance(this).databaseReference;
     }

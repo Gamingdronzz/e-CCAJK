@@ -25,9 +25,6 @@ import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class LoginFragment extends Fragment {
 
     MainActivity mainActivity;
@@ -61,12 +58,7 @@ public class LoginFragment extends Fragment {
         editTextPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password, 0, 0, 0);
 
         Button signin = view.findViewById(R.id.sign_in_button);
-        signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tryLogin();
-            }
-        });
+        signin.setOnClickListener(v -> tryLogin());
     }
 
 

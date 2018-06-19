@@ -183,7 +183,6 @@ public class UpdateGrievanceFragment extends Fragment {
 
                     }
                 });
-
     }
 
     private void setTabLayout() {

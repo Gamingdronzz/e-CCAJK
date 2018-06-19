@@ -3,6 +3,7 @@ package com.mycca.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,14 +19,10 @@ import com.mycca.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by hp on 13-02-2018.
- */
-
 public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerViewAdapterContacts.ContactsViewHolder> {
 
-    ArrayList<Contact> contactArrayList;
-    Context context;
+    private ArrayList<Contact> contactArrayList;
+    private Context context;
 
 
     public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList, Context context) {
@@ -33,22 +30,23 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         this.context = context;
     }
 
+    @NonNull
     @Override
-    public RecyclerViewAdapterContacts.ContactsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerViewAdapterContacts.ContactsViewHolder viewHolder = new ContactsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_contact, parent, false), new ViewClickListener());
-        return viewHolder;
+    public RecyclerViewAdapterContacts.ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ContactsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_contact, parent, false), new ViewClickListener());
     }
 
     @Override
-    public void onBindViewHolder(ContactsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
         Contact contact = contactArrayList.get(position);
 
+        String text;
         holder.viewClickListener.setPosition(position);
         holder.name.setText(contact.getName());
         holder.designation.setText(contact.getDesignation());
-        holder.email.setText("\t" + contact.getEmail());
-        holder.office.setText("\t" + contact.getOfficeContact());
-        holder.mobile.setText("\t" + contact.getMobileContact());
+        holder.email.setText(contact.getEmail());
+        holder.office.setText(contact.getOfficeContact());
+        holder.mobile.setText(contact.getMobileContact());
         if (contact.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
             holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
@@ -64,7 +62,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         return contactArrayList.size();
     }
 
-    public class ContactsViewHolder extends RecyclerView.ViewHolder {
+    class ContactsViewHolder extends RecyclerView.ViewHolder {
         LinearLayout linearLayoutExpandableArea;
         //,linearLayoutMobile,linearLayoutOffice,linearLayoutEMail;
         private TextView name;
@@ -72,7 +70,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
         private TextView mobile, email, office;
         private ViewClickListener viewClickListener;
 
-        public ContactsViewHolder(View itemView, ViewClickListener viewClickListener) {
+        ContactsViewHolder(View itemView, ViewClickListener viewClickListener) {
             super(itemView);
             name = itemView.findViewById(R.id.textview_name);
             designation = itemView.findViewById(R.id.textview_designation);
@@ -89,52 +87,43 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             linearLayoutExpandableArea.setVisibility(View.GONE);
             this.viewClickListener = viewClickListener;
 
-            mobile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String number = mobile.getText().toString();
-                    Log.v("Adapter", "Contact = " + number);
-                    if (number.equals("\t" + Contact.NA)) {
-                        Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + number));
-                        v.getContext().startActivity(intent);
-                    }
+            mobile.setOnClickListener(v -> {
+                String number = mobile.getText().toString();
+                Log.v("Adapter", "Contact = " + number);
+                if (number.equals("\t" + Contact.NA)) {
+                    Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + number));
+                    v.getContext().startActivity(intent);
                 }
             });
 
-            office.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String number = office.getText().toString();
-                    Log.v("Adapter", "Contact = " + number);
-                    if (number.equals("\t" + Contact.NA)) {
-                        Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + "0191" + number));
-                        v.getContext().startActivity(intent);
-                    }
+            office.setOnClickListener(v -> {
+                String number = office.getText().toString();
+                Log.v("Adapter", "Contact = " + number);
+                if (number.equals("\t" + Contact.NA)) {
+                    Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + "0191" + number));
+                    v.getContext().startActivity(intent);
                 }
             });
 
-            email.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String mail = email.getText().toString();
-                    Log.v("Adapter", "Contact = " + mail);
-                    if (mail.equals("\t" + Contact.NA)) {
-                        Toast.makeText(v.getContext(), "Email not available", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_SENDTO);
-                        intent.setData(Uri.parse("mailto:"));
-                        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
-                        if (intent.resolveActivity(context.getPackageManager()) != null) {
-                            v.getContext().startActivity(intent);
-                        }
-
+            email.setOnClickListener(v -> {
+                String mail = email.getText().toString();
+                Log.v("Adapter", "Contact = " + mail);
+                if (mail.equals("\t" + Contact.NA)) {
+                    Toast.makeText(v.getContext(), "Email not available", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mail});
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        v.getContext().startActivity(intent);
                     }
+
                 }
             });
             itemView.setOnClickListener(viewClickListener);

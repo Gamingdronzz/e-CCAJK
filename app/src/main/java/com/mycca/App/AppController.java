@@ -11,10 +11,6 @@ import com.mycca.Tools.LruBitmapCache;
 
 import shortbread.Shortbread;
 
-/**
- * Created by balpreet on 4/14/2018.
- */
-
 public class AppController extends Application {
 
     private static AppController mInstance;

@@ -11,13 +11,9 @@ import com.mycca.Models.State;
 import com.mycca.R;
 import com.mycca.Tools.Helper;
 
-/**
- * Created by hp on 15-05-2018.
- */
-
 public class StatesAdapter extends BaseAdapter {
 
-    Context context;
+    private Context context;
 
     public StatesAdapter(Context context) {
         this.context = context;
@@ -41,10 +37,12 @@ public class StatesAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
-        State state = Helper.getInstance().getStatelist()[position];
-        TextView textView = convertView.findViewById(R.id.spinner_item);
-        textView.setText(state.getName());
+        if (inflater != null) {
+            convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
+            State state = Helper.getInstance().getStatelist()[position];
+            TextView textView = convertView.findViewById(R.id.spinner_item);
+            textView.setText(state.getName());
+        }
         return convertView;
     }
 }

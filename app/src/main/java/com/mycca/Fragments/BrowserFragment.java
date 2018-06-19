@@ -39,7 +39,8 @@ public class BrowserFragment extends Fragment {
     ActionBar actionBar;
     private boolean hasStopped = false;
 
-    public BrowserFragment() {}
+    public BrowserFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container,
@@ -55,7 +56,7 @@ public class BrowserFragment extends Fragment {
 
     private void init(View view) {
         Bundle args = getArguments();
-        if ( getActivity() != null) {
+        if (getActivity() != null) {
             actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
         progressBar = view.findViewById(R.id.progressBar);
@@ -120,7 +121,7 @@ public class BrowserFragment extends Fragment {
             }
 
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-               setSubtitle("Some Error Occurred. Please Refresh");
+                setSubtitle("Some Error Occurred. Please Refresh");
                 progressBar.setVisibility(View.GONE);
             }
 
