@@ -1,11 +1,6 @@
 package com.mycca.Models;
 
-/**
- * Created by balpreet on 2/13/2018.
- */
-
 public class Contact {
-    public static final String NA="Not Available";
     private String name;
     private String designation;
     private String officeContact;
@@ -71,7 +66,7 @@ public class Contact {
         this.stateId = stateId;
     }
 
-    public Contact(String name, String designation, String email, String officeContact, String mobileContact, String stateId) {
+    Contact(String name, String designation, String email, String officeContact, String mobileContact, String stateId) {
 
         this.name = name;
         this.email=email;

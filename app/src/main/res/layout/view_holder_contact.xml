@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:elevation="@dimen/elevation_medium"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:targetApi="lollipop">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,10 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
             android:paddingEnd="@dimen/padding_medium"
-            android:paddingLeft="@dimen/padding_large"
-            android:paddingRight="@dimen/padding_medium"
             android:paddingStart="@dimen/padding_large"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
             android:textStyle="bold" />
@@ -31,13 +29,12 @@
             android:id="@+id/textview_designation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textview_name"
             android:layout_marginBottom="@dimen/margin_medium"
             android:paddingStart="@dimen/padding_large"
-            android:text="TextView"
             android:textColor="@color/colorGray"
             android:textSize="@dimen/text_15"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            tools:ignore="RtlSymmetry" />
 
 
     </LinearLayout>
@@ -50,7 +47,8 @@
         android:animateLayoutChanges="true"
         android:orientation="vertical"
         android:paddingTop="@dimen/padding_medium"
-        android:paddingLeft="@dimen/padding_large">
+        android:paddingStart="@dimen/padding_large"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:id="@+id/tv_contact_mobile"
@@ -58,13 +56,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            android:drawablePadding="@dimen/padding_medium"
+            android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorAccentDark"
             android:gravity="center_vertical"
             android:padding="@dimen/padding_medium"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_18"
+            tools:targetApi="m" />
 
         <TextView
             android:id="@+id/tv_contact_office"
@@ -72,13 +70,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            android:drawablePadding="@dimen/padding_medium"
+            android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorAccentDark"
             android:gravity="center_vertical"
             android:padding="@dimen/padding_medium"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_18"
+            tools:targetApi="m" />
 
         <TextView
 
@@ -86,13 +84,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:drawablePadding="@dimen/padding_medium"
+            android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorAccentDark"
             android:gravity="center_vertical"
             android:padding="@dimen/padding_medium"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_18"
+            tools:targetApi="m" />
         <!--</LinearLayout>-->
 
 
@@ -101,5 +99,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorBlack"></View>
+        android:background="@color/colorBlack"/>
 </LinearLayout>

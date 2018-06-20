@@ -23,11 +23,12 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     private ArrayList<Contact> contactArrayList;
     private Context context;
-
+    private String na;
 
     public RecyclerViewAdapterContacts(ArrayList<Contact> contactArrayList, Context context) {
         this.contactArrayList = contactArrayList;
         this.context = context;
+        na = context.getResources().getString(R.string.n_a);
     }
 
     @NonNull
@@ -40,13 +41,12 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
         Contact contact = contactArrayList.get(position);
 
-        String text;
         holder.viewClickListener.setPosition(position);
         holder.name.setText(contact.getName());
         holder.designation.setText(contact.getDesignation());
-        holder.email.setText(contact.getEmail());
-        holder.office.setText(contact.getOfficeContact());
-        holder.mobile.setText(contact.getMobileContact());
+        holder.email.setText(contact.getEmail()==null ? na : contact.getEmail());
+        holder.office.setText(contact.getOfficeContact()==null? na : contact.getOfficeContact());
+        holder.mobile.setText(contact.getMobileContact()==null ? na : contact.getMobileContact());
         if (contact.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
             holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
@@ -90,7 +90,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             mobile.setOnClickListener(v -> {
                 String number = mobile.getText().toString();
                 Log.v("Adapter", "Contact = " + number);
-                if (number.equals("\t" + Contact.NA)) {
+                if (number.equals(na)) {
                     Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -102,7 +102,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             office.setOnClickListener(v -> {
                 String number = office.getText().toString();
                 Log.v("Adapter", "Contact = " + number);
-                if (number.equals("\t" + Contact.NA)) {
+                if (number.equals(na)) {
                     Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -114,7 +114,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
             email.setOnClickListener(v -> {
                 String mail = email.getText().toString();
                 Log.v("Adapter", "Contact = " + mail);
-                if (mail.equals("\t" + Contact.NA)) {
+                if (mail.equals(na)) {
                     Toast.makeText(v.getContext(), "Email not available", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Intent.ACTION_SENDTO);

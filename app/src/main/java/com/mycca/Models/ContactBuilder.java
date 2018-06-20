@@ -5,9 +5,9 @@ public class ContactBuilder {
     private String name;
     private String designation;
     private String stateId;
-    private String email = Contact.NA;
-    private String officeContact = Contact.NA;
-    private String mobileContact = Contact.NA;
+    private String email;
+    private String officeContact;
+    private String mobileContact;
 
     public ContactBuilder setName(String name) {
         this.name = name;
