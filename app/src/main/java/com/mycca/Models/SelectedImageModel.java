@@ -5,10 +5,6 @@ import android.util.Log;
 
 import java.io.File;
 
-/**
- * Created by balpreet on 4/24/2018.
- */
-
 public class SelectedImageModel {
 
     private Uri imageURI;
@@ -39,16 +35,10 @@ public class SelectedImageModel {
         this.imageURI = imageURI;
     }
 
-
     public SelectedImageModel(Uri imageURI) {
         this.imageURI = imageURI;
         file = new File(imageURI.getPath());
         Log.d("IMage", "SelectedImageModel: "+file.length()/1024.0f);
         //this.selectedImageName = file.getName();
-
     }
-
-
-
-
 }

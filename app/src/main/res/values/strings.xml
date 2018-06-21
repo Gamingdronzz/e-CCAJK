@@ -76,6 +76,9 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="n_a">Not Available</string>
     <string name="sign_in">Sign In with Google</string>
     <string name="sign_out">Sign Out</string>
+    <string name="no_grievances_resolved">No Grievances Resolved</string>
+    <string name="no_grievances_submitted">No New Grievances Submitted</string>
+    <string name="no_grievances_processing">No Grievances under Process</string>
     <!-- CropView -->
     <string name="crop_image_activity_title">Crop</string>
     <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>

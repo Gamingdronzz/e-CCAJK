@@ -5,11 +5,6 @@ import com.mycca.Tools.FireBaseHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-
-/**
- * Created by balpreet on 4/27/2018.
- */
 
 public class LocationDataProvider {
 
@@ -17,7 +12,7 @@ public class LocationDataProvider {
     private ArrayList<LocationModel> hotspotLocationModelArrayList;
     private ArrayList<LocationModel> gpLocationModelArrayList;
 
-    public LocationDataProvider() {
+    private LocationDataProvider() {
         _instance = this;
     }
 
@@ -47,20 +42,10 @@ public class LocationDataProvider {
     }
 
     public void sortByName(ArrayList<LocationModel> arrayList) {
-        Collections.sort(arrayList, new Comparator<LocationModel>() {
-            @Override
-            public int compare(LocationModel o1, LocationModel o2) {
-                return (o1.getLocationName().toLowerCase().compareTo(o2.getLocationName().toLowerCase()));
-            }
-        });
+        Collections.sort(arrayList, (o1, o2) -> (o1.getLocationName().toLowerCase().compareTo(o2.getLocationName().toLowerCase())));
     }
 
     public void sortByDistrict(ArrayList<LocationModel> arrayList) {
-        Collections.sort(arrayList, new Comparator<LocationModel>() {
-            @Override
-            public int compare(LocationModel o1, LocationModel o2) {
-                return (o1.getDistrict().toLowerCase().compareTo(o2.getDistrict().toLowerCase()));
-            }
-        });
+        Collections.sort(arrayList, (o1, o2) -> (o1.getDistrict().toLowerCase().compareTo(o2.getDistrict().toLowerCase())));
     }
 }

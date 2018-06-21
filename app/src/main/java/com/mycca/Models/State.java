@@ -1,12 +1,8 @@
 package com.mycca.Models;
 
-/**
- * Created by hp on 16-03-2018.
- */
-
 public class State {
-    String circleCode;
-    String name;
+    private String circleCode;
+    private String name;
 
     public State(String circleCode, String name) {
         this.circleCode = circleCode;

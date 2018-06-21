@@ -2,17 +2,13 @@ package com.mycca.Models;
 
 import java.util.Date;
 
-/**
- * Created by hp on 24-04-2018.
- */
-
 public class InspectionModel {
 
-    String staffId;
-    String locationName;
-    double latitude;
-    double longitute;
-    Date date;
+    private String staffId;
+    private String locationName;
+    private double latitude;
+    private double longitute;
+    private Date date;
 
     public String getStaffId() {
         return staffId;

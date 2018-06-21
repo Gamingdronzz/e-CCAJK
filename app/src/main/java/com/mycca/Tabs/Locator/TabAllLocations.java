@@ -37,8 +37,6 @@ import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
 
-
-//Our class extending fragment
 public class TabAllLocations extends Fragment {
 
     String TAG = "All Locations";

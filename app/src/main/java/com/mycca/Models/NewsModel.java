@@ -2,24 +2,21 @@ package com.mycca.Models;
 
 import java.util.Date;
 
-/**
- * Created by hp on 21-05-2018.
- */
-
 public class NewsModel {
 
-    Date date;
-    String headline;
-    String description;
-    String state;
+    private Date date;
+    private String headline;
+    private String description;
+    private String state;
 
-    public  NewsModel(){}
+    public NewsModel() {
+    }
 
-    public NewsModel(Date date, String headline, String description,String state) {
+    public NewsModel(Date date, String headline, String description, String state) {
         this.date = date;
         this.headline = headline;
         this.description = description;
-        this.state=state;
+        this.state = state;
     }
 
     public String getState() {

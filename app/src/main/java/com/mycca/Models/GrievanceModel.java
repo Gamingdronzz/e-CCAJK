@@ -2,25 +2,21 @@ package com.mycca.Models;
 
 import java.util.Date;
 
-/**
- * Created by hp on 11-04-2018.
- */
-
 public class GrievanceModel {
 
-    String details;
-    String email;
-    String mobile;
-    String pensionerIdentifier;
-    String state;
-    String submittedBy;
-    String message;
-    String uid;
-    Date date;
-    long grievanceStatus;
-    long grievanceType;
-    boolean expanded;
-    boolean highlighted = false;
+    private String details;
+    private String email;
+    private String mobile;
+    private String pensionerIdentifier;
+    private String state;
+    private String submittedBy;
+    private String message;
+    private String uid;
+    private Date date;
+    private long grievanceStatus;
+    private long grievanceType;
+    private boolean expanded;
+    private boolean highlighted = false;
 
     public GrievanceModel() {
 

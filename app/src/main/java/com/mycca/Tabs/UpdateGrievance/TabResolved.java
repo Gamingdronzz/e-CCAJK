@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,8 +23,6 @@ import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tools.Helper;
 
-
-//Our class extending fragment
 public class TabResolved extends Fragment {
 
     final String TAG = "Resolved";
@@ -36,7 +35,7 @@ public class TabResolved extends Fragment {
     RecyclerViewAdapterGrievanceUpdate adapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_grievances, container, false);
         bindViews(view);
         showEmptyListLayout(true);
@@ -47,7 +46,7 @@ public class TabResolved extends Fragment {
     private void showEmptyListLayout(boolean show) {
         if (show) {
             relativeLayoutEmptyList.setVisibility(View.VISIBLE);
-            textViewNoListInfo.setText("No Grievances Resolved");
+            textViewNoListInfo.setText(getResources().getString(R.string.no_grievances_resolved));
             recyclerView.setVisibility(View.GONE);
         } else {
             relativeLayoutEmptyList.setVisibility(View.GONE);
@@ -102,7 +101,7 @@ public class TabResolved extends Fragment {
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
 
     }
 

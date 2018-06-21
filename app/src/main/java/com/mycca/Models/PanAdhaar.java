@@ -1,14 +1,10 @@
 package com.mycca.Models;
 
-/**
- * Created by hp on 19-03-2018.
- */
-
 public class PanAdhaar {
-    String pensionerIdentifier;
-    String cardNumOrUserName;
-    String filename;
-    String state;
+    private String pensionerIdentifier;
+    private String cardNumOrUserName;
+    private String filename;
+    private String state;
 
     public String getPensionerIdentifier() {
         return pensionerIdentifier;

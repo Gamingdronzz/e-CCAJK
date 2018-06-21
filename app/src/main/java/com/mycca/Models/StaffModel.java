@@ -2,6 +2,7 @@ package com.mycca.Models;
 
 
 public class StaffModel {
+
     private String id;
     private String password;
     private long type;
@@ -58,4 +59,5 @@ public class StaffModel {
     public void setState(String state) {
         this.state = state;
     }
+
 }

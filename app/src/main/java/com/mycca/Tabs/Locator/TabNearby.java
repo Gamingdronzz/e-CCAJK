@@ -27,9 +27,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar;
@@ -48,9 +45,6 @@ import java.util.ArrayList;
 
 import static com.mycca.Tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.mycca.Tools.MyLocationManager.LOCATION_REQUEST_CODE;
-
-
-//Our class extending fragment
 
 public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
@@ -106,13 +100,10 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         activity = getActivity();
         progressDialog = Helper.getInstance().getProgressWindow(activity, "");
 
-        buttonRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: managing");
-                //locationManager.ManageLocation();
-                startLocationProcess();
-            }
+        buttonRefresh.setOnClickListener(v -> {
+            Log.d(TAG, "onClick: managing");
+            //locationManager.ManageLocation();
+            startLocationProcess();
         });
         manageNoLocationLayout(true);
         locationManager = new MyLocationManager(this, mLocationCallback);
@@ -148,48 +139,40 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             @Override
             public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
                 seekBarValue = seekBar.getProgress();
-                kilometres.setText("WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM");
+                String within = "WITHIN " + mapsHelper.getRadius(seekBarValue) + " KM";
+                kilometres.setText(within);
                 if (mLastLocation != null) {
                     mapsHelper.AnimateCamera(locationModels, getZoomValue(seekBarValue), mMap, mLastLocation, seekBarValue);
                 } else {
                     Task<LocationSettingsResponse> task = locationManager.ManageLocation();
                     if (task != null) {
-                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                            @Override
-                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                                Log.v(TAG, "On Task Complete");
-                                if (task.isSuccessful()) {
-                                    Log.v(TAG, "Task is Successful");
-                                    locationManager.requestLocationUpdates(mMap);
-                                    manageNoLocationLayout(false);
+                        task.addOnCompleteListener(task1 -> {
+                            Log.v(TAG, "On Task Complete");
+                            if (task1.isSuccessful()) {
+                                Log.v(TAG, "Task is Successful");
+                                locationManager.requestLocationUpdates(mMap);
+                                manageNoLocationLayout(false);
 
 
-                                } else {
-                                    Log.v(TAG, "Task is not Successful");
-                                }
+                            } else {
+                                Log.v(TAG, "Task is not Successful");
                             }
                         });
-                        task.addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
-                            @Override
-                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                                Log.v(TAG, "On Task Success");
-                                // All location settings are satisfied. The client can initialize
-                                // location requests here.
-                                // ...
+                        task.addOnSuccessListener(activity, locationSettingsResponse -> {
+                            Log.v(TAG, "On Task Success");
+                            // All location settings are satisfied. The client can initialize
+                            // location requests here.
+                            // ...
 
-                            }
                         });
 
-                        task.addOnFailureListener(activity, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.v(TAG, "On Task Failed");
-                                if (e instanceof ResolvableApiException) {
-                                    locationManager.onLocationAcccessRequestFailure(e);
-                                    // Location settings are not satisfied, but this can be fixed
-                                    // by showing the user a dialog.
+                        task.addOnFailureListener(activity, e -> {
+                            Log.v(TAG, "On Task Failed");
+                            if (e instanceof ResolvableApiException) {
+                                locationManager.onLocationAcccessRequestFailure(e);
+                                // Location settings are not satisfied, but this can be fixed
+                                // by showing the user a dialog.
 
-                                }
                             }
                         });
                     }
@@ -222,42 +205,33 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     public void startLocationProcess() {
         Task<LocationSettingsResponse> task = locationManager.ManageLocation();
         if (task != null) {
-            task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                    Log.v(TAG, "On Task Complete");
-                    if (task.isSuccessful()) {
-                        Log.v(TAG, "Task is Successful");
-                        progressDialog.setMessage("Getting Current Location Coordinates");
-                        progressDialog.show();
-                        locationManager.requestLocationUpdates(mMap);
-                        manageNoLocationLayout(false);
-                    } else {
-                        Log.v(TAG, "Task is not Successful");
-                    }
+            task.addOnCompleteListener(task1 -> {
+                Log.v(TAG, "On Task Complete");
+                if (task1.isSuccessful()) {
+                    Log.v(TAG, "Task is Successful");
+                    progressDialog.setMessage("Getting Current Location Coordinates");
+                    progressDialog.show();
+                    locationManager.requestLocationUpdates(mMap);
+                    manageNoLocationLayout(false);
+                } else {
+                    Log.v(TAG, "Task is not Successful");
                 }
             });
-            task.addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
-                @Override
-                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                    Log.v(TAG, "On Task Success");
-                    // All location settings are satisfied. The client can initialize
-                    // location requests here.
-                    // ...
+            task.addOnSuccessListener(activity, locationSettingsResponse -> {
+                Log.v(TAG, "On Task Success");
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
 
-                }
             });
 
-            task.addOnFailureListener(activity, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.v(TAG, "On Task Failed");
-                    if (e instanceof ResolvableApiException) {
-                        locationManager.onLocationAcccessRequestFailure(e);
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
+            task.addOnFailureListener(activity, e -> {
+                Log.v(TAG, "On Task Failed");
+                if (e instanceof ResolvableApiException) {
+                    locationManager.onLocationAcccessRequestFailure(e);
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
 
-                    }
                 }
             });
         }
@@ -360,43 +334,34 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Task<LocationSettingsResponse> task = locationManager.ManageLocation();
                     if (task != null) {
-                        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-                            @Override
-                            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                                Log.v(TAG, "On Task Complete");
-                                if (task.isSuccessful()) {
-                                    Log.v(TAG, "Task is Successful");
-                                    progressDialog.setMessage("Getting Current Location Coordinates");
-                                    progressDialog.show();
-                                    locationManager.requestLocationUpdates(mMap);
-                                    manageNoLocationLayout(false);
+                        final Task<LocationSettingsResponse> locationSettingsResponseTask = task.addOnCompleteListener(task1 -> {
+                            Log.v(TAG, "On Task Complete");
+                            if (task1.isSuccessful()) {
+                                Log.v(TAG, "Task is Successful");
+                                progressDialog.setMessage("Getting Current Location Coordinates");
+                                progressDialog.show();
+                                locationManager.requestLocationUpdates(mMap);
+                                manageNoLocationLayout(false);
 
-                                } else {
-                                    Log.v(TAG, "Task is not Successful");
-                                }
+                            } else {
+                                Log.v(TAG, "Task is not Successful");
                             }
                         });
-                        task.addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
-                            @Override
-                            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                                Log.v(TAG, "On Task Success");
-                                // All location settings are satisfied. The client can initialize
-                                // location requests here.
-                                // ...
+                        task.addOnSuccessListener(activity, locationSettingsResponse -> {
+                            Log.v(TAG, "On Task Success");
+                            // All location settings are satisfied. The client can initialize
+                            // location requests here.
+                            // ...
 
-                            }
                         });
 
-                        task.addOnFailureListener(activity, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.v(TAG, "On Task Failed");
-                                if (e instanceof ResolvableApiException) {
-                                    locationManager.onLocationAcccessRequestFailure(e);
-                                    // Location settings are not satisfied, but this can be fixed
-                                    // by showing the user a dialog.
+                        task.addOnFailureListener(activity, e -> {
+                            Log.v(TAG, "On Task Failed");
+                            if (e instanceof ResolvableApiException) {
+                                locationManager.onLocationAcccessRequestFailure(e);
+                                // Location settings are not satisfied, but this can be fixed
+                                // by showing the user a dialog.
 
-                                }
                             }
                         });
                         mMap.setMyLocationEnabled(true);

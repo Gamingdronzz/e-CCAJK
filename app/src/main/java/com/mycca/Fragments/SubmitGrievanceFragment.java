@@ -557,7 +557,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void sendFinalMail() {
 
-
         progressDialog.setMessage("Almost Done..");
         progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
@@ -569,7 +568,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         params.put("pensionerMobileNumber", inputMobile.getText().toString());
         params.put("pensionerEmail", inputEmail.getText().toString());
         params.put("grievanceType", type);
-        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(spinnerInputType.getSelectedItemPosition()));
+        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(((GrievanceType)spinnerInputType.getSelectedItem()).getId()));
         params.put("grievanceDetails", inputDetails.getText().toString());
         params.put("grievanceSubmittedBy", spinnerInputSubmittedBy.getSelectedItem().toString());
         params.put("fileCount", selectedImageModelArrayList.size() + "");

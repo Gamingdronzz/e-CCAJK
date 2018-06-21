@@ -1,12 +1,8 @@
 package com.mycca.Models;
 
-/**
- * Created by hp on 18-04-2018.
- */
-
 public class GrievanceType {
-    String name;
-    int id;
+    private  String name;
+    private int id;
 
     public GrievanceType(String name, int id) {
         this.name = name;

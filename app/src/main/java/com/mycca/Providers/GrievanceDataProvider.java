@@ -6,10 +6,6 @@ import com.mycca.Models.GrievanceModel;
 
 import java.util.ArrayList;
 
-/**
- * Created by hp on 28-04-2018.
- */
-
 public class GrievanceDataProvider {
 
     private static GrievanceDataProvider _instance;
@@ -22,7 +18,7 @@ public class GrievanceDataProvider {
     public GrievanceModel selectedGrievance;
     //public int selectedGrievancePosition;
 
-    public GrievanceDataProvider() {
+    private GrievanceDataProvider() {
         _instance = this;
     }
 

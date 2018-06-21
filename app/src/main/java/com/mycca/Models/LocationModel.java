@@ -1,9 +1,5 @@
 package com.mycca.Models;
 
-/**
- * Created by balpreet on 2/15/2018.
- */
-
 public class LocationModel {
 
     private String LocationName;
@@ -11,6 +7,31 @@ public class LocationModel {
     private Double Longitude;
     private String StateID;
     private String District;
+    private String Block;
+    private String SSA;
+
+    public LocationModel(String locationName, Double latitude, Double longitude, String stateID, String district, String block, String SSA) {
+
+        LocationName = locationName;
+        Latitude = latitude;
+        Longitude = longitude;
+        StateID = stateID;
+        District = district;
+        Block = block;
+        this.SSA = SSA;
+    }
+
+    public LocationModel(String locationName, Double latitude, Double longitude, String state, String district) {
+        this.LocationName = locationName;
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+        this.StateID = state;
+        this.District = district;
+    }
+
+    public LocationModel() {
+
+    }
 
     public String getBlock() {
         return Block;
@@ -26,32 +47,6 @@ public class LocationModel {
 
     public void setSSA(String SSA) {
         this.SSA = SSA;
-    }
-
-    public LocationModel(String locationName, Double latitude, Double longitude, String stateID, String district, String block, String SSA) {
-
-        LocationName = locationName;
-        Latitude = latitude;
-        Longitude = longitude;
-        StateID = stateID;
-        District = district;
-        Block = block;
-        this.SSA = SSA;
-    }
-
-    private String Block;
-    private String SSA;
-
-    public LocationModel()
-    {
-
-    }
-    public LocationModel(String locationName, Double latitude, Double longitude, String state, String district) {
-        this.LocationName = locationName;
-        this.Latitude = latitude;
-        this.Longitude = longitude;
-        this.StateID = state;
-        this.District = district;
     }
 
     public Double getLatitude() {
