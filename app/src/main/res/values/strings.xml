@@ -79,6 +79,9 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="no_grievances_resolved">No Grievances Resolved</string>
     <string name="no_grievances_submitted">No New Grievances Submitted</string>
     <string name="no_grievances_processing">No Grievances under Process</string>
+    <string name="login">Log In</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
     <!-- CropView -->
     <string name="crop_image_activity_title">Crop</string>
     <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
@@ -96,5 +99,6 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
     <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+
 
 </resources>

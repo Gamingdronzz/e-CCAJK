@@ -1,6 +1,5 @@
 package com.mycca.Models;
 
-
 public class StaffModel {
 
     private String id;
@@ -8,6 +7,7 @@ public class StaffModel {
     private long type;
     private String state;
     private String name;
+    private String email;
 
     public StaffModel() {
     }
@@ -60,4 +60,11 @@ public class StaffModel {
         this.state = state;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

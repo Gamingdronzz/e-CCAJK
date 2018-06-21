@@ -32,12 +32,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
@@ -228,9 +222,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_login:
                 fragment = new LoginFragment();
                 title = "CCA JK";
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, null);
-                }
+                showFragment(title, fragment, null);
                 break;
             case R.id.navmenu_update_grievances:
                 fragment = new UpdateGrievanceFragment();
@@ -411,7 +403,6 @@ public class MainActivity extends AppCompatActivity
                                 },
                                 null, null, FancyAlertDialogType.SUCCESS);
 
-                        //tryLogin();
                         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
                         if (f instanceof SettingsFragment)
                             ((SettingsFragment) f).manageSignOut();
@@ -463,50 +454,6 @@ public class MainActivity extends AppCompatActivity
                 FancyAlertDialogType.WARNING);
     }
 
-    private void tryLogin() {
-
-        final DatabaseReference dbref = FirebaseDatabase.getInstance().getReference()
-                .child(FireBaseHelper.ROOT_STAFF);
-
-        final ChildEventListener childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                try {
-                    if (dataSnapshot.child("id").getValue() == mAuth.getCurrentUser().getEmail()) {
-                        progressDialog.dismiss();
-                        dbref.removeEventListener(this);
-                        StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
-                        OnLoginSuccessful(staffModel);
-
-                    }
-                } catch (DatabaseException dbe) {
-                    dbe.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        dbref.addChildEventListener(childEventListener);
-    }
-
     public void OnLoginFailure(String message) {
         Helper.getInstance().showFancyAlertDialog(this,
                 message,
@@ -516,7 +463,6 @@ public class MainActivity extends AppCompatActivity
                 null,
                 null,
                 FancyAlertDialogType.ERROR);
-        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     public void OnLoginSuccessful(StaffModel staffModel) {
