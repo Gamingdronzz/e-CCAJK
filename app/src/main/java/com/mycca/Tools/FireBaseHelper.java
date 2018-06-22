@@ -1,6 +1,7 @@
 package com.mycca.Tools;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -28,7 +29,7 @@ public class FireBaseHelper {
     private static FireBaseHelper _instance;
 
     public DatabaseReference databaseReference;
-    private StorageReference storageReference;
+    public StorageReference storageReference;
     public FirebaseAuth mAuth;
 
     public final static String ROOT_GRIEVANCES = "Grievances";
@@ -45,6 +46,7 @@ public class FireBaseHelper {
     public final static String ROOT_NEWS = "Latest News";
     public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
+    public final static String ROOT_SLIDER = "Slider Data";
 
     public final static String GRIEVANCE_PENSION = "Pension";
     public final static String GRIEVANCE_GPF = "GPF";
@@ -178,8 +180,7 @@ public class FireBaseHelper {
         return task;
     }
 
-    public Task<Void> updateNews(Object model, String root)
-    {
+    public Task<Void> updateNews(Object model, String root) {
         DatabaseReference dbref = databaseReference.child(root);
         Task<Void> task;
         NewsModel newsModel = (NewsModel) model;
@@ -230,11 +231,15 @@ public class FireBaseHelper {
                 .addListenerForSingleValueEvent(valueEventListener);
     }
 
-    public void getDataFromFirebase(ChildEventListener childEventListener,String... params)
-    {
-        DatabaseReference dbref = databaseReference;
-        for (String key :
-                params) {
+    public void getDataFromFirebase(ChildEventListener childEventListener, boolean versioned, String... params) {
+        DatabaseReference dbref;
+        if (versioned)
+            dbref = databaseReference;
+        else
+            dbref = FirebaseDatabase.getInstance().getReference();
+
+        Log.d(TAG, "getting DataFromFirebase: ");
+        for (String key : params) {
             Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
             dbref = dbref.child(key);
         }
@@ -242,15 +247,21 @@ public class FireBaseHelper {
         dbref.addChildEventListener(childEventListener);
     }
 
-    public void getDataFromFirebase(ValueEventListener valueEventListener,String... params)
-    {
-        DatabaseReference dbref = databaseReference;
-        for (String key :
-                params) {
+    public void getDataFromFirebase(ValueEventListener valueEventListener, boolean versioned, String... params) {
+        DatabaseReference dbref;
+        if (versioned)
+            dbref = databaseReference;
+        else
+            dbref = FirebaseDatabase.getInstance().getReference();
+        for (String key : params) {
             Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
             dbref = dbref.child(key);
         }
 
         dbref.addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    public Task<Uri> getFileFromFirebase(String path) {
+        return storageReference.child(path).getDownloadUrl();
     }
 }

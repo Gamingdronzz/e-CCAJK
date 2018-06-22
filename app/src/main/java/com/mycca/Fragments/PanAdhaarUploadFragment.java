@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,7 +50,6 @@ import com.mycca.Tools.DataSubmissionAndMail;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.VolleyHelper;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,7 +199,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void onCropImage(Uri imageUri) {
-                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+                Glide.with(getContext()).load(imageUri).into(imageviewSelectedImage);
                 imageModel = new SelectedImageModel(imageUri);
                 textViewFileName.setError(null);
                 String text = root + ".jpg";

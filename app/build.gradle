@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:15.1.0'
     implementation 'com.google.firebase:firebase-database:15.0.1'
     implementation 'com.google.firebase:firebase-storage:15.0.2'
+    implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
     implementation 'com.google.firebase:firebase-invites:15.0.1'
 
@@ -68,7 +69,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.4'
     //implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
     //implementation 'com.github.warkiz.widget:indicatorseekbar:1.2.9'
-    implementation 'com.squareup.picasso:picasso:2.3.2'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'com.android.volley:volley:1.0.0'

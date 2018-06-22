@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mycca.Fragments.SubmitGrievanceFragment;
 import com.mycca.Fragments.InspectionFragment;
 import com.mycca.Models.SelectedImageModel;
 import com.mycca.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
         holder.removeClickListener.setPosition(position);
         String filename = "File-" + (position + 1);
         holder.selectedImageTitle.setText(filename);
-        Picasso.with(fragment.getContext()).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
+        Glide.with(fragment.getContext()).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
     }
 
     @Override

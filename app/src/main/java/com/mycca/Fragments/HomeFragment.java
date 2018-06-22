@@ -16,9 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
@@ -28,6 +30,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
@@ -35,6 +38,7 @@ import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.GravitySnapHelper.GravitySnapHelper;
 import com.mycca.Models.NewsModel;
+import com.mycca.Models.SliderImageModel;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Preferences;
@@ -45,6 +49,7 @@ import java.util.HashMap;
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     SliderLayout mDemoSlider;
+    ImageView imageView;
     RecyclerView recyclerView;
     TextView tvLatestNews, tvUserName, tvVisit;
     ImageButton moveRight, moveLeft;
@@ -55,6 +60,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     RecyclerViewAdapterNews adapterNews;
     ArrayList<NewsModel> newsModelArrayList;
     MainActivity activity;
+    StorageReference sref;
 
     public HomeFragment() {
 
@@ -77,7 +83,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void bindViews(View view) {
         //welcomeText = view.findViewById(R.id.textview_welcome_short);
         //ccaDeskText = view.findViewById(R.id.textview_cca_desk);
-        mDemoSlider = view.findViewById(R.id.slider_home);
+        //mDemoSlider = view.findViewById(R.id.slider_home);
+        imageView = view.findViewById(R.id.image_view_home);
         tvLatestNews = view.findViewById(R.id.tv_home_latest_news);
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
         moveRight = view.findViewById(R.id.img_btn_move_right);
@@ -124,6 +131,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //            }
 //        });
 
+
         activity = (MainActivity) getActivity();
         tvVisit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
         tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
@@ -160,7 +168,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         getNews();
         setupWelcomeBar();
-        setupSlider();
+        getSliderData();
+       // setupSlider();
+
     }
 
     public void setupWelcomeBar() {
@@ -260,8 +270,54 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             mDemoSlider.addSlider(textSliderView);
 
         }
+    }
 
+    private void getSliderData() {
+        Log.d(TAG, "getting SliderData: ");
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "ChildAdded: ");
+                SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
+                Log.d(TAG, "Image: "+ sliderImageModel.getImageName());
+                Log.d(TAG, "url: "+ sliderImageModel.getUrl());
+                Glide.with(getContext())
+                        .load("Slider Images/" + sliderImageModel.getImageName())
+                        .into(imageView);
+              /*  Task<Uri> task = FireBaseHelper.getInstance(getContext()).getFileFromFirebase("Slider Images/" + sliderImageModel.getImageName());
+               task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
 
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                    }
+                });*/
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener,false, FireBaseHelper.ROOT_SLIDER);
     }
 
     private void showTutorial() {
