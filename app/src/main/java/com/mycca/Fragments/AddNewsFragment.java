@@ -32,6 +32,8 @@ public class AddNewsFragment extends Fragment {
     TextInputEditText textTitle, textDescription;
     Button add;
     ProgressDialog progressDialog;
+    NewsModel newsModel;
+    String json;
 
     public AddNewsFragment() {
     }
@@ -41,6 +43,8 @@ public class AddNewsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_add_news, container, false);
+        if (getArguments() != null)
+            json = getArguments().getString("News");
         bindViews(view);
         init();
         return view;
@@ -54,6 +58,11 @@ public class AddNewsFragment extends Fragment {
     }
 
     private void init() {
+        if (json != null) {
+            newsModel = (NewsModel) Helper.getInstance().getObjectFromJson(json, NewsModel.class);
+            textTitle.setText(newsModel.getHeadline());
+            textDescription.setText(newsModel.getDescription());
+        }
         add.setOnClickListener(v -> {
             if (checkInput()) {
                 progressDialog.show();
@@ -111,16 +120,27 @@ public class AddNewsFragment extends Fragment {
     }
 
     public void addNewsToFireBase() {
-        NewsModel newsModel = new NewsModel(
-                new Date(),
-                textTitle.getText().toString(),
-                textDescription.getText().toString(),
-                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState()
-        );
+        Task<Void> task;
+        if (newsModel == null) {
+            newsModel = new NewsModel(
+                    new Date(),
+                    textTitle.getText().toString(),
+                    textDescription.getText().toString(),
+                    Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState(),
+                    null
+            );
+            task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                    newsModel,
+                    FireBaseHelper.ROOT_NEWS);
+        } else {
+            newsModel.setHeadline(textTitle.getText().toString());
+            newsModel.setDescription(textDescription.getText().toString());
 
-        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                FireBaseHelper.ROOT_NEWS,
-                newsModel);
+            task = FireBaseHelper.getInstance(getContext()).updateNews(
+                    newsModel,
+                    FireBaseHelper.ROOT_NEWS);
+        }
+
 
         task.addOnCompleteListener(task1 -> {
             progressDialog.dismiss();

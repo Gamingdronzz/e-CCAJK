@@ -4,6 +4,7 @@ package com.mycca.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +20,6 @@ import com.mycca.Adapter.RecyclerViewAdapterNews;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
 import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ public class LatestNewsFragment extends Fragment {
 
     private void init() {
         newsModelArrayList = new ArrayList<>();
-        adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, getActivity(), false);
+        adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, (AppCompatActivity) getActivity(), false);
 
         recyclerView.setAdapter(adapterNews);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -64,7 +64,6 @@ public class LatestNewsFragment extends Fragment {
     private void getNews() {
         DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
         dbref.child(FireBaseHelper.ROOT_NEWS)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {

@@ -8,15 +8,17 @@ public class NewsModel {
     private String headline;
     private String description;
     private String state;
+    private String key;
 
     public NewsModel() {
     }
 
-    public NewsModel(Date date, String headline, String description, String state) {
+    public NewsModel(Date date, String headline, String description, String state, String key) {
         this.date = date;
         this.headline = headline;
         this.description = description;
         this.state = state;
+        this.key = key;
     }
 
     public String getState() {
@@ -49,5 +51,13 @@ public class NewsModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

@@ -198,7 +198,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void getNews() {
         DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
         dbref.child(FireBaseHelper.ROOT_NEWS)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {

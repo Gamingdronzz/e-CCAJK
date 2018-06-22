@@ -131,12 +131,12 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
     }
 
     class ViewClickListener implements View.OnClickListener {
-        public void setPosition(int position) {
-            this.position = position;
-        }
 
         private int position;
 
+        public void setPosition(int position) {
+            this.position = position;
+        }
 
         @Override
         public void onClick(View v) {

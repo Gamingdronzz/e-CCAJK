@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -16,13 +17,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.Models.Contact;
 import com.mycca.Models.ContactBuilder;
-import com.mycca.Models.GrievanceModel;
-import com.mycca.Models.InspectionModel;
 import com.mycca.Models.NewsModel;
-import com.mycca.Models.PanAdhaar;
 import com.mycca.Models.SelectedImageModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FireBaseHelper {
 
@@ -93,7 +92,7 @@ public class FireBaseHelper {
         }
     }
 
-    public Task<Void> uploadDataToFirebase(String root, Object model, String... params) {
+    /*public Task<Void> uploadDataToFirebase(String root, Object model, String... params) {
         DatabaseReference dbref = databaseReference.child(root);
         Task<Void> task;
 
@@ -103,8 +102,18 @@ public class FireBaseHelper {
                 break;
             case ROOT_NEWS:
                 NewsModel newsModel = (NewsModel) model;
-                task = dbref.child(newsModel.getState())
-                        .push().setValue(newsModel);
+                if (newsModel.getKey() == null) {
+                    Log.d(TAG, "news key null");
+                    String key=dbref.push().getKey();
+                    newsModel.setKey(key);
+                    task = dbref.child(key).setValue(newsModel);
+                } else {
+                    Log.d(TAG, "non null news key : " + newsModel.getKey());
+                    HashMap<String, Object> result = new HashMap<>();
+                    result.put("headline", newsModel.getHeadline());
+                    result.put("description", newsModel.getDescription());
+                    task = dbref.child(newsModel.getKey()).updateChildren(result);
+                }
                 break;
             case ROOT_GRIEVANCES:
 
@@ -115,7 +124,7 @@ public class FireBaseHelper {
                         .setValue(grievanceModel);
 
                 break;
-            case ROOT_INSPECTION:
+           *//* case ROOT_INSPECTION:
                 InspectionModel inspectionModel = (InspectionModel) model;
                 task = dbref.child(params[0])
                         .child(params[1])
@@ -127,8 +136,58 @@ public class FireBaseHelper {
                 task = dbref.child(panAdhaar.getState())
                         .child(panAdhaar.getPensionerIdentifier())
                         .setValue(panAdhaar);
+                break;*//*
+        }
+        return task;
+    }*/
+
+    public Task<Void> uploadDataToFirebase(Object model, String... params) {
+        Task<Void> task;
+        DatabaseReference dbref = databaseReference;
+
+        for (String key :
+                params) {
+            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            dbref = dbref.child(key);
+        }
+
+        task = dbref.setValue(model);
+        return task;
+    }
+
+    public Task<Void> uploadDataToFirebase(Object model, String root) {
+
+        DatabaseReference dbref = databaseReference.child(root);
+        Task<Void> task = null;
+
+        switch (root) {
+            case ROOT_NEWS:
+                NewsModel newsModel = (NewsModel) model;
+                if (newsModel.getKey() == null) {
+                    Log.d(TAG, "news key null");
+                    String key = dbref.push().getKey();
+                    newsModel.setKey(key);
+                    task = dbref.child(key).setValue(newsModel);
+                }
+                break;
+            case ROOT_SUGGESTIONS:
+                task = dbref.push().setValue(model);
                 break;
         }
+
+        return task;
+    }
+
+    public Task<Void> updateNews(Object model, String root)
+    {
+        DatabaseReference dbref = databaseReference.child(root);
+        Task<Void> task;
+        NewsModel newsModel = (NewsModel) model;
+        Log.d(TAG, "non null news key : " + newsModel.getKey());
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("headline", newsModel.getHeadline());
+        result.put("description", newsModel.getDescription());
+        task = dbref.child(newsModel.getKey()).updateChildren(result);
         return task;
     }
 
@@ -166,9 +225,32 @@ public class FireBaseHelper {
         return contactArrayList;
     }
 
-    public void checkForUpdate(ValueEventListener valueEventListener){
+    public void checkForUpdate(ValueEventListener valueEventListener) {
         databaseReference.child(FireBaseHelper.ROOT_APP_VERSION)
                 .addListenerForSingleValueEvent(valueEventListener);
     }
 
+    public void getDataFromFirebase(ChildEventListener childEventListener,String... params)
+    {
+        DatabaseReference dbref = databaseReference;
+        for (String key :
+                params) {
+            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            dbref = dbref.child(key);
+        }
+
+        dbref.addChildEventListener(childEventListener);
+    }
+
+    public void getDataFromFirebase(ValueEventListener valueEventListener,String... params)
+    {
+        DatabaseReference dbref = databaseReference;
+        for (String key :
+                params) {
+            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            dbref = dbref.child(key);
+        }
+
+        dbref.addListenerForSingleValueEvent(valueEventListener);
+    }
 }

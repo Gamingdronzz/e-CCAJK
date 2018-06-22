@@ -361,12 +361,15 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void uploadDataToFirebase() {
         progressDialog.show();
-        PanAdhaar panAdhaar = new PanAdhaar(pensionerCode,
+        PanAdhaar panAadharModel = new PanAdhaar(pensionerCode,
                 number,
                 null,
                 state.getCircleCode());
 
-        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(root, panAdhaar);
+        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(panAadharModel,
+                root,
+                panAadharModel.getState(),
+                panAadharModel.getPensionerIdentifier() );
 
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {

@@ -356,8 +356,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
 
         Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                FireBaseHelper.ROOT_INSPECTION,
                 inspectionModel,
+                FireBaseHelper.ROOT_INSPECTION,
                 staffModel.getState(),
                 key);
         task.addOnCompleteListener(task1 -> {

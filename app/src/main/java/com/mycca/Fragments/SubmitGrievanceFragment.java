@@ -467,8 +467,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         try {
 
             Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+                    grievanceModel,
                     FireBaseHelper.ROOT_GRIEVANCES,
-                    grievanceModel);
+                    grievanceModel.getState(),
+                    grievanceModel.getPensionerIdentifier(),
+                    String.valueOf(grievanceModel.getGrievanceType()));
 
             task.addOnCompleteListener(task1 -> {
                 if (task1.isSuccessful()) {

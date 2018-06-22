@@ -31,6 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
 import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
@@ -47,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -261,6 +263,16 @@ public class Helper {
         intent.setData(Uri.parse(getPlayStoreURL()));
         activity.startActivity(intent);
 
+    }
+
+    public String getJsonFromObject(Object obj) {
+        Gson gson = new Gson();
+        return gson.toJson(obj);
+    }
+
+    public Object getObjectFromJson(String json, Type type){
+        Gson gson = new Gson();
+        return gson.fromJson(json, type);
     }
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
