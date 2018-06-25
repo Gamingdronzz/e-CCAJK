@@ -85,6 +85,9 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="headline">Headline</string>
     <string name="details">details</string>
     <string name="date">date</string>
+    <string name="latest_news">Latest From CCA</string>
+    <string name="visit_us">Visit Us</string>
+
     <!-- CropView -->
     <string name="crop_image_activity_title">Crop</string>
     <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
@@ -102,7 +105,5 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
     <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
-
-
 
 </resources>

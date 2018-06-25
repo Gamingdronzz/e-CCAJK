@@ -13,9 +13,9 @@
         android:drawablePadding="@dimen/padding_medium"
         android:drawableTint="@color/colorWhite"
         android:padding="@dimen/padding_medium"
-        android:text="Hello CCA User"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_18" />
+        android:textSize="@dimen/text_18"
+        tools:targetApi="m" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,18 +24,18 @@
         android:orientation="vertical"
         android:weightSum="4">
 
-         <com.mycca.CustomObjects.CustomImageSlider.SliderLayout
-             android:id="@+id/slider_home"
-             android:layout_width="match_parent"
-             android:layout_height="0dp"
-             android:layout_weight="1">
+        <com.mycca.CustomObjects.CustomImageSlider.SliderLayout
+            android:id="@+id/slider_home"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-         </com.mycca.CustomObjects.CustomImageSlider.SliderLayout>
+        </com.mycca.CustomObjects.CustomImageSlider.SliderLayout>
         <!--<ImageView-->
-            <!--android:id="@+id/image_view_home"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="1" />-->
+        <!--android:id="@+id/image_view_home"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1" />-->
         <!--<View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -58,15 +58,15 @@
                 android:drawablePadding="@dimen/padding_medium"
                 android:drawableTint="@color/colorWhite"
                 android:padding="@dimen/padding_medium"
-                android:text="Latest From CCA"
+                android:text="@string/latest_news"
                 android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_20" />
+                android:textSize="@dimen/text_20"
+                tools:targetApi="m" />
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/tv_home_latest_news">
+                android:layout_height="match_parent">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_home_latest_news"
@@ -79,21 +79,23 @@
                     android:id="@+id/img_btn_move_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/margin_medium"
                     android:background="@drawable/circular_background_simple_text"
-                    app:srcCompat="@drawable/ic_arrow_left_black_24dp" />
+                    app:srcCompat="@drawable/ic_arrow_left_black_24dp"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/img_btn_move_right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/margin_medium"
                     android:background="@drawable/circular_background_simple_text"
-                    app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp" />
+                    app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                    tools:ignore="ContentDescription" />
 
             </RelativeLayout>
 
@@ -192,8 +194,9 @@
         android:drawablePadding="@dimen/padding_medium"
         android:drawableTint="@color/colorWhite"
         android:padding="@dimen/padding_medium"
-        android:text="Visit Us"
+        android:text="@string/visit_us"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_20" />
+        android:textSize="@dimen/text_20"
+        tools:targetApi="m" />
 
 </RelativeLayout>

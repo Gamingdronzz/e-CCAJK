@@ -93,7 +93,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     int counterFirebaseImages;
     String TAG = "Grievance";
     String hint = "Pensioner Code";
-    String code, type, email;
+    String code, type, email, refNo;
 
     MainActivity mainActivity;
     GrievanceType grievanceType;
@@ -454,15 +454,18 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.show();
         // final DatabaseReference dbref;
         //   dbref = FireBaseHelper.getInstance(getContext()).databaseReference.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES);
+        refNo = getReferenceNumber();
 
-        final GrievanceModel grievanceModel = new GrievanceModel(
-                FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser().getUid(),
-                code,
-                inputMobile.getText().toString(),
+        GrievanceModel grievanceModel = new GrievanceModel(code,
                 grievanceType.getId(),
+                refNo,
                 inputDetails.getText().toString().trim(),
+                email,
+                inputMobile.getText().toString(),
                 spinnerInputSubmittedBy.getSelectedItem().toString(),
-                email, null, state.getCircleCode(), 0, new Date());
+                0, state.getCircleCode(),
+                FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser().getUid(),
+                new Date());
 
         try {
 
@@ -484,6 +487,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         } catch (DatabaseException dbe) {
             dbe.printStackTrace();
         }
+    }
+
+    private String getReferenceNumber() {
+        return "12345";
     }
 
     private void uploadAllImagesToFirebase() {
@@ -571,7 +578,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         params.put("pensionerMobileNumber", inputMobile.getText().toString());
         params.put("pensionerEmail", inputEmail.getText().toString());
         params.put("grievanceType", type);
-        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(((GrievanceType)spinnerInputType.getSelectedItem()).getId()));
+        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(((GrievanceType) spinnerInputType.getSelectedItem()).getId()));
         params.put("grievanceDetails", inputDetails.getText().toString());
         params.put("grievanceSubmittedBy", spinnerInputSubmittedBy.getSelectedItem().toString());
         params.put("fileCount", selectedImageModelArrayList.size() + "");
@@ -619,6 +626,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     String alertMessage = type +
                             " Grievance for<br>" +
                             "<b>" + grievanceType.getName() + "</b><br>" +
+                            "with Reference Number: <b>" + refNo + "</b><br>"+
                             " has been succesfully submitted";
 
                     Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, "Grievance Submission", "OK", () -> {

@@ -21,12 +21,12 @@ public class StatesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return Helper.getInstance().getStatelist().length;
+        return Helper.getInstance().getStateListJK().length;
     }
 
     @Override
     public Object getItem(int position) {
-        return Helper.getInstance().getStatelist()[position];
+        return Helper.getInstance().getStateListJK()[position];
     }
 
     @Override
@@ -39,7 +39,7 @@ public class StatesAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
-            State state = Helper.getInstance().getStatelist()[position];
+            State state = Helper.getInstance().getStateListJK()[position];
             TextView textView = convertView.findViewById(R.id.spinner_item);
             textView.setText(state.getName());
         }

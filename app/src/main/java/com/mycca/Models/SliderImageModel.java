@@ -4,7 +4,8 @@ package com.mycca.Models;
 public class SliderImageModel {
     private String imageName;
     private String title;
-    private String url;
+    private String imageUrl;
+    private String linkUrl;
 
     public SliderImageModel() {
     }
@@ -25,11 +26,19 @@ public class SliderImageModel {
         this.title = title;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String url) {
+        this.imageUrl = url;
+    }
+
+    public String getLinkUrl() {
+        return linkUrl;
+    }
+
+    public void setLinkUrl(String linkUrl) {
+        this.linkUrl = linkUrl;
     }
 }

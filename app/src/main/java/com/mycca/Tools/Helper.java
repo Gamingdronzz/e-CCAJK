@@ -39,7 +39,6 @@ import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.CustomObjects.FancyAlertDialog.Icon;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.ShowcaseView.GuideView;
 import com.mycca.Models.GrievanceType;
 import com.mycca.Models.State;
 import com.mycca.R;
@@ -64,7 +63,6 @@ public class Helper {
     public static boolean versionChecked = false;
     private static Helper _instance;
     public final String SUCCESS = "success";
-    public final String Nil = "Nil";
     private final String TAG = "Helper";
     private String hint = "Pensioner Code";
 
@@ -74,6 +72,8 @@ public class Helper {
             new State("05", "Jammu & Kashmir"),
             new State("100", "Haryana")
     };
+
+    private State stateListJK[] = {new State("05", "Jammu & Kashmir")};
 
     public Helper() {
         _instance = this;
@@ -107,6 +107,10 @@ public class Helper {
 
     public State[] getStatelist() {
         return stateList;
+    }
+
+    public State[] getStateListJK() {
+        return stateListJK;
     }
 
     public String getStateName(String stateId) {
@@ -270,7 +274,7 @@ public class Helper {
         return gson.toJson(obj);
     }
 
-    public Object getObjectFromJson(String json, Type type){
+    public Object getObjectFromJson(String json, Type type) {
         Gson gson = new Gson();
         return gson.fromJson(json, type);
     }
@@ -288,33 +292,6 @@ public class Helper {
         result = !(input == null || input.trim().isEmpty());
         Log.d(TAG, "checkInput: result = " + result);
         return result;
-    }
-
-    public void showGuide(Context context, View view, String title, String message) {
-        new GuideView.Builder(context)
-                .setTitle(title)
-                .setContentText(message)
-                .setGravity(GuideView.Gravity.auto) //optional
-                .setDismissType(GuideView.DismissType.anywhere) //optional - default GuideView.DismissType.targetView
-                .setTargetView(view)
-                .setContentTextSize(14)//optional
-                .setTitleTextSize(16)//optional
-                .build()
-                .show();
-    }
-
-    public void showGuide(Context context, View view, String title, String message, GuideView.GuideListener guideListener) {
-        new GuideView.Builder(context)
-                .setTitle(title)
-                .setContentText(message)
-                .setGravity(GuideView.Gravity.auto) //optional
-                .setDismissType(GuideView.DismissType.anywhere) //optional - default GuideView.DismissType.targetView
-                .setTargetView(view)
-                .setContentTextSize(14)//optional
-                .setTitleTextSize(16)//optional
-                .setGuideListener(guideListener)
-                .build()
-                .show();
     }
 
     public void hideKeyboardFrom(Activity activity) {

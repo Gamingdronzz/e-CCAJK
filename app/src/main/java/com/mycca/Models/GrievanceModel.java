@@ -12,6 +12,7 @@ public class GrievanceModel {
     private String submittedBy;
     private String message;
     private String uid;
+    private String referenceNo;
     private Date date;
     private long grievanceStatus;
     private long grievanceType;
@@ -22,18 +23,20 @@ public class GrievanceModel {
 
     }
 
-    public GrievanceModel(String uid, String pensionerIdentifier, String mobile, long grievanceType, String details, String submittedBy, String email, String message, String state, long grievanceStatus, Date date) {
-        this.uid = uid;
-        this.pensionerIdentifier = pensionerIdentifier;
-        this.mobile = mobile;
-        this.grievanceType = grievanceType;
+    public GrievanceModel(String pensionerIdentifier, long grievanceType, String referenceNo,
+                          String details, String email, String mobile, String submittedBy,
+                          long grievanceStatus, String state, String uid, Date date) {
         this.details = details;
-        this.submittedBy = submittedBy;
         this.email = email;
-        this.message = message;
+        this.mobile = mobile;
+        this.pensionerIdentifier = pensionerIdentifier;
         this.state = state;
-        this.grievanceStatus = grievanceStatus;
+        this.submittedBy = submittedBy;
+        this.uid = uid;
+        this.referenceNo = referenceNo;
         this.date = date;
+        this.grievanceStatus = grievanceStatus;
+        this.grievanceType = grievanceType;
     }
 
     public String getUid() {
@@ -140,4 +143,11 @@ public class GrievanceModel {
         this.date = date;
     }
 
+    public String getReferenceNo() {
+        return referenceNo;
+    }
+
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
+    }
 }

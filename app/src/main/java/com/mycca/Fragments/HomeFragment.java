@@ -21,14 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.StorageReference;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
 import com.mycca.CustomObjects.CustomImageSlider.SliderLayout;
@@ -46,7 +43,6 @@ import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Preferences;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
@@ -62,7 +58,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     RecyclerViewAdapterNews adapterNews;
     ArrayList<NewsModel> newsModelArrayList;
     MainActivity activity;
-    StorageReference sref;
 
     public HomeFragment() {
 
@@ -174,38 +169,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     }
 
-    public void setupWelcomeBar() {
-        FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
-        if (user != null) {
-            tvUserName.setVisibility(View.VISIBLE);
-            String username = "Hello " + user.getDisplayName();
-            tvUserName.setText(username);
-        } else
-            tvUserName.setVisibility(View.GONE);
-    }
-
-    private void loadWebSite(String name) {
-
-        BrowserFragment browserFragment = new BrowserFragment();
-
-        Bundle bundle = new Bundle();
-        switch (name) {
-            case "Digital India":
-                bundle.putString("url", "http://www.digitalindia.gov.in");
-                activity.showFragment(name, browserFragment, bundle);
-                break;
-            case "Swachh Bharat Abhiyan":
-                bundle.putString("url", "https://swachhbharat.mygov.in");
-                activity.showFragment(name, browserFragment, bundle);
-                break;
-            case "Controller of Communication Accounts":
-                bundle.putString("url", "http://ccajk.gov.in");
-                activity.showFragment(name, browserFragment, bundle);
-                break;
-        }
-
-    }
-
     private void getNews() {
         DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
         dbref.child(FireBaseHelper.ROOT_NEWS)
@@ -242,23 +205,14 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 });
     }
 
-    private void addImageToSlider(SliderImageModel sliderImageModel) {
-
-        TextSliderView textSliderView = new TextSliderView(getContext());
-        // initialize a SliderLayout
-        textSliderView
-                .description(sliderImageModel.getImageName())
-                .image(sliderImageModel.getUrl())
-                .setProgressBarVisible(true)
-                .setBackgroundColor(Color.WHITE)
-                //.(BaseSliderView.ScaleType.FitCenterCrop)
-                .setOnSliderClickListener(this);
-
-        //add your extra information
-        textSliderView.bundle(new Bundle());
-        textSliderView.getBundle()
-                .putString("extra", sliderImageModel.getTitle());
-        sliderLayout.addSlider(textSliderView);
+    public void setupWelcomeBar() {
+        FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
+        if (user != null) {
+            tvUserName.setVisibility(View.VISIBLE);
+            String username = "Hello " + user.getDisplayName();
+            tvUserName.setText(username);
+        } else
+            tvUserName.setVisibility(View.GONE);
     }
 
     private void getSliderData() {
@@ -268,21 +222,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "ChildAdded: ");
                 SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
-                Log.d(TAG, "Image: "+ sliderImageModel.getImageName());
-                Log.d(TAG, "url: "+ sliderImageModel.getUrl());
+                Log.d(TAG, "Image: " + sliderImageModel.getImageName());
+                Log.d(TAG, "url: " + sliderImageModel.getImageUrl());
                 addImageToSlider(sliderImageModel);
-
-              /*  Task<Uri> task = FireBaseHelper.getInstance(getContext()).getFileFromFirebase("Slider Images/" + sliderImageModel.getImageName());
-               task.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                    }
-                });*/
             }
 
             @Override
@@ -305,7 +247,35 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             }
         };
-        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener,false, FireBaseHelper.ROOT_SLIDER);
+        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener, false, FireBaseHelper.ROOT_SLIDER);
+    }
+
+    private void addImageToSlider(SliderImageModel sliderImageModel) {
+
+        TextSliderView textSliderView = new TextSliderView(getContext());
+        // initialize a SliderLayout
+        textSliderView
+                .description(sliderImageModel.getTitle())
+                .image(sliderImageModel.getImageUrl())
+                .setProgressBarVisible(true)
+                .setBackgroundColor(Color.WHITE)
+                .setOnSliderClickListener(this);
+
+        //add your extra information
+        textSliderView.bundle(new Bundle());
+        textSliderView.getBundle().putString("extraTitle", sliderImageModel.getTitle());
+        textSliderView.getBundle().putString("extraLink", sliderImageModel.getLinkUrl());
+        sliderLayout.addSlider(textSliderView);
+    }
+
+    private void loadWebSite(String title, String url) {
+
+        if (url != null) {
+            BrowserFragment browserFragment = new BrowserFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("url", url);
+            activity.showFragment(title, browserFragment, bundle);
+        }
     }
 
     private void showTutorial() {
@@ -358,8 +328,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public void onSliderClick(BaseSliderView slider) {
 
-        final String name = (String) slider.getBundle().get("extra");
-        loadWebSite(name);
+        String name = (String) slider.getBundle().get("extraTitle");
+        String link = (String) slider.getBundle().get("extraLink");
+        loadWebSite(name, link);
     }
 
     @Override
