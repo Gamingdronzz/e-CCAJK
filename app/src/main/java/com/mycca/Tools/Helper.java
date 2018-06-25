@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -279,6 +278,11 @@ public class Helper {
         return gson.fromJson(json, type);
     }
 
+    public ArrayList<Object> getCollectionFromJson(String json, Type collectionType) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, collectionType);
+    }
+
     public ProgressDialog getProgressWindow(final Activity context, String message) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
@@ -371,32 +375,19 @@ public class Helper {
                     "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
                     "My CCA",
                     "Update",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            showGooglePlayStore(activity);
-                            activity.finish();
-                        }
+                    () -> {
+                        showGooglePlayStore(activity);
+                        activity.finish();
                     },
                     "Cancel",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            activity.finish();
-                        }
-                    },
+                    () -> activity.finish(),
                     FancyAlertDialogType.WARNING);
         } else {
             Helper.getInstance().showFancyAlertDialog(activity,
                     "The Application is in maintenance\nPlease wait for a while\n\nThank you for your patience",
                     "My CCA",
                     "OK",
-                    new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            activity.finish();
-                        }
-                    },
+                    () -> activity.finish(),
                     null, null,
                     FancyAlertDialogType.WARNING);
         }
@@ -424,50 +415,43 @@ public class Helper {
         textInputLayout = popupView.findViewById(R.id.text_input_layout);
 
         RadioGroup radioGroup = popupView.findViewById(R.id.groupNumberType);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioButtonPensioner:
-                        hint = "Pensioner Code";
-                        editText.setFilters(Helper.getInstance().limitInputLength(15));
-                        break;
-                    case R.id.radioButtonHR:
-                        hint = "HR Number";
-                        editText.setFilters(new InputFilter[]{});
-                        break;
-                    case R.id.radioButtonStaff:
-                        hint = "Staff Number";
-                        editText.setFilters(new InputFilter[]{});
-                }
-                editText.setText("");
-                textInputLayout.setHint(hint);
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radioButtonPensioner:
+                    hint = "Pensioner Code";
+                    editText.setFilters(Helper.getInstance().limitInputLength(15));
+                    break;
+                case R.id.radioButtonHR:
+                    hint = "HR Number";
+                    editText.setFilters(new InputFilter[]{});
+                    break;
+                case R.id.radioButtonStaff:
+                    hint = "Staff Number";
+                    editText.setFilters(new InputFilter[]{});
             }
+            editText.setText("");
+            textInputLayout.setHint(hint);
         });
 
         Button track = popupView.findViewById(R.id.btn_check_status);
-        track.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String code = editText.getText().toString().trim();
-                if (code.length() != 15 && hint.equals("Pensioner Code")) {
-                    Toast.makeText(context, "Invalid Pensioner code!", Toast.LENGTH_LONG).show();
-                } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
-                    Toast.makeText(context, "Invalid HR Number!", Toast.LENGTH_LONG).show();
-                } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
-                    Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
-                } else {
-                    Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
-                    intent.putExtra("Code", editText.getText().toString());
-                    context.startActivity(intent);
-                }
-                editText.requestFocus();
+        track.setOnClickListener(v -> {
+            String code = editText.getText().toString().trim();
+            if (code.length() != 15 && hint.equals("Pensioner Code")) {
+                Toast.makeText(context, "Invalid Pensioner code!", Toast.LENGTH_LONG).show();
+            } else if (code.trim().isEmpty() && hint.equals("HR Number")) {
+                Toast.makeText(context, "Invalid HR Number!", Toast.LENGTH_LONG).show();
+            } else if (code.trim().isEmpty() && hint.equals("Staff Number")) {
+                Toast.makeText(context, "Invalid Staff Number!", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
+                intent.putExtra("Code", editText.getText().toString());
+                context.startActivity(intent);
             }
+            editText.requestFocus();
         });
 
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.update();
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
     }
@@ -476,12 +460,7 @@ public class Helper {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
         confirmDialog.setView(view);
         confirmDialog.setPositiveButton("Confirm", yes);
-        confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        confirmDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         confirmDialog.show();
     }
 
@@ -553,12 +532,7 @@ public class Helper {
 
     public void showSnackBar(CharSequence message, View view) {
         Snackbar.make(view.findViewById(R.id.fragmentPlaceholder), message, Snackbar.LENGTH_INDEFINITE)
-                .setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.v(TAG, "Yes Clicked");
-                    }
-                })
+                .setAction("OK", v -> Log.v(TAG, "Yes Clicked"))
                 .show();
     }
 

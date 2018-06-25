@@ -1,7 +1,6 @@
 package com.mycca.Fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,13 +38,9 @@ import com.mycca.Tabs.Locator.TabAllLocations;
 import com.mycca.Tabs.Locator.TabNearby;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.Helper;
+import com.mycca.Tools.IOHelper;
 import com.mycca.Tools.Preferences;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +152,7 @@ public class LocatorFragment extends Fragment {
 
     private ArrayList<LocationModel> getLocationsFromLocalStorage() {
 
-        String json = readFromFile();
+        String json = (String) IOHelper.getInstance().readFromFile(locatorType, getContext());
         ArrayList<LocationModel> arrayList;
         try {
             Gson gson = new Gson();
@@ -175,10 +170,10 @@ public class LocatorFragment extends Fragment {
 
     private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
         try {
-            Gson gson = new Gson();
-            String jsonObject = gson.toJson(locationModels);
+            String jsonObject = Helper.getInstance().getJsonFromObject(locationModels);
+            Log.d(TAG, "Json: " + jsonObject);
             Log.d(TAG, "adding LocationsToLocalStorage: ");
-            writeToFile(jsonObject);
+            IOHelper.getInstance().writeToFile(jsonObject, locatorType, getContext());
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
         }
@@ -305,43 +300,6 @@ public class LocatorFragment extends Fragment {
 
                     }
                 });
-    }
-
-    private void writeToFile(String jsonObject) {
-
-        String filename = locatorType + " " + Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
-        FileOutputStream outputStream;
-        try {
-            outputStream = activity.openFileOutput(filename + ".json", Context.MODE_PRIVATE);
-            outputStream.write(jsonObject.getBytes());
-            Log.d(TAG, "writeToFile: ");
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private String readFromFile() {
-
-        String filename = locatorType + " " + Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
-        try {
-            File file = new File(activity.getFilesDir(), filename + ".json");
-            Log.d(TAG, "readFromFile: file path = " + file.getPath());
-            FileInputStream fin = activity.openFileInput(file.getName());
-            int size = fin.available();
-            byte[] buffer = new byte[size];
-            fin.read(buffer);
-            Log.d(TAG, "readFromFile: ");
-            fin.close();
-            return new String(buffer);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     class MyAdapter extends FragmentPagerAdapter {
