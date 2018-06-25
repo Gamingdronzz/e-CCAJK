@@ -24,18 +24,18 @@
         android:orientation="vertical"
         android:weightSum="4">
 
-        <!-- <com.daimajia.slider.library.SliderLayout
+         <com.mycca.CustomObjects.CustomImageSlider.SliderLayout
              android:id="@+id/slider_home"
              android:layout_width="match_parent"
              android:layout_height="0dp"
              android:layout_weight="1">
 
-         </com.daimajia.slider.library.SliderLayout>-->
-        <ImageView
-            android:id="@+id/image_view_home"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+         </com.mycca.CustomObjects.CustomImageSlider.SliderLayout>
+        <!--<ImageView-->
+            <!--android:id="@+id/image_view_home"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1" />-->
         <!--<View
             android:layout_width="match_parent"
             android:layout_height="2dp"

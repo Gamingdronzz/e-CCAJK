@@ -3,6 +3,7 @@ package com.mycca.Fragments;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,10 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.bumptech.glide.RequestBuilder;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +31,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterNews;
+import com.mycca.CustomObjects.CustomImageSlider.SliderLayout;
+import com.mycca.CustomObjects.CustomImageSlider.SliderTypes.BaseSliderView;
+import com.mycca.CustomObjects.CustomImageSlider.SliderTypes.TextSliderView;
+import com.mycca.CustomObjects.CustomImageSlider.Tricks.ViewPagerEx;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
@@ -48,7 +50,7 @@ import java.util.HashMap;
 
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
-    SliderLayout mDemoSlider;
+    SliderLayout sliderLayout;
     ImageView imageView;
     RecyclerView recyclerView;
     TextView tvLatestNews, tvUserName, tvVisit;
@@ -83,8 +85,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     private void bindViews(View view) {
         //welcomeText = view.findViewById(R.id.textview_welcome_short);
         //ccaDeskText = view.findViewById(R.id.textview_cca_desk);
-        //mDemoSlider = view.findViewById(R.id.slider_home);
-        imageView = view.findViewById(R.id.image_view_home);
+        sliderLayout = view.findViewById(R.id.slider_home);
+        //imageView = view.findViewById(R.id.image_view_home);
         tvLatestNews = view.findViewById(R.id.tv_home_latest_news);
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
         moveRight = view.findViewById(R.id.img_btn_move_right);
@@ -169,7 +171,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         getNews();
         setupWelcomeBar();
         getSliderData();
-       // setupSlider();
 
     }
 
@@ -241,35 +242,23 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 });
     }
 
-    private void setupSlider() {
+    private void addImageToSlider(SliderImageModel sliderImageModel) {
 
-        HashMap<String, Integer> file_maps = new HashMap<>();
+        TextSliderView textSliderView = new TextSliderView(getContext());
+        // initialize a SliderLayout
+        textSliderView
+                .description(sliderImageModel.getImageName())
+                .image(sliderImageModel.getUrl())
+                .setProgressBarVisible(true)
+                .setBackgroundColor(Color.WHITE)
+                //.(BaseSliderView.ScaleType.FitCenterCrop)
+                .setOnSliderClickListener(this);
 
-        file_maps.put("Deptt. of Telecomminication", R.drawable.communication);
-
-        file_maps.put("Swachh Bharat Abhiyan", R.drawable.swachhbharat);
-
-        file_maps.put("Digital India", R.drawable.digitalindia);
-
-        file_maps.put("Controller of Communication Accounts", R.drawable.cca);
-
-        for (String name : file_maps.keySet()) {
-
-            TextSliderView textSliderView = new TextSliderView(getContext());
-            // initialize a SliderLayout
-            textSliderView
-                    .description(name)
-                    .image(file_maps.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.FitCenterCrop)
-                    .setOnSliderClickListener(this);
-
-            //add your extra information
-            textSliderView.bundle(new Bundle());
-            textSliderView.getBundle()
-                    .putString("extra", name);
-            mDemoSlider.addSlider(textSliderView);
-
-        }
+        //add your extra information
+        textSliderView.bundle(new Bundle());
+        textSliderView.getBundle()
+                .putString("extra", sliderImageModel.getTitle());
+        sliderLayout.addSlider(textSliderView);
     }
 
     private void getSliderData() {
@@ -281,9 +270,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
                 Log.d(TAG, "Image: "+ sliderImageModel.getImageName());
                 Log.d(TAG, "url: "+ sliderImageModel.getUrl());
-                Glide.with(getContext())
-                        .load("Slider Images/" + sliderImageModel.getImageName())
-                        .into(imageView);
+                addImageToSlider(sliderImageModel);
+
               /*  Task<Uri> task = FireBaseHelper.getInstance(getContext()).getFileFromFirebase("Slider Images/" + sliderImageModel.getImageName());
                task.addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -324,7 +312,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
                 .title("Tap on images to open respective websites. Tap anywhere to continue")
-                .focusOn(mDemoSlider)
+                .focusOn(sliderLayout)
                 .focusShape(FocusShape.ROUNDED_RECTANGLE)
                 .fitSystemWindows(true)
                 .build();
@@ -363,7 +351,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     @Override
     public void onStop() {
-        mDemoSlider.stopAutoCycle();
+        sliderLayout.stopAutoCycle();
         super.onStop();
     }
 

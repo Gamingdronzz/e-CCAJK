@@ -106,7 +106,7 @@
         app:srcCompat="@drawable/ic_view_menu_black_24dp"
         tools:targetApi="m" />
 
-    <com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu
+    <com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu
         android:id="@+id/fabMenu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

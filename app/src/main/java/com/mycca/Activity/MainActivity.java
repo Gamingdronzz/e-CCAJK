@@ -36,7 +36,7 @@ import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.fabrevealmenu.view.FABRevealMenu;
+import com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.Fragments.AboutUsFragment;
 import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Fragments.BrowserFragment;
