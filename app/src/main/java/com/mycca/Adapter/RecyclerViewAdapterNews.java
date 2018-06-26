@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.mycca.Activity.NewsActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.Fragments.AddNewsFragment;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
@@ -43,9 +42,9 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
     public RecyclerViewAdapterNews.NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerViewAdapterNews.NewsViewHolder viewHolder;
         if (home)
-            viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_home_latest_news, parent, false), new ViewClickListener(),null,null);
+            viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_home_latest_news, parent, false), new ViewClickListener(), null, null);
         else
-            viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_latest_news, parent, false), new ViewClickListener(),new EditNewsListener(),new DeleteNewsListener());
+            viewHolder = new NewsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_latest_news, parent, false), new ViewClickListener(), new EditNewsListener(), new DeleteNewsListener());
         return viewHolder;
     }
 
@@ -82,7 +81,8 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
         private EditNewsListener editNewsListener;
         private DeleteNewsListener deleteNewsListener;
 
-         NewsViewHolder(View itemView, ViewClickListener viewClickListener,EditNewsListener editNewsListener,DeleteNewsListener deleteNewsListener) {
+        NewsViewHolder(View itemView, ViewClickListener viewClickListener,
+                       EditNewsListener editNewsListener, DeleteNewsListener deleteNewsListener) {
             super(itemView);
             headline = itemView.findViewById(R.id.textview_news_headline);
             date = itemView.findViewById(R.id.textview_news_date);
@@ -90,12 +90,13 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
             if (!home) {
                 delete = itemView.findViewById(R.id.img_btn_delete);
                 edit = itemView.findViewById(R.id.img_btn_edit);
-                this.editNewsListener=editNewsListener;
+                this.editNewsListener = editNewsListener;
                 this.deleteNewsListener = deleteNewsListener;
                 delete.setOnClickListener(this.deleteNewsListener);
                 edit.setOnClickListener(this.editNewsListener);
 
-                if (Preferences.getInstance().getStaffPref(context, Preferences.PREF_STAFF_DATA) == null) {
+                if ((Preferences.getInstance().getStaffPref(context, Preferences.PREF_STAFF_DATA) == null)
+                        || (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)) {
                     edit.setVisibility(View.GONE);
                     delete.setVisibility(View.GONE);
                 }
@@ -113,7 +114,6 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
             itemView.setOnClickListener(viewClickListener);
         }
     }
-
 
     class ViewClickListener implements View.OnClickListener {
         private int position;
@@ -162,26 +162,20 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
         @Override
         public void onClick(View v) {
             Helper.getInstance().showFancyAlertDialog(context, "Delete this News?", "",
-                    "Delete", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
-                            NewsModel newsModel = newsModelArrayList.get(position);
-                            DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
-                                    .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
-                            dbref.removeValue().addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
-                                    newsModelArrayList.remove(position);
-                                    notifyDataSetChanged();
-                                }
-                            });
-                        }
+                    "Delete", () -> {
+                        NewsModel newsModel = newsModelArrayList.get(position);
+                        DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
+                                .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
+                        dbref.removeValue().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
+                                newsModelArrayList.remove(position);
+                                notifyDataSetChanged();
+                            }
+                        });
                     },
-                    "Cancel", new IFancyAlertDialogListener() {
-                        @Override
-                        public void OnClick() {
+                    "Cancel", () -> {
 
-                        }
                     },
                     FancyAlertDialogType.WARNING);
 

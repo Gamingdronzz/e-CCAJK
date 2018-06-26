@@ -26,6 +26,7 @@ import com.mycca.Tools.Helper;
 import com.mycca.Tools.Preferences;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class AddNewsFragment extends Fragment {
 
@@ -136,11 +137,13 @@ public class AddNewsFragment extends Fragment {
             newsModel.setHeadline(textTitle.getText().toString());
             newsModel.setDescription(textDescription.getText().toString());
 
-            task = FireBaseHelper.getInstance(getContext()).updateNews(
-                    newsModel,
-                    FireBaseHelper.ROOT_NEWS);
-        }
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("headline", newsModel.getHeadline());
+            result.put("description", newsModel.getDescription());
 
+            task = FireBaseHelper.getInstance(getContext()).updateData(newsModel.getKey(), result, FireBaseHelper.ROOT_NEWS);
+
+        }
 
         task.addOnCompleteListener(task1 -> {
             progressDialog.dismiss();

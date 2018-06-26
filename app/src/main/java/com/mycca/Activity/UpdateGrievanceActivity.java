@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -135,47 +135,43 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         hashMap.put("grievanceStatus", status);
         hashMap.put("message", message);
 
-        try {
-            dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
-                    .child(Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA).getState())
-                    .child(grievanceModel.getPensionerIdentifier())
-                    .child(String.valueOf(grievanceModel.getGrievanceType()))
-                    .updateChildren(hashMap)
-                    .addOnCompleteListener(task -> {
-                        progressDialog.dismiss();
-                        if (task.isSuccessful()) {
+        Task<Void> task = FireBaseHelper.getInstance(this).updateData(String.valueOf(grievanceModel.getGrievanceType()),
+                hashMap,
+                FireBaseHelper.ROOT_GRIEVANCES,
+                Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA).getState(),
+                grievanceModel.getPensionerIdentifier());
+        task.addOnCompleteListener(task1 -> {
+            progressDialog.dismiss();
+            if (task1.isSuccessful()) {
 
-                            //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
-                            GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
-                            model.setGrievanceStatus(status);
-                            model.setMessage(message);
-                            model.setExpanded(true);
+                //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
+                GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
+                model.setGrievanceStatus(status);
+                model.setMessage(message);
+                model.setExpanded(true);
 
-                            String alertMessage = Helper.getInstance().getGrievanceCategory(model.getGrievanceType()) +
-                                    " Grievance status of<br>" +
-                                    "<b>" + model.getPensionerIdentifier() + "</b><br>" +
-                                    "for<br>" +
-                                    "<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>" +
-                                    "has been succesfully updated to<br>" +
-                                    "<b>" + Helper.getInstance().getStatusString(model.getGrievanceStatus()) + "</b>";
+                String alertMessage = Helper.getInstance().getGrievanceCategory(model.getGrievanceType()) +
+                        " Grievance status of<br>" +
+                        "<b>" + model.getPensionerIdentifier() + "</b><br>" +
+                        "for<br>" +
+                        "<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>" +
+                        "has been successfully updated to<br>" +
+                        "<b>" + Helper.getInstance().getStatusString(model.getGrievanceStatus()) + "</b>";
 
-                            notifyPensioner();
-                            setResult(Activity.RESULT_OK);
-                            Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage, "Grievance Update", "OK", () -> {
+                notifyPensioner();
+                setResult(Activity.RESULT_OK);
+                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage, "Grievance Update", "OK", () -> {
 
-                                finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
-                                finish();
-                            }, null, null, FancyAlertDialogType.SUCCESS);
-                        } else {
-                            Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, "The app might be in maintenence. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
-                            Log.d(TAG, "onComplete: " + task.toString());
-                        }
-                    });
-        } catch (DatabaseException dbe) {
-            dbe.printStackTrace();
-        }
+                    finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
+                    finish();
+                }, null, null, FancyAlertDialogType.SUCCESS);
+            } else {
+                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, "The app might be in maintenence. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                Log.d(TAG, "onComplete: " + task1.toString());
+            }
+        });
+
     }
-
 
     private void notifyPensioner() {
 

@@ -83,6 +83,8 @@ public class SettingsFragment extends Fragment {
             startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings", true));
         });
 
+        tvCurrentState.setText("Current State: " + Helper.getInstance().getStateName(
+                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE)));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);

@@ -115,9 +115,8 @@ public class FireBaseHelper {
         Task<Void> task;
         DatabaseReference dbref = versionedDbRef;
 
-        for (String key :
-                params) {
-            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+        for (String key : params) {
+            Log.d(TAG, "Firebase Helper child : " + key);
             dbref = dbref.child(key);
         }
 
@@ -148,15 +147,25 @@ public class FireBaseHelper {
         return task;
     }
 
-    public Task<Void> updateNews(Object model, String root) {
-        DatabaseReference dbref = versionedDbRef.child(root);
+//    public Task<Void> updateNews(Object model, String root) {
+//        DatabaseReference dbref = versionedDbRef.child(root);
+//        Task<Void> task;
+//        NewsModel newsModel = (NewsModel) model;
+//        Log.d(TAG, "non null news key : " + newsModel.getKey());
+//        HashMap<String, Object> result = new HashMap<>();
+//        result.put("headline", newsModel.getHeadline());
+//        result.put("description", newsModel.getDescription());
+//        task = dbref.child(newsModel.getKey()).updateChildren(result);
+//        return task;
+//    }
+
+    public Task<Void> updateData(String key, HashMap<String, Object> hashMap, String... params) {
+        DatabaseReference dbref = versionedDbRef;
         Task<Void> task;
-        NewsModel newsModel = (NewsModel) model;
-        Log.d(TAG, "non null news key : " + newsModel.getKey());
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("headline", newsModel.getHeadline());
-        result.put("description", newsModel.getDescription());
-        task = dbref.child(newsModel.getKey()).updateChildren(result);
+        for (String param : params) {
+            dbref = dbref.child(param);
+        }
+        task = dbref.child(key).updateChildren(hashMap);
         return task;
     }
 
