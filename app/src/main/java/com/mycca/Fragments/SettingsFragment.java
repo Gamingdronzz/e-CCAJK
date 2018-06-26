@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +86,7 @@ public class SettingsFragment extends Fragment {
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);
+            activity.finish();
         });
 
         layoutSignInOut.setOnClickListener(v -> {
@@ -125,15 +125,6 @@ public class SettingsFragment extends Fragment {
             tvAccount.setVisibility(View.VISIBLE);
             tvAccount.setText(user);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        String circleCode = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE);
-        Log.d("Settings", "onResume: " + circleCode);
-        String state = "Current State: " + Helper.getInstance().getStateName(circleCode);
-        tvCurrentState.setText(state);
     }
 
 }

@@ -2,10 +2,8 @@ package com.mycca.Tools;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -53,7 +51,7 @@ public class FireBaseHelper {
     public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
     public final static String ROOT_SLIDER = "Slider Data";
-    public final static String ROOT_STATE_DATA = "State Data";
+    private final static String ROOT_STATE_DATA = "State Data";
     private final static String ROOT_REF_COUNT = "Reference Number Count";
 
     public final static String GRIEVANCE_PENSION = "Pension";
@@ -94,6 +92,10 @@ public class FireBaseHelper {
         }
     }
 
+    public static void resetInstance() {
+        _instance = null;
+    }
+
     public void setToken() {
         Log.d(TAG, "setToken: ");
         DatabaseReference dbref = versionedDbRef;
@@ -101,12 +103,9 @@ public class FireBaseHelper {
             Log.d(TAG, "setToken: user found");
             dbref.child(ROOT_TOKEN).child(mAuth.getCurrentUser().getUid()).
                     setValue(FirebaseInstanceId.getInstance().getToken())
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Token added");
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Token added");
                         }
                     });
         }
