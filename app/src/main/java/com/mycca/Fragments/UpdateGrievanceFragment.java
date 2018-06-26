@@ -128,7 +128,7 @@ public class UpdateGrievanceFragment extends Fragment {
         submittedGrievances = new ArrayList<>();
         processingGrievances = new ArrayList<>();
         resolvedGrievances = new ArrayList<>();
-        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
+        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef;
         dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
                 .child(Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState())
                 .addChildEventListener(new ChildEventListener() {

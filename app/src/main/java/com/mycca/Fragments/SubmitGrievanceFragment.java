@@ -453,7 +453,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.setMessage("Preparing your grievance for submission");
         progressDialog.show();
         // final DatabaseReference dbref;
-        //   dbref = FireBaseHelper.getInstance(getContext()).databaseReference.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES);
+        //   dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef.child(FireBaseHelper.getInstance(getContext()).ROOT_GRIEVANCES);
         refNo = getReferenceNumber();
 
         GrievanceModel grievanceModel = new GrievanceModel(code,

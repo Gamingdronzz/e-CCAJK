@@ -22,8 +22,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -37,9 +35,9 @@ import com.mycca.R;
 import com.mycca.Tabs.Locator.TabAllLocations;
 import com.mycca.Tabs.Locator.TabNearby;
 import com.mycca.Tools.ConnectionUtility;
+import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.IOHelper;
-import com.mycca.Tools.Preferences;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -60,7 +58,6 @@ public class LocatorFragment extends Fragment {
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
     MainActivity activity;
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     public LocatorFragment() {
 
@@ -218,88 +215,91 @@ public class LocatorFragment extends Fragment {
     }
 
     private void checkNewLocationsinFirebase() {
-        databaseReference.child(locatorType)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        try {
-                            if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
-                                Log.d(TAG, "init: same amount of locations in firebase");
-                                setTabLayout();
-                            } else {
-                                Log.d(TAG, "init: new locations in firebase");
-                                fetchLocationsFromFirebase();
-                            }
-                        } catch (DatabaseException dbe) {
-                            dbe.printStackTrace();
-                            setTabLayout();
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+        ValueEventListener vel = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
+                        Log.d(TAG, "init: same amount of locations in firebase");
+                        setTabLayout();
+                    } else {
+                        Log.d(TAG, "init: new locations in firebase");
+                        fetchLocationsFromFirebase();
                     }
-                });
+                } catch (DatabaseException dbe) {
+                    dbe.printStackTrace();
+                    setTabLayout();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+            }
+        };
+        FireBaseHelper.getInstance(activity).getDataFromFirebase(vel,
+                FireBaseHelper.UNVERSIONED_STATEWISE, false,
+                locatorType);
     }
 
     private void fetchLocationsFromFirebase() {
 
         locationModelArrayList = new ArrayList<>();
-        //DatabaseReference databaseReference = FireBaseHelper.getInstance(getContext()).databaseReference;
-        databaseReference.child(locatorType)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue() != null) {
-                            try {
-                                Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
-                                LocationModel location = dataSnapshot.getValue(LocationModel.class);
-                                locationModelArrayList.add(location);
-                            } catch (DatabaseException dbe) {
-                                dbe.printStackTrace();
-                            }
-                        }
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    try {
+                        Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
+                        LocationModel location = dataSnapshot.getValue(LocationModel.class);
+                        locationModelArrayList.add(location);
+                    } catch (DatabaseException dbe) {
+                        dbe.printStackTrace();
                     }
+                }
+            }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                    }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-        databaseReference.child(locatorType)
-                .child(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "onDataChange: got locations from firebase");
-                        setTabLayout();
-                        if (locationModelArrayList.size() > 0)
-                            addLocationsToLocalStorage(locationModelArrayList);
-                    }
+            }
+        };
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: got locations from firebase");
+                setTabLayout();
+                if (locationModelArrayList.size() > 0)
+                    addLocationsToLocalStorage(locationModelArrayList);
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        };
+        FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
+                FireBaseHelper.UNVERSIONED_STATEWISE,
+                locatorType);
+        FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
+                FireBaseHelper.UNVERSIONED_STATEWISE, true,
+                locatorType);
     }
 
     class MyAdapter extends FragmentPagerAdapter {

@@ -91,11 +91,11 @@ public class AadharPanCheckFragment extends Fragment {
     private void checkStatus() {
         /*progressDialog.show();
         if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR) {
-            numberRef = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR).child(pcode.getText().toString());
+            numberRef = FireBaseHelper.getInstance().versionedDbRef.child(FireBaseHelper.getInstance().ROOT_ADHAAR).child(pcode.getText().toString());
             typeName = "Aadhaar";
             progressDialog.setMessage("Checking Aadhar Verification Status\nPlease Wait...");
         } else {
-            numberRef = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN).child(pcode.getText().toString());
+            numberRef = FireBaseHelper.getInstance().versionedDbRef.child(FireBaseHelper.getInstance().ROOT_PAN).child(pcode.getText().toString());
             typeName = "PAN";
             progressDialog.setMessage("Checking PAN Verification Status\nPlease Wait...");
         }

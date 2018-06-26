@@ -52,9 +52,9 @@ public class PanAdhaarHistoryActivity extends AppCompatActivity {
 
     private void getHistory() {
         /*if (type == Helper.getInstance().UPLOAD_TYPE_ADHAAR)
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS).child(pcode);
+            dbref = FireBaseHelper.getInstance().versionedDbRef.child(FireBaseHelper.getInstance().ROOT_ADHAAR_STATUS).child(pcode);
         else
-            dbref = FireBaseHelper.getInstance().databaseReference.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS).child(pcode);
+            dbref = FireBaseHelper.getInstance().versionedDbRef.child(FireBaseHelper.getInstance().ROOT_PAN_STATUS).child(pcode);
 
         dbref.addValueEventListener(new ValueEventListener() {
             @Override

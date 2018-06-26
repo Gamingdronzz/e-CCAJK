@@ -53,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
             text = "Version - " + currentVersionName;
         tvSplashVersion.setText(text);
         Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
-        dbref = FireBaseHelper.getInstance(this).databaseReference;
+        dbref = FireBaseHelper.getInstance(this).versionedDbRef;
     }
 
     private void bindVIews() {

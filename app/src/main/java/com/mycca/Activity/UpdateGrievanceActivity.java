@@ -43,7 +43,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     Button update;
     ProgressDialog progressDialog;
 
-    DatabaseReference dbref = FireBaseHelper.getInstance(this).databaseReference;
+    DatabaseReference dbref = FireBaseHelper.getInstance(this).versionedDbRef;
 
     String TAG = "Update";
     GrievanceModel grievanceModel;

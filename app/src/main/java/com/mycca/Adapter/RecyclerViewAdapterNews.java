@@ -166,7 +166,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
                         @Override
                         public void OnClick() {
                             NewsModel newsModel = newsModelArrayList.get(position);
-                            DatabaseReference dbref = FireBaseHelper.getInstance(context).databaseReference
+                            DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
                                     .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
                             dbref.removeValue().addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {

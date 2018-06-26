@@ -9,8 +9,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
@@ -28,8 +32,10 @@ public class FireBaseHelper {
 
     private static FireBaseHelper _instance;
 
-    public DatabaseReference databaseReference;
-    public StorageReference storageReference;
+    public DatabaseReference versionedDbRef;
+    private DatabaseReference unVersionedDbRef;
+    private DatabaseReference unVersionedStateDbRef;
+    private StorageReference storageReference;
     public FirebaseAuth mAuth;
 
     public final static String ROOT_GRIEVANCES = "Grievances";
@@ -39,7 +45,7 @@ public class FireBaseHelper {
     public final static String ROOT_LIFE = "Life Certificate";
     public final static String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
     public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
-    public final static String ROOT_HOTSPOTS = "Wifi Locations";
+    public final static String ROOT_WIFI = "Wifi Locations";
     public final static String ROOT_GP = "GP Locations";
     public final static String ROOT_STAFF = "Staff Login";
     public final static String ROOT_INSPECTION = "Inspection";
@@ -47,9 +53,15 @@ public class FireBaseHelper {
     public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
     public final static String ROOT_SLIDER = "Slider Data";
+    public final static String ROOT_STATE_DATA = "State Data";
+    private final static String ROOT_REF_COUNT = "Reference Number Count";
 
     public final static String GRIEVANCE_PENSION = "Pension";
     public final static String GRIEVANCE_GPF = "GPF";
+    public final static int UNVERSIONED = 0;
+    public final static int UNVERSIONED_STATEWISE = 1;
+    public final static int VERSIONED = 2;
+
     public String version;
     private final String TAG = "firebaseHelper";
 
@@ -63,7 +75,13 @@ public class FireBaseHelper {
         version = String.valueOf(Helper.getInstance().getAppVersion(context));
         if (version.equals("-1"))
             version = "5";
-        databaseReference = FirebaseDatabase.getInstance().getReference().child(version);
+
+        unVersionedDbRef = FirebaseDatabase.getInstance().getReference();
+        versionedDbRef = FirebaseDatabase.getInstance().getReference().child(version);
+        unVersionedStateDbRef = FirebaseDatabase.getInstance().getReference()
+                .child(ROOT_STATE_DATA)
+                .child(Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE));
+
         storageReference = FirebaseStorage.getInstance().getReference().child(version);
         mAuth = FirebaseAuth.getInstance();
     }
@@ -78,7 +96,7 @@ public class FireBaseHelper {
 
     public void setToken() {
         Log.d(TAG, "setToken: ");
-        DatabaseReference dbref = databaseReference;
+        DatabaseReference dbref = versionedDbRef;
         if (mAuth.getCurrentUser() != null) {
             Log.d(TAG, "setToken: user found");
             dbref.child(ROOT_TOKEN).child(mAuth.getCurrentUser().getUid()).
@@ -94,58 +112,9 @@ public class FireBaseHelper {
         }
     }
 
-    /*public Task<Void> uploadDataToFirebase(String root, Object model, String... params) {
-        DatabaseReference dbref = databaseReference.child(root);
-        Task<Void> task;
-
-        switch (root) {
-            case ROOT_SUGGESTIONS:
-                task = dbref.push().setValue(model);
-                break;
-            case ROOT_NEWS:
-                NewsModel newsModel = (NewsModel) model;
-                if (newsModel.getKey() == null) {
-                    Log.d(TAG, "news key null");
-                    String key=dbref.push().getKey();
-                    newsModel.setKey(key);
-                    task = dbref.child(key).setValue(newsModel);
-                } else {
-                    Log.d(TAG, "non null news key : " + newsModel.getKey());
-                    HashMap<String, Object> result = new HashMap<>();
-                    result.put("headline", newsModel.getHeadline());
-                    result.put("description", newsModel.getDescription());
-                    task = dbref.child(newsModel.getKey()).updateChildren(result);
-                }
-                break;
-            case ROOT_GRIEVANCES:
-
-                GrievanceModel grievanceModel = (GrievanceModel) model;
-                task = dbref.child(grievanceModel.getState())
-                        .child(grievanceModel.getPensionerIdentifier())
-                        .child(String.valueOf(grievanceModel.getGrievanceType()))
-                        .setValue(grievanceModel);
-
-                break;
-           *//* case ROOT_INSPECTION:
-                InspectionModel inspectionModel = (InspectionModel) model;
-                task = dbref.child(params[0])
-                        .child(params[1])
-                        .setValue(inspectionModel);
-
-                break;
-            default:
-                PanAdhaar panAdhaar = (PanAdhaar) model;
-                task = dbref.child(panAdhaar.getState())
-                        .child(panAdhaar.getPensionerIdentifier())
-                        .setValue(panAdhaar);
-                break;*//*
-        }
-        return task;
-    }*/
-
     public Task<Void> uploadDataToFirebase(Object model, String... params) {
         Task<Void> task;
-        DatabaseReference dbref = databaseReference;
+        DatabaseReference dbref = versionedDbRef;
 
         for (String key :
                 params) {
@@ -159,7 +128,7 @@ public class FireBaseHelper {
 
     public Task<Void> uploadDataToFirebase(Object model, String root) {
 
-        DatabaseReference dbref = databaseReference.child(root);
+        DatabaseReference dbref = versionedDbRef.child(root);
         Task<Void> task = null;
 
         switch (root) {
@@ -181,7 +150,7 @@ public class FireBaseHelper {
     }
 
     public Task<Void> updateNews(Object model, String root) {
-        DatabaseReference dbref = databaseReference.child(root);
+        DatabaseReference dbref = versionedDbRef.child(root);
         Task<Void> task;
         NewsModel newsModel = (NewsModel) model;
         Log.d(TAG, "non null news key : " + newsModel.getKey());
@@ -205,6 +174,82 @@ public class FireBaseHelper {
         return sref.putFile(imageFile.getImageURI());
     }
 
+    public void checkForUpdate(ValueEventListener valueEventListener) {
+        versionedDbRef.child(FireBaseHelper.ROOT_APP_VERSION)
+                .addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    public void getDataFromFirebase(ChildEventListener childEventListener, int versioned, String... params) {
+        DatabaseReference dbref;
+        if (versioned == VERSIONED)
+            dbref = versionedDbRef;
+        else if (versioned == UNVERSIONED)
+            dbref = unVersionedDbRef;
+        else
+            dbref = unVersionedStateDbRef;
+
+        Log.d(TAG, "getting DataFromFirebase: ");
+        for (String key : params) {
+            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            dbref = dbref.child(key);
+        }
+
+        dbref.addChildEventListener(childEventListener);
+    }
+
+    public void getDataFromFirebase(ValueEventListener valueEventListener, int versioned, boolean singleValueEvent, String... params) {
+        DatabaseReference dbref;
+        if (versioned == VERSIONED)
+            dbref = versionedDbRef;
+        else if (versioned == UNVERSIONED)
+            dbref = unVersionedDbRef;
+        else
+            dbref = unVersionedStateDbRef;
+
+        for (String key : params) {
+            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            dbref = dbref.child(key);
+        }
+        if (singleValueEvent)
+            dbref.addListenerForSingleValueEvent(valueEventListener);
+        else
+            dbref.addValueEventListener(valueEventListener);
+    }
+
+    public void getReferenceNumber() {
+        Log.d(TAG, "getReferenceNumber: ");
+        DatabaseReference dbref;
+        dbref = unVersionedStateDbRef.child(ROOT_REF_COUNT);
+        dbref.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Log.d(TAG, "doTransaction: " + mutableData.getValue());
+                long count = 0;
+                if (mutableData.getValue() != null) {
+                    count = (long) mutableData.getValue();
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(++count);
+                Log.d(TAG, "count= " + count);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onComplete: DatabaseError " + databaseError);
+                Log.d(TAG, "onComplete: Datasnaphot  " + dataSnapshot.getValue());
+                Log.d(TAG, "onComplete: booleAN " + b);
+            }
+
+        });
+
+    }
+
+    public Task<Uri> getFileFromFirebase(String path) {
+        return storageReference.child(path).getDownloadUrl();
+    }
+
     public ArrayList<Contact> getContactsList(String stateId) {
         ArrayList<Contact> contactArrayList = new ArrayList<>();
         contactArrayList.add(new ContactBuilder().setName("Sh. Rajnish Kumar Jenaw ").setDesignation("CCA").setEmail("ccajk@nic.in").setOfficeContact("2477280").setMobileContact("9419120080").setStateId(stateId).createContact());
@@ -224,44 +269,5 @@ public class FireBaseHelper {
         contactArrayList.add(new ContactBuilder().setName("Smt. Nirmal Sharma").setDesignation("Consultant(Pen)").setOfficeContact("2477284").setStateId(stateId).createContact());
         contactArrayList.add(new ContactBuilder().setName("Sh Neeraj Koul").setDesignation("Consultant (Pension)").setOfficeContact("2477284").setStateId(stateId).setMobileContact("9419286585").createContact());
         return contactArrayList;
-    }
-
-    public void checkForUpdate(ValueEventListener valueEventListener) {
-        databaseReference.child(FireBaseHelper.ROOT_APP_VERSION)
-                .addListenerForSingleValueEvent(valueEventListener);
-    }
-
-    public void getDataFromFirebase(ChildEventListener childEventListener, boolean versioned, String... params) {
-        DatabaseReference dbref;
-        if (versioned)
-            dbref = databaseReference;
-        else
-            dbref = FirebaseDatabase.getInstance().getReference();
-
-        Log.d(TAG, "getting DataFromFirebase: ");
-        for (String key : params) {
-            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
-            dbref = dbref.child(key);
-        }
-
-        dbref.addChildEventListener(childEventListener);
-    }
-
-    public void getDataFromFirebase(ValueEventListener valueEventListener, boolean versioned, String... params) {
-        DatabaseReference dbref;
-        if (versioned)
-            dbref = databaseReference;
-        else
-            dbref = FirebaseDatabase.getInstance().getReference();
-        for (String key : params) {
-            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
-            dbref = dbref.child(key);
-        }
-
-        dbref.addListenerForSingleValueEvent(valueEventListener);
-    }
-
-    public Task<Uri> getFileFromFirebase(String path) {
-        return storageReference.child(path).getDownloadUrl();
     }
 }

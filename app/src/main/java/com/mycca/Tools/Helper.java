@@ -544,28 +544,28 @@ public class Helper {
         for (int i = 0; i < value; i++) {
             double randomLongitude = minLatitude + random.nextDouble() * (maxLatitude - minLatitude);
             double randomLatitude = minLongitude + random.nextDouble() * (maxLongitude - minLongitude);
-            DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
-            databaseReference.child("Locations").child("Location" + "-" + i).child("Latitude").setValue(randomLatitude);
-            databaseReference.child("Locations").child("Location" + "-" + i).child("Longitude").setValue(randomLongitude);
-            databaseReference.child("Locations").child("Location" + "-" + i).child("StateID").setValue("jnk");
-            databaseReference.child("Locations").child("Location" + "-" + i).child("District").setValue("jammu");
-            databaseReference.child("Locations").child("Location" + "-" + i).child("LocationName").setValue("Location-" + i);
+            DatabaseReference versionedDbRef = FireBaseHelper.getInstance().versionedDbRef;
+            versionedDbRef.child("Locations").child("Location" + "-" + i).child("Latitude").setValue(randomLatitude);
+            versionedDbRef.child("Locations").child("Location" + "-" + i).child("Longitude").setValue(randomLongitude);
+            versionedDbRef.child("Locations").child("Location" + "-" + i).child("StateID").setValue("jnk");
+            versionedDbRef.child("Locations").child("Location" + "-" + i).child("District").setValue("jammu");
+            versionedDbRef.child("Locations").child("Location" + "-" + i).child("LocationName").setValue("Location-" + i);
             Log.d("Helper", "Adding Location = " + randomLatitude + " : " + randomLongitude);
         }
     }
     public void remove() {
-        DatabaseReference databaseReference = FireBaseHelper.getInstance().databaseReference;
-        databaseReference.child("Locations").removeValue();
+        DatabaseReference versionedDbRef = FireBaseHelper.getInstance().versionedDbRef;
+        versionedDbRef.child("Locations").removeValue();
     }*/
 
    /* public void updateLocations() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(FireBaseHelper.ROOT_HOTSPOTS).child("05");
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        DatabaseReference versionedDbRef = FirebaseDatabase.getInstance().getReference().child(FireBaseHelper.ROOT_WIFI).child("05");
+        versionedDbRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 HashMap<String,Object> hashMap=new HashMap<>();
                 hashMap.put("StateID", "05");
-                FirebaseDatabase.getInstance().getReference().child(FireBaseHelper.ROOT_HOTSPOTS).child("05")
+                FirebaseDatabase.getInstance().getReference().child(FireBaseHelper.ROOT_WIFI).child("05")
                         .child(dataSnapshot.getKey()).updateChildren(hashMap);
             }
 

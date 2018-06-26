@@ -62,7 +62,7 @@ public class LatestNewsFragment extends Fragment {
     }
 
     private void getNews() {
-        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
+        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef;
         dbref.child(FireBaseHelper.ROOT_NEWS)
                 .addChildEventListener(new ChildEventListener() {
                     @Override

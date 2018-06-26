@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
+                bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
                 showFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_gp_locator:
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity
     public void ShowHotSpotLocations() {
         Log.d(TAG, "ShowHotSpotLocations: ");
         Bundle bundle = new Bundle();
-        bundle.putString("Locator", FireBaseHelper.ROOT_HOTSPOTS);
+        bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
         showFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
     }
 

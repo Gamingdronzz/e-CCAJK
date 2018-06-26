@@ -113,7 +113,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     private void getGrievancesOnConnectionAvailable() {
 
         progressDialog.show();
-        dbref = FireBaseHelper.getInstance(this).databaseReference;
+        dbref = FireBaseHelper.getInstance(this).versionedDbRef;
         pensionerCode = getIntent().getStringExtra("Code");
         try {
             grievanceType = getIntent().getLongExtra("grievanceType", -1);

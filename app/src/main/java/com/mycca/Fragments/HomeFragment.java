@@ -170,7 +170,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void getNews() {
-        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).databaseReference;
+        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef;
         dbref.child(FireBaseHelper.ROOT_NEWS)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -247,7 +247,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             }
         };
-        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener, false, FireBaseHelper.ROOT_SLIDER);
+        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener, FireBaseHelper.UNVERSIONED, FireBaseHelper.ROOT_SLIDER);
     }
 
     private void addImageToSlider(SliderImageModel sliderImageModel) {
