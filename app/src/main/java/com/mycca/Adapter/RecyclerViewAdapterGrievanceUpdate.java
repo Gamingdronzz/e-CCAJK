@@ -37,11 +37,10 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
     @NonNull
     @Override
     public RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder viewHolder = new GrievanaceUpdateViewHolder
+        return new GrievanaceUpdateViewHolder
                 (LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_grievance_item, parent, false),
                         new CustomClickListener(),
                         new CustomUpdateClickListener());
-        return viewHolder;
     }
 
     @Override
@@ -57,7 +56,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
-        if (grievanceModel.getExpanded()) {
+        if (grievanceModel.isExpanded()) {
             holder.expandableArea.setVisibility(View.VISIBLE);
             holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
         } else {
@@ -121,7 +120,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
         @Override
         public void onClick(View v) {
-            grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).getExpanded());
+            grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
             Log.d(TAG, "onClick: " + position);
             notifyItemChanged(position);
         }

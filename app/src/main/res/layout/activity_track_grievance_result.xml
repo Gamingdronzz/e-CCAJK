@@ -7,31 +7,26 @@
     android:background="@color/colorOffWhite"
     tools:context="com.mycca.Activity.TrackGrievanceResultActivity">
 
-    <FrameLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_tracking"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorOffWhite">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_tracking"
-            android:layout_width="match_parent"
-            android:background="@color/colorOffWhite"
-            android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 
-        </android.support.v7.widget.RecyclerView>
-
-        <TextView
-            android:id="@+id/textview_tracking"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:drawableTint="@color/colorRed"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/colorBlack"
-            android:layout_margin="@dimen/margin_large"
-            android:textAlignment="center"
-            android:padding="@dimen/padding_large"
-            android:textSize="@dimen/text_30" />
-
-    </FrameLayout>
+    <TextView
+        android:id="@+id/textview_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/margin_large"
+        android:drawableTint="@color/colorRed"
+        android:padding="@dimen/padding_large"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_30"
+        android:visibility="gone"
+        tools:targetApi="m" />
 
 </RelativeLayout>

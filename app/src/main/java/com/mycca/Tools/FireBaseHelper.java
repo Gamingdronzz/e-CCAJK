@@ -7,11 +7,8 @@ import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -147,18 +144,6 @@ public class FireBaseHelper {
         return task;
     }
 
-//    public Task<Void> updateNews(Object model, String root) {
-//        DatabaseReference dbref = versionedDbRef.child(root);
-//        Task<Void> task;
-//        NewsModel newsModel = (NewsModel) model;
-//        Log.d(TAG, "non null news key : " + newsModel.getKey());
-//        HashMap<String, Object> result = new HashMap<>();
-//        result.put("headline", newsModel.getHeadline());
-//        result.put("description", newsModel.getDescription());
-//        task = dbref.child(newsModel.getKey()).updateChildren(result);
-//        return task;
-//    }
-
     public Task<Void> updateData(String key, HashMap<String, Object> hashMap, String... params) {
         DatabaseReference dbref = versionedDbRef;
         Task<Void> task;
@@ -215,7 +200,7 @@ public class FireBaseHelper {
             dbref = unVersionedStateDbRef;
 
         for (String key : params) {
-            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            Log.d(TAG, "Firebase Helper key : " + key);
             dbref = dbref.child(key);
         }
         if (singleValueEvent)
@@ -224,34 +209,11 @@ public class FireBaseHelper {
             dbref.addValueEventListener(valueEventListener);
     }
 
-    public void getReferenceNumber() {
+    public void getReferenceNumber(Transaction.Handler handler) {
         Log.d(TAG, "getReferenceNumber: ");
         DatabaseReference dbref;
         dbref = unVersionedStateDbRef.child(ROOT_REF_COUNT);
-        dbref.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                Log.d(TAG, "doTransaction: " + mutableData.getValue());
-                long count = 0;
-                if (mutableData.getValue() != null) {
-                    count = (long) mutableData.getValue();
-                }
-
-                // Set value and report transaction success
-                mutableData.setValue(++count);
-                Log.d(TAG, "count= " + count);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onComplete: DatabaseError " + databaseError);
-                Log.d(TAG, "onComplete: Datasnaphot  " + dataSnapshot.getValue());
-                Log.d(TAG, "onComplete: booleAN " + b);
-            }
-
-        });
-
+        dbref.runTransaction(handler);
     }
 
     public Task<Uri> getFileFromFirebase(String path) {

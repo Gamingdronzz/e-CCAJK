@@ -18,6 +18,7 @@ public class GrievanceModel {
     private long grievanceType;
     private boolean expanded;
     private boolean highlighted = false;
+    private boolean submissionSuccess;
 
     public GrievanceModel() {
 
@@ -55,7 +56,7 @@ public class GrievanceModel {
         this.highlighted = highlighted;
     }
 
-    public boolean getExpanded() {
+    public boolean isExpanded() {
         return expanded;
     }
 
@@ -149,5 +150,13 @@ public class GrievanceModel {
 
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
+    }
+
+    public boolean isSubmissionSuccess() {
+        return submissionSuccess;
+    }
+
+    public void setSubmissionSuccess(boolean submissionSuccess) {
+        this.submissionSuccess = submissionSuccess;
     }
 }

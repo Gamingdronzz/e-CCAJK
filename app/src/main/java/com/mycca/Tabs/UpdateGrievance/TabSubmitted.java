@@ -46,7 +46,7 @@ public class TabSubmitted extends Fragment {
     private void showEmptyListLayout(boolean show) {
         if (show) {
             relativeLayoutEmptyList.setVisibility(View.VISIBLE);
-            textViewNoListInfo.setText(getResources().getString(R.string.no_grievances_resolved));
+            textViewNoListInfo.setText(getResources().getString(R.string.no_grievances_submitted));
             recyclerView.setVisibility(View.GONE);
         } else {
             relativeLayoutEmptyList.setVisibility(View.GONE);
@@ -102,82 +102,4 @@ public class TabSubmitted extends Fragment {
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
 
     }
-
-
 }
-
-
-  /* if (grievanceModelArrayList == null) {
-            grievanceModelArrayList = new ArrayList<>();
-        } else {
-            grievanceModelArrayList.clear();
-            adapter.notifyDataSetChanged();
-        }
-
-        if (adapter == null) {
-            adapter = new RecyclerViewAdapterGrievanceUpdate(grievanceModelArrayList, (MainActivity) getActivity());
-        }
-        if (recyclerView.getAdapter() == null) {
-            recyclerView.setAdapter(adapter);
-        }
-
-        if (recyclerView.getLayoutManager() == null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        }*/
-
-
-    /*private void fromFirebase() {
-        progressDialog.show();
-        DatabaseReference dbref = FireBaseHelper.getInstance().databaseReference;
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (dataSnapshot.getValue() != null) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        if (Integer.valueOf(ds.child("grievanceStatus").getValue().toString()) == 0) {
-                            GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
-                            Log.d(TAG, "onChildAdded: Model = " + grievanceModel.getDetails());
-                            int pos = grievanceModelArrayList.size();
-                            grievanceModelArrayList.add(pos, grievanceModel);
-                            adapter.notifyItemInserted(pos);
-
-                        }
-                    }
-                    Log.d(TAG, "onChildAdded: List" + grievanceModelArrayList);
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        dbref.child(FireBaseHelper.getInstance().ROOT_GRIEVANCES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
-                if (grievanceModelArrayList.size() == 0)
-                    Helper.getInstance().showAlertDialog(getContext(),
-                            "No New submitted grievances",
-                            "Grievance",
-                            "OK");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }*/

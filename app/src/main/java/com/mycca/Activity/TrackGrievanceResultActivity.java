@@ -65,8 +65,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Log.d(TAG, "onClick: " + position);
-                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).getExpanded());
-                //grievanceModelArrayList.get(position).setHighlighted(false);
+                grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
+                if (grievanceModelArrayList.get(position).isHighlighted())
+                    grievanceModelArrayList.get(position).setHighlighted(false);
                 adapterTracking.notifyItemChanged(position);
             }
 
@@ -193,18 +194,21 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Log.d(TAG, "grievance key:" + dataSnapshot.getKey());
                         try {
-                            //int size = grievanceModelArrayList.size();
-                            GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
 
-                            if (grievanceType != -1) {
-                                if (model.getGrievanceType() == grievanceType) {
-                                    model.setExpanded(true);
-                                    model.setHighlighted(true);
+                            GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
+                            if (model != null) {
+                                if (grievanceType != -1) {
+                                    if (model.getGrievanceType() == grievanceType) {
+                                        model.setExpanded(true);
+                                        model.setHighlighted(true);
+                                    }
+                                }
+                                if (model.isSubmissionSuccess()) {
+                                    grievanceModelArrayList.add(model);
+                                    Log.d(TAG, "arraylist size:" + grievanceModelArrayList.size());
+                                    adapterTracking.notifyDataSetChanged();
                                 }
                             }
-                            grievanceModelArrayList.add(model);
-                            Log.d(TAG, "arraylist size:" + grievanceModelArrayList.size());
-                            adapterTracking.notifyDataSetChanged();
                         } catch (DatabaseException e) {
                             e.printStackTrace();
                         }
@@ -215,17 +219,19 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                         Log.d(TAG, "ChildChanged\n" + dataSnapshot);
                         GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
                         int counter = 0;
-                        for (GrievanceModel gm : grievanceModelArrayList) {
-                            if (gm.getGrievanceType() == model.getGrievanceType()) {
-                                grievanceModelArrayList.remove(gm);
-                                model.setExpanded(true);
-                                model.setHighlighted(true);
-                                grievanceModelArrayList.add(counter, model);
-                                break;
+                        if (model != null) {
+                            for (GrievanceModel gm : grievanceModelArrayList) {
+                                if (gm.getGrievanceType() == model.getGrievanceType()) {
+                                    grievanceModelArrayList.remove(gm);
+                                    model.setExpanded(true);
+                                    model.setHighlighted(true);
+                                    grievanceModelArrayList.add(counter, model);
+                                    break;
+                                }
+                                counter++;
                             }
-                            counter++;
+                            adapterTracking.notifyDataSetChanged();
                         }
-                        adapterTracking.notifyDataSetChanged();
                     }
 
                     @Override

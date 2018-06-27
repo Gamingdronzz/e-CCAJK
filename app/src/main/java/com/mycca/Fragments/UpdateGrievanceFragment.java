@@ -21,7 +21,6 @@ import android.widget.RelativeLayout;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
@@ -105,12 +104,8 @@ public class UpdateGrievanceFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                if (GrievanceDataProvider.getInstance().getAllGrievanceList() == null) {
-                    progressDialog.setMessage("Getting Grievances");
-                    getData();
-                } else
-                    progressDialog.dismiss();
-                setTabLayout();
+                progressDialog.setMessage("Getting Grievances");
+                getData();
                 showNoInternetConnectionLayout(false);
             }
 
@@ -128,61 +123,71 @@ public class UpdateGrievanceFragment extends Fragment {
         submittedGrievances = new ArrayList<>();
         processingGrievances = new ArrayList<>();
         resolvedGrievances = new ArrayList<>();
-        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef;
-        dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
-                .child(Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue() != null) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
-                                allGrievances.add(grievanceModel);
-                                if (grievanceModel.getGrievanceStatus() == 0) {
-                                    submittedGrievances.add(grievanceModel);
-                                } else if (grievanceModel.getGrievanceStatus() == 1) {
-                                    processingGrievances.add(grievanceModel);
-                                } else {
-                                    resolvedGrievances.add(grievanceModel);
-                                }
+
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
+                        if (grievanceModel != null && grievanceModel.isSubmissionSuccess()) {
+                            allGrievances.add(grievanceModel);
+                            if (grievanceModel.getGrievanceStatus() == 0) {
+                                submittedGrievances.add(grievanceModel);
+                            } else if (grievanceModel.getGrievanceStatus() == 1) {
+                                processingGrievances.add(grievanceModel);
+                            } else {
+                                resolvedGrievances.add(grievanceModel);
                             }
                         }
                     }
+                }
+            }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    }
+            }
 
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                    }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-        dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
-                .child(Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        progressDialog.dismiss();
-                        GrievanceDataProvider.getInstance().setAllGrievanceList(allGrievances);
-                        GrievanceDataProvider.getInstance().setSubmittedGrievanceList(submittedGrievances);
-                        GrievanceDataProvider.getInstance().setProcessingGrievanceList(processingGrievances);
-                        GrievanceDataProvider.getInstance().setResolvedGrievanceList(resolvedGrievances);
-                        setTabLayout();
-                    }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
 
-                    }
-                });
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                GrievanceDataProvider.getInstance().setAllGrievanceList(allGrievances);
+                GrievanceDataProvider.getInstance().setSubmittedGrievanceList(submittedGrievances);
+                GrievanceDataProvider.getInstance().setProcessingGrievanceList(processingGrievances);
+                GrievanceDataProvider.getInstance().setResolvedGrievanceList(resolvedGrievances);
+                setTabLayout();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
+                FireBaseHelper.VERSIONED,
+                FireBaseHelper.ROOT_GRIEVANCES,
+                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
+        FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
+                FireBaseHelper.VERSIONED,
+                true,
+                FireBaseHelper.ROOT_GRIEVANCES,
+                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
     }
 
     private void setTabLayout() {

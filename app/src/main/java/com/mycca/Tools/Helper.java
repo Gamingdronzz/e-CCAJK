@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -278,11 +279,6 @@ public class Helper {
         return gson.fromJson(json, type);
     }
 
-    public ArrayList<Object> getCollectionFromJson(String json, Type collectionType) {
-        Gson gson = new Gson();
-        return gson.fromJson(json, collectionType);
-    }
-
     public ProgressDialog getProgressWindow(final Activity context, String message) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
@@ -380,14 +376,14 @@ public class Helper {
                         activity.finish();
                     },
                     "Cancel",
-                    () -> activity.finish(),
+                    activity::finish,
                     FancyAlertDialogType.WARNING);
         } else {
             Helper.getInstance().showFancyAlertDialog(activity,
                     "The Application is in maintenance\nPlease wait for a while\n\nThank you for your patience",
                     "My CCA",
                     "OK",
-                    () -> activity.finish(),
+                    activity::finish,
                     null, null,
                     FancyAlertDialogType.WARNING);
         }
@@ -404,6 +400,9 @@ public class Helper {
                 FancyAlertDialogType.ERROR);
     }
 
+    public class DateFormat {
+        public static final String DD_MM_YYYY = "dd MMM, yyyy";
+    }
 
     public void showTrackWindow(final Activity context, View parent) {
         final EditText editText;
@@ -452,6 +451,7 @@ public class Helper {
 
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.update();
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
     }
@@ -614,9 +614,6 @@ public class Helper {
         return dist; // output distance, in MILES
     }
 
-    public class DateFormat {
-        public static final String DD_MM_YYYY = "dd MMM, yyyy";
-    }
 
 }
 
