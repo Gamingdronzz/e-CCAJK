@@ -48,6 +48,9 @@ public class FireBaseHelper {
     public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
     public final static String ROOT_SLIDER = "Slider Data";
+    public final static String ROOT_REF_NUMBERS = "Reference Numbers";
+    public final static String ROOT_BY_USER="By User";
+    public final static String ROOT_BY_STAFF="By Staff";
     private final static String ROOT_STATE_DATA = "State Data";
     private final static String ROOT_REF_COUNT = "Reference Number Count";
 
@@ -154,19 +157,6 @@ public class FireBaseHelper {
         return task;
     }
 
-    public UploadTask uploadFiles(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
-        StorageReference sref;
-        StringBuilder sb = new StringBuilder();
-        for (String param : params)
-            sb.append(param).append("/");
-        if (multiple) {
-            sref = storageReference.child(sb + "File" + count);
-        } else {
-            sref = storageReference.child(sb.toString());
-        }
-        return sref.putFile(imageFile.getImageURI());
-    }
-
     public void checkForUpdate(ValueEventListener valueEventListener) {
         versionedDbRef.child(FireBaseHelper.ROOT_APP_VERSION)
                 .addListenerForSingleValueEvent(valueEventListener);
@@ -214,6 +204,19 @@ public class FireBaseHelper {
         DatabaseReference dbref;
         dbref = unVersionedStateDbRef.child(ROOT_REF_COUNT);
         dbref.runTransaction(handler);
+    }
+
+    public UploadTask uploadFiles(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
+        StorageReference sref;
+        StringBuilder sb = new StringBuilder();
+        for (String param : params)
+            sb.append(param).append("/");
+        if (multiple) {
+            sref = storageReference.child(sb + "File" + count);
+        } else {
+            sref = storageReference.child(sb.toString());
+        }
+        return sref.putFile(imageFile.getImageURI());
     }
 
     public Task<Uri> getFileFromFirebase(String path) {

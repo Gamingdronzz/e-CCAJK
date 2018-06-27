@@ -532,9 +532,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         true,
                         counterFirebaseImages++,
                         FireBaseHelper.ROOT_GRIEVANCES,
-                        state.getCircleCode(),
                         code,
-                        String.valueOf(grievanceType.getId()));
+                        String.valueOf(grievanceType.getId()),
+                        FireBaseHelper.ROOT_BY_USER);
 
                 if (uploadTask != null) {
                     uploadTask.addOnFailureListener(
@@ -611,7 +611,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
 
-    private void setSubmssionSuccessForGrievance() {
+    private void setSubmissionSuccessForGrievance() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("submissionSuccess", true);
         FireBaseHelper.getInstance(mainActivity).updateData(
@@ -621,6 +621,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 grievanceModel.getState(),
                 grievanceModel.getPensionerIdentifier()
         );
+
+        FireBaseHelper.getInstance(mainActivity).uploadDataToFirebase(grievanceModel.getPensionerIdentifier(),
+                FireBaseHelper.ROOT_REF_NUMBERS,
+                refNo);
     }
 
     private void clearFormData() {
@@ -670,7 +674,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
                     }, null, null, FancyAlertDialogType.SUCCESS);
                     isUploadedToServer = isUploadedToFirebase = false;
-                    setSubmssionSuccessForGrievance();
+                    setSubmissionSuccessForGrievance();
                 } else {
                     progressDialog.dismiss();
                     Helper.getInstance().showErrorDialog("Grievance Submission Failed<br>Try Again", "Submission Error", mainActivity);

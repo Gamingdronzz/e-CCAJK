@@ -199,7 +199,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void onCropImage(Uri imageUri) {
-                Glide.with(getContext()).load(imageUri).into(imageviewSelectedImage);
+                Glide.with(mainActivity).load(imageUri).into(imageviewSelectedImage);
                 imageModel = new SelectedImageModel(imageUri);
                 textViewFileName.setError(null);
                 String text = root + ".jpg";
@@ -369,7 +369,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(panAadharModel,
                 root,
                 panAadharModel.getState(),
-                panAadharModel.getPensionerIdentifier() );
+                panAadharModel.getPensionerIdentifier());
 
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
@@ -387,7 +387,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 false,
                 0,
                 root,
-                state.getCircleCode(),
                 pensionerCode);
 
         if (uploadTask != null) {
