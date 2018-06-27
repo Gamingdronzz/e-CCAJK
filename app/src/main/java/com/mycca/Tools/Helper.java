@@ -41,6 +41,7 @@ import com.mycca.CustomObjects.FancyAlertDialog.Icon;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Models.GrievanceType;
 import com.mycca.Models.State;
+import com.mycca.Models.StatusModel;
 import com.mycca.R;
 
 import org.json.JSONException;
@@ -49,7 +50,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -66,7 +66,11 @@ public class Helper {
     private final String TAG = "Helper";
     private String hint = "Pensioner Code";
 
-    private String[] statuslist = {"Submitted", "Under Process", "Resolved"};
+    private StatusModel[] statuslist = {
+            new StatusModel(0, "Submitted"),
+            new StatusModel(1, "Under Process"),
+            new StatusModel(2, "Resolved")
+    };
 
     private State stateList[] = {
             new State("05", "Jammu & Kashmir"),
@@ -74,6 +78,31 @@ public class Helper {
     };
 
     private State stateListJK[] = {new State("05", "Jammu & Kashmir")};
+
+    private GrievanceType pensionGrievanceTypes[] = {
+            new GrievanceType("Change of PDA", 0),
+            new GrievanceType("Correction in PPO", 1),
+            new GrievanceType("Wrong Fixation of Pension", 2),
+            new GrievanceType("Non Updation of DA", 3),
+            new GrievanceType("Non Payment of Monthly Pension", 4),
+            new GrievanceType("Non Payment of Medical Allowance", 5),
+            new GrievanceType("Non Starting of Family Pension", 6),
+            new GrievanceType("Non Revision as per Latest CPC", 7),
+            new GrievanceType("Request for CGIES", 8),
+            new GrievanceType("Excess/Short Payment", 9),
+            new GrievanceType("Enhancement of Pension on Attaining 75/80", 10),
+            new GrievanceType("Other Pension Grievance", 11)
+    };
+
+    private GrievanceType gpfGrievanceTypes[] = {
+            new GrievanceType("GPF Final Payment not received", 100),
+            new GrievanceType("Correction in the Name", 101),
+            new GrievanceType("Change of Nomination", 102),
+            new GrievanceType("GPF Account not transferred", 103),
+            new GrievanceType("Details of GPF Deposit A/C Slip", 104),
+            new GrievanceType("Non Payment of GPF Withdrawal", 105),
+            new GrievanceType("Other GPF Grievance", 106)
+    };
 
     public Helper() {
         _instance = this;
@@ -121,33 +150,12 @@ public class Helper {
         return null;
     }
 
-    public ArrayList<GrievanceType> getPensionGrievanceTypelist() {
-        ArrayList<GrievanceType> types = new ArrayList<>();
-        types.add(new GrievanceType("Change of PDA", 0));
-        types.add(new GrievanceType("Correction in PPO", 1));
-        types.add(new GrievanceType("Wrong Fixation of Pension", 2));
-        types.add(new GrievanceType("Non Updation of DA", 3));
-        types.add(new GrievanceType("Non Payment of Monthly Pension", 4));
-        types.add(new GrievanceType("Non Payment of Medical Allowance", 5));
-        types.add(new GrievanceType("Non Starting of Family Pension", 6));
-        types.add(new GrievanceType("Non Revision as per Latest CPC", 7));
-        types.add(new GrievanceType("Request for CGIES", 8));
-        types.add(new GrievanceType("Excess/Short Payment", 9));
-        types.add(new GrievanceType("Enhancement of Pension on Attaining 75/80", 10));
-        types.add(new GrievanceType("Other Pension Grievance", 11));
-        return types;
+    public GrievanceType[] getPensionGrievanceTypelist() {
+        return pensionGrievanceTypes;
     }
 
-    public ArrayList<GrievanceType> getGPFGrievanceTypelist() {
-        ArrayList<GrievanceType> types = new ArrayList<>();
-        types.add(new GrievanceType("GPF Final Payment not received", 100));
-        types.add(new GrievanceType("Correction in the Name", 101));
-        types.add(new GrievanceType("Change of Nomination", 102));
-        types.add(new GrievanceType("GPF Account not transfered", 103));
-        types.add(new GrievanceType("Details of GPF Deposit A/C Slip", 104));
-        types.add(new GrievanceType("Non Payment of GPF Withdrawal", 105));
-        types.add(new GrievanceType("Other GPF Grievance", 106));
-        return types;
+    public GrievanceType[] getGPFGrievanceTypelist() {
+        return gpfGrievanceTypes;
     }
 
     public String getGrievanceString(long id) {
@@ -201,12 +209,20 @@ public class Helper {
             return FireBaseHelper.GRIEVANCE_GPF;
     }
 
-    public String[] getStatusList() {
+    public StatusModel[] getStatusList() {
         return statuslist;
     }
 
     public String getStatusString(long status) {
-        return getStatusList()[(int) status];
+        switch ((int) status) {
+            case 0:
+                return "Submitted";
+            case 1:
+                return "Under Process";
+            case 2:
+                return "Resolved";
+        }
+        return null;
     }
 
     public String[] submittedByList(String type) {

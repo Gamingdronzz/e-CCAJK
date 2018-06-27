@@ -31,15 +31,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.Activity.MainActivity;
-import com.mycca.Adapter.StatesAdapter;
+import com.mycca.Adapter.GenericSpinnerAdapter;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.CustomObjects.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.CustomObjects.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu;
+import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.PanAdhaar;
 import com.mycca.Models.SelectedImageModel;
@@ -179,7 +179,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         }
 
 
-        StatesAdapter statesAdapter = new StatesAdapter(getContext());
+        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(), Helper.getInstance().getStateListJK());
         spinnerCircle.setAdapter(statesAdapter);
 
         buttonUpload.setOnClickListener(v -> {

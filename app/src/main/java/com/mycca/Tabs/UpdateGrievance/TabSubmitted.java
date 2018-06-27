@@ -68,7 +68,7 @@ public class TabSubmitted extends Fragment {
                 showEmptyListLayout(true);
             else {
                 showEmptyListLayout(false);
-                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getSubmittedGrievanceList(), (MainActivity) getActivity());
+                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getSubmittedGrievanceList(), (MainActivity) getActivity(),false);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             }

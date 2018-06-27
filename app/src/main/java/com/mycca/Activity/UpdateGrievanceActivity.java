@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -16,11 +15,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.Adapter.GenericSpinnerAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.GrievanceModel;
+import com.mycca.Models.StatusModel;
 import com.mycca.Notification.Constants;
 import com.mycca.Notification.FirebaseNotificationHelper;
 import com.mycca.Providers.GrievanceDataProvider;
@@ -42,6 +43,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     EditText editTextMessage;
     Button update;
     ProgressDialog progressDialog;
+    StatusModel[] statusArray;
 
     DatabaseReference dbref = FireBaseHelper.getInstance(this).versionedDbRef;
 
@@ -53,7 +55,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
-
         grievanceModel = GrievanceDataProvider.getInstance().selectedGrievance;
         bindViews();
         init();
@@ -72,10 +73,14 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
     }
 
     private void init() {
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner, Helper.getInstance().getStatusList());
+        if (grievanceModel.getGrievanceStatus() == 0) {
+            statusArray = new StatusModel[]{new StatusModel(1, "Under Process"),
+                    new StatusModel(2, "Resolved")};
+        } else if (grievanceModel.getGrievanceStatus() == 1) {
+            statusArray = new StatusModel[]{new StatusModel(2, "Resolved")};
+        }
+        GenericSpinnerAdapter<StatusModel> arrayAdapter = new GenericSpinnerAdapter<>(this, statusArray);
         statusSpinner.setAdapter(arrayAdapter);
-
         update.setOnClickListener(v -> {
             ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
                 @Override
@@ -105,7 +110,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
             connectionUtility.checkConnectionAvailability();
 
         });
-
     }
 
     private void showNoInternetConnectionDialog() {
@@ -123,14 +127,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity {
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
         textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
         textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
-        statusSpinner.setSelection((int) grievanceModel.getGrievanceStatus());
         editTextMessage.setText(grievanceModel.getMessage() == null ? "" : grievanceModel.getMessage());
     }
 
     private void updateGrievance() {
         progressDialog.show();
         final String message = editTextMessage.getText().toString().trim();
-        final int status = statusSpinner.getSelectedItemPosition();
+        final int status = (int) ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("grievanceStatus", status);
         hashMap.put("message", message);

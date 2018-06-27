@@ -38,9 +38,8 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.Activity.MainActivity;
-import com.mycca.Adapter.GrievanceAdapter;
+import com.mycca.Adapter.GenericSpinnerAdapter;
 import com.mycca.Adapter.RecyclerViewAdapterSelectedImages;
-import com.mycca.Adapter.StatesAdapter;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
@@ -101,7 +100,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     GrievanceModel grievanceModel;
     State state;
     VolleyHelper volleyHelper;
-    ArrayList<GrievanceType> list = new ArrayList<>();
+    GrievanceType[] list;
     ArrayList<Uri> firebaseImageURLs;
     private ArrayList<FABMenuItem> items;
     Uri downloadUrl;
@@ -161,7 +160,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
         inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
 
-        StatesAdapter statesAdapter = new StatesAdapter(getContext());
+        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(), Helper.getInstance().getStateListJK());
         spinnerCircle.setAdapter(statesAdapter);
 
         if (type.equals(FireBaseHelper.GRIEVANCE_PENSION)) {
@@ -173,7 +172,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             list = Helper.getInstance().getGPFGrievanceTypelist();
             prefix = "GPF";
         }
-        GrievanceAdapter adapter = new GrievanceAdapter(getContext(), list);
+        GenericSpinnerAdapter<GrievanceType> adapter = new GenericSpinnerAdapter<>(getContext(), list);
         spinnerInputType.setAdapter(adapter);
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {

@@ -8,27 +8,29 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.mycca.Models.GrievanceType;
+import com.mycca.Models.State;
+import com.mycca.Models.StatusModel;
 import com.mycca.R;
 
-import java.util.ArrayList;
+public class GenericSpinnerAdapter<T> extends BaseAdapter {
 
-public class GrievanceAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<GrievanceType> types;
+    private T[] items;
 
-    public GrievanceAdapter(Context context, ArrayList<GrievanceType> types) {
+
+    public GenericSpinnerAdapter(Context context,T[] items) {
         this.context = context;
-        this.types = types;
+        this.items = items;
     }
 
     @Override
     public int getCount() {
-        return types.size();
+        return items.length;
     }
 
     @Override
     public Object getItem(int position) {
-        return types.get(position);
+        return items[position];
     }
 
     @Override
@@ -41,9 +43,20 @@ public class GrievanceAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             convertView = inflater.inflate(R.layout.simple_spinner, parent, false);
-            GrievanceType type = types.get(position);
             TextView textView = convertView.findViewById(R.id.spinner_item);
-            textView.setText(type.getName());
+            Object item = items[position];
+            if (item instanceof GrievanceType) {
+                GrievanceType type = (GrievanceType) item;
+                textView.setText(type.getName());
+            } else if (item instanceof State) {
+                State state = (State) item;
+                textView.setText(state.getName());
+            }
+            else if (item instanceof StatusModel) {
+                StatusModel status = (StatusModel) item;
+                textView.setText(status.getStatusString());
+            }
+
         }
         return convertView;
     }

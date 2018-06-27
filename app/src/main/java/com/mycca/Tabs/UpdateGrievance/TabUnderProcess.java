@@ -69,12 +69,11 @@ public class TabUnderProcess extends Fragment {
                 showEmptyListLayout(true);
             else {
                 showEmptyListLayout(false);
-                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getProcessingGrievanceList(), (MainActivity) getActivity());
+                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getProcessingGrievanceList(), (MainActivity) getActivity(), false);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             }
-        }
-        else
+        } else
             showEmptyListLayout(true);
     }
 

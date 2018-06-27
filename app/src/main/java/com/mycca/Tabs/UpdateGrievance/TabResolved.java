@@ -68,7 +68,7 @@ public class TabResolved extends Fragment {
                 showEmptyListLayout(true);
             else {
                 showEmptyListLayout(false);
-                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getResolvedGrievanceList(), (MainActivity) getActivity());
+                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getResolvedGrievanceList(), (MainActivity) getActivity(),true);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             }

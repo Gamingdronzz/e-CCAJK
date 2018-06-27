@@ -24,14 +24,16 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
     private ArrayList<GrievanceModel> grievanceModelArrayList;
     private AppCompatActivity appCompatActivity;
+    private boolean resolved;
     private String TAG = "Grievance";
 
     public static final int REQUEST_UPDATE = 299;
 
 
-    public RecyclerViewAdapterGrievanceUpdate(ArrayList<GrievanceModel> grievanceModelArrayList, AppCompatActivity appCompatActivity) {
+    public RecyclerViewAdapterGrievanceUpdate(ArrayList<GrievanceModel> grievanceModelArrayList, AppCompatActivity appCompatActivity, boolean resolved) {
         this.grievanceModelArrayList = grievanceModelArrayList;
         this.appCompatActivity = appCompatActivity;
+        this.resolved = resolved;
     }
 
     @NonNull
@@ -40,7 +42,8 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         return new GrievanaceUpdateViewHolder
                 (LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_grievance_item, parent, false),
                         new CustomClickListener(),
-                        new CustomUpdateClickListener());
+                        new CustomUpdateClickListener(),
+                        resolved);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         CustomUpdateClickListener customUpdateClickListener;
 
 
-        GrievanaceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener) {
+        GrievanaceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener, boolean resolved) {
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
@@ -100,7 +103,10 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             textViewDateOfGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar, 0, 0, 0);
 
             updateGrievance = itemView.findViewById(R.id.button_update_grievance);
-            updateGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp, 0, 0, 0);
+            if (resolved)
+                updateGrievance.setVisibility(View.GONE);
+            else
+                updateGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_24dp, 0, 0, 0);
 
             this.customClickListener = customClickListener;
             this.customUpdateClickListener = customUpdateClickListener;
@@ -145,49 +151,3 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
 }
 
-//class CustomSpinnerItemSelectedListener implements Spinner.OnItemSelectedListener {
-//    private int position;
-//
-//    public void setPosition(int position) {
-//        this.position = position;
-//    }
-//
-//    @Override
-//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//        Log.d(TAG, "onItemSelected: " + position);
-//        GrievanceModel grievanceModel = grievanceModelArrayList.get(this.position);
-//        grievanceModel.setGrievanceStatus(position);
-//        notifyItemChanged(position);
-//    }
-//
-//    @Override
-//    public void onNothingSelected(AdapterView<?> parent) {
-//
-//    }
-//}
-//
-//class CustomEditTextListener implements TextWatcher {
-//    private int position;
-//
-//    public void setPosition(int position) {
-//        this.position = position;
-//    }
-//
-//    @Override
-//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//    }
-//
-//    @Override
-//    public void onTextChanged(CharSequence s, int start, int before, int count) {
-//        Log.d(TAG, "afterTextChanged: " + s);
-//        GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
-//        grievanceModel.setMessage(s.toString());
-//        notifyItemChanged(position);
-//    }
-//
-//    @Override
-//    public void afterTextChanged(Editable s) {
-//
-//    }
-//}
