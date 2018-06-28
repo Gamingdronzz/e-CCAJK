@@ -1,6 +1,10 @@
 package com.mycca.Fragments;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -19,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -38,6 +43,8 @@ public class BrowserFragment extends Fragment {
     String url;
     ActionBar actionBar;
     private boolean hasStopped = false;
+    ObjectAnimator progressAnimator;
+    int previousProgress = 0;
 
     public BrowserFragment() {
     }
@@ -60,12 +67,14 @@ public class BrowserFragment extends Fragment {
             actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
         progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setMax(100);
+        progressBar.setMax(1000);
+        progressBar.setProgress(0);
         progressBar.setVisibility(View.GONE);
         webView = view.findViewById(R.id.webview_cca);
         if (args != null) {
             url = args.getString("url");
         }
+        progressAnimator = ObjectAnimator.ofInt(progressBar,"progress",0);
     }
 
     @Override
@@ -129,15 +138,27 @@ public class BrowserFragment extends Fragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 setSubtitle("Loading...");
                 progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(5);
+                progressAnimator.setIntValues(50,progressBar.getProgress());
+                progressAnimator.setDuration(300);
+                progressAnimator.setInterpolator(new LinearInterpolator());
+                progressAnimator.start();
+                previousProgress = 50;
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 setSubtitle(view.getTitle());
-                progressBar.setProgress(100);
-                progressBar.setVisibility(View.GONE);
-
+                progressAnimator.setIntValues(1000, previousProgress);
+                progressAnimator.setDuration(300);
+                progressAnimator.setInterpolator(new LinearInterpolator());
+                progressAnimator.start();
+                progressAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(View.GONE);
+                        super.onAnimationEnd(animation);
+                    }
+                });
             }
         });
 
@@ -145,7 +166,11 @@ public class BrowserFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                progressBar.setProgress(newProgress);
+                progressAnimator.setIntValues(newProgress*10, previousProgress);
+                progressAnimator.setDuration(100);
+                progressAnimator.setInterpolator(new LinearInterpolator());
+                progressAnimator.start();
+                previousProgress = newProgress*10;
             }
 
             @Override

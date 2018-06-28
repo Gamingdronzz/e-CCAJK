@@ -168,7 +168,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         circularProgressButton.setOnClickListener(getCoordinatesListener);
         circularProgressButton.setIndeterminateProgressMode(true);
 
-        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_inspection);
         try {
             if (fab != null && fabMenu != null) {
                 mainActivity.setFabRevealMenu(fabMenu);
@@ -270,8 +270,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(720, 1280)
-                        .setAspectRatio(9, 16);
+                        .setRequestedSize(720, 1280);
             }
 
             @Override

@@ -548,7 +548,7 @@ public class Helper {
             }
         };
         FireBaseHelper.getInstance(context).getDataFromFirebase(valueEventListener,
-                FireBaseHelper.UNVERSIONED, true,
+                FireBaseHelper.NONVERSIONED, true,
                 FireBaseHelper.ROOT_STAFF, staffId, FireBaseHelper.ROOT_PASSWORD);
     }
 

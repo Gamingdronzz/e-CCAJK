@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 public class VolleyHelper {
     private Context context;
+    private final String TAG = "Volley";
     public VolleyResponse delegate = null;
     ErrorListener errorListener = new VolleyErrorListener();
     Listener jsonArrayResponseListener = new JsonArrayResponseListener();
@@ -75,12 +76,18 @@ public class VolleyHelper {
         }
 
         public void onErrorResponse(VolleyError error) {
-            VolleyHelper.this.delegate.onError(error);
-            if (error.getClass() == TimeoutError.class) {
+            if(error !=null) {
+                VolleyHelper.this.delegate.onError(error);
+                if (error.getClass() == TimeoutError.class) {
+                }
+                if (error.getClass() == ServerError.class) {
+                }
+                if (error.getClass() != NetworkError.class) {
+                }
             }
-            if (error.getClass() == ServerError.class) {
-            }
-            if (error.getClass() != NetworkError.class) {
+            else
+            {
+                Log.d(TAG, "onErrorResponse: Null Error Object ");
             }
         }
     }
@@ -105,7 +112,7 @@ public class VolleyHelper {
         }
     }
 
-    public VolleyHelper(VolleyResponse delegate, Context conetext) {
+    public VolleyHelper(VolleyResponse delegate, Context context) {
         this.delegate = delegate;
     }
 

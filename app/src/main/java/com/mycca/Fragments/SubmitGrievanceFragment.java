@@ -103,7 +103,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     GrievanceType[] list;
     ArrayList<Uri> firebaseImageURLs;
     private ArrayList<FABMenuItem> items;
-    Uri downloadUrl;
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
@@ -198,7 +197,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         spinnerInputSubmittedBy.setAdapter(arrayAdapter1);
 
 
-        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_submit_grievance);
         try {
             if (buttonChooseFile != null && fabMenu != null) {
                 //attach menu to fab
@@ -309,8 +308,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(720, 1280)
-                        .setAspectRatio(9, 16);
+                        .setRequestedSize(720, 1280);
             }
 
             @Override
@@ -482,7 +480,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             }
 
         };
-        FireBaseHelper.getInstance(mainActivity).getReferenceNumber(handler);
+        FireBaseHelper.getInstance(mainActivity).getReferenceNumber(handler,state.getCircleCode());
     }
 
     private void uploadData() {
@@ -546,9 +544,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                                     taskSnapshot -> {
                                         // Uri downloadUrl = taskSnapshot.getDownloadUrl();
                                         taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-                                            downloadUrl = uri;
-                                            Log.d(TAG, "onSuccess: " + downloadUrl);
-                                            firebaseImageURLs.add(downloadUrl);
+                                            firebaseImageURLs.add(uri);
                                             progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + selectedImageModelArrayList.size());
                                             Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
                                             if (counterUpload == selectedImageModelArrayList.size()) {

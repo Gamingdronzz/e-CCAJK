@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -288,6 +288,7 @@
                 android:textSize="@dimen/text_15"
                 android:textStyle="bold" />
 
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_selected_images"
                 android:layout_width="match_parent"
@@ -303,6 +304,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_submit"
         android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/margin_large"
         android:backgroundTint="@color/colorPrimaryLight"
         android:tint="@color/colorWhite"
@@ -310,7 +312,7 @@
         tools:targetApi="m" />
 
     <com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu
-        android:id="@+id/fabMenu"
+        android:id="@+id/fabMenu_submit_grievance"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -336,6 +338,8 @@
         android:textSize="@dimen/text_18"
         android:textStyle="bold" />
 
-</RelativeLayout>
+
+
+</com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout>
 
 

@@ -247,7 +247,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             }
         };
-        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener, FireBaseHelper.UNVERSIONED, FireBaseHelper.ROOT_SLIDER);
+        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener, FireBaseHelper.NONVERSIONED, FireBaseHelper.ROOT_SLIDER);
     }
 
     private void addImageToSlider(SliderImageModel sliderImageModel) {

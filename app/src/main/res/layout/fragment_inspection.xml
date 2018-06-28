@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inspection_root"
@@ -101,13 +101,13 @@
         android:layout_above="@id/button_upload"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/margin_large"
-        android:backgroundTint="@color/colorPrimaryLight"
-        android:tint="@color/colorWhite"
+        android:backgroundTint="@color/colorAccentLight"
+        android:tint="@color/colorBlack"
         app:srcCompat="@drawable/ic_view_menu_black_24dp"
         tools:targetApi="m" />
 
     <com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu
-        android:id="@+id/fabMenu"
+        android:id="@+id/fabMenu_inspection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -135,4 +135,4 @@
         android:textSize="@dimen/text_18"
         tools:targetApi="m" />
 
-</RelativeLayout>
+</com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout>

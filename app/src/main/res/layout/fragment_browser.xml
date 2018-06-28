@@ -5,16 +5,14 @@
     android:orientation="vertical"
     tools:context=".Fragments.BrowserFragment">
 
-
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:progressTint="@color/colorAccentDark"
-            android:progressBackgroundTint="@color/colorPrimary"
-            android:background="@color/colorPrimary"
-            android:layout_height="wrap_content" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:progressBackgroundTint="@color/colorPrimary"
+        android:progressTint="@color/colorAccentDark" />
 
     <WebView
         android:id="@+id/webview_cca"

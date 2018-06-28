@@ -38,6 +38,7 @@ import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.IOHelper;
+import com.mycca.Tools.Preferences;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -239,7 +240,8 @@ public class LocatorFragment extends Fragment {
             }
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(vel,
-                FireBaseHelper.UNVERSIONED_STATEWISE, false,
+                FireBaseHelper.NONVERSIONED_STATEWISE, false,
+                Preferences.getInstance().getStringPref(activity,Preferences.PREF_STATE),
                 locatorType);
     }
 
@@ -295,10 +297,12 @@ public class LocatorFragment extends Fragment {
             }
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
-                FireBaseHelper.UNVERSIONED_STATEWISE,
+                FireBaseHelper.NONVERSIONED_STATEWISE,
+                Preferences.getInstance().getStringPref(activity,Preferences.PREF_STATE),
                 locatorType);
         FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
-                FireBaseHelper.UNVERSIONED_STATEWISE, true,
+                FireBaseHelper.NONVERSIONED_STATEWISE, true,
+                Preferences.getInstance().getStringPref(activity,Preferences.PREF_STATE),
                 locatorType);
     }
 

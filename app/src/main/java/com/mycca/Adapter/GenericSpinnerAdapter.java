@@ -25,12 +25,22 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return items.length;
+        if(items!=null) {
+            return items.length;
+        }
+        else
+            return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return items[position];
+        if(items!=null) {
+            return items[position];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     @Override

@@ -7,10 +7,10 @@ import android.graphics.Point;
 import android.os.Build;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.mycca.CustomObjects.CircularReveal.Animation.ViewAnimationUtils;
 import com.mycca.CustomObjects.CustomArcAnimator.ArcAnimator;
 import com.mycca.CustomObjects.CustomArcAnimator.Side;
 import com.mycca.CustomObjects.FabRevealMenu.Enums.Direction;

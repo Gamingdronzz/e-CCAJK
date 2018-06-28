@@ -28,8 +28,8 @@ public class FireBaseHelper {
     private static FireBaseHelper _instance;
 
     public DatabaseReference versionedDbRef;
-    private DatabaseReference unVersionedDbRef;
-    private DatabaseReference unVersionedStateDbRef;
+    private DatabaseReference nonVersionedDbref;
+    private DatabaseReference nonVersionedStateDbRef;
     private StorageReference storageReference;
     public FirebaseAuth mAuth;
 
@@ -52,13 +52,14 @@ public class FireBaseHelper {
     public final static String ROOT_BY_USER = "By User";
     public static final String ROOT_PASSWORD = "password";
     public final static String ROOT_BY_STAFF = "By Staff";
+    public final static String ROOT_IMAGES_BY_STAFF = "Images By Staff";
     private final static String ROOT_STATE_DATA = "State Data";
     private final static String ROOT_REF_COUNT = "Reference Number Count";
 
     public final static String GRIEVANCE_PENSION = "Pension";
     public final static String GRIEVANCE_GPF = "GPF";
-    public final static int UNVERSIONED = 0;
-    public final static int UNVERSIONED_STATEWISE = 1;
+    public final static int NONVERSIONED = 0;
+    public final static int NONVERSIONED_STATEWISE = 1;
     public final static int VERSIONED = 2;
 
     public String version;
@@ -75,11 +76,10 @@ public class FireBaseHelper {
         if (version.equals("-1"))
             version = "5";
 
-        unVersionedDbRef = FirebaseDatabase.getInstance().getReference();
+        nonVersionedDbref = FirebaseDatabase.getInstance().getReference();
         versionedDbRef = FirebaseDatabase.getInstance().getReference().child(version);
-        unVersionedStateDbRef = FirebaseDatabase.getInstance().getReference()
-                .child(ROOT_STATE_DATA)
-                .child(Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE));
+        nonVersionedStateDbRef = FirebaseDatabase.getInstance().getReference()
+                .child(ROOT_STATE_DATA);
 
         storageReference = FirebaseStorage.getInstance().getReference().child(version);
         mAuth = FirebaseAuth.getInstance();
@@ -120,8 +120,9 @@ public class FireBaseHelper {
             Log.d(TAG, "Firebase Helper child : " + key);
             dbref = dbref.child(key);
         }
-
+        Log.d(TAG, "uploadDataToFirebase: loop ended");
         task = dbref.setValue(model);
+        Log.d(TAG, "uploadDataToFirebase: setting value");
         return task;
     }
 
@@ -158,23 +159,25 @@ public class FireBaseHelper {
         return task;
     }
 
-    public void checkForUpdate(ValueEventListener valueEventListener) {
-        versionedDbRef.child(FireBaseHelper.ROOT_APP_VERSION)
-                .addListenerForSingleValueEvent(valueEventListener);
+    public Task<Void> updatePassword(String pwd, String staffId) {
+        DatabaseReference dbref = nonVersionedDbref.child(ROOT_STAFF).child(staffId);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(ROOT_PASSWORD, pwd);
+        return dbref.updateChildren(hashMap);
     }
 
     public void getDataFromFirebase(ChildEventListener childEventListener, int versioned, String... params) {
         DatabaseReference dbref;
         if (versioned == VERSIONED)
             dbref = versionedDbRef;
-        else if (versioned == UNVERSIONED)
-            dbref = unVersionedDbRef;
+        else if (versioned == NONVERSIONED)
+            dbref = nonVersionedDbref;
         else
-            dbref = unVersionedStateDbRef;
+            dbref = nonVersionedStateDbRef;
 
         Log.d(TAG, "getting DataFromFirebase: ");
         for (String key : params) {
-            Log.d(TAG, "Firebase Helper Uploading Data to : " + key);
+            Log.d(TAG, "Firebase key : " + key);
             dbref = dbref.child(key);
         }
 
@@ -185,10 +188,10 @@ public class FireBaseHelper {
         DatabaseReference dbref;
         if (versioned == VERSIONED)
             dbref = versionedDbRef;
-        else if (versioned == UNVERSIONED)
-            dbref = unVersionedDbRef;
+        else if (versioned == NONVERSIONED)
+            dbref = nonVersionedDbref;
         else
-            dbref = unVersionedStateDbRef;
+            dbref = nonVersionedStateDbRef;
 
         for (String key : params) {
             Log.d(TAG, "Firebase Helper key : " + key);
@@ -200,11 +203,9 @@ public class FireBaseHelper {
             dbref.addValueEventListener(valueEventListener);
     }
 
-    public void getReferenceNumber(Transaction.Handler handler) {
-        Log.d(TAG, "getReferenceNumber: ");
-        DatabaseReference dbref;
-        dbref = unVersionedStateDbRef.child(ROOT_REF_COUNT);
-        dbref.runTransaction(handler);
+    public void checkForUpdate(ValueEventListener valueEventListener) {
+        versionedDbRef.child(FireBaseHelper.ROOT_APP_VERSION)
+                .addListenerForSingleValueEvent(valueEventListener);
     }
 
     public UploadTask uploadFiles(SelectedImageModel imageFile, boolean multiple, int count, String... params) {
@@ -224,11 +225,11 @@ public class FireBaseHelper {
         return storageReference.child(path).getDownloadUrl();
     }
 
-    public Task<Void> updatePassword(String pwd, String staffId) {
-        DatabaseReference dbref = unVersionedDbRef.child(ROOT_STAFF);
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(ROOT_PASSWORD, pwd);
-        return dbref.child(staffId).updateChildren(hashMap);
+    public void getReferenceNumber(Transaction.Handler handler,String circleCode) {
+        Log.d(TAG, "getReferenceNumber: ");
+        DatabaseReference dbref;
+        dbref = nonVersionedStateDbRef.child(circleCode).child(ROOT_REF_COUNT);
+        dbref.runTransaction(handler);
     }
 
     public ArrayList<Contact> getContactsList(String stateId) {

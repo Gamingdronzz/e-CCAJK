@@ -15,6 +15,7 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,7 @@ import com.mycca.CustomObjects.FabRevealMenu.FabListeners.OnFABMenuSelectedListe
 import com.mycca.CustomObjects.FabRevealMenu.FabListeners.OnMenuStateChangedListener;
 import com.mycca.CustomObjects.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.R;
+import com.mycca.Tools.Helper;
 
 import java.util.ArrayList;
 
@@ -139,9 +141,15 @@ public class FABRevealMenu extends FrameLayout {
 
             //initialization
             if (mMenuRes != -1) {
-                setMenu(mMenuRes);
+                {
+                    Log.d("FAB Menu", "initView: not custom");
+                    setMenu(mMenuRes);
+                }
             } else if (mCustomView != null) {
-                setCustomView(mCustomView);
+                {
+                    Log.d("FAB Menu", "initView: custom");
+                    setCustomView(mCustomView);
+                }
             }
         }
     }

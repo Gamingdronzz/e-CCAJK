@@ -166,7 +166,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         inputPCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         inputNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_card_black_24dp, 0, 0, 0);
 
-        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_pan_aadhar);
         try {
             if (fab != null && fabMenu != null) {
                 mainActivity.setFabRevealMenu(fabMenu);
@@ -212,8 +212,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                         .setMultiTouchEnabled(false)
                         .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(720, 1280)
-                        .setAspectRatio(9, 16);
+                        .setRequestedSize(720, 1280);
             }
 
             @Override
