@@ -60,4 +60,5 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
         }
         return convertView;
     }
+
 }

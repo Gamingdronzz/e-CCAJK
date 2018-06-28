@@ -26,8 +26,8 @@ public class SettingsFragment extends Fragment {
 
     FirebaseAuth mAuth;
     private Switch switchNotification;
-    LinearLayout layoutChangeState, layoutSignInOut;
-    private TextView tvCurrentState, tvSignOut, tvAccount, tvHelp;
+    LinearLayout parentLayout, layoutChangeState, layoutSignInOut, layoutChangePwd;
+    private TextView tvCurrentState, tvSignOut, tvAccount, tvHelp, tvChangePwd;
     MainActivity activity;
 
     public SettingsFragment() {
@@ -48,6 +48,8 @@ public class SettingsFragment extends Fragment {
 
     private void bindViews(View view) {
 
+        parentLayout = view.findViewById(R.id.layout_settings);
+
         switchNotification = view.findViewById(R.id.switch_settings_notifications);
         switchNotification.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notifications_none_black_24dp, 0, 0, 0);
 
@@ -59,6 +61,9 @@ public class SettingsFragment extends Fragment {
         tvHelp = view.findViewById(R.id.tv_settings_view_help);
         tvHelp.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_live_help_black_24dp, 0, 0, 0);
 
+        tvChangePwd=view.findViewById(R.id.tv_settings_change_password);
+        tvChangePwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password,0,0,0);
+        layoutChangePwd = view.findViewById(R.id.layout_settings_change_password);
         layoutSignInOut = view.findViewById(R.id.layout_settings_sign_in_out);
         tvSignOut = view.findViewById(R.id.tv_settings_sign_in_out);
         tvAccount = view.findViewById(R.id.tv_settings_account);
@@ -83,8 +88,9 @@ public class SettingsFragment extends Fragment {
             startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings", true));
         });
 
-        tvCurrentState.setText("Current State: " + Helper.getInstance().getStateName(
-                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE)));
+        String text = "Current State: " + Helper.getInstance().getStateName(
+                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE));
+        tvCurrentState.setText(text);
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);
@@ -112,6 +118,14 @@ public class SettingsFragment extends Fragment {
             } else {
                 activity.signInWithGoogle();
             }
+        });
+
+        if (Preferences.getInstance().getStaffPref(activity, Preferences.PREF_STAFF_DATA) != null)
+            layoutChangePwd.setVisibility(View.VISIBLE);
+        else
+            layoutChangePwd.setVisibility(View.GONE);
+        layoutChangePwd.setOnClickListener(v -> {
+            Helper.getInstance().showChangePasswordWindow(activity, parentLayout);
         });
     }
 

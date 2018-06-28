@@ -17,18 +17,10 @@
 \nFAX - 0191-2477296, 2475251
 \nSTD CODE -0191</b></string>
 
-    <string name="contact_us_location">Click to Open Location</string>
     <string name="from_cca_desk_short">It gives me immense pleasure to welcome you to the Official Android Application of O/O CCA J &amp; K, Jammu.
 \n\nThe CCA offices had initially been assigned work of settlement of..</string>
     <string name="from_cca_desk">It gives me immense pleasure to welcome you to the Official Android Application of O/O CCA J &amp; K, Jammu.
 \n\nThe CCA offices had initially been assigned work of settlement of retirement benefits of employees absorbed in BSNL, the maintenance of GPF Accounts of all BSNL employees, the work handled by this office has expanded over the years and now it provides a critical interface between the organization and various stakeholders at ground level on various policy issues such as management of license fees, spectrum Charges, Universal Subsidy Fund, claims of BSNL Staff.\n\nMobile and broad band are instruments of socio-economic empowerment of citizens.\n\nBroad band opens future possibilities leading to widespread impact on education, health, financial inclusion, skill training.\n\nCCA offices contribute in the mission of monitoring broad band connections and National Optical Fiber Network (NOFN) by releasing subsidies to quickly bring financial inclusion and digitally empowering citizens in social inclusion schemes.\nThis application offers the visitors easy and ready access to the information relating to all the stakeholders.\n\nIt will be our effort to update the information and status of work regularly to keep visitors abreast of all latest developments .\n\nI hope all visitors have a happy &amp; satisfying experience while navigating through our app.</string>
-    <string name="title_activity_home">Home</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_login">Sign in</string>
 
     <string name="about_us_string">This application is  developed and maintained by GAMING DRONZZ, Jammu.</string>
 
@@ -51,6 +43,28 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="invitation_message">Official Android Appication of CCA</string>
     <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
 
+    <!-- CropView -->
+    <string name="crop_image_activity_title">Crop</string>
+    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">Crop</string>
+    <string name="pick_image_intent_chooser_title">Select source</string>
+    <string name="saving_image">Saving image …</string>
+
+    <string name="title_activity_ad">Ad</string>
+    <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
+    <string name="start_level">Level 1</string>
+    <string name="next_level">Next Level</string>
+    <!-- -
+        This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
+        For more information, see https://support.google.com/admob/answer/3052638
+    <!- -->
+    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+   <string name="title_activity_home">Home</string>
+    <string name="contact_us_location">Click to Open Location</string>
     <string name="add_image">Add Image</string>
     <string name="remove">Remove All</string>
     <string name="action_settings">Settings</string>
@@ -87,23 +101,15 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="date">date</string>
     <string name="latest_news">Latest From CCA</string>
     <string name="visit_us">Visit Us</string>
-
-    <!-- CropView -->
-    <string name="crop_image_activity_title">Crop</string>
-    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
-    <string name="crop_image_menu_rotate_right">Rotate</string>
-    <string name="crop_image_menu_crop">Crop</string>
-    <string name="pick_image_intent_chooser_title">Select source</string>
-    <string name="saving_image">Saving image …</string>
-
-    <string name="title_activity_ad">Ad</string>
-    <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
-    <string name="start_level">Level 1</string>
-    <string name="next_level">Next Level</string>
-    <!-- -
-        This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
-        For more information, see https://support.google.com/admob/answer/3052638
-    <!- -->
-    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="notifications">Notifications:</string>
+    <string name="change_state">Change State</string>
+    <string name="current_state">Current State:</string>
+    <string name="view_tutorials_again">View Tutorials Again</string>
+    <string name="signed_in">Signed In:</string>
+    <string name="confirm_new_password">Confirm new Password</string>
+    <string name="new_password">New password</string>
+    <string name="old_password">Old password</string>
+    <string name="change">CHANGE</string>
+    <string name="change_password">Change Password</string>
 
 </resources>

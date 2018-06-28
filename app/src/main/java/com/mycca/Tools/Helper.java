@@ -30,7 +30,10 @@ import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
@@ -470,6 +473,83 @@ public class Helper {
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.update();
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
+    }
+
+    public void showChangePasswordWindow(final Activity context, View parent) {
+
+        final EditText editTextOld, editTextNew, editTextConfirm;
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_change_password, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        editTextOld = popupView.findViewById(R.id.edittext_old_pwd);
+        editTextNew = popupView.findViewById(R.id.edittext_new_pwd);
+        editTextConfirm = popupView.findViewById(R.id.edittext_confirm_new_pwd);
+
+        Button change = popupView.findViewById(R.id.btn_change_pwd);
+        change.setOnClickListener(v -> {
+            String oldPwd = editTextOld.getText().toString();
+            String newPwd = editTextNew.getText().toString();
+            String confirmPwd = editTextConfirm.getText().toString();
+            if (oldPwd.isEmpty()) {
+                Toast.makeText(context, "Enter Old Password", Toast.LENGTH_LONG).show();
+            } else if (newPwd.isEmpty()) {
+                Toast.makeText(context, "Enter New Password", Toast.LENGTH_LONG).show();
+            } else if (!confirmPwd.equals(newPwd)) {
+                Toast.makeText(context, "Confirm password not matching new password", Toast.LENGTH_LONG).show();
+            } else  if (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)
+                showErrorDialog("Try again after Sign in", "Please Sign in with google first", context);
+            else {
+                changePassword(oldPwd, newPwd, context);
+                popupWindow.dismiss();
+            }
+
+        });
+
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.update();
+        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
+    }
+
+    private void changePassword(String oldPwd, String newPwd, Activity context) {
+
+        ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, "Please Wait...");
+        progressDialog.show();
+        String staffId = Preferences.getInstance().getStaffPref(context, Preferences.PREF_STAFF_DATA).getId();
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.getValue());
+                if (dataSnapshot.getValue().equals(oldPwd)) {
+                    Task<Void> task = FireBaseHelper.getInstance(context).updatePassword(newPwd, staffId);
+                    task.addOnCompleteListener(task1 -> {
+                        progressDialog.dismiss();
+                        if (task1.isSuccessful()) {
+                            showFancyAlertDialog(context,
+                                    "", "Password Changed Successfully",
+                                    "OK", () -> {
+                                    },
+                                    null, null, FancyAlertDialogType.SUCCESS);
+                        } else {
+                                showErrorDialog("Try again", "Password could not be changed", context);
+                        }
+                    });
+                } else {
+                    progressDialog.dismiss();
+                    showErrorDialog("Incorrect old password", "Password could not be changed", context);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                showUpdateOrMaintenanceDialog(false, context);
+            }
+        };
+        FireBaseHelper.getInstance(context).getDataFromFirebase(valueEventListener,
+                FireBaseHelper.UNVERSIONED, true,
+                FireBaseHelper.ROOT_STAFF, staffId, FireBaseHelper.ROOT_PASSWORD);
     }
 
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {

@@ -49,8 +49,9 @@ public class FireBaseHelper {
     public final static String ROOT_TOKEN = "Tokens";
     public final static String ROOT_SLIDER = "Slider Data";
     public final static String ROOT_REF_NUMBERS = "Reference Numbers";
-    public final static String ROOT_BY_USER="By User";
-    public final static String ROOT_BY_STAFF="By Staff";
+    public final static String ROOT_BY_USER = "By User";
+    public static final String ROOT_PASSWORD = "password";
+    public final static String ROOT_BY_STAFF = "By Staff";
     private final static String ROOT_STATE_DATA = "State Data";
     private final static String ROOT_REF_COUNT = "Reference Number Count";
 
@@ -221,6 +222,13 @@ public class FireBaseHelper {
 
     public Task<Uri> getFileFromFirebase(String path) {
         return storageReference.child(path).getDownloadUrl();
+    }
+
+    public Task<Void> updatePassword(String pwd, String staffId) {
+        DatabaseReference dbref = unVersionedDbRef.child(ROOT_STAFF);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(ROOT_PASSWORD, pwd);
+        return dbref.child(staffId).updateChildren(hashMap);
     }
 
     public ArrayList<Contact> getContactsList(String stateId) {
