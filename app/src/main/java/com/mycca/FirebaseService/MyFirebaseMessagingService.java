@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -25,7 +24,6 @@ import java.util.Random;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCM Service";
-    private Bitmap bitmap;
     private Context context = this;
     String groupKey = "grievanceGroupKey";
 
@@ -42,10 +40,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendUserNotification(title,message ,pensionerCode, Long.parseLong(grievanceType));
             }
         }
-
-
     }
-
 
     private void sendUserNotification(String title, String mess, String pensionerCode,long grievanceType) {
 
@@ -90,8 +85,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (notificationManager != null) {
             notificationManager.notify(notifyID /* ID of notification */, notificationBuilder.build());
         }
-
-
     }
 
 }

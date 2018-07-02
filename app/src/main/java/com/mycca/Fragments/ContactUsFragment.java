@@ -73,9 +73,7 @@ public class ContactUsFragment extends Fragment {
         officeAddressLayout = view.findViewById(R.id.linear_layout_office_Address_Area);
         textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
         textviewContactPersonHeading = view.findViewById(R.id.textview_contact_person_heading);
-
         textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
-
         textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE)));
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
         compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
