@@ -18,27 +18,24 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
     private T[] items;
 
 
-    public GenericSpinnerAdapter(Context context,T[] items) {
+    public GenericSpinnerAdapter(Context context, T[] items) {
         this.context = context;
         this.items = items;
     }
 
     @Override
     public int getCount() {
-        if(items!=null) {
+        if (items != null) {
             return items.length;
-        }
-        else
+        } else
             return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        if(items!=null) {
+        if (items != null) {
             return items[position];
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
@@ -61,8 +58,7 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
             } else if (item instanceof State) {
                 State state = (State) item;
                 textView.setText(state.getName());
-            }
-            else if (item instanceof StatusModel) {
+            } else if (item instanceof StatusModel) {
                 StatusModel status = (StatusModel) item;
                 textView.setText(status.getStatusString());
             }

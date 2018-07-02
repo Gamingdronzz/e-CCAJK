@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.mycca.Models.NewsModel;
 import com.mycca.R;
 import com.mycca.Tools.Helper;
@@ -29,13 +30,23 @@ public class NewsActivity extends AppCompatActivity {
 
     private void init() {
         String json = getIntent().getStringExtra("News");
-        NewsModel newsModel = new Gson().fromJson(json, NewsModel.class);
-        Log.d("News", json);
+        try {
 
-        headline.setText(newsModel.getHeadline());
-        description.setText(newsModel.getDescription());
-        description.setMovementMethod(new ScrollingMovementMethod());
-        date.setText(Helper.getInstance().formatDate(newsModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
+            NewsModel newsModel = new Gson().fromJson(json, NewsModel.class);
+            Log.d("News", json);
+
+            headline.setText(newsModel.getHeadline());
+            description.setText(newsModel.getDescription());
+            description.setMovementMethod(new ScrollingMovementMethod());
+            date.setText(Helper.getInstance().formatDate(newsModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
+
+        } catch (JsonParseException jpe) {
+            jpe.printStackTrace();
+            headline.setText(getResources().getString(R.string.n_a));
+            description.setText(getResources().getString(R.string.n_a));
+            date.setText(getResources().getString(R.string.n_a));
+
+        }
     }
 
     private void bindViews() {

@@ -248,18 +248,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_logout:
                 logout();
                 break;
-            /*case R.id.navmenu_settings:
-                showFragment("Settings", new SettingsFragment(), null);
-                break;
-            case R.id.navmenu_invite:
-                showInviteIntent();
-                break;
-            case R.id.navmenu_feedback:
-                showFragment("Feedback", new FeedbackFragment(), null);
-                break;
-            case R.id.navmenu_about_us:
-                showFragment("About Us", new AboutUsFragment(), null);
-                break;*/
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -350,7 +338,7 @@ public class MainActivity extends AppCompatActivity
                     "Please Sign in with google to access this app feature.",
                     "Login with google",
                     "Sign in",
-                    () -> signInWithGoogle(),
+                    this::signInWithGoogle,
                     "Cancel",
                     () -> {
 
@@ -360,7 +348,7 @@ public class MainActivity extends AppCompatActivity
                 "Most App functions require you to authenticate yourself with google. Please Sign in to access all app features.",
                 "Login with google",
                 "Sign in",
-                () -> signInWithGoogle(),
+                this::signInWithGoogle,
                 "Skip",
                 () -> {
                 },
@@ -446,23 +434,15 @@ public class MainActivity extends AppCompatActivity
                 "Do you want to exit?",
                 "MY CCA JK",
                 "YES",
-                () -> finish(),
+                this::finish,
                 "NO",
-                () -> {
-
-                },
+                () -> {},
                 FancyAlertDialogType.WARNING);
     }
 
     public void OnLoginFailure(String message) {
         Helper.getInstance().showFancyAlertDialog(this,
-                message,
-                "Login",
-                "OK",
-                null,
-                null,
-                null,
-                FancyAlertDialogType.ERROR);
+                message, "Login", "OK", null, null, null, FancyAlertDialogType.ERROR);
     }
 
     public void OnLoginSuccessful(StaffModel staffModel) {

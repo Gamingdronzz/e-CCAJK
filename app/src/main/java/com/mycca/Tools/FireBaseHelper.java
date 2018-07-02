@@ -28,13 +28,12 @@ public class FireBaseHelper {
     private static FireBaseHelper _instance;
 
     public DatabaseReference versionedDbRef;
-    private DatabaseReference nonVersionedDbref;
-    private DatabaseReference nonVersionedStateDbRef;
+    public DatabaseReference nonVersionedDbref;
+    public DatabaseReference nonVersionedStateDbRef;
     private StorageReference storageReference;
     public FirebaseAuth mAuth;
 
     public final static String ROOT_GRIEVANCES = "Grievances";
-    private final static String ROOT_APP_VERSION = "Latest Version";
     public final static String ROOT_ADHAAR = "Aadhaar";
     public final static String ROOT_PAN = "Pan";
     public final static String ROOT_LIFE = "Life Certificate";
@@ -50,11 +49,12 @@ public class FireBaseHelper {
     public final static String ROOT_SLIDER = "Slider Data";
     public final static String ROOT_REF_NUMBERS = "Reference Numbers";
     public final static String ROOT_BY_USER = "By User";
-    public static final String ROOT_PASSWORD = "password";
+    static final String ROOT_PASSWORD = "password";
     public final static String ROOT_BY_STAFF = "By Staff";
     public final static String ROOT_IMAGES_BY_STAFF = "Images By Staff";
     private final static String ROOT_STATE_DATA = "State Data";
     private final static String ROOT_REF_COUNT = "Reference Number Count";
+    private final static String ROOT_APP_VERSION = "Latest Version";
 
     public final static String GRIEVANCE_PENSION = "Pension";
     public final static String GRIEVANCE_GPF = "GPF";
@@ -64,10 +64,6 @@ public class FireBaseHelper {
 
     public String version;
     private final String TAG = "firebaseHelper";
-
-    //public GrievanceModel selectedGrievance;
-    //public final String ROOT_ADHAAR_STATUS = "Adhaar-Status";
-    //public final String ROOT_PAN_STATUS = "Pan-Status";
 
     public FireBaseHelper(Context context) {
         _instance = this;
@@ -159,7 +155,7 @@ public class FireBaseHelper {
         return task;
     }
 
-    public Task<Void> updatePassword(String pwd, String staffId) {
+    Task<Void> updatePassword(String pwd, String staffId) {
         DatabaseReference dbref = nonVersionedDbref.child(ROOT_STAFF).child(staffId);
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(ROOT_PASSWORD, pwd);
@@ -188,10 +184,10 @@ public class FireBaseHelper {
         DatabaseReference dbref;
         if (versioned == VERSIONED)
             dbref = versionedDbRef;
-        else if (versioned == NONVERSIONED)
-            dbref = nonVersionedDbref;
-        else
+        else if (versioned == NONVERSIONED_STATEWISE)
             dbref = nonVersionedStateDbRef;
+        else
+            dbref = nonVersionedDbref;
 
         for (String key : params) {
             Log.d(TAG, "Firebase Helper key : " + key);
@@ -225,7 +221,7 @@ public class FireBaseHelper {
         return storageReference.child(path).getDownloadUrl();
     }
 
-    public void getReferenceNumber(Transaction.Handler handler,String circleCode) {
+    public void getReferenceNumber(Transaction.Handler handler, String circleCode) {
         Log.d(TAG, "getReferenceNumber: ");
         DatabaseReference dbref;
         dbref = nonVersionedStateDbRef.child(circleCode).child(ROOT_REF_COUNT);

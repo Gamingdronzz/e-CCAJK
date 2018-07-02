@@ -18,7 +18,6 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     private ArrayList<LocationModel> locationArray;
 
     public RecyclerViewAdapterHotspotLocation(ArrayList<LocationModel> locationArray) {
-        //setHasStableIds(true);
         this.locationArray = locationArray;
     }
 
@@ -31,15 +30,15 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String location = locationArray.get(position).getLocationName();
-        String district = locationArray.get(position).getDistrict();
-        String block = "Block : " + locationArray.get(position).getBlock();
-        //holder.textViewLocationName.setText(location + "  (" + FireBaseHelper.getInstance().getState(stateId) + ")");
+        if (locationArray != null) {
+            String location = locationArray.get(position).getLocationName();
+            String district = locationArray.get(position).getDistrict();
+            String block = "Block : " + locationArray.get(position).getBlock();
 
-        holder.textViewLocationName.setText(Html.fromHtml("<u>" + location + "</u>"));
-        holder.textViewDistrict.setText(district);
-        holder.textViewBlock.setText(block);
-
+            holder.textViewLocationName.setText(Html.fromHtml("<u>" + location + "</u>"));
+            holder.textViewDistrict.setText(district);
+            holder.textViewBlock.setText(block);
+        }
     }
 
     @Override
@@ -61,7 +60,6 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
             textViewBlock = itemView.findViewById(R.id.textview_location_block);
             textViewGetDirections = itemView.findViewById(R.id.textview_get_directions);
             textViewGetDirections.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_directions_black_24dp, 0, 0);
-            //this.textViewDistrict = itemView.findViewById(R.id.state);
         }
     }
 }

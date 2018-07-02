@@ -111,5 +111,11 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="old_password">Old password</string>
     <string name="change">CHANGE</string>
     <string name="change_password">Change Password</string>
+    <string name="pensioner_hr_staff_code">Pensioner/HR/Staff Code</string>
+    <string name="grievance">Grievance</string>
+    <string name="grievance_application_date">Grievance Application Date</string>
+    <string name="update_status">Update Status:</string>
+    <string name="message">Message:</string>
+    <string name="update">UPDATE</string>
 
 </resources>

@@ -502,6 +502,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
+            Helper.getInstance().showErrorDialog("Please Try Again", "Some Error Occurred", mainActivity);
+            progressDialog.dismiss();
         }
     }
 

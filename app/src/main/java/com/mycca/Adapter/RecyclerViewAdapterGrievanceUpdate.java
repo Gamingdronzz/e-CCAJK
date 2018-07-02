@@ -20,7 +20,7 @@ import com.mycca.Tools.Helper;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder> {
+public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<RecyclerViewAdapterGrievanceUpdate.GrievanceUpdateViewHolder> {
 
     private ArrayList<GrievanceModel> grievanceModelArrayList;
     private AppCompatActivity appCompatActivity;
@@ -38,8 +38,8 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
     @NonNull
     @Override
-    public RecyclerViewAdapterGrievanceUpdate.GrievanaceUpdateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GrievanaceUpdateViewHolder
+    public GrievanceUpdateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new GrievanceUpdateViewHolder
                 (LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_grievance_item, parent, false),
                         new CustomClickListener(),
                         new CustomUpdateClickListener(),
@@ -47,24 +47,26 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GrievanaceUpdateViewHolder holder, int position) {
-        GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
+    public void onBindViewHolder(@NonNull GrievanceUpdateViewHolder holder, int position) {
+        if (grievanceModelArrayList != null) {
+            GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
 
-        holder.customClickListener.setPosition(position);
-        holder.customUpdateClickListener.setPosition(position);
-        holder.textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
-        holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
-        holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
-        holder.textViewPensionerMobile.setText(grievanceModel.getMobile());
-        holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
-        holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
+            holder.customClickListener.setPosition(position);
+            holder.customUpdateClickListener.setPosition(position);
+            holder.textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
+            holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
+            holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
+            holder.textViewPensionerMobile.setText(grievanceModel.getMobile());
+            holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
+            holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
-        if (grievanceModel.isExpanded()) {
-            holder.expandableArea.setVisibility(View.VISIBLE);
-            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
-        } else {
-            holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
-            holder.expandableArea.setVisibility(View.GONE);
+            if (grievanceModel.isExpanded()) {
+                holder.expandableArea.setVisibility(View.VISIBLE);
+                holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
+            } else {
+                holder.textViewGrievanceSubtype.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+                holder.expandableArea.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -73,7 +75,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         return grievanceModelArrayList.size();
     }
 
-    static class GrievanaceUpdateViewHolder extends RecyclerView.ViewHolder {
+    static class GrievanceUpdateViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewPensionerCode;
         TextView textViewGrievanceType;
@@ -87,7 +89,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         CustomUpdateClickListener customUpdateClickListener;
 
 
-        GrievanaceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener, boolean resolved) {
+        GrievanceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener, boolean resolved) {
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);

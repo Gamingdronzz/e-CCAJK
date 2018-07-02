@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -42,14 +41,14 @@ import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton;
+import com.mycca.CustomObjects.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
+import com.mycca.CustomObjects.FabRevealMenu.FabModel.FABMenuItem;
+import com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
-import com.mycca.CustomObjects.FabRevealMenu.FabModel.FABMenuItem;
-import com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.Models.InspectionModel;
 import com.mycca.Models.SelectedImageModel;
@@ -92,7 +91,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     Button upload;
     FloatingActionButton fab;
     ImagePicker imagePicker;
-    ImageView imgLoc;
     ProgressDialog progressDialog;
     View.OnClickListener getCoordinatesListener;
     RecyclerView recyclerViewSelectedImages;
@@ -575,6 +573,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
+            Helper.getInstance().showErrorDialog("Please Try Again", "Some Error Occurred", mainActivity);
+            progressDialog.dismiss();
         }
     }
 

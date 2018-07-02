@@ -137,7 +137,7 @@ public class Helper {
 
     }
 
-    public State[] getStatelist() {
+    public State[] getStateList() {
         return stateList;
     }
 
@@ -153,11 +153,11 @@ public class Helper {
         return null;
     }
 
-    public GrievanceType[] getPensionGrievanceTypelist() {
+    public GrievanceType[] getPensionGrievanceTypeList() {
         return pensionGrievanceTypes;
     }
 
-    public GrievanceType[] getGPFGrievanceTypelist() {
+    public GrievanceType[] getGPFGrievanceTypeList() {
         return gpfGrievanceTypes;
     }
 
@@ -194,7 +194,7 @@ public class Helper {
             case 102:
                 return "Change of Nomination";
             case 103:
-                return "GPF Account not transfered";
+                return "GPF Account not transferred";
             case 104:
                 return "Details of GPF Deposit A/C Slip";
             case 105:

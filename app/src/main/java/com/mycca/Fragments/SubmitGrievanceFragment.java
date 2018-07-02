@@ -163,12 +163,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         spinnerCircle.setAdapter(statesAdapter);
 
         if (type.equals(FireBaseHelper.GRIEVANCE_PENSION)) {
-            list = Helper.getInstance().getPensionGrievanceTypelist();
+            list = Helper.getInstance().getPensionGrievanceTypeList();
             radioLayout.setVisibility(View.GONE);
             prefix = "PEN";
         } else {
             radioLayout.setVisibility(View.VISIBLE);
-            list = Helper.getInstance().getGPFGrievanceTypelist();
+            list = Helper.getInstance().getGPFGrievanceTypeList();
             prefix = "GPF";
         }
         GenericSpinnerAdapter<GrievanceType> adapter = new GenericSpinnerAdapter<>(getContext(), list);
@@ -678,6 +678,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
+            Helper.getInstance().showErrorDialog("Please Try Again", "Some Error Occurred", mainActivity);
+            progressDialog.dismiss();
         }
     }
 

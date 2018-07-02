@@ -21,12 +21,12 @@ public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull StatesViewHolder holder, int position) {
-        holder.textView.setText(Helper.getInstance().getStatelist()[position].getName());
+        holder.textView.setText(Helper.getInstance().getStateList()[position].getName());
     }
 
     @Override
     public int getItemCount() {
-        return Helper.getInstance().getStatelist().length;
+        return Helper.getInstance().getStateList().length;
     }
 
     class StatesViewHolder extends RecyclerView.ViewHolder {

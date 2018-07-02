@@ -1,6 +1,5 @@
 package com.mycca.Activity;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,7 +33,6 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     RecyclerView recyclerViewTrack;
     TextView textView;
     ArrayList<GrievanceModel> grievanceModelArrayList;
-    ArrayList<Uri> arrayListImageUrls = new ArrayList<>();
     RecyclerViewAdapterTracking adapterTracking;
     DatabaseReference dbref;
     String pensionerCode;
@@ -55,7 +53,6 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
         grievanceModelArrayList = new ArrayList<>();
         adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList, this);
-        //adapterTracking.setHasStableIds(true);
 
         textView = findViewById(R.id.textview_tracking);
         textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_exclamation, 0, 0);

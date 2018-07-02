@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 import com.mycca.R;
@@ -26,7 +25,6 @@ public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView tvSplashVersion;
-    DatabaseReference dbref;
     int currentAppVersion;
     String currentVersionName;
     private String TAG = "Splash";
@@ -53,7 +51,6 @@ public class SplashActivity extends AppCompatActivity {
             text = "Version - " + currentVersionName;
         tvSplashVersion.setText(text);
         Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
-        dbref = FireBaseHelper.getInstance(this).versionedDbRef;
     }
 
     private void bindVIews() {
@@ -142,34 +139,5 @@ public class SplashActivity extends AppCompatActivity {
         }
         return "";
     }
-
-//    private void onLatestVersion(DataSnapshot dataSnapshot) {
-//        if (dataSnapshot.getValue() == null) {
-//            Log.d(TAG, "onLatestVersion: Data snapshot null");
-//            ShowUpdateDialog(false);
-//            return;
-//        }
-//        long version = (long) dataSnapshot.getValue();
-//
-//        Log.d(TAG, "onDataChange: current Version = " + currentAppVersion);
-//        Log.d(TAG, "available Version = " + version);
-//
-//        if (currentAppVersion == -1 || currentAppVersion == version) {
-//            LoadNextActivity();
-//        } else {
-//            ShowUpdateDialog(true);
-//        }
-//    }
-
-//    private int getAppVersion() {
-//        try {
-//            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-//            return packageInfo.versionCode;
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return -1;
-//    }
-
 
 }

@@ -39,32 +39,35 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
-        Contact contact = contactArrayList.get(position);
 
-        holder.viewClickListener.setPosition(position);
-        holder.name.setText(contact.getName());
-        holder.designation.setText(contact.getDesignation());
-        holder.email.setText(contact.getEmail()==null ? na : contact.getEmail());
-        holder.office.setText(contact.getOfficeContact()==null? na : contact.getOfficeContact());
-        holder.mobile.setText(contact.getMobileContact()==null ? na : contact.getMobileContact());
-        if (contact.isExpanded()) {
-            holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
-        } else {
-            holder.linearLayoutExpandableArea.setVisibility(View.GONE);
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+        if (contactArrayList != null) {
+            Contact contact = contactArrayList.get(position);
+
+            holder.viewClickListener.setPosition(position);
+            holder.name.setText(contact.getName());
+            holder.designation.setText(contact.getDesignation());
+            holder.email.setText(contact.getEmail() == null ? na : contact.getEmail());
+            holder.office.setText(contact.getOfficeContact() == null ? na : contact.getOfficeContact());
+            holder.mobile.setText(contact.getMobileContact() == null ? na : contact.getMobileContact());
+            if (contact.isExpanded()) {
+                holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
+                holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
+            } else {
+                holder.linearLayoutExpandableArea.setVisibility(View.GONE);
+                holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+            }
         }
-
     }
 
     @Override
     public int getItemCount() {
-        return contactArrayList.size();
+        if (contactArrayList != null)
+            return contactArrayList.size();
+        return 0;
     }
 
     class ContactsViewHolder extends RecyclerView.ViewHolder {
         LinearLayout linearLayoutExpandableArea;
-        //,linearLayoutMobile,linearLayoutOffice,linearLayoutEMail;
         private TextView name;
         private TextView designation;
         private TextView mobile, email, office;

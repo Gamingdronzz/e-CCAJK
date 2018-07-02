@@ -21,7 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.Adapter.GenericSpinnerAdapter;
@@ -60,29 +59,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class UpdateGrievanceActivity extends AppCompatActivity implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    TextView textViewPensionerCode, textViewGrievanceString, textViewDateOfApplication;
+    boolean isUploadedToFirebaseDatabase = false, isUploadedToFirebaseStorage = false, isUploadedToServer = false;
+    int counterUpload = 0;
+    int counterServerImages = 0;
+    int counterFirebaseImages;
+    String TAG = "Update";
+
+    TextView textViewPensionerCode, textViewGrievanceString, textViewDateOfApplication, textViewAttachedFileCount;
     Spinner statusSpinner;
     EditText editTextMessage;
     Button update;
     FABRevealMenu fabMenu;
     ProgressDialog progressDialog;
-    StatusModel[] statusArray;
+    FloatingActionButton buttonAttachFile;
+    ImagePicker imagePicker;
     RecyclerView recyclerViewAttachments;
+
+    GrievanceModel grievanceModel;
+    VolleyHelper volleyHelper;
+    RecyclerViewAdapterSelectedImages adapterSelectedImages;
     DatabaseReference dbref = FireBaseHelper.getInstance(this).versionedDbRef;
     ArrayList<SelectedImageModel> attachmentModelArrayList;
     private ArrayList<FABMenuItem> items;
-    RecyclerViewAdapterSelectedImages adapterSelectedImages;
-    String TAG = "Update";
-    GrievanceModel grievanceModel;
-    TextView textViewAttachedFileCount;
     ArrayList<Uri> firebaseImageURLs;
-    boolean isUploadedToFirebaseDatabase = false, isuploadedtoFirebaseStorage = false, isUploadedToServer = false;
-    int counterUpload = 0;
-    int counterServerImages = 0;
-    int counterFirebaseImages;
-    VolleyHelper volleyHelper;
-    FloatingActionButton buttonAttachFile;
-    ImagePicker imagePicker;
+    StatusModel[] statusArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +119,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         GenericSpinnerAdapter<StatusModel> arrayAdapter = new GenericSpinnerAdapter<>(this, statusArray);
         statusSpinner.setAdapter(arrayAdapter);
         volleyHelper = new VolleyHelper(this, this);
-        update.setOnClickListener(v -> {
-            startGrievanceUpdate();
-        });
+        update.setOnClickListener(v -> startGrievanceUpdate());
 
         attachmentModelArrayList = new ArrayList<>();
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(attachmentModelArrayList, this);
@@ -144,13 +143,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         } catch (Exception e) {
             e.printStackTrace();
         }
-        buttonAttachFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideKeyboard();
-
-            }
-        });
     }
 
     private void hideKeyboard() {
@@ -164,7 +156,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                Log.d(TAG, "version checked = " + Helper.versionChecked);
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(UpdateGrievanceActivity.this).checkForUpdate(new ValueEventListener() {
                         @Override
@@ -189,11 +180,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         connectionUtility.checkConnectionAvailability();
     }
 
-    public void setSelectedFileCount(int count) {
-        String text = count + " Files Selected";
-        textViewAttachedFileCount.setText(text);
-    }
-
     private void showNoInternetConnectionDialog() {
         Helper.getInstance().showFancyAlertDialog(this,
                 "No Internet Connection\nTurn on Internet Connection to Update grievance",
@@ -203,6 +189,52 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 null,
                 null,
                 FancyAlertDialogType.ERROR);
+    }
+
+    private void doUpdateOnInternetAvailable() {
+        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebaseDatabase + "\n" +
+                "Server = " + isUploadedToServer);
+        if (isUploadedToFirebaseStorage) {
+            if (isUploadedToFirebaseDatabase) {
+                if (isUploadedToServer) {
+                    Log.d(TAG, "doUpdateOnInternetAvailable: Data uploaded on server mail left");
+                    progressDialog.dismiss();
+                    sendFinalMail();
+                } else {
+                    uploadImagesToServer();
+                }
+            } else {
+                addImageDataToFirebaseDatabase();
+            }
+
+        } else {
+            updateGrievanceDataOnFirebase();
+        }
+    }
+
+    private void updateGrievanceDataOnFirebase() {
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("grievanceStatus", (int) ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode());
+        hashMap.put("message", editTextMessage.getText().toString().trim());
+
+        Task<Void> task = FireBaseHelper.getInstance(this).updateData(String.valueOf(grievanceModel.getGrievanceType()),
+                hashMap,
+                FireBaseHelper.ROOT_GRIEVANCES,
+                Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA).getState(),
+                grievanceModel.getPensionerIdentifier());
+        task.addOnCompleteListener(task1 -> {
+            if (task1.isSuccessful()) {
+                uploadAllImagesToFirebase();
+                //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
+
+            } else {
+                progressDialog.dismiss();
+                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, "The app might be in maintenance. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                Log.d(TAG, "onComplete: " + task1.toString());
+            }
+        });
+
     }
 
     private void uploadAllImagesToFirebase() {
@@ -238,7 +270,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                                             progressDialog.setMessage("Uploaded file " + (++counterUpload) + " / " + attachmentModelArrayList.size());
                                             Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + attachmentModelArrayList.size());
                                             if (counterUpload == attachmentModelArrayList.size()) {
-                                                isuploadedtoFirebaseStorage = true;
+                                                isUploadedToFirebaseStorage = true;
                                                 doUpdateOnInternetAvailable();
                                             }
                                         });
@@ -246,36 +278,16 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 }
             }
         } else {
-            isuploadedtoFirebaseStorage = true;
+            isUploadedToFirebaseStorage = true;
             doUpdateOnInternetAvailable();
         }
     }
 
-    private void doUpdateOnInternetAvailable() {
-        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebaseDatabase + "\n" +
-                "Server = " + isUploadedToServer);
-        if (isuploadedtoFirebaseStorage) {
-            if (isUploadedToFirebaseDatabase) {
-                if (isUploadedToServer) {
-                    Log.d(TAG, "doUpdateOnInternetAvailable: Data uploaded on server mail left");
-                    progressDialog.dismiss();
-                    //sendFinalMail();
-                } else {
-                    uploadImagesToServer();
-                }
-            } else {
-                addImageDataToFirebaseDatabase();
-            }
-
-        } else {
-            updateGrievanceDataOnFirebase();
-        }
-    }
-
     private void addImageDataToFirebaseDatabase() {
+
         Log.d(TAG, "addImageDataToFirebaseDatabase: ");
         AtomicInteger uriCounter = new AtomicInteger();
-        Log.d(TAG, "addImageDataToFirebaseDatabase: size = " + attachmentModelArrayList.size() );
+        Log.d(TAG, "addImageDataToFirebaseDatabase: size = " + attachmentModelArrayList.size());
         for (int i = 0; i < attachmentModelArrayList.size(); i++) {
 
             Task<Void> task = FireBaseHelper.getInstance(this).uploadDataToFirebase(attachmentModelArrayList.get(i).getImageURI().toString(),
@@ -305,117 +317,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         }
     }
 
-    private void initItems() {
-        items = new ArrayList<>();
-        items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(this, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem("Remove All", AppCompatResources.getDrawable(this, R.drawable.ic_close_24dp)));
-    }
-
-    private void showImageChooser() {
-
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, this, true, new ImagePicker.Callback() {
-            @Override
-            public void onPickImage(Uri imageUri) {
-                Log.d(TAG, "onPickImage: " + imageUri.getPath());
-
-            }
-
-            @Override
-            public void onCropImage(Uri imageUri) {
-                Log.d(TAG, "onCropImage: " + imageUri.getPath());
-                int currentPosition = attachmentModelArrayList.size();
-                attachmentModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
-                adapterSelectedImages.notifyItemInserted(currentPosition);
-                adapterSelectedImages.notifyDataSetChanged();
-                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition);
-                setSelectedFileCount(currentPosition + 1);
-//                File file = new File(imageUri.getPath());
-//                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
-//                setupSelectedFile(file);
-            }
-
-
-            @Override
-            public void cropConfig(CropImage.ActivityBuilder builder) {
-                builder
-                        .setMultiTouchEnabled(false)
-                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(720, 1280);
-            }
-
-            @Override
-            public void onPermissionDenied(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
-            }
-        });
-
-    }
-
-    private void removeAllSelectedImages() {
-        if (attachmentModelArrayList == null || adapterSelectedImages == null) {
-            return;
-        }
-        attachmentModelArrayList.clear();
-        adapterSelectedImages.notifyDataSetChanged();
-        setSelectedFileCount(0);
-    }
-
-    private void setLayoutData() {
-        textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
-        textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
-        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
-        editTextMessage.setText(grievanceModel.getMessage() == null ? "" : grievanceModel.getMessage());
-    }
-
-    private void updateGrievanceDataOnFirebase() {
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("grievanceStatus", (int) ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode());
-        hashMap.put("message", editTextMessage.getText().toString().trim());
-
-        Task<Void> task = FireBaseHelper.getInstance(this).updateData(String.valueOf(grievanceModel.getGrievanceType()),
-                hashMap,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA).getState(),
-                grievanceModel.getPensionerIdentifier());
-        task.addOnCompleteListener(task1 -> {
-            if (task1.isSuccessful()) {
-                uploadAllImagesToFirebase();
-                //Toast.makeText(UpdateGrievanceActivity.this, "Successfully Updated", Toast.LENGTH_LONG).show();
-
-            } else {
-                progressDialog.dismiss();
-                Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, "The app might be in maintenence. Please try again later.", "Unable to Update", "OK", null, null, null, FancyAlertDialogType.ERROR);
-                Log.d(TAG, "onComplete: " + task1.toString());
-            }
-        });
-
-    }
-
-    private void showSuccessDialog() {
-        GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
-        model.setExpanded(true);
-        isUploadedToServer = isuploadedtoFirebaseStorage = isUploadedToFirebaseDatabase = false;
-
-        String alertMessage = Helper.getInstance().getGrievanceCategory(model.getGrievanceType()) +
-                " Grievance status of<br>" +
-                "<b>" + model.getPensionerIdentifier() + "</b><br>" +
-                "for<br>" +
-                "<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>" +
-                "has been successfully updated to<br>" +
-                "<b>" + Helper.getInstance().getStatusString(model.getGrievanceStatus()) + "</b>";
-
-        notifyPensioner();
-        setResult(Activity.RESULT_OK);
-        Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage, "Grievance Update", "OK", () -> {
-
-            finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
-            finish();
-        }, null, null, FancyAlertDialogType.SUCCESS);
-    }
-
     private void uploadImagesToServer() {
 
         counterServerImages = 0;
@@ -436,7 +337,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             }
         } else {
             isUploadedToServer = true;
-            sendFinalMail();
+            doUpdateOnInternetAvailable();
         }
     }
 
@@ -446,7 +347,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendUpdateEmail.php";
         Map<String, String> params = new HashMap<>();
-        String pensionerCode = grievanceModel.getPensionerIdentifier().toString();
+        String pensionerCode = grievanceModel.getPensionerIdentifier();
 
         params.put("pensionerCode", pensionerCode);
         params.put("pensionerEmail", grievanceModel.getEmail());
@@ -457,13 +358,35 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
 
+    private void showSuccessDialog() {
+        GrievanceModel model = GrievanceDataProvider.getInstance().selectedGrievance;
+        model.setExpanded(true);
+        isUploadedToServer = isUploadedToFirebaseStorage = isUploadedToFirebaseDatabase = false;
+
+        String alertMessage = Helper.getInstance().getGrievanceCategory(model.getGrievanceType()) +
+                " Grievance status of<br>" +
+                "<b>" + model.getPensionerIdentifier() + "</b><br>" +
+                "for<br>" +
+                "<b>" + Helper.getInstance().getGrievanceString(model.getGrievanceType()) + "</b><br>" +
+                "has been successfully updated to<br>" +
+                "<b>" + Helper.getInstance().getStatusString(model.getGrievanceStatus()) + "</b>";
+
+        notifyPensioner();
+        setResult(Activity.RESULT_OK);
+        Helper.getInstance().showFancyAlertDialog(UpdateGrievanceActivity.this, alertMessage, "Grievance Update", "OK", () -> {
+
+            finishActivity(RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE);
+            finish();
+        }, null, null, FancyAlertDialogType.SUCCESS);
+    }
+
     private void notifyPensioner() {
 
-        FirebaseDatabase.getInstance().getReference().child("FCMServerKey").addListenerForSingleValueEvent(new ValueEventListener() {
+        FireBaseHelper.getInstance(this).nonVersionedDbref.child("FCMServerKey").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
-                Log.d(TAG, "Notification : Key recieved");
+                Log.d(TAG, "Notification : Key received");
                 getTokenAndSendNotification(fcmKey);
 
             }
@@ -482,9 +405,11 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String token = (String) dataSnapshot.getValue();
-                        Log.d(TAG, "Notification : Token recieved");
-                        sendNotification(fcmKey, token);
+                        if (dataSnapshot.getValue() != null) {
+                            String token = (String) dataSnapshot.getValue();
+                            Log.d(TAG, "Notification : Token received");
+                            sendNotification(fcmKey, token);
+                        }
                     }
 
                     @Override
@@ -521,13 +446,77 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         return jsonObjectData.toString();
     }
 
+    private void initItems() {
+        items = new ArrayList<>();
+        items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(this, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem("Remove All", AppCompatResources.getDrawable(this, R.drawable.ic_close_24dp)));
+    }
+
+    private void showImageChooser() {
+
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, this, true, new ImagePicker.Callback() {
+            @Override
+            public void onPickImage(Uri imageUri) {
+                Log.d(TAG, "onPickImage: " + imageUri.getPath());
+
+            }
+
+            @Override
+            public void onCropImage(Uri imageUri) {
+                Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                int currentPosition = attachmentModelArrayList.size();
+                attachmentModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
+                adapterSelectedImages.notifyItemInserted(currentPosition);
+                adapterSelectedImages.notifyDataSetChanged();
+                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition);
+                setSelectedFileCount(currentPosition + 1);
+            }
+
+
+            @Override
+            public void cropConfig(CropImage.ActivityBuilder builder) {
+                builder
+                        .setMultiTouchEnabled(false)
+                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setRequestedSize(720, 1280);
+            }
+
+            @Override
+            public void onPermissionDenied(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
+            }
+        });
+
+    }
+
+    private void removeAllSelectedImages() {
+        if (attachmentModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        attachmentModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+        setSelectedFileCount(0);
+    }
+
+    public void setSelectedFileCount(int count) {
+        String text = count + " Files Selected";
+        textViewAttachedFileCount.setText(text);
+    }
+
+    private void setLayoutData() {
+        textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
+        textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
+        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
+        editTextMessage.setText(grievanceModel.getMessage() == null ? getResources().getString(R.string.n_a) : grievanceModel.getMessage());
+    }
+
     @Override
     public void onBackPressed() {
         if (fabMenu != null && fabMenu.isShowing()) {
             fabMenu.closeMenu();
-        }
-        else
-        {
+        } else {
             super.onBackPressed();
         }
     }
@@ -568,6 +557,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
+            Helper.getInstance().showErrorDialog("Please Try Again", "Some Error Occurred", this);
+            progressDialog.dismiss();
         }
     }
 

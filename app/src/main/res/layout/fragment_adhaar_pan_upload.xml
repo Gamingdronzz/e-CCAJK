@@ -166,7 +166,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:layout_marginTop="@dimen/margin_small"
-                android:src="@null" />
+                android:src="@null"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
