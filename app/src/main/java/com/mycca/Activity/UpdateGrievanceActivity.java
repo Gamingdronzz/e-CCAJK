@@ -62,10 +62,9 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     boolean isUploadedToFirebaseDatabase = false, isUploadedToFirebaseStorage = false, isUploadedToServer = false;
     int counterUpload = 0;
     int counterServerImages = 0;
-    int counterFirebaseImages;
     String TAG = "Update";
 
-    TextView textViewPensionerCode, textViewGrievanceString, textViewDateOfApplication, textViewAttachedFileCount;
+    TextView textViewPensionerCode, textViewRefNo, textViewGrievanceString, textViewDateOfApplication, textViewAttachedFileCount;
     Spinner statusSpinner;
     EditText editTextMessage;
     Button update;
@@ -97,12 +96,12 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void bindViews() {
         textViewPensionerCode = findViewById(R.id.textview_pensioner);
+        textViewRefNo = findViewById(R.id.textview_reference_number);
         textViewGrievanceString = findViewById(R.id.textview_grievance_type);
         textViewDateOfApplication = findViewById(R.id.textview_date);
         statusSpinner = findViewById(R.id.spinner_status);
         editTextMessage = findViewById(R.id.edittext_message);
         update = findViewById(R.id.button_update);
-        update.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_update_black_24dp, 0, 0);
         progressDialog = Helper.getInstance().getProgressWindow(this, "Updating Grievance Details");
         recyclerViewAttachments = findViewById(R.id.recycler_view_update_grievance_attachments);
         buttonAttachFile = findViewById(R.id.button_attach_update_grievance);
@@ -242,14 +241,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             progressDialog.setMessage("Uploading Files...\nPlease Wait");
             Log.d(TAG, "uploadAllImagesToFirebase: uploading");
             if (!progressDialog.isShowing()) progressDialog.show();
-            counterFirebaseImages = 0;
             counterUpload = 0;
 
-            for (SelectedImageModel imageModel : attachmentModelArrayList) {
+            for (int i = 0; i < attachmentModelArrayList.size(); i++) {
                 final UploadTask uploadTask = FireBaseHelper.getInstance(this).uploadFiles(
-                        imageModel,
+                        attachmentModelArrayList.get(i),
                         true,
-                        counterFirebaseImages++,
+                        i,
                         FireBaseHelper.ROOT_GRIEVANCES,
                         grievanceModel.getPensionerIdentifier(),
                         String.valueOf(grievanceModel.getGrievanceType()),
@@ -285,18 +283,18 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void addImageDataToFirebaseDatabase() {
 
-        Log.d(TAG, "addImageDataToFirebaseDatabase: ");
+        Log.d(TAG, "addImageDataToFireBaseDatabase: ");
         AtomicInteger uriCounter = new AtomicInteger();
-        Log.d(TAG, "addImageDataToFirebaseDatabase: size = " + attachmentModelArrayList.size());
+        Log.d(TAG, "addImageDataToFireBaseDatabase: size = " + attachmentModelArrayList.size());
         for (int i = 0; i < attachmentModelArrayList.size(); i++) {
 
             Task<Void> task = FireBaseHelper.getInstance(this).uploadDataToFirebase(attachmentModelArrayList.get(i).getImageURI().toString(),
                     FireBaseHelper.ROOT_IMAGES_BY_STAFF,
                     grievanceModel.getReferenceNo(),
                     "Image" + i);
-            Log.d(TAG, "addImageDataToFirebaseDatabase: Adding Task");
+            Log.d(TAG, "addImageDataToFireBaseDatabase: Adding Task");
             if (task != null) {
-                Log.d(TAG, "addImageDataToFirebaseDatabase: task not null");
+                Log.d(TAG, "addImageDataToFireBaseDatabase: task not null");
                 task.addOnFailureListener(
                         exception -> {
                             Log.d(TAG, "addImageDataToFirebaseDatabase: failure");
@@ -507,6 +505,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void setLayoutData() {
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
+        textViewRefNo.setText(grievanceModel.getReferenceNo());
         textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
         textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
         editTextMessage.setText(grievanceModel.getMessage() == null ? getResources().getString(R.string.n_a) : grievanceModel.getMessage());
@@ -523,6 +522,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     @Override
     public void onError(VolleyError volleyError) {
+        progressDialog.dismiss();
+        Helper.getInstance().showErrorDialog("Grievance Updating Failed<br>Try Again", "Submission Error", this);
 
     }
 
@@ -551,7 +552,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                     showSuccessDialog();
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog("Grievance Submission Failed<br>Try Again", "Submission Error", this);
+                    Helper.getInstance().showErrorDialog("Grievance Updation Failed<br>Try Again", "Submission Error", this);
 
                 }
             }

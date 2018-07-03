@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -47,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_medium"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:orientation="vertical">
 
             <TextView
@@ -72,8 +73,12 @@
                     android:id="@+id/recycler_view_home_latest_news"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:scrollbars="vertical"
                     android:background="@color/colorLightGray"
-                    android:padding="@dimen/padding_medium" />
+                    android:paddingTop="@dimen/padding_medium"
+                    android:paddingRight="@dimen/padding_medium"
+                    android:paddingLeft="@dimen/padding_medium"
+                    android:paddingBottom="@dimen/padding_xxxlarge"/>
 
                 <ImageButton
                     android:id="@+id/img_btn_move_left"
@@ -81,6 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
+                    android:visibility="gone"
                     android:layout_margin="@dimen/margin_medium"
                     android:background="@drawable/circular_background_simple_text"
                     app:srcCompat="@drawable/ic_arrow_left_black_24dp"
@@ -91,6 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:visibility="gone"
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/margin_medium"
                     android:background="@drawable/circular_background_simple_text"

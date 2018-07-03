@@ -34,7 +34,7 @@ public class AddNewsFragment extends Fragment {
     Button add;
     ProgressDialog progressDialog;
     NewsModel newsModel;
-    String json;
+    String json = null;
 
     public AddNewsFragment() {
     }
@@ -122,7 +122,7 @@ public class AddNewsFragment extends Fragment {
 
     public void addNewsToFireBase() {
         Task<Void> task;
-        if (newsModel == null) {
+        if (json == null) {
             newsModel = new NewsModel(
                     new Date(),
                     textTitle.getText().toString(),
@@ -149,6 +149,7 @@ public class AddNewsFragment extends Fragment {
             progressDialog.dismiss();
             if (task1.isSuccessful()) {
                 Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null, null, null, FancyAlertDialogType.SUCCESS);
+                if (json != null) json = null;
             } else {
                 Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
 

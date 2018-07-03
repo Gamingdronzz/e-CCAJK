@@ -117,5 +117,6 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="update_status">Update Status:</string>
     <string name="message">Message:</string>
     <string name="update">UPDATE</string>
+    <string name="reference_number">Reference Number</string>
 
 </resources>

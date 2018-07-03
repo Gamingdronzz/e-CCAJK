@@ -37,20 +37,30 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(@NonNull TrackViewHolder holder, int position) {
         GrievanceModel grievanceModel = grievanceModels.get(position);
 
-        holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
-        holder.textViewgrievance.setText("");
-        holder.textViewgrievance.setText(Helper.getInstance().getGrievanceString((int) grievanceModel.getGrievanceType()));
-        holder.textViewDate.setText("");
-        holder.textViewDate.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
+        holder.textViewRefNo.setText("");
+        holder.textViewRefNo.setText(grievanceModel.getReferenceNo());
         holder.textViewStatus.setText("");
         holder.textViewStatus.setText(Html.fromHtml("Status : <b>" + Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()) + "</b>"));
+
+        String text = Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType())
+                + " - " + Helper.getInstance().getGrievanceString((int) grievanceModel.getGrievanceType());
+        holder.textViewGrievanceType.setText(text);
+
+        holder.textViewDate.setText("");
+        holder.textViewDate.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
+
         holder.textViewMessage.setText("");
+        if (grievanceModel.getMessage() != null && !grievanceModel.getMessage().isEmpty())
+            holder.textViewMessage.setText(grievanceModel.getMessage());
+        else
+            holder.textViewMessage.setText(appCompatActivity.getResources().getString(R.string.n_a));
+
         if (grievanceModel.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);
-            holder.textViewgrievance.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
+            holder.textViewRefNo.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_black_24dp, 0);
         } else {
             holder.linearLayoutExpandableArea.setVisibility(View.GONE);
-            holder.textViewgrievance.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+            holder.textViewRefNo.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
         }
 
         if (grievanceModel.isHighlighted()) {
@@ -58,10 +68,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         } else {
             holder.linearLayouttrackGrievanceParent.setBackgroundColor(appCompatActivity.getResources().getColor(R.color.colorWhite));
         }
-        if (grievanceModel.getMessage() != null && !grievanceModel.getMessage().isEmpty())
-            holder.textViewMessage.setText(grievanceModel.getMessage());
-        else
-            holder.textViewMessage.setText(appCompatActivity.getResources().getString(R.string.n_a));
+
     }
 
     @Override
@@ -71,12 +78,12 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
 
     class TrackViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewGrievanceType, textViewgrievance, textViewDate, textViewStatus, textViewMessage;
+        TextView textViewGrievanceType, textViewRefNo, textViewDate, textViewStatus, textViewMessage;
         LinearLayout linearLayoutExpandableArea, linearLayouttrackGrievanceParent;
 
         TrackViewHolder(View itemView) {
             super(itemView);
-            textViewgrievance = itemView.findViewById(R.id.textview_grievance);
+            textViewRefNo = itemView.findViewById(R.id.textview_ref_no);
 
             textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
             textViewGrievanceType.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_grievance, 0, 0, 0);

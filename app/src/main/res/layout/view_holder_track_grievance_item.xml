@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_track_grievance_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:id="@+id/ll_track_grievance_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
@@ -15,13 +15,12 @@
         android:padding="@dimen/padding_large">
 
         <TextView
-            android:id="@+id/textview_grievance"
+            android:id="@+id/textview_ref_no"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/padding_small"
             android:gravity="center_vertical"
             android:padding="@dimen/padding_min"
-            android:text="Grievance Type"
             android:textColor="@color/colorAccentDark"
             android:textSize="@dimen/text_20"
             android:textStyle="bold" />
@@ -33,7 +32,6 @@
             android:drawablePadding="@dimen/padding_small"
             android:gravity="center_vertical"
             android:padding="@dimen/padding_min"
-            android:text="Result"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18" />
 
@@ -47,17 +45,18 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/padding_small">
 
-
         <TextView
             android:id="@+id/textview_grievance_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorAccentDark"
-            android:paddingLeft="@dimen/padding_large"
+            android:paddingStart="@dimen/padding_large"
             android:paddingTop="@dimen/padding_medium"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_18"
+            tools:ignore="RtlSymmetry"
+            tools:targetApi="m" />
 
         <TextView
             android:id="@+id/textview_date"
@@ -65,10 +64,12 @@
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorAccentDark"
-            android:paddingLeft="@dimen/padding_large"
+            android:paddingStart="@dimen/padding_large"
             android:paddingTop="@dimen/padding_medium"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
+            android:textSize="@dimen/text_18"
+            tools:ignore="RtlSymmetry"
+            tools:targetApi="m" />
 
 
         <TextView
@@ -77,11 +78,12 @@
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/padding_large"
             android:drawableTint="@color/colorAccentDark"
-            android:paddingLeft="@dimen/padding_large"
+            android:paddingStart="@dimen/padding_large"
             android:paddingTop="@dimen/padding_medium"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_18" />
-
+            android:textSize="@dimen/text_18"
+            tools:ignore="RtlSymmetry"
+            tools:targetApi="m" />
 
     </LinearLayout>
 
@@ -90,4 +92,5 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/margin_medium"
         android:background="@color/colorGray" />
+
 </LinearLayout>

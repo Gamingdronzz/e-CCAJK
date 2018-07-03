@@ -23,7 +23,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_medium"
                 android:elevation="@dimen/elevation_large"
                 app:cardCornerRadius="@dimen/corner_radius_medium"
                 tools:targetApi="lollipop">
@@ -31,13 +33,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/margin_medium"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_min">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_medium"
                         android:text="@string/pensioner_hr_staff_code"
                         android:textAlignment="center"
                         android:textColor="@color/colorBlack"
@@ -46,6 +47,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:layout_margin="@dimen/margin_min"
                         android:background="@color/colorGray" />
 
                     <TextView
@@ -63,7 +65,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_medium"
                 android:elevation="@dimen/elevation_large"
                 app:cardCornerRadius="@dimen/corner_radius_medium"
                 tools:targetApi="lollipop">
@@ -71,13 +75,56 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/margin_medium"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_min">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_medium"
+                        android:text="@string/reference_number"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/text_15" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_margin="@dimen/margin_min"
+                        android:background="@color/colorGray" />
+
+                    <TextView
+                        android:id="@+id/textview_reference_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/text_18"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_medium"
+
+                android:elevation="@dimen/elevation_large"
+                app:cardCornerRadius="@dimen/corner_radius_medium"
+                tools:targetApi="lollipop">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_min">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/grievance"
                         android:textAlignment="center"
                         android:textColor="@color/colorBlack"
@@ -86,14 +133,13 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:layout_margin="@dimen/margin_min"
                         android:background="@color/colorGray" />
 
                     <TextView
                         android:id="@+id/textview_grievance_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/padding_large"
-                        android:paddingRight="@dimen/padding_large"
                         android:textAlignment="center"
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/text_18"
@@ -104,7 +150,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_medium"
                 android:elevation="@dimen/elevation_large"
                 app:cardCornerRadius="@dimen/corner_radius_medium"
                 tools:targetApi="lollipop">
@@ -112,14 +160,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/margin_medium"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_min">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
-                        android:padding="@dimen/padding_medium"
                         android:text="@string/grievance_application_date"
                         android:textAlignment="center"
                         android:textColor="@color/colorBlack"
@@ -128,6 +174,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:layout_margin="@dimen/margin_min"
                         android:background="@color/colorGray" />
 
                     <TextView
@@ -140,8 +187,8 @@
                         android:textStyle="bold" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
 
+            </android.support.v7.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -273,6 +320,5 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18"
         tools:targetApi="m" />
-
 
 </com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout>

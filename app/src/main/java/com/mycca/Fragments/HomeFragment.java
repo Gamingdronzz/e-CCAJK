@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,7 +34,6 @@ import com.mycca.CustomObjects.CustomImageSlider.Tricks.ViewPagerEx;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.FancyShowCase.FocusShape;
-import com.mycca.CustomObjects.GravitySnapHelper.GravitySnapHelper;
 import com.mycca.Models.NewsModel;
 import com.mycca.Models.SliderImageModel;
 import com.mycca.R;
@@ -150,18 +148,23 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, activity, true);
 
         recyclerView.setAdapter(adapterNews);
-        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
+        linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        SnapHelper snapHelperStart = new GravitySnapHelper(Gravity.START);
-        snapHelperStart.attachToRecyclerView(recyclerView);
-
-        moveRight.setOnClickListener(v -> {
-            if (linearLayoutManager.findLastVisibleItemPosition() - 1 >= 0)
-                recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
-        });
-
-        moveLeft.setOnClickListener(v -> recyclerView.smoothScrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1));
+//
+//        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
+//        linearLayoutManager.setStackFromEnd(true);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        SnapHelper snapHelperStart = new GravitySnapHelper(Gravity.START);
+//        snapHelperStart.attachToRecyclerView(recyclerView);
+//
+//        moveRight.setOnClickListener(v -> {
+//            if (linearLayoutManager.findLastVisibleItemPosition() - 1 >= 0)
+//                recyclerView.smoothScrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
+//        });
+//
+//        moveLeft.setOnClickListener(v -> recyclerView.smoothScrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1));
 
         getNews();
         setupWelcomeBar();
@@ -185,12 +188,31 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                        if (dataSnapshot.getValue() != null) {
+                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                            for (int i = 0; i < newsModelArrayList.size(); i++) {
+                                if (newsModel != null && newsModelArrayList.get(i).getKey().equals(newsModel.getKey())) {
+                                    newsModelArrayList.remove(i);
+                                    newsModelArrayList.add(i, newsModel);
+                                    break;
+                                }
+                            }
+                            adapterNews.notifyDataSetChanged();
+                        }
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                        if (dataSnapshot.getValue() != null) {
+                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                            for (NewsModel nm : newsModelArrayList) {
+                                if (newsModel != null && nm.getKey().equals(newsModel.getKey())) {
+                                    newsModelArrayList.remove(nm);
+                                    break;
+                                }
+                            }
+                            adapterNews.notifyDataSetChanged();
+                        }
                     }
 
                     @Override
@@ -222,9 +244,11 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "ChildAdded: ");
                 SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
-                Log.d(TAG, "Image: " + sliderImageModel.getImageName());
-                Log.d(TAG, "url: " + sliderImageModel.getImageUrl());
-                addImageToSlider(sliderImageModel);
+                if (sliderImageModel != null) {
+                    Log.d(TAG, "Image: " + sliderImageModel.getImageName());
+                    Log.d(TAG, "url: " + sliderImageModel.getImageUrl());
+                    addImageToSlider(sliderImageModel);
+                }
             }
 
             @Override

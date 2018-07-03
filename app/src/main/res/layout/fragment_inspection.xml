@@ -43,7 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_drawable_location" />
+            app:srcCompat="@drawable/ic_drawable_location"
+            tools:ignore="ContentDescription" />
 
         <com.mycca.CustomObjects.CustomProgressButton.CircularProgressButton
             android:id="@+id/textview_current_location_coordinates"
@@ -102,7 +103,7 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/margin_large"
         android:backgroundTint="@color/colorAccentLight"
-        android:tint="@color/colorBlack"
+        android:tint="@color/colorWhite"
         app:srcCompat="@drawable/ic_view_menu_black_24dp"
         tools:targetApi="m" />
 
