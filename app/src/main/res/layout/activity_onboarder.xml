@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
-            android:text="SKIP"
+            android:text="@string/skip"
             android:textColor="@color/colorWhite"/>
 
         <LinearLayout
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
-            android:text="FINISH"
+            android:text="@string/finish"
             android:textColor="@color/colorWhite"
             android:visibility="gone"/>
 
@@ -73,7 +73,8 @@
             android:layout_gravity="end|center"
             android:padding="@dimen/margin_large"
             app:srcCompat="@drawable/ic_chevron_right"
-            android:tint="@color/colorWhite"/>
+            android:tint="@color/colorWhite"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 

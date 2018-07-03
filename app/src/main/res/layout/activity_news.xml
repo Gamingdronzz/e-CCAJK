@@ -12,7 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="serif"
-        android:text="Headline"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_25" />
 
@@ -24,7 +23,6 @@
         android:layout_gravity="end"
         android:layout_marginTop="@dimen/margin_large"
         android:fontFamily="serif"
-        android:text="date"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_15" />
 
@@ -41,7 +39,6 @@
         android:layout_marginTop="@dimen/margin_xlarge"
         android:fontFamily="serif"
         android:scrollbars="vertical"
-        android:text="details"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_20" />
 

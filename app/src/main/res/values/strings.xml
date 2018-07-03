@@ -118,5 +118,10 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="message">Message:</string>
     <string name="update">UPDATE</string>
     <string name="reference_number">Reference Number</string>
+    <string name="skip">SKIP</string>
+    <string name="finish">FINISH</string>
+    <string name="splash_text"><![CDATA[Office of CCA, J&K Circle JAMMU Department of Telecommunications]]></string>
+    <string name="cca_jk">CCA JK</string>
+    <string name="confirm_input">PLEASE CONFIRM YOUR INPUT</string>
 
 </resources>
