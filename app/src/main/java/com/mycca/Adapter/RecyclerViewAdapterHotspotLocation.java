@@ -49,7 +49,6 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textViewLocationName;
         TextView textViewDistrict;
-        private TextView textViewGetDirections;
         private TextView textViewBlock;
 
 
@@ -58,8 +57,6 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
             this.textViewLocationName = itemView.findViewById(R.id.textview_location_name);
             textViewDistrict = itemView.findViewById(R.id.textview_location_district);
             textViewBlock = itemView.findViewById(R.id.textview_location_block);
-            textViewGetDirections = itemView.findViewById(R.id.textview_get_directions);
-            textViewGetDirections.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_directions_black_24dp, 0, 0);
         }
     }
 }

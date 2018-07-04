@@ -96,12 +96,8 @@ public class LocatorFragment extends Fragment {
         textViewLocatorInfo.setText(noInternet);
 
         //fetch from local storage
-        locationModelArrayList = getLocationsFromLocalStorage();
-        if (locationModelArrayList == null) {
-            checkConnection(false);
-        } else {
-            checkConnection(true);
-        }
+        getLocationsFromLocalStorage();
+
     }
 
     private void setTabLayout() {
@@ -148,22 +144,26 @@ public class LocatorFragment extends Fragment {
         }
     }
 
-    private ArrayList<LocationModel> getLocationsFromLocalStorage() {
+    private void getLocationsFromLocalStorage() {
 
-        String json = (String) IOHelper.getInstance().readFromFile(locatorType, getContext());
-        ArrayList<LocationModel> arrayList;
-        try {
-            Gson gson = new Gson();
-            Type collectionType = new TypeToken<ArrayList<LocationModel>>() {
-            }.getType();
-            arrayList = gson.fromJson(json, collectionType);
-            if (arrayList != null)
-                Log.d(TAG, "Getting Locations From Local Storage: size = " + arrayList.size());
-            return arrayList;
-        } catch (JsonParseException jpe) {
-            jpe.printStackTrace();
-        }
-        return null;
+        IOHelper.getInstance().readFromFile(locatorType, getContext(), jsonObject -> {
+            String json = (String) jsonObject;
+            try {
+                Gson gson = new Gson();
+                Type collectionType = new TypeToken<ArrayList<LocationModel>>() {
+                }.getType();
+                locationModelArrayList = gson.fromJson(json, collectionType);
+                if (locationModelArrayList == null) {
+                    checkConnection(false);
+                } else {
+                    checkConnection(true);
+                }
+            } catch (JsonParseException jpe) {
+                jpe.printStackTrace();
+                checkConnection(false);
+            }
+        });
+
     }
 
     private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
@@ -187,7 +187,7 @@ public class LocatorFragment extends Fragment {
                     fetchLocationsFromFirebase();
                 } else {
                     Log.d(TAG, "init: Locations found in local storage");
-                    checkNewLocationsinFirebase();
+                    checkNewLocationsInFirebase();
                 }
             }
 
@@ -215,7 +215,7 @@ public class LocatorFragment extends Fragment {
 
     }
 
-    private void checkNewLocationsinFirebase() {
+    private void checkNewLocationsInFirebase() {
 
         ValueEventListener vel = new ValueEventListener() {
             @Override
@@ -241,7 +241,7 @@ public class LocatorFragment extends Fragment {
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(vel,
                 FireBaseHelper.NONVERSIONED_STATEWISE, false,
-                Preferences.getInstance().getStringPref(activity,Preferences.PREF_STATE),
+                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),
                 locatorType);
     }
 
@@ -298,11 +298,11 @@ public class LocatorFragment extends Fragment {
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
                 FireBaseHelper.NONVERSIONED_STATEWISE,
-                Preferences.getInstance().getStringPref(activity,Preferences.PREF_STATE),
+                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),
                 locatorType);
         FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
                 FireBaseHelper.NONVERSIONED_STATEWISE, true,
-                Preferences.getInstance().getStringPref(activity,Preferences.PREF_STATE),
+                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),
                 locatorType);
     }
 
