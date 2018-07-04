@@ -2,6 +2,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
@@ -71,7 +72,7 @@
             android:paddingBottom="@dimen/padding_small"
             android:paddingLeft="@dimen/padding_large"
             android:paddingRight="@dimen/padding_large"
-            android:text="WITHIN 36 KM"
+            android:text="@string/within_36_km"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_18"
@@ -93,7 +94,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:padding="@dimen/padding_large"
-            app:srcCompat="@drawable/ic_refresh_black_24dp" />
+            app:srcCompat="@drawable/ic_refresh_black_24dp"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/textview_location_msg"
@@ -102,7 +104,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/colorWhite"
             android:padding="@dimen/padding_large"
-            android:text="Nearby Locations will not be shown until Location and Internet is Turned On. Turn On Location and Refresh"
+            android:text="@string/msg_no_location"
             android:textAlignment="center"
             android:textSize="@dimen/text_20" />
     </RelativeLayout>

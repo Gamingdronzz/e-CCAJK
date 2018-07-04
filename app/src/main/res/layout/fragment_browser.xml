@@ -12,12 +12,13 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:progressBackgroundTint="@color/colorPrimary"
-        android:progressTint="@color/colorAccentDark" />
+        android:progressTint="@color/colorAccentDark"
+        tools:targetApi="lollipop" />
 
     <WebView
         android:id="@+id/webview_cca"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
 

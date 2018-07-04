@@ -21,7 +21,6 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="4dp"
-            android:text="Indicator"
             android:textSize="13sp" />
 
     </LinearLayout>

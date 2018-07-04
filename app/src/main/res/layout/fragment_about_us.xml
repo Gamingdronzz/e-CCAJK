@@ -14,9 +14,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/margin_large"
-            android:text="About Developer"
+            android:text="@string/about_developer"
             android:textAlignment="center"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18" />
@@ -31,7 +30,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:padding="@dimen/padding_medium"
             android:text="@string/about_us_string"
             android:textAlignment="center"
@@ -41,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
-            android:text="Disclaimer"
+            android:text="@string/disclaimer"
             android:textAlignment="center"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18" />
@@ -56,7 +54,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:padding="@dimen/padding_medium"
             android:text="@string/disclaimer_content"
             android:textAlignment="center"
@@ -70,7 +67,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#dd000000"
-        app:srcCompat="@drawable/ic_gaming_dronzz_logo" />
+        app:srcCompat="@drawable/ic_gaming_dronzz_logo"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>
 

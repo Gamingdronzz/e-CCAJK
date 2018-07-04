@@ -25,20 +25,20 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 import com.mycca.App.AppController;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 public class VolleyHelper {
     private Context context;
     private final String TAG = "Volley";
-    public VolleyResponse delegate = null;
-    ErrorListener errorListener = new VolleyErrorListener();
-    Listener jsonArrayResponseListener = new JsonArrayResponseListener();
-    Listener jsonObjectResponseListener = new JsonObjectResponseListener();
-    Listener stringResponseListener = new StringResponseListener();
+    private VolleyResponse delegate = null;
+    private ErrorListener errorListener = new VolleyErrorListener();
+    private Listener jsonArrayResponseListener = new JsonArrayResponseListener();
+    private Listener jsonObjectResponseListener = new JsonObjectResponseListener();
+    private Listener stringResponseListener = new StringResponseListener();
 
     public interface VolleyResponse {
         void onError(VolleyError volleyError);
@@ -96,7 +96,7 @@ public class VolleyHelper {
         int count = 0;
         Object tag;
 
-        public CountRequestsInFlight(Object tag) {
+        CountRequestsInFlight(Object tag) {
             this.tag = tag;
         }
 
@@ -122,7 +122,7 @@ public class VolleyHelper {
         AppController.getInstance().addToRequestQueue(strReq, TAG);
     }
 
-    public void makeStringRequest(String url, String TAG, Map<String, String> params) {
+    void makeStringRequest(String url, String TAG, Map<String, String> params) {
         Log.d(TAG, "makeStringRequest: " + url);
         final Map<String, String> map = params;
         StringRequest strReq = new StringRequest(1, url, this.stringResponseListener, this.errorListener) {
@@ -219,7 +219,7 @@ public class VolleyHelper {
         jsonArrayRequest.setShouldCache(false);
     }
 
-    public int countRequestsInFlight(String tag) {
+    int countRequestsInFlight(String tag) {
         RequestQueue queue = AppController.getInstance().getRequestQueue();
         RequestFilter inFlight = new CountRequestsInFlight(tag);
         queue.cancelAll(inFlight);
@@ -236,6 +236,6 @@ public class VolleyHelper {
     }
 
     public void cancelRequest(String TAG) {
-        AppController.getInstance().getRequestQueue().cancelAll((Object) TAG);
+        AppController.getInstance().getRequestQueue().cancelAll(TAG);
     }
 }

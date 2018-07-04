@@ -24,24 +24,16 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.Task;
 
-/**
- * Created by balpreet on 4/15/2018.
- */
-
 public class MyLocationManager {
 
-    public interface LocationCallBack {
-
-    }
-
-    final String TAG = "MyLocationManager";
+    private final String TAG = "MyLocationManager";
     public static final int LOCATION_REQUEST_CODE = 101;
     public static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 102;
 
-    Fragment context;
-    LocationRequest mLocationRequest;
-    LocationCallback mLocationCallback;
-    FusedLocationProviderClient mFusedLocationClient;
+    private Fragment context;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     public MyLocationManager(Fragment context, LocationCallback locationCallback) {
         this.context = context;
@@ -58,8 +50,7 @@ public class MyLocationManager {
         if (checkForLocationPermission()) {
             Log.v(TAG, "Permission Available\nChecking for location on or off");
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            Task<LocationSettingsResponse> task = createLocationRequest();
-            return task;
+            return createLocationRequest();
         } else {
             Log.v(TAG, "Permission not Available");
             if (context.getParentFragment() != null)
@@ -86,7 +77,7 @@ public class MyLocationManager {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void requestLocationPermission(Fragment fragment, int requestCode) {
+    private void requestLocationPermission(Fragment fragment, int requestCode) {
         fragment.requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, requestCode);
     }
 
@@ -96,14 +87,13 @@ public class MyLocationManager {
     }
 
 
-    public Task<LocationSettingsResponse> createLocationRequest() {
+    private Task<LocationSettingsResponse> createLocationRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
 
         SettingsClient client = LocationServices.getSettingsClient(context.getActivity());
         Log.v(TAG, "Location Request Created");
 
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-        return task;
+        return client.checkLocationSettings(builder.build());
     }
 
     @SuppressLint("MissingPermission")

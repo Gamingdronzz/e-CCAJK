@@ -17,14 +17,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-/**
- * Created by hp on 16-04-2018.
- */
-
 public class MapsHelper {
 
-    final String TAG = "MapsHelper";
-    Context context;
+    private final String TAG = "MapsHelper";
+    private Context context;
 
     public MapsHelper(Context context) {
         this.context = context;
@@ -73,7 +69,7 @@ public class MapsHelper {
 
         for (int i = 0; i < length; i++) {
             LocationModel locationModel = locationModels.get(i);
-            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.valueOf(locationModel.getLatitude()), Double.valueOf(locationModel.getLongitude()), results);
+            Location.distanceBetween(mLastLocation.getLatitude(), mLastLocation.getLongitude(), locationModel.getLatitude(), locationModel.getLongitude(), results);
             if (results[0] <= radius) {
                 filteredLocations.add(locationModel);
             }

@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +15,7 @@
         android:drawablePadding="@dimen/padding_medium"
         android:fontFamily="@font/artifika"
         android:padding="@dimen/padding_large"
-        android:text="Office Address"
+        android:text="@string/office_address"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_20"
@@ -25,7 +24,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:background="@color/colorBlack"></View>
+        android:background="@color/colorBlack"/>
 
     <LinearLayout
         android:id="@+id/linear_layout_office_Address_Area"
@@ -41,7 +40,7 @@
             android:fontFamily="@font/imprima"
             android:padding="@dimen/padding_large"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15"></android.support.v7.widget.AppCompatTextView>
+            android:textSize="@dimen/text_15"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_locate_on_map"
@@ -55,16 +54,17 @@
             android:drawableTint="@color/colorWhite"
             android:paddingLeft="@dimen/padding_xxlarge"
             android:paddingRight="@dimen/padding_xxlarge"
-            android:text="Locate on Map"
+            android:text="@string/locate_on_map"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_15" />
+            android:textSize="@dimen/text_15"
+            tools:targetApi="m" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginTop="@dimen/margin_medium"
-            android:background="@color/colorBlack"></View>
+            android:background="@color/colorBlack"/>
 
     </LinearLayout>
 
@@ -75,11 +75,6 @@
         android:layout_marginTop="8dp"
         android:orientation="vertical">
 
-        <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="3dp"-->
-        <!--android:background="@color/colorBlack"></View>-->
-
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_contact_person_heading"
             android:layout_width="wrap_content"
@@ -88,23 +83,22 @@
             android:drawablePadding="@dimen/padding_medium"
             android:fontFamily="@font/artifika"
             android:padding="@dimen/padding_large"
-            android:text="Contact Persons"
+            android:text="@string/contact_persons"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_20"
-            android:textStyle="bold"></android.support.v7.widget.AppCompatTextView>
+            android:textStyle="bold"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@color/colorBlack"></View>
+            android:background="@color/colorBlack"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textview_office_address"
             android:background="@color/colorOffWhite"
-            android:paddingBottom="8dp"></android.support.v7.widget.RecyclerView>
+            android:paddingBottom="8dp"/>
 
     </LinearLayout>
 

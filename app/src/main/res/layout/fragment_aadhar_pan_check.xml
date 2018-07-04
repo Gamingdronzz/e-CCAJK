@@ -19,7 +19,7 @@
                 android:id="@+id/edittext_pcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pensioner Code"
+                android:hint="@string/p_code"
                 android:inputType="number"
                 android:padding="@dimen/padding_large"
                 android:singleLine="true"

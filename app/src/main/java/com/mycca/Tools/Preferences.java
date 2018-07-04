@@ -7,11 +7,9 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.mycca.Models.StaffModel;
 
-/**
- * Created by hp on 13-02-2018.
- */
 
 public class Preferences {
+
     private static Preferences _instance;
 
     public static final String PREF_STAFF_DATA = "staffData";
@@ -23,7 +21,6 @@ public class Preferences {
     public static final String PREF_HELP_INSPECTION = "inspection";
     public static final String PREF_HELP_GRIEVANCE = "grievance";
     public static final String PREF_HELP_LOCATOR = "locator";
-    public static final String PREF_HELP_NEARBY = "nearby";
     public static final String PREF_HELP_UPDATE = "update";
 
     public Preferences() {
@@ -38,7 +35,7 @@ public class Preferences {
         }
     }
 
-    static SharedPreferences getSharedPreferences(Context context) {
+    private static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -83,8 +80,7 @@ public class Preferences {
     public StaffModel getStaffPref(Context context, String key) {
         Gson gson = new Gson();
         String json = getSharedPreferences(context).getString(key, null);
-        StaffModel staffModel = gson.fromJson(json, StaffModel.class);
-        return staffModel;
+        return gson.fromJson(json, StaffModel.class);
     }
 
     public void setStaffPref(Context context, String key, StaffModel value) {
@@ -110,7 +106,6 @@ public class Preferences {
         editor.remove(PREF_HELP_GRIEVANCE);
         editor.remove(PREF_HELP_LOCATOR);
         editor.remove(PREF_HELP_CONTACT);
-        editor.remove(PREF_HELP_NEARBY);
         editor.commit();
     }
 
@@ -122,7 +117,6 @@ public class Preferences {
         editor.putBoolean(PREF_HELP_GRIEVANCE, false);
         editor.putBoolean(PREF_HELP_LOCATOR, false);
         editor.putBoolean(PREF_HELP_CONTACT, false);
-        editor.putBoolean(PREF_HELP_NEARBY, false);
         editor.commit();
     }
 }

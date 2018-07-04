@@ -1,60 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/corner_radius_large"
     android:elevation="@dimen/elevation_medium"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/corner_radius_large"
+    tools:targetApi="lollipop">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation_medium"
-        android:orientation="vertical">
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/padding_large"
+        android:text="@string/sort_locations"
+        android:textSize="@dimen/text_18"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
+    <RadioGroup
+        android:id="@+id/radio_group_sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_medium">
+
+        <RadioButton
+            android:id="@+id/rBName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sort Locations"
+            android:layout_weight="1"
             android:padding="@dimen/padding_large"
-            android:textSize="@dimen/text_18"
-            android:textStyle="bold"
-            android:background="@color/colorPrimary"/>
+            android:text="@string/name" />
 
-        <RadioGroup
-            android:id="@+id/radio_group_sort"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_medium"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rBDistrict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/padding_large"
+            android:text="@string/district" />
 
-            <RadioButton
-                android:id="@+id/rBName"
-                android:padding="@dimen/padding_large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Name" />
+    </RadioGroup>
 
-            <RadioButton
-                android:id="@+id/rBDistrict"
-                android:padding="@dimen/padding_large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="District" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGray" />
 
-        </RadioGroup>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"
-            ></View>
-
-    </LinearLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

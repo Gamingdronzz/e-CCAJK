@@ -66,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/gtype"
+                    android:text="@string/g_type"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/text_15" />
 
@@ -262,7 +262,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/padding_large"
                     android:drawableTint="@color/colorAccent"
-                    android:hint="@string/gdetails"
+                    android:hint="@string/g_details"
                     android:singleLine="false"
                     tools:targetApi="m" />
 
@@ -304,7 +304,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_submit"
         android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/margin_large"
         android:backgroundTint="@color/colorPrimaryLight"
         android:tint="@color/colorWhite"

@@ -1,16 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/colorOffWhite"
     android:orientation="vertical"
     android:layout_height="match_parent">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".Fragments.BrowserFragment">
 
 
         <LinearLayout
@@ -28,7 +20,7 @@
                 android:layout_margin="@dimen/margin_medium"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/text_15"
-                android:text="Like the Application?" />
+                android:text="@string/like_the_application" />
 
             <Button
                 android:id="@+id/btn_feedback_rate_application"
@@ -37,7 +29,7 @@
                 android:layout_gravity="center_horizontal"
                 android:padding="@dimen/padding_medium"
                 android:background="@drawable/custom_button_accent_light"
-                android:text="Rate 5 Stars"
+                android:text="@string/rate_5_stars"
                 android:textColor="@color/colorOffWhite"
                 android:textSize="@dimen/text_18" />
 
@@ -66,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_15"
                 android:textColor="@color/colorBlack"
-                android:text="Have a suggestion?" />
+                android:text="@string/have_a_suggestion" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -76,7 +68,7 @@
                     android:id="@+id/et_feedback_submit_suggestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Suggestion"
+                    android:hint="@string/suggestion"
                     android:maxLines="5"
                     android:padding="@dimen/margin_medium" />
             </android.support.design.widget.TextInputLayout>
@@ -87,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/custom_button_accent_light"
-                android:text="Submit advice"
+                android:text="@string/submit_advice"
                 android:textColor="@color/colorOffWhite"
                 android:textSize="@dimen/text_18" />
         </LinearLayout>
@@ -151,8 +143,5 @@
 
 
         <!--</LinearLayout>-->
-
-
-    </LinearLayout>
 
 </LinearLayout>

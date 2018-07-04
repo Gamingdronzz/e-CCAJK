@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,11 +19,12 @@
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_large"
             android:padding="@dimen/padding_large"
-            android:text="Track Grievances"
+            android:text="@string/track_grievances"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_20"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:targetApi="lollipop" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,11 +35,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_large"
+                android:paddingStart="@dimen/padding_large"
                 android:paddingTop="@dimen/padding_medium"
-                android:text="Grievances Registered Using"
+                android:text="@string/grievances_registered_using"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_15" />
+                android:textSize="@dimen/text_15"
+                tools:ignore="RtlSymmetry" />
 
             <RadioGroup
                 android:id="@+id/groupNumberType"
@@ -54,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:text="Pensioner Code"
+                    android:text="@string/p_code"
                     android:textColor="@color/colorBlack" />
 
                 <RadioButton
@@ -62,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="HR Number"
+                    android:text="@string/hr_num"
                     android:textColor="@color/colorBlack" />
 
                 <RadioButton
@@ -70,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Staff Number"
+                    android:text="@string/staff_num"
                     android:textColor="@color/colorBlack" />
 
             </RadioGroup>
@@ -78,7 +79,6 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout"
                 android:layout_width="match_parent"
-
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_large"
                 android:layout_marginTop="@dimen/margin_large">
@@ -104,7 +104,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_large"
                 android:background="@drawable/custom_button"
-                android:text="Track"
+                android:text="@string/track"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_20" />
 

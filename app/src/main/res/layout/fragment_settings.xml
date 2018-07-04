@@ -144,10 +144,11 @@
             android:id="@+id/tv_settings_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_xxxlarge"
+            android:paddingStart="@dimen/padding_xxxlarge"
             android:text="@string/signed_in"
             android:textSize="@dimen/text_18"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            tools:ignore="RtlSymmetry" />
 
     </LinearLayout>
 

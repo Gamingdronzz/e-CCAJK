@@ -59,7 +59,7 @@
                 android:drawablePadding="@dimen/padding_medium"
                 android:drawableTint="@color/colorWhite"
                 android:padding="@dimen/padding_medium"
-                android:text="@string/latest_news"
+                android:text="@string/latest_from_cca"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_20"
                 tools:targetApi="m" />
