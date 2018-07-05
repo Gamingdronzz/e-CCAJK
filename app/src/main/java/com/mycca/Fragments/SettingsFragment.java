@@ -74,12 +74,12 @@ public class SettingsFragment extends Fragment {
     private void init() {
 
         activity = (MainActivity) getActivity();
-        switchNotification.setChecked(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS));
+        switchNotification.setChecked(Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS));
         switchNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, true);
+                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS, true);
             } else {
-                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECIEVE_NOTIFICATIONS, false);
+                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS, false);
             }
         });
 

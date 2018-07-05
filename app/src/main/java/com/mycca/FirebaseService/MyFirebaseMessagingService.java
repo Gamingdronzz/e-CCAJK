@@ -30,7 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        if(Preferences.getInstance().getBooleanPref(getApplicationContext(),Preferences.PREF_RECIEVE_NOTIFICATIONS))
+        if(Preferences.getInstance().getBooleanPref(getApplicationContext(),Preferences.PREF_RECEIVE_NOTIFICATIONS))
         {
             if (remoteMessage.getData().size() > 0) {
                 String title = remoteMessage.getData().get("title");

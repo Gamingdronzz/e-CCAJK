@@ -14,7 +14,7 @@ public class Preferences {
 
     public static final String PREF_STAFF_DATA = "staffData";
     public static final String PREF_STATE = "state";
-    public static final String PREF_RECIEVE_NOTIFICATIONS = "recieveNotifications";
+    public static final String PREF_RECEIVE_NOTIFICATIONS = "receiveNotifications";
     public static final String PREF_HELP_ONBOARDER = "onboarder";
     public static final String PREF_HELP_HOME = "home";
     public static final String PREF_HELP_CONTACT = "contact";
@@ -53,7 +53,7 @@ public class Preferences {
     public void setStringPref(Context context, String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -64,7 +64,7 @@ public class Preferences {
     public void setIntPref(Context context, String key, int value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putInt(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean getBooleanPref(Context context, String key) {
@@ -74,7 +74,7 @@ public class Preferences {
     public void setBooleanPref(Context context, String key, boolean value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public StaffModel getStaffPref(Context context, String key) {
@@ -88,13 +88,13 @@ public class Preferences {
         Gson gson = new Gson();
         String json = gson.toJson(value);
         editor.putString(key, json);
-        editor.commit();
+        editor.apply();
     }
 
     public void clearStaffPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.remove(PREF_STAFF_DATA);
-        editor.commit();
+        editor.apply();
     }
 
     public void clearTutorialPrefs(Context context) {
@@ -106,7 +106,7 @@ public class Preferences {
         editor.remove(PREF_HELP_GRIEVANCE);
         editor.remove(PREF_HELP_LOCATOR);
         editor.remove(PREF_HELP_CONTACT);
-        editor.commit();
+        editor.apply();
     }
 
     public void setTutorialPrefs(Context context) {
@@ -117,6 +117,6 @@ public class Preferences {
         editor.putBoolean(PREF_HELP_GRIEVANCE, false);
         editor.putBoolean(PREF_HELP_LOCATOR, false);
         editor.putBoolean(PREF_HELP_CONTACT, false);
-        editor.commit();
+        editor.apply();
     }
 }
