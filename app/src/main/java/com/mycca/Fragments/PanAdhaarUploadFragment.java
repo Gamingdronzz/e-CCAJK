@@ -406,7 +406,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void uploadImagesToServer() {
 
         progressDialog.setMessage("Processing..");
-        progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
 
         try {
@@ -423,7 +422,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void sendFinalMail() {
 
         progressDialog.setMessage("Almost Done..");
-        progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php";
         Map<String, String> params = new HashMap<>();
 

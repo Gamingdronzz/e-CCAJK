@@ -406,7 +406,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         counterServerImages = 0;
         progressDialog.setMessage("Processing..");
-        progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
         String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
 
@@ -428,7 +427,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void sendFinalMail() {
         progressDialog.setMessage("Almost Done..");
-        progressDialog.show();
         String url;
 
         url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";

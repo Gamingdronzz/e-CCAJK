@@ -450,8 +450,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void uploadDataToFirebase() {
         progressDialog.setMessage("Preparing your grievance for submission");
-        progressDialog.show();
-
+        
         Transaction.Handler handler = new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -519,7 +518,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         if (selectedImageModelArrayList.size() > 0) {
 
             progressDialog.setMessage("Uploading Files...\nPlease Wait");
-            progressDialog.show();
             counterFirebaseImages = 0;
             counterUpload = 0;
 
@@ -565,7 +563,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         counterServerImages = 0;
         progressDialog.setMessage("Processing..");
-        progressDialog.show();
         int totalFilesToAttach = selectedImageModelArrayList.size();
         String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
 
@@ -588,7 +585,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void sendFinalMail() {
 
         progressDialog.setMessage("Almost Done..");
-        progressDialog.show();
         String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
         Map<String, String> params = new HashMap<>();
         String pensionerCode = inputPensionerCode.getText().toString();
@@ -652,9 +648,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         doSubmission();
                     }
                 } else {
+                    progressDialog.dismiss();
                     Helper.getInstance().showErrorDialog("Files could not be uploaded\nTry Again", "Submission Error", mainActivity);
                     Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
-                    progressDialog.dismiss();
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
@@ -711,7 +707,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
         progressDialog.dismiss();
-        Helper.getInstance().showErrorDialog("Some Error Occured Please be patient we are getting things fixed", "Submission Error", mainActivity);
+        Helper.getInstance().showErrorDialog("Some Error Occurred Please be patient we are getting things fixed", "Submission Error", mainActivity);
     }
 
 
