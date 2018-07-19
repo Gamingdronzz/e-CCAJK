@@ -14,14 +14,14 @@ import java.util.List;
 public class IntroActivity extends OnboarderActivity {
 
     boolean fromSettings = false;
-    List<OnboarderPage> onboarderPages;
+    List<OnboarderPage> onBoarderPages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fromSettings = getIntent().getBooleanExtra("FromSettings", false);
-        onboarderPages = new ArrayList<>();
+        onBoarderPages = new ArrayList<>();
 
         try {
             OnboarderPage onboarderPage1 = new OnboarderPage("Welcome", "Welcome to Official Android Application of\n" +
@@ -48,13 +48,13 @@ public class IntroActivity extends OnboarderActivity {
                     R.drawable.index);
             setOnboarderPageProperties(onboarderPage5);
 
-            onboarderPages.add(onboarderPage1);
-            onboarderPages.add(onboarderPage2);
-            onboarderPages.add(onboarderPage3);
-            onboarderPages.add(onboarderPage4);
-            onboarderPages.add(onboarderPage5);
+            onBoarderPages.add(onboarderPage1);
+            onBoarderPages.add(onboarderPage2);
+            onBoarderPages.add(onboarderPage3);
+            onBoarderPages.add(onboarderPage4);
+            onBoarderPages.add(onboarderPage5);
 
-            setOnboardPagesReady(onboarderPages);
+            setOnboardPagesReady(onBoarderPages);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +72,6 @@ public class IntroActivity extends OnboarderActivity {
     }
 
     public void nextActions() {
-        Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
         startActivity(new Intent(IntroActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         finish();
     }
@@ -85,6 +84,8 @@ public class IntroActivity extends OnboarderActivity {
 
     @Override
     public void onFinishButtonPressed() {
+        //Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
+        Preferences.getInstance().setTutorialPrefs(this);
         nextActions();
     }
 

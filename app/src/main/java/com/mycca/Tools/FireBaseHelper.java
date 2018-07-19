@@ -51,7 +51,7 @@ public class FireBaseHelper {
     public final static String ROOT_BY_USER = "By User";
     static final String ROOT_PASSWORD = "password";
     public final static String ROOT_BY_STAFF = "By Staff";
-    public final static String ROOT_IMAGES_BY_STAFF = "Images By Staff";
+    //public final static String ROOT_IMAGES_BY_STAFF = "Images By Staff";
     private final static String ROOT_STATE_DATA = "State Data";
     private final static String ROOT_REF_COUNT = "Reference Number Count";
     private final static String ROOT_APP_VERSION = "Latest Version";

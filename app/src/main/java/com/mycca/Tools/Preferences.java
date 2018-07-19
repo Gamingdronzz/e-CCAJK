@@ -111,6 +111,7 @@ public class Preferences {
 
     public void setTutorialPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putBoolean(PREF_HELP_ONBOARDER, false);
         editor.putBoolean(PREF_HELP_HOME, false);
         editor.putBoolean(PREF_HELP_INSPECTION, false);
         editor.putBoolean(PREF_HELP_UPDATE, false);

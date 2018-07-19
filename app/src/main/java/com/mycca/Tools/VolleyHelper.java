@@ -7,14 +7,11 @@ import android.widget.ImageView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache.Entry;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.RequestQueue.RequestFilter;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
@@ -34,7 +31,15 @@ import java.util.Map;
 public class VolleyHelper {
     private Context context;
     private final String TAG = "Volley";
-    private VolleyResponse delegate = null;
+
+    // notification related keys
+    public static final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+    public static final String KEY_TO = "to";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_DATA = "data";
+
+    private VolleyResponse delegate;
     private ErrorListener errorListener = new VolleyErrorListener();
     private Listener jsonArrayResponseListener = new JsonArrayResponseListener();
     private Listener jsonObjectResponseListener = new JsonObjectResponseListener();
@@ -78,12 +83,12 @@ public class VolleyHelper {
         public void onErrorResponse(VolleyError error) {
             if(error !=null) {
                 VolleyHelper.this.delegate.onError(error);
-                if (error.getClass() == TimeoutError.class) {
+                /*if (error.getClass() == TimeoutError.class) {
                 }
                 if (error.getClass() == ServerError.class) {
                 }
                 if (error.getClass() != NetworkError.class) {
-                }
+                }*/
             }
             else
             {
@@ -122,12 +127,37 @@ public class VolleyHelper {
         AppController.getInstance().addToRequestQueue(strReq, TAG);
     }
 
-    void makeStringRequest(String url, String TAG, Map<String, String> params) {
+    public void makeStringRequest(String url, String TAG, Map<String, String> params) {
         Log.d(TAG, "makeStringRequest: " + url);
         final Map<String, String> map = params;
         StringRequest strReq = new StringRequest(1, url, this.stringResponseListener, this.errorListener) {
             protected Map<String, String> getParams() throws AuthFailureError {
                 return map;
+            }
+        };
+        strReq.setRetryPolicy(new DefaultRetryPolicy(
+                20000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        setShouldCache(strReq, true);
+        AppController.getInstance().addToRequestQueue(strReq, TAG);
+    }
+
+    public void makeStringRequest(String url, String TAG, Map<String, String> params,Map<String, String> header) {
+        Log.d(TAG, "makeStringRequest: " + url);
+        final Map<String, String> map = params;
+        final Map<String,String> headerMap = header;
+        StringRequest strReq = new StringRequest(1, url, this.stringResponseListener, this.errorListener) {
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return map;
+            }
+            
+            
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Log.d(TAG, "getHeaders: ");
+                return headerMap;
             }
         };
         strReq.setRetryPolicy(new DefaultRetryPolicy(
@@ -219,7 +249,7 @@ public class VolleyHelper {
         jsonArrayRequest.setShouldCache(false);
     }
 
-    int countRequestsInFlight(String tag) {
+    public int countRequestsInFlight(String tag) {
         RequestQueue queue = AppController.getInstance().getRequestQueue();
         RequestFilter inFlight = new CountRequestsInFlight(tag);
         queue.cancelAll(inFlight);
