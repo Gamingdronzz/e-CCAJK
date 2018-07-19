@@ -18,27 +18,19 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
 import com.mycca.Listeners.OnConnectionAvailableListener;
-import com.mycca.Models.GrievanceModel;
-import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tabs.UpdateGrievance.TabResolved;
 import com.mycca.Tabs.UpdateGrievance.TabSubmitted;
 import com.mycca.Tabs.UpdateGrievance.TabUnderProcess;
 import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
 import com.mycca.Tools.Preferences;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -54,11 +46,6 @@ public class UpdateGrievanceFragment extends Fragment {
 
     public final static int INT_UPDATE_GRIEVANCE_TAB_ITEMS = 3;
     String TAG = "UpdateGrievanceFragment";
-    ArrayList<GrievanceModel> allGrievances;
-    ArrayList<GrievanceModel> submittedGrievances;
-    ArrayList<GrievanceModel> processingGrievances;
-    ArrayList<GrievanceModel> resolvedGrievances;
-
 
     public UpdateGrievanceFragment() {
 
@@ -95,7 +82,7 @@ public class UpdateGrievanceFragment extends Fragment {
 
     private void init() {
         activity = (MainActivity) getActivity();
-        progressDialog = Helper.getInstance().getProgressWindow(activity, "Checking for Intenet Connectivity...");
+        progressDialog = Helper.getInstance().getProgressWindow(activity, "Checking for Internet Connectivity...");
         progressDialog.show();
         checkConnection();
     }
@@ -104,8 +91,7 @@ public class UpdateGrievanceFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                progressDialog.setMessage("Getting Grievances");
-                getData();
+                setTabLayout();
                 showNoInternetConnectionLayout(false);
             }
 
@@ -118,79 +104,8 @@ public class UpdateGrievanceFragment extends Fragment {
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void getData() {
-        allGrievances = new ArrayList<>();
-        submittedGrievances = new ArrayList<>();
-        processingGrievances = new ArrayList<>();
-        resolvedGrievances = new ArrayList<>();
-
-        ChildEventListener childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (dataSnapshot.getValue() != null) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
-                        if (grievanceModel != null && grievanceModel.isSubmissionSuccess()) {
-                            allGrievances.add(grievanceModel);
-                            if (grievanceModel.getGrievanceStatus() == 0) {
-                                submittedGrievances.add(grievanceModel);
-                            } else if (grievanceModel.getGrievanceStatus() == 1) {
-                                processingGrievances.add(grievanceModel);
-                            } else {
-                                resolvedGrievances.add(grievanceModel);
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
-                GrievanceDataProvider.getInstance().setAllGrievanceList(allGrievances);
-                GrievanceDataProvider.getInstance().setSubmittedGrievanceList(submittedGrievances);
-                GrievanceDataProvider.getInstance().setProcessingGrievanceList(processingGrievances);
-                GrievanceDataProvider.getInstance().setResolvedGrievanceList(resolvedGrievances);
-                setTabLayout();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
-                FireBaseHelper.VERSIONED,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
-        FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
-                FireBaseHelper.VERSIONED,
-                true,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
-    }
-
     private void setTabLayout() {
+        progressDialog.dismiss();
         final MyAdapter adapter = new MyAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
@@ -209,12 +124,12 @@ public class UpdateGrievanceFragment extends Fragment {
                 .build();
 
         final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
-                .title("-------->\nSwipe to view Greivances Under process")
+                .title("-------->\nSwipe to view Grievances Under process")
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 2, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 
         final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
-                .title("-------->\nSwipe again to view Resolved Greivances")
+                .title("-------->\nSwipe again to view Resolved Grievances")
                 .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
                 .build();
 

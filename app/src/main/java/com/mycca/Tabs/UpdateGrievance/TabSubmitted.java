@@ -16,12 +16,20 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Providers.GrievanceDataProvider;
+import com.mycca.Models.GrievanceModel;
 import com.mycca.R;
+import com.mycca.Tools.FireBaseHelper;
 import com.mycca.Tools.Helper;
+import com.mycca.Tools.Preferences;
+
+import java.util.ArrayList;
 
 public class TabSubmitted extends Fragment {
 
@@ -31,6 +39,7 @@ public class TabSubmitted extends Fragment {
     RelativeLayout relativeLayoutEmptyList;
     TextView textViewNoListInfo;
     ProgressDialog progressDialog;
+    ArrayList<GrievanceModel> submittedGrievances;
 
     RecyclerViewAdapterGrievanceUpdate adapter;
 
@@ -62,18 +71,90 @@ public class TabSubmitted extends Fragment {
     }
 
     private void init() {
-        Log.d(TAG, "init: submitted");
-        if (GrievanceDataProvider.getInstance().getSubmittedGrievanceList() != null) {
-            if (GrievanceDataProvider.getInstance().getSubmittedGrievanceList().size() == 0)
-                showEmptyListLayout(true);
-            else {
-                showEmptyListLayout(false);
-                adapter = new RecyclerViewAdapterGrievanceUpdate(GrievanceDataProvider.getInstance().getSubmittedGrievanceList(), (MainActivity) getActivity(),false);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        progressDialog.show();
+        submittedGrievances = new ArrayList<>();
+        Log.d(TAG, "init: " + submittedGrievances);
+        adapter = new RecyclerViewAdapterGrievanceUpdate(submittedGrievances, (MainActivity) getActivity(), false);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        getData();
+    }
+
+    private void getData() {
+
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
+                        if (grievanceModel != null && grievanceModel.isSubmissionSuccess()) {
+                            if (grievanceModel.getGrievanceStatus() == 0) {
+                                submittedGrievances.add(grievanceModel);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
             }
-        } else
-            showEmptyListLayout(true);
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                submittedGrievances=new ArrayList<>();
+                Log.d(TAG, "ChildChanged: ");
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
+                        if (grievanceModel != null && grievanceModel.isSubmissionSuccess()) {
+                            if (grievanceModel.getGrievanceStatus() == 0) {
+                                submittedGrievances.add(grievanceModel);
+                            }
+                        }
+                    }
+                    adapter = new RecyclerViewAdapterGrievanceUpdate(submittedGrievances, (MainActivity) getActivity(), false);
+                    recyclerView.setAdapter(adapter);
+                }
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                if (submittedGrievances.size() > 0) {
+                    showEmptyListLayout(false);
+                } else
+                    showEmptyListLayout(true);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        FireBaseHelper.getInstance(getActivity()).getDataFromFirebase(childEventListener,
+                FireBaseHelper.VERSIONED,
+                FireBaseHelper.ROOT_GRIEVANCES,
+                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
+        FireBaseHelper.getInstance(getActivity()).getDataFromFirebase(valueEventListener,
+                FireBaseHelper.VERSIONED,
+                false,
+                FireBaseHelper.ROOT_GRIEVANCES,
+                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
     }
 
     @Override
@@ -81,11 +162,9 @@ public class TabSubmitted extends Fragment {
         switch (requestCode) {
             case RecyclerViewAdapterGrievanceUpdate.REQUEST_UPDATE: {
                 if (resultCode == Activity.RESULT_OK) {
-                    if (GrievanceDataProvider.getInstance().selectedGrievance.getGrievanceStatus() == 0) {
-                        GrievanceDataProvider.getInstance().updateLists();
-                    }
                     init();
                 }
+
             }
         }
     }

@@ -40,7 +40,6 @@ import com.mycca.Models.SelectedImageModel;
 import com.mycca.Models.StatusModel;
 import com.mycca.Notification.Constants;
 import com.mycca.Notification.FirebaseNotificationHelper;
-import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tools.ConnectionUtility;
 import com.mycca.Tools.DataSubmissionAndMail;
@@ -86,7 +85,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
-        grievanceModel = GrievanceDataProvider.getInstance().selectedGrievance;
+        grievanceModel = (GrievanceModel) Helper.getInstance().getObjectFromJson(getIntent().getStringExtra("Model"), GrievanceModel.class);
         bindViews();
         init();
         setLayoutData();
@@ -308,7 +307,6 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void sendFinalMail() {
 
         progressDialog.setMessage("Almost Done...");
-
         String url = Helper.getInstance().getAPIUrl() + "sendUpdateGrievanceEmail.php";
         Map<String, String> params = new HashMap<>();
         String pensionerCode = grievanceModel.getPensionerIdentifier();
@@ -381,7 +379,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void getTokenAndSendNotification(final String fcmKey) {
         dbRef.child(FireBaseHelper.ROOT_TOKEN)
-                .child(GrievanceDataProvider.getInstance().selectedGrievance.getUid())
+                .child(grievanceModel.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -406,11 +404,11 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 .receiverFirebaseToken(token)
                 .send();
 
-        String tag = "Notify";
+       /* String tag = "Notify";
         Map<String, String> params = new HashMap<>();
         Map<String, String> header = new HashMap<>();
 
-       /* header.put("Content-Type", "application/json");
+        header.put("Content-Type", "application/json");
         header.put("Authorization", "key=" + fcmKey);
         params.put(KEY_TO, token);
         params.put(KEY_DATA, getJsonBody());
@@ -422,14 +420,14 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private String getJsonBody() {
 
-        String newStatus = Helper.getInstance().getStatusString(GrievanceDataProvider.getInstance().selectedGrievance.getGrievanceStatus());
-        String type = Helper.getInstance().getGrievanceString(GrievanceDataProvider.getInstance().selectedGrievance.getGrievanceType());
+        String newStatus = Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus());
+        String type = Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType());
         JSONObject jsonObjectData = new JSONObject();
         try {
             jsonObjectData.put(Constants.KEY_TITLE, "Grievance status updated");
             jsonObjectData.put(Constants.KEY_TEXT, "Your grievance for " + type + " is " + newStatus);
             jsonObjectData.put("pensionerCode", textViewPensionerCode.getText());
-            jsonObjectData.put("grievanceType", GrievanceDataProvider.getInstance().selectedGrievance.getGrievanceType());
+            jsonObjectData.put("grievanceType", grievanceModel.getGrievanceType());
         } catch (JSONException e) {
             e.printStackTrace();
         }

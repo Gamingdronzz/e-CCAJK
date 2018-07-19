@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.mycca.Activity.UpdateGrievanceActivity;
 import com.mycca.Models.GrievanceModel;
-import com.mycca.Providers.GrievanceDataProvider;
 import com.mycca.R;
 import com.mycca.Tools.Helper;
 
@@ -72,7 +71,10 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
     @Override
     public int getItemCount() {
-        return grievanceModelArrayList.size();
+        if (grievanceModelArrayList != null)
+            return grievanceModelArrayList.size();
+        else
+            return 0;
     }
 
     static class GrievanceUpdateViewHolder extends RecyclerView.ViewHolder {
@@ -145,7 +147,9 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         public void onClick(View v) {
             GrievanceModel grievanceModel = grievanceModelArrayList.get(position);
             Intent intent = new Intent(appCompatActivity, UpdateGrievanceActivity.class);
-            GrievanceDataProvider.getInstance().selectedGrievance = grievanceModel;
+            String json=Helper.getInstance().getJsonFromObject(grievanceModel);
+            intent.putExtra("Model",json);
+            //GrievanceDataProvider.getInstance().selectedGrievance = grievanceModel;
             appCompatActivity.startActivityForResult(intent, REQUEST_UPDATE);
         }
     }
