@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Cache.Entry;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -32,18 +31,11 @@ public class VolleyHelper {
     private Context context;
     private final String TAG = "Volley";
 
-    // notification related keys
-    public static final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
-    public static final String KEY_TO = "to";
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_TEXT = "text";
-    public static final String KEY_DATA = "data";
-
     private VolleyResponse delegate;
     private ErrorListener errorListener = new VolleyErrorListener();
-    private Listener jsonArrayResponseListener = new JsonArrayResponseListener();
-    private Listener jsonObjectResponseListener = new JsonObjectResponseListener();
-    private Listener stringResponseListener = new StringResponseListener();
+    private Listener<JSONArray> jsonArrayResponseListener = new JsonArrayResponseListener();
+    private Listener<JSONObject> jsonObjectResponseListener = new JsonObjectResponseListener();
+    private Listener<String> stringResponseListener = new StringResponseListener();
 
     public interface VolleyResponse {
         void onError(VolleyError volleyError);
@@ -81,17 +73,9 @@ public class VolleyHelper {
         }
 
         public void onErrorResponse(VolleyError error) {
-            if(error !=null) {
+            if (error != null) {
                 VolleyHelper.this.delegate.onError(error);
-                /*if (error.getClass() == TimeoutError.class) {
-                }
-                if (error.getClass() == ServerError.class) {
-                }
-                if (error.getClass() != NetworkError.class) {
-                }*/
-            }
-            else
-            {
+            } else {
                 Log.d(TAG, "onErrorResponse: Null Error Object ");
             }
         }
@@ -128,10 +112,11 @@ public class VolleyHelper {
     }
 
     public void makeStringRequest(String url, String TAG, Map<String, String> params) {
-        Log.d(TAG, "makeStringRequest: " + url);
+        Log.d("Volley", "makeStringRequest: " + url);
         final Map<String, String> map = params;
-        StringRequest strReq = new StringRequest(1, url, this.stringResponseListener, this.errorListener) {
-            protected Map<String, String> getParams() throws AuthFailureError {
+        StringRequest strReq = new StringRequest(Request.Method.POST, url, this.stringResponseListener, this.errorListener) {
+            protected Map<String, String> getParams() {
+                Log.d(TAG, "get Params: ");
                 return map;
             }
         };
@@ -140,31 +125,7 @@ public class VolleyHelper {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         setShouldCache(strReq, true);
-        AppController.getInstance().addToRequestQueue(strReq, TAG);
-    }
-
-    public void makeStringRequest(String url, String TAG, Map<String, String> params,Map<String, String> header) {
-        Log.d(TAG, "makeStringRequest: " + url);
-        final Map<String, String> map = params;
-        final Map<String,String> headerMap = header;
-        StringRequest strReq = new StringRequest(1, url, this.stringResponseListener, this.errorListener) {
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return map;
-            }
-            
-            
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Log.d(TAG, "getHeaders: ");
-                return headerMap;
-            }
-        };
-        strReq.setRetryPolicy(new DefaultRetryPolicy(
-                20000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        setShouldCache(strReq, true);
+        Log.d("Volley", "Adding to request Queue");
         AppController.getInstance().addToRequestQueue(strReq, TAG);
     }
 
@@ -175,10 +136,23 @@ public class VolleyHelper {
     public void makeJsonRequest(String url, String TAG, Map<String, String> params) {
         final Map<String, String> map = params;
         AppController.getInstance().addToRequestQueue(new JsonObjectRequest(1, url, null, this.jsonObjectResponseListener, this.errorListener) {
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams()  {
                 return map;
             }
         }, TAG);
+    }
+
+    public void makeJsonRequest(String url, String TAG, JSONObject notification_data, Map<String, String> header) {
+
+        Log.d("Volley", "makeStringRequest: " + url);
+        final Map<String, String> headerMap = header;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url, notification_data,  this.jsonObjectResponseListener, this.errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return headerMap;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(request, TAG);
     }
 
     public void makeJsonArrayRequest(String url, String TAG) {
@@ -188,7 +162,7 @@ public class VolleyHelper {
     public void makeJsonArrayRequest(String url, String TAG, Map<String, String> params) {
         final Map<String, String> map = params;
         AppController.getInstance().addToRequestQueue(new JsonArrayRequest(1, url, null, this.jsonArrayResponseListener, this.errorListener) {
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 return map;
             }
         }, TAG);

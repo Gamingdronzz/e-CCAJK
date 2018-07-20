@@ -34,7 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         {
             if (remoteMessage.getData().size() > 0) {
                 String title = remoteMessage.getData().get("title");
-                String message = remoteMessage.getData().get("text");
+                String message = remoteMessage.getData().get("body");
                 String pensionerCode = remoteMessage.getData().get("pensionerCode");
                 String grievanceType = remoteMessage.getData().get("grievanceType");
                 sendUserNotification(title,message ,pensionerCode, Long.parseLong(grievanceType));

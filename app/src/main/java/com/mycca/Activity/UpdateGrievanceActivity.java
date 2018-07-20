@@ -59,7 +59,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     boolean isUploadedToFireBaseDatabase = false, isUploadedToFireBase = false, isUploadedToServer = false;
     int counterUpload = 0;
     int counterServerImages = 0;
-    String TAG = "UpdateGrievance";
+    long status;
+    String TAG = "UpdateGrievance",message;
 
     TextView textViewPensionerCode, textViewRefNo, textViewGrievanceString, textViewDateOfApplication, textViewAttachedFileCount;
     Spinner statusSpinner;
@@ -225,9 +226,11 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void updateGrievanceDataOnFirebase() {
 
+        status=  ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode();
+        message=editTextMessage.getText().toString().trim();
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("grievanceStatus", (int) ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode());
-        hashMap.put("message", editTextMessage.getText().toString().trim());
+        hashMap.put("grievanceStatus", status);
+        hashMap.put("message", message);
 
         Task<Void> task = FireBaseHelper.getInstance(this).updateData(String.valueOf(grievanceModel.getGrievanceType()),
                 hashMap,
@@ -292,7 +295,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             try {
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                         fireBaseImageURLs,
-                        grievanceModel.getPensionerIdentifier() + "-" + grievanceModel.getGrievanceType(),
+                        grievanceModel.getPensionerIdentifier(),
+                        DataSubmissionAndMail.UPDATE,
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -312,11 +316,12 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         String pensionerCode = grievanceModel.getPensionerIdentifier();
 
         params.put("pensionerCode", pensionerCode);
+        params.put("folder", DataSubmissionAndMail.UPDATE);
         params.put("pensionerEmail", grievanceModel.getEmail());
-        params.put("status", String.valueOf(grievanceModel.getGrievanceStatus()));
+        params.put("status", Helper.getInstance().getStatusString(status));
         params.put("grievanceType", Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
         params.put("grievanceSubType", Helper.getInstance().getGrievanceString((grievanceModel.getGrievanceType())));
-        params.put("grievanceDetails", grievanceModel.getMessage());
+        params.put("message", message);
         params.put("fileCount", attachmentModelArrayList.size() + "");
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
@@ -335,8 +340,8 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void showSuccessDialog() {
 
-        grievanceModel.setGrievanceStatus((int) ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode());
-        grievanceModel.setMessage(editTextMessage.getText().toString().trim());
+        grievanceModel.setGrievanceStatus(status);
+        grievanceModel.setMessage(message);
         grievanceModel.setExpanded(true);
         isUploadedToServer = isUploadedToFireBase = isUploadedToFireBaseDatabase = false;
 
@@ -404,18 +409,20 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 .receiverFirebaseToken(token)
                 .send();
 
-       /* String tag = "Notify";
-        Map<String, String> params = new HashMap<>();
-        Map<String, String> header = new HashMap<>();
-
-        header.put("Content-Type", "application/json");
-        header.put("Authorization", "key=" + fcmKey);
-        params.put(KEY_TO, token);
-        params.put(KEY_DATA, getJsonBody());
-
-        if (volleyHelper.countRequestsInFlight(tag) == 0)
-            volleyHelper.makeStringRequest(VolleyHelper.FCM_URL, tag, params, header);*/
-
+        //        String tag = "Notify";
+//        Map<String, String> header = new HashMap<>();
+//
+//        header.put("Content-Type", "application/json");
+//        header.put("Authorization", "Key=" + fcmKey);
+//        JSONObject params = new JSONObject();
+//        try {
+//            params.put("data", getJsonBody());
+//            params.put("to", token);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        if (volleyHelper.countRequestsInFlight(tag) == 0)
+//            volleyHelper.makeJsonRequest(Constants.FCM_URL, tag, params, header);
     }
 
     private String getJsonBody() {
@@ -425,7 +432,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         JSONObject jsonObjectData = new JSONObject();
         try {
             jsonObjectData.put(Constants.KEY_TITLE, "Grievance status updated");
-            jsonObjectData.put(Constants.KEY_TEXT, "Your grievance for " + type + " is " + newStatus);
+            jsonObjectData.put("body", "Your grievance for " + type + " is " + newStatus);
             jsonObjectData.put("pensionerCode", textViewPensionerCode.getText());
             jsonObjectData.put("grievanceType", grievanceModel.getGrievanceType());
         } catch (JSONException e) {
@@ -513,7 +520,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     @Override
     public void onError(VolleyError volleyError) {
-        Log.d(TAG, "onError: " + volleyError);
+        volleyError.printStackTrace();
         onFailure("Grievance updation  failed. Try again");
     }
 
@@ -533,7 +540,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 } else {
                     onFailure("Files could not be uploaded\nTry Again");
                 }
-            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+            } else if (jsonObject.getString("action").equals("Sending Mail to user")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     showSuccessDialog();
                 } else {

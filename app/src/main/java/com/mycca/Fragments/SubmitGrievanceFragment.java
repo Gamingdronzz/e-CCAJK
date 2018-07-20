@@ -450,7 +450,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void uploadDataToFirebase() {
         progressDialog.setMessage("Preparing your grievance for submission");
-        
+
         Transaction.Handler handler = new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -479,7 +479,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             }
 
         };
-        FireBaseHelper.getInstance(mainActivity).getReferenceNumber(handler,state.getCircleCode());
+        FireBaseHelper.getInstance(mainActivity).getReferenceNumber(handler, state.getCircleCode());
     }
 
     private void uploadData() {
@@ -571,10 +571,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                         firebaseImageURLs,
                         code,
+                        DataSubmissionAndMail.SUBMIT,
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
-                Helper.getInstance().showErrorDialog("Some Error Occured", "Error", mainActivity);
+                Helper.getInstance().showErrorDialog("Some Error Occurred", "Error", mainActivity);
             }
         } else {
             isUploadedToServer = true;
@@ -591,6 +592,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         params.put("pensionerCode", pensionerCode);
         params.put("personType", hint);
+        params.put("folder", DataSubmissionAndMail.SUBMIT);
         params.put("pensionerMobileNumber", inputMobile.getText().toString());
         params.put("pensionerEmail", inputEmail.getText().toString());
         params.put("grievanceType", type);

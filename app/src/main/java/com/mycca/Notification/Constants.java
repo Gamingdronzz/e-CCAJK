@@ -10,7 +10,7 @@ public class Constants {
     static final String CONTENT_TYPE = "Content-Type";
     static final String APPLICATION_JSON = "application/json";
     static final String AUTHORIZATION = "Authorization";
-    static final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+    public static final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
     // json related keys
     static final String KEY_TO = "to";
     public static final String KEY_TITLE = "title";

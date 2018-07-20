@@ -414,6 +414,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                         firebaseImageURLs,
                         editTextLocationName.getText().toString(),
+                        DataSubmissionAndMail.SUBMIT,
                         volleyHelper);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -435,6 +436,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         params.put("locationName", editTextLocationName.getText().toString());
         params.put("staffID", staffModel.getId());
+        params.put("folder", DataSubmissionAndMail.SUBMIT);
         params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
         params.put("fileCount", selectedImageModelArrayList.size() + "");
 

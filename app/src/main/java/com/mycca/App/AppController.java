@@ -3,6 +3,8 @@ package com.mycca.App;
 import android.app.Application;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -57,6 +59,7 @@ public class AppController extends Application {
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
+        Log.d(TAG, "added To Request Queue");
         if (TextUtils.isEmpty(tag)) {
             tag = TAG;
         }

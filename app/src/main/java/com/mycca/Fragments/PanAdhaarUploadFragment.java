@@ -412,6 +412,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                     firebaseImageURLs,
                     pensionerCode,
+                    DataSubmissionAndMail.SUBMIT,
                     volleyHelper);
         } catch (Exception e) {
             e.printStackTrace();
@@ -426,6 +427,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         Map<String, String> params = new HashMap<>();
 
         params.put("pensionerCode", pensionerCode);
+        params.put("folder", DataSubmissionAndMail.SUBMIT);
         params.put("personType", hint);
         params.put("updateType", root);
         params.put("fieldName", textInputNumber.getHint().toString());

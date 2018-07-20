@@ -101,21 +101,28 @@ public class TabSubmitted extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                submittedGrievances = new ArrayList<>();
-                Log.d(TAG, "ChildChanged: ");
+
+                ArrayList<GrievanceModel> temp=new ArrayList<>();
+                Log.d(TAG, "\nonChildChanged: Arraylist: " + submittedGrievances);
                 if (dataSnapshot.getValue() != null) {
+                    String code = dataSnapshot.getKey();
+                    for (GrievanceModel model : submittedGrievances) {
+                        if (model.getPensionerIdentifier().equals(code))
+                            temp.add(model);
+                    }
+                    submittedGrievances.removeAll(temp);
+                    Log.d(TAG, "\nonChildChanged: Arraylist after removal " + submittedGrievances);
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
-                        if (grievanceModel != null && grievanceModel.isSubmissionSuccess()) {
-                            if (grievanceModel.getGrievanceStatus() == 0) {
+                        if (grievanceModel != null) {
+                            if (grievanceModel.getGrievanceStatus() == 0)
                                 submittedGrievances.add(grievanceModel);
-                            }
                         }
                     }
+                    Log.d(TAG, "\nonChildChanged: Arraylist after addition " + submittedGrievances);
                     adapter = new RecyclerViewAdapterGrievanceUpdate(submittedGrievances, (MainActivity) getActivity(), false);
                     recyclerView.setAdapter(adapter);
                 }
-
             }
 
             @Override
