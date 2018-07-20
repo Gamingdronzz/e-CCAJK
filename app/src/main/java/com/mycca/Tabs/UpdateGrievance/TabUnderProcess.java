@@ -54,9 +54,11 @@ public class TabUnderProcess extends Fragment {
 
     private void showEmptyListLayout(boolean show) {
         if (show) {
-            relativeLayoutEmptyList.setVisibility(View.VISIBLE);
-            textViewNoListInfo.setText(R.string.no_grievances_processing);
             recyclerView.setVisibility(View.GONE);
+            relativeLayoutEmptyList.setVisibility(View.VISIBLE);
+            if (getActivity() != null && isAdded())
+                textViewNoListInfo.setText(R.string.no_grievances_processing);
+
         } else {
             relativeLayoutEmptyList.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -68,7 +70,7 @@ public class TabUnderProcess extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view_grievances);
         relativeLayoutEmptyList = view.findViewById(R.id.layout_empty_list);
         textViewNoListInfo = view.findViewById(R.id.textview_info_tab_grievances);
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching currently submitted Grievances\nPlease Wait..");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching under process Grievances\nPlease Wait..");
     }
 
     private void init() {

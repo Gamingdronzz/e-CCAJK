@@ -54,9 +54,10 @@ public class TabSubmitted extends Fragment {
 
     private void showEmptyListLayout(boolean show) {
         if (show) {
-            relativeLayoutEmptyList.setVisibility(View.VISIBLE);
-            textViewNoListInfo.setText(getResources().getString(R.string.no_grievances_submitted));
             recyclerView.setVisibility(View.GONE);
+            relativeLayoutEmptyList.setVisibility(View.VISIBLE);
+            if (getActivity() != null && isAdded())
+                textViewNoListInfo.setText(R.string.no_grievances_submitted);
         } else {
             relativeLayoutEmptyList.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -100,7 +101,7 @@ public class TabSubmitted extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                submittedGrievances=new ArrayList<>();
+                submittedGrievances = new ArrayList<>();
                 Log.d(TAG, "ChildChanged: ");
                 if (dataSnapshot.getValue() != null) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -172,7 +173,12 @@ public class TabSubmitted extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: back to tab : Activity= " + getActivity());
     }
 
     @SuppressLint("MissingPermission")

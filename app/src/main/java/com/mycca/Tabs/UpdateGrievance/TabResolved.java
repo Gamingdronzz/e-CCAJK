@@ -55,8 +55,9 @@ public class TabResolved extends Fragment {
     private void showEmptyListLayout(boolean show) {
         if (show) {
             relativeLayoutEmptyList.setVisibility(View.VISIBLE);
-            textViewNoListInfo.setText(getResources().getString(R.string.no_grievances_resolved));
             recyclerView.setVisibility(View.GONE);
+            if(getActivity()!=null && isAdded())
+                textViewNoListInfo.setText(R.string.no_grievances_resolved);
         } else {
             relativeLayoutEmptyList.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -67,14 +68,14 @@ public class TabResolved extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view_grievances);
         relativeLayoutEmptyList = view.findViewById(R.id.layout_empty_list);
         textViewNoListInfo = view.findViewById(R.id.textview_info_tab_grievances);
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching currently submitted Grievances\nPlease Wait..");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Fetching resolved Grievances\nPlease Wait..");
     }
 
     private void init() {
         progressDialog.show();
         resolvedGrievances = new ArrayList<>();
         Log.d(TAG, "init: " + resolvedGrievances);
-        adapter = new RecyclerViewAdapterGrievanceUpdate(resolvedGrievances, (MainActivity) getActivity(), false);
+        adapter = new RecyclerViewAdapterGrievanceUpdate(resolvedGrievances, (MainActivity) getActivity(), true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         getData();
@@ -100,7 +101,7 @@ public class TabResolved extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                resolvedGrievances=new ArrayList<>();
+                resolvedGrievances = new ArrayList<>();
                 Log.d(TAG, "ChildChanged: ");
                 if (dataSnapshot.getValue() != null) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -111,7 +112,7 @@ public class TabResolved extends Fragment {
                             }
                         }
                     }
-                    adapter = new RecyclerViewAdapterGrievanceUpdate(resolvedGrievances, (MainActivity) getActivity(), false);
+                    adapter = new RecyclerViewAdapterGrievanceUpdate(resolvedGrievances, (MainActivity) getActivity(), true);
                     recyclerView.setAdapter(adapter);
                 }
             }
@@ -170,7 +171,6 @@ public class TabResolved extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
     }
 
     @SuppressLint("MissingPermission")
