@@ -18,6 +18,7 @@
         android:name=".App.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_cca_new"
+        android:largeHeap="true"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_cca_new_round"
         android:supportsRtl="true"
@@ -65,9 +66,6 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".Unused.PanAdhaarHistoryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activity.AboutUsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.TrackGrievanceResultActivity"

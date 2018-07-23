@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_clear_form_data"
+        android:iconTint="@color/colorWhite"
         android:title="@string/clear"
         app:showAsAction="always"
         android:tooltipText="@string/action_clear_all"
