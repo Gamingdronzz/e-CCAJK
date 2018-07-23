@@ -290,17 +290,22 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
     private void doSubmission() {
+        if (editTextLocationName.getText().toString().trim().isEmpty()) {
+            editTextLocationName.setError("Location Name Required");
+            return;
+        } else if (!isCurrentLocationFound) {
+            Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
+            return;
+        } else if (selectedImageModelArrayList.size() == 0) {
+            Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
                 Log.d(TAG, "version checked =" + Helper.versionChecked);
-                if (editTextLocationName.getText().toString().trim().isEmpty())
-                    editTextLocationName.setError("Location Name Required");
-                else if (!isCurrentLocationFound)
-                    Toast.makeText(getContext(), "Please set current location coordinates first", Toast.LENGTH_LONG).show();
-                else if (selectedImageModelArrayList.size() == 0)
-                    Toast.makeText(getContext(), "No Images Added", Toast.LENGTH_LONG).show();
-                else if (!Helper.versionChecked) {
+                if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -319,10 +324,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
                 Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before submitting Inspection", "Inspection", mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.show();
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -345,9 +353,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         String locName = editTextLocationName.getText().toString().trim();
         final String key = locName.replaceAll("\\s", "-") + "-" +
                 Helper.getInstance().formatDate(date, "dd-MM-yy");
-
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.show();
 
         staffModel = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());

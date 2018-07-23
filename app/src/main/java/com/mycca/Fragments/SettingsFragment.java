@@ -94,7 +94,6 @@ public class SettingsFragment extends Fragment {
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);
-            activity.finish();
         });
 
         layoutSignInOut.setOnClickListener(v -> {
@@ -124,9 +123,7 @@ public class SettingsFragment extends Fragment {
             layoutChangePwd.setVisibility(View.VISIBLE);
         else
             layoutChangePwd.setVisibility(View.GONE);
-        layoutChangePwd.setOnClickListener(v -> {
-            Helper.getInstance().showChangePasswordWindow(activity, parentLayout);
-        });
+        layoutChangePwd.setOnClickListener(v -> Helper.getInstance().showChangePasswordWindow(activity, parentLayout));
     }
 
     public void manageSignOut() {
