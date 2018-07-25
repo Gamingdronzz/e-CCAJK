@@ -596,6 +596,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         params.put("pensionerMobileNumber", inputMobile.getText().toString());
         params.put("pensionerEmail", inputEmail.getText().toString());
         params.put("grievanceType", type);
+        params.put("refNo",refNo);
         params.put("grievanceSubType", Helper.getInstance().getGrievanceString(((GrievanceType) spinnerInputType.getSelectedItem()).getId()));
         params.put("grievanceDetails", inputDetails.getText().toString());
         params.put("grievanceSubmittedBy", spinnerInputSubmittedBy.getSelectedItem().toString());

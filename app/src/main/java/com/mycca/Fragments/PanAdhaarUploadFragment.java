@@ -462,7 +462,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     @Override
     public void onError(VolleyError volleyError) {
-
+        progressDialog.dismiss();
+        Helper.getInstance().showErrorDialog("Some Error Occurred.", "Please try Again", mainActivity);
     }
 
     @Override

@@ -319,6 +319,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         params.put("folder", DataSubmissionAndMail.UPDATE);
         params.put("pensionerEmail", grievanceModel.getEmail());
         params.put("status", Helper.getInstance().getStatusString(status));
+        params.put("refNo",grievanceModel.getReferenceNo());
         params.put("grievanceType", Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
         params.put("grievanceSubType", Helper.getInstance().getGrievanceString((grievanceModel.getGrievanceType())));
         params.put("message", message);
