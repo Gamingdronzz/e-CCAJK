@@ -1,6 +1,7 @@
 package com.mycca.Fragments;
 
 
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -122,25 +123,28 @@ public class AddNewsFragment extends Fragment {
 
     public void addNewsToFireBase() {
         Task<Void> task;
+
         if (json == null) {
             newsModel = new NewsModel(
+                    new Date(),
                     new Date(),
                     textTitle.getText().toString(),
                     textDescription.getText().toString(),
                     Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState(),
-                    null
-            );
+                    null,
+                    Preferences.getInstance().getStaffPref(getContext(),Preferences.PREF_STAFF_DATA).getId(),
+                    Preferences.getInstance().getStaffPref(getContext(),Preferences.PREF_STAFF_DATA).getId());
             task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                     newsModel,
                     FireBaseHelper.ROOT_NEWS);
         } else {
             newsModel.setHeadline(textTitle.getText().toString());
             newsModel.setDescription(textDescription.getText().toString());
-
             HashMap<String, Object> result = new HashMap<>();
-            result.put("headline", newsModel.getHeadline());
-            result.put("description", newsModel.getDescription());
-
+            result.put("headline", newsModel.getHeadline().trim());
+            result.put("description", newsModel.getDescription().trim());
+            result.put("updatedBy",Preferences.getInstance().getStaffPref(getContext(),Preferences.PREF_STAFF_DATA).getId());
+            result.put("dateUpdated",new Date());
             task = FireBaseHelper.getInstance(getContext()).updateData(newsModel.getKey(), result, FireBaseHelper.ROOT_NEWS);
 
         }

@@ -55,8 +55,8 @@ public class LatestNewsFragment extends Fragment {
 
         recyclerView.setAdapter(adapterNews);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
+        //linearLayoutManager.setReverseLayout(true);
+        //linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         getNews();
     }
@@ -70,8 +70,8 @@ public class LatestNewsFragment extends Fragment {
                         if (dataSnapshot.getValue() != null) {
                             try {
                                 NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                                newsModelArrayList.add(newsModel);
-                                adapterNews.notifyDataSetChanged();
+                                newsModelArrayList.add(0,newsModel);
+                                adapterNews.notifyItemInserted(0);
                             } catch (DatabaseException dbe) {
                                 dbe.printStackTrace();
                             }

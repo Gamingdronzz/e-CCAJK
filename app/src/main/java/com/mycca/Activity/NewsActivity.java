@@ -38,7 +38,7 @@ public class NewsActivity extends AppCompatActivity {
             headline.setText(newsModel.getHeadline());
             description.setText(newsModel.getDescription());
             description.setMovementMethod(new ScrollingMovementMethod());
-            date.setText(Helper.getInstance().formatDate(newsModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
+            date.setText(Helper.getInstance().formatDate(newsModel.getDateAdded(), Helper.DateFormat.DD_MM_YYYY));
 
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();

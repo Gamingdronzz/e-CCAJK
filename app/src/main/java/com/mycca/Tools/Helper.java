@@ -128,7 +128,7 @@ public class Helper {
     }
 
     public String getAPIUrl() {
-        boolean debugMode = true;
+        boolean debugMode = false;
         if (debugMode) {
             return "http://jknccdirectorate.com/api/cca/debug/v1/";
         } else {

@@ -149,8 +149,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         recyclerView.setAdapter(adapterNews);
         linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
+//        linearLayoutManager.setStackFromEnd(true);
+//        linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 //
 //        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
@@ -180,8 +180,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                            newsModelArrayList.add(newsModel);
-                            adapterNews.notifyDataSetChanged();
+                            newsModelArrayList.add(0,newsModel);
+                            adapterNews.notifyItemInserted(0);
+                            Log.d(TAG, "onChildAdded: " + newsModel.getHeadline());
                             recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
                         }
                     }
@@ -193,11 +194,14 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                             for (int i = 0; i < newsModelArrayList.size(); i++) {
                                 if (newsModel != null && newsModelArrayList.get(i).getKey().equals(newsModel.getKey())) {
                                     newsModelArrayList.remove(i);
+                                    adapterNews.notifyItemRemoved(i);
                                     newsModelArrayList.add(i, newsModel);
+                                    adapterNews.notifyItemInserted(i);
+                                    Log.d(TAG, "onChildChanged: "+ newsModel.getHeadline() + " pos - " + i);
                                     break;
                                 }
                             }
-                            adapterNews.notifyDataSetChanged();
+
                         }
                     }
 

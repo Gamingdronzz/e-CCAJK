@@ -52,7 +52,7 @@
             android:fontFamily="serif"
             android:paddingEnd="@dimen/padding_xxxlarge"
             android:paddingStart="@dimen/padding_large"
-            android:text="@string/date"
+            android:text="@string/dateAdded"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
             android:textStyle="italic" />
