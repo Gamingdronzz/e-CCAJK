@@ -161,24 +161,26 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
 
         @Override
         public void onClick(View v) {
-            Helper.getInstance().showFancyAlertDialog(context, "Delete this News?", "",
-                    "Delete", () -> {
-                        NewsModel newsModel = newsModelArrayList.get(position);
-                        DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
-                                .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
-                        dbref.removeValue().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
-                                newsModelArrayList.remove(position);
-                                notifyDataSetChanged();
-                            }
-                        });
-                    },
-                    "Cancel", () -> {
+            try {
+                Helper.getInstance().showFancyAlertDialog(context, "Delete this News?", "",
+                        "Delete", () -> {
+                            NewsModel newsModel = newsModelArrayList.get(position);
+                            DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
+                                    .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
+                            dbref.removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        },
+                        "Cancel", () -> {
 
-                    },
-                    FancyAlertDialogType.WARNING);
+                        },
+                        FancyAlertDialogType.WARNING);
 
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
