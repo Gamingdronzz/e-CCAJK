@@ -80,12 +80,33 @@ public class LatestNewsFragment extends Fragment {
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        if (dataSnapshot.getValue() != null) {
+                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                            for (int i = 0; i < newsModelArrayList.size(); i++) {
+                                if (newsModel != null && newsModelArrayList.get(i).getKey().equals(newsModel.getKey())) {
+                                    newsModelArrayList.remove(i);
+                                    adapterNews.notifyItemRemoved(i);
+                                    newsModelArrayList.add(i, newsModel);
+                                    adapterNews.notifyItemInserted(i);
+                                    break;
+                                }
+                            }
 
+                        }
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                        if (dataSnapshot.getValue() != null) {
+                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                            for (NewsModel nm : newsModelArrayList) {
+                                if (newsModel != null && nm.getKey().equals(newsModel.getKey())) {
+                                    newsModelArrayList.remove(nm);
+                                    break;
+                                }
+                            }
+                            adapterNews.notifyDataSetChanged();
+                        }
                     }
 
                     @Override
