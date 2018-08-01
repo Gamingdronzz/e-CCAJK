@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.mycca">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App.AppController"
@@ -101,6 +103,11 @@
         </provider>
 
         <activity android:name=".Activity.IntroActivity" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            tools:replace="android:screenOrientation" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -108,7 +115,8 @@
 
         <service
             android:name=".FirebaseService.MyIntentService"
-            android:exported="false"/>
+            android:exported="false" />
+
     </application>
 
 </manifest>

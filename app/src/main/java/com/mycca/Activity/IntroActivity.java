@@ -11,6 +11,7 @@ import com.mycca.Tools.Preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class IntroActivity extends OnboarderActivity {
 
     boolean fromSettings = false;

@@ -51,7 +51,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-   <string name="title_activity_home">Home</string>
+    <string name="title_activity_home">Home</string>
     <string name="contact_us_location">Click to Open Location</string>
     <string name="add_image">Add Image</string>
     <string name="remove">Remove All</string>
@@ -163,7 +163,25 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="about">About</string>
     <string name="change_language">Change Language</string>
     <string name="choose_language">Choose Language</string>
- <string name="english">English</string>
- <string name="hindi">Hindi</string>
+    <string name="english">English</string>
+    <string name="hindi">Hindi</string>
+
+    <!-- Barcode -->
+    <string name="label_name">Name</string>
+    <string name="label_uid">UID</string>
+    <string name="label_gender">GENDER</string>
+    <string name="label_yob">YEAR OF BIRTH</string>
+    <string name="label_co">CARE OF</string>
+    <string name="label_vtc">VILLAGE TEHSIL</string>
+    <string name="label_po">POST OFFICE</string>
+    <string name="label_dist">DISTRICT</string>
+    <string name="label_state">STATE</string>
+    <string name="label_pc">POSTAL CODE</string>
+    <string name="label_save">SAVE</string>
+    <string name="label_cancel">CANCEL</string>
+    <string name="no_saved_card">There Is no Saved Aadhar Card</string>
+    <string name="label_home">HOME</string>
+    <string name="label_delete">DELETE</string>
+
 
 </resources>

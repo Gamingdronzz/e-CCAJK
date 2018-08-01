@@ -39,6 +39,16 @@
 
     <color name="colorOverlayLight">#40000000</color>
     <color name="colorOverlayDark">#AA000000</color>
+
+    <!-- Barcode scanner -->
+    <color name="top_bar_background">#EBF1DE</color>
+    <color name="top_bar_text_color">#D52736</color>
+    <color name="app_background">#EEEEEE</color>
+    <color name="home_list_background_color">#DCE1E3</color>
+    <color name="scanned_data_text_color">#D52736</color>
+    <color name="scanned_data_item_border">#828790</color>
+    <color name="action_save_background">#FAB50F</color>
+    <color name="action_cancel_background">#D62736</color>
 </resources>
 
 

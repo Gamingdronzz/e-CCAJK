@@ -79,6 +79,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     implementation 'br.com.simplepass:loading-button-android:1.14.0'
+
+    //Barcode Scanner
+    implementation 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
+    implementation 'com.journeyapps:zxing-android-integration:2.0.1@aar'
+    implementation 'com.google.zxing:core:3.2.0'
     //Fabric Crashlytics
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
@@ -86,4 +91,3 @@ dependencies {
 
 }
 apply plugin: 'com.google.gms.google-services'
-
