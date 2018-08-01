@@ -164,7 +164,7 @@ public class SettingsFragment extends Fragment {
                         }
                     }
                 });
-        builder.create();
+        builder.show();
     }
 
     public void manageSignOut() {
