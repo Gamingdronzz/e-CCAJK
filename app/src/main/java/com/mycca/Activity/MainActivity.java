@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
-        showFragment("Home", new HomeFragment(), null);
+        showFragment(getResources().getString(R.string.title_activity_home), new HomeFragment(), null);
     }
 
     @Override

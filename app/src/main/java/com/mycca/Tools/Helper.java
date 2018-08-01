@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -128,7 +129,7 @@ public class Helper {
     }
 
     public String getAPIUrl() {
-        boolean debugMode = false;
+        boolean debugMode = true;
         if (debugMode) {
             return "http://jknccdirectorate.com/api/cca/debug/v1/";
         } else {
@@ -238,8 +239,12 @@ public class Helper {
     }
 
     public String formatDate(Date date, String format) {
-        SimpleDateFormat dt = new SimpleDateFormat(format, Locale.ENGLISH);
+        SimpleDateFormat dt = new SimpleDateFormat(format, Locale.getDefault());
         return dt.format(date);
+    }
+
+    public class DateFormat {
+        public static final String DD_MM_YYYY = "dd MMM, yyyy";
     }
 
     public InputFilter[] limitInputLength(int length) {
@@ -302,6 +307,20 @@ public class Helper {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
         return progressDialog;
+    }
+
+    public void setLocale(Context context){
+        Locale locale;
+        String lang=Preferences.getInstance().getStringPref(context,Preferences.PREF_LANGUAGE);
+        if(lang!=null)
+            locale = new Locale(lang);
+        else
+            locale = new Locale("en");
+        Locale.setDefault(locale);
+        Resources resources = context.getApplicationContext().getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
     public boolean checkInput(String input) {
@@ -417,10 +436,6 @@ public class Helper {
                 null,
                 null,
                 FancyAlertDialogType.ERROR);
-    }
-
-    public class DateFormat {
-        public static final String DD_MM_YYYY = "dd MMM, yyyy";
     }
 
     public void showTrackWindow(final Activity context, View parent) {

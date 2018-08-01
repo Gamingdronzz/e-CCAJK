@@ -56,7 +56,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
             holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
             holder.textViewPensionerMobile.setText(grievanceModel.getMobile());
-            holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
+            holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
             holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
             if (grievanceModel.isExpanded()) {

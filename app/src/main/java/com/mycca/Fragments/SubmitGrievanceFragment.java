@@ -564,7 +564,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         counterServerImages = 0;
         progressDialog.setMessage("Processing..");
         int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
 
         if (totalFilesToAttach != 0) {
             try {
@@ -586,7 +586,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void sendFinalMail() {
 
         progressDialog.setMessage("Almost Done..");
-        String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php";
+        String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php/";
         Map<String, String> params = new HashMap<>();
         String pensionerCode = inputPensionerCode.getText().toString();
 
@@ -710,7 +710,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
         progressDialog.dismiss();
-        Helper.getInstance().showErrorDialog("Some Error Occurred Please be patient we are getting things fixed", "Submission Error", mainActivity);
+        Helper.getInstance().showErrorDialog("Some Error Occurred.Please be patient, we are getting things fixed", "Submission Error", mainActivity);
     }
 
 

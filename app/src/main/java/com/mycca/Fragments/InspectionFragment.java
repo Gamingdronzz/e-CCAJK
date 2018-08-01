@@ -192,44 +192,47 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     private void getLocationCoordinates() {
         mLastLocation = null;
         circularProgressButton.setProgress(1);
-        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-            @Override
-            public void OnConnectionAvailable() {
-
-
-                Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
-                if (task != null) {
-                    task.addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            Log.v(TAG, "Task is Successful\nRequesting Location Update");
-                            myLocationManager.requestLocationUpdates();
-
-                        } else {
-                            Log.v(TAG, "Task UnSuccessful");
-                            circularProgressButton.setProgress(0);
-                        }
-                    });
-                    task.addOnSuccessListener(mainActivity, locationSettingsResponse -> Log.v(TAG, "On Task Success"));
-
-                    task.addOnFailureListener(mainActivity, e -> {
-                        Log.v(TAG, "On Task Failed");
-                        circularProgressButton.setProgress(0);
-                        circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh").toString());
-                        if (e instanceof ResolvableApiException) {
-                            myLocationManager.onLocationAcccessRequestFailure(e);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void OnConnectionNotAvailable() {
-                circularProgressButton.setProgress(0);
-                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates", "Inspection", mainActivity);
-            }
-        });
-        connectionUtility.checkConnectionAvailability();
+        getLocation();
+//        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+//            @Override
+//            public void OnConnectionAvailable() {
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void OnConnectionNotAvailable() {
+//                circularProgressButton.setProgress(0);
+//                Helper.getInstance().showErrorDialog("No Internet Connection\nPlease turn on internet connection before getting location coordinates", "Inspection", mainActivity);
+//            }
+//        });
+//        connectionUtility.checkConnectionAvailability();
     }
+
+    private void getLocation(){Task<LocationSettingsResponse> task = myLocationManager.ManageLocation();
+        if (task != null) {
+            task.addOnCompleteListener(task1 -> {
+                if (task1.isSuccessful()) {
+                    Log.v(TAG, "Task is Successful\nRequesting Location Update");
+                    myLocationManager.requestLocationUpdates();
+
+                } else {
+                    Log.v(TAG, "Task UnSuccessful");
+                    circularProgressButton.setProgress(0);
+                }
+            });
+            task.addOnSuccessListener(mainActivity, locationSettingsResponse -> Log.v(TAG, "On Task Success"));
+
+            task.addOnFailureListener(mainActivity, e -> {
+                Log.v(TAG, "On Task Failed");
+                circularProgressButton.setProgress(0);
+                circularProgressButton.setIdleText(Html.fromHtml("Current Location Not Found!<br>Touch to Refresh").toString());
+                if (e instanceof ResolvableApiException) {
+                    myLocationManager.onLocationAcccessRequestFailure(e);
+                }
+            });
+        }}
 
     private void showCoordinates(final Location location) {
         isCurrentLocationFound = true;
@@ -352,7 +355,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         Date date = new Date();
         String locName = editTextLocationName.getText().toString().trim();
         final String key = locName.replaceAll("\\s", "-") + "-" +
-                Helper.getInstance().formatDate(date, "dd-MM-yy");
+                Helper.getInstance().formatDate(date, Helper.DateFormat.DD_MM_YYYY);
 
         staffModel = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
@@ -412,7 +415,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         counterServerImages = 0;
         progressDialog.setMessage("Processing..");
         int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
 
         if (totalFilesToAttach != 0) {
             try {
@@ -435,7 +438,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         progressDialog.setMessage("Almost Done..");
         String url;
 
-        url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php";
+        url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php/";
 
         Map<String, String> params = new HashMap<>();
 

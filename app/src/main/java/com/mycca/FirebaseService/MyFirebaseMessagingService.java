@@ -17,7 +17,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.R;
-import com.mycca.Tools.Preferences;
 
 import java.util.Random;
 
@@ -30,7 +29,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        if(Preferences.getInstance().getBooleanPref(getApplicationContext(),Preferences.PREF_RECEIVE_NOTIFICATIONS))
+        if (remoteMessage.getNotification() != null) {
+            Log.v(TAG, "title: " + remoteMessage.getNotification().getTitle());
+            Log.v(TAG, "body: " + remoteMessage.getNotification().getBody());
+        }
+        if (remoteMessage.getData() != null) {
+            Log.v(TAG, "data: " + remoteMessage.getData());
+        }
+        startService(new Intent(getBaseContext(), MyIntentService.class));
+
+        /*if(Preferences.getInstance().getBooleanPref(getApplicationContext(),Preferences.PREF_RECEIVE_NOTIFICATIONS))
         {
             if (remoteMessage.getData().size() > 0) {
                 String title = remoteMessage.getData().get("title");
@@ -39,10 +47,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String grievanceType = remoteMessage.getData().get("grievanceType");
                 sendUserNotification(title,message ,pensionerCode, Long.parseLong(grievanceType));
             }
-        }
+        }*/
     }
 
-    private void sendUserNotification(String title, String mess, String pensionerCode,long grievanceType) {
+    private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType) {
 
         Log.d(TAG, "sendUserNotification: ");
         int notifyID = new Random().nextInt();
@@ -50,8 +58,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationChannel mChannel;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         intent = new Intent(context, TrackGrievanceResultActivity.class);
-        intent.putExtra("Code",pensionerCode);
-        intent.putExtra("grievanceType",grievanceType);
+        intent.putExtra("Code", pensionerCode);
+        intent.putExtra("grievanceType", grievanceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

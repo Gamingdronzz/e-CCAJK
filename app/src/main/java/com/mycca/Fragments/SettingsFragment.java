@@ -1,6 +1,8 @@
 package com.mycca.Fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,12 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mycca.Activity.IntroActivity;
 import com.mycca.Activity.MainActivity;
+import com.mycca.Activity.SplashActivity;
 import com.mycca.Activity.StateSettingActivity;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.R;
@@ -27,7 +31,7 @@ public class SettingsFragment extends Fragment {
     FirebaseAuth mAuth;
     private Switch switchNotification;
     LinearLayout parentLayout, layoutChangeState, layoutSignInOut, layoutChangePwd;
-    private TextView tvCurrentState, tvSignOut, tvAccount, tvHelp, tvChangePwd;
+    private TextView tvCurrentState, tvSignOut, tvAccount, tvHelp, tvChangePwd, tvChangeLang;
     MainActivity activity;
 
     public SettingsFragment() {
@@ -54,16 +58,20 @@ public class SettingsFragment extends Fragment {
         switchNotification.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notifications_none_black_24dp, 0, 0, 0);
 
         layoutChangeState = view.findViewById(R.id.layout_settings_change_state);
-        tvCurrentState = view.findViewById(R.id.tv_settings_curent_state);
+        tvCurrentState = view.findViewById(R.id.tv_settings_current_state);
         TextView tvChangeState = view.findViewById(R.id.tv_settings_change_state);
         tvChangeState.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_place_black_24dp, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+
+        tvChangeLang = view.findViewById(R.id.tv_settings_change_lang);
+        tvChangeLang.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_language_black_24dp, 0, 0, 0);
 
         tvHelp = view.findViewById(R.id.tv_settings_view_help);
         tvHelp.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_live_help_black_24dp, 0, 0, 0);
 
-        tvChangePwd=view.findViewById(R.id.tv_settings_change_password);
-        tvChangePwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password,0,0,0);
+        tvChangePwd = view.findViewById(R.id.tv_settings_change_password);
+        tvChangePwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password, 0, 0, 0);
         layoutChangePwd = view.findViewById(R.id.layout_settings_change_password);
+
         layoutSignInOut = view.findViewById(R.id.layout_settings_sign_in_out);
         tvSignOut = view.findViewById(R.id.tv_settings_sign_in_out);
         tvAccount = view.findViewById(R.id.tv_settings_account);
@@ -96,6 +104,8 @@ public class SettingsFragment extends Fragment {
             startActivity(intent);
         });
 
+        tvChangeLang.setOnClickListener(v -> showLanguageDialog());
+
         layoutSignInOut.setOnClickListener(v -> {
             if (mAuth.getCurrentUser() != null) {
                 Helper.getInstance().showFancyAlertDialog(getActivity(),
@@ -124,6 +134,37 @@ public class SettingsFragment extends Fragment {
         else
             layoutChangePwd.setVisibility(View.GONE);
         layoutChangePwd.setOnClickListener(v -> Helper.getInstance().showChangePasswordWindow(activity, parentLayout));
+    }
+
+    private void showLanguageDialog() {
+        View v=LayoutInflater.from(getContext()).inflate(R.layout.dialog_select_language, (ViewGroup) getView(), false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setView(v)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final RadioGroup rg = v.findViewById(R.id.radio_group_language);
+                        if (rg.getCheckedRadioButtonId() == R.id.rBEnglish) {
+                            Preferences.getInstance().setStringPref(getContext(),Preferences.PREF_LANGUAGE,"en");
+                            Intent intent=new Intent(getActivity(), SplashActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                        if (rg.getCheckedRadioButtonId() == R.id.rBHindi) {
+                            Preferences.getInstance().setStringPref(getContext(),Preferences.PREF_LANGUAGE,"hi");
+                            Intent intent=new Intent(getActivity(), SplashActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    }
+                });
+        builder.create();
     }
 
     public void manageSignOut() {

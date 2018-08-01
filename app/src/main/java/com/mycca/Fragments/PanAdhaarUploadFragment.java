@@ -406,7 +406,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void uploadImagesToServer() {
 
         progressDialog.setMessage("Processing..");
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
 
         try {
             DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
@@ -423,7 +423,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void sendFinalMail() {
 
         progressDialog.setMessage("Almost Done..");
-        String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php";
+        String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
         Map<String, String> params = new HashMap<>();
 
         params.put("pensionerCode", pensionerCode);
@@ -484,16 +484,15 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
+                    isUploadedToServer = isUploadedToFirebase = false;
                     String alertMessage = (root + " update request for<br>") +
                             "<b>" + pensionerCode + "</b>" +
                             "<br>has been submitted successfully";
-
-
                     Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, root
                                     + " Update", "OK", () -> {
                             },
                             null, null, FancyAlertDialogType.SUCCESS);
-                    isUploadedToServer = isUploadedToFirebase = false;
+
                 } else {
                     progressDialog.dismiss();
                     Helper.getInstance().showErrorDialog(root + " update request failed",

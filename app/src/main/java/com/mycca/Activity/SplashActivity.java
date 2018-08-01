@@ -34,7 +34,9 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Helper.getInstance().setLocale(this);
         setContentView(R.layout.activity_splash);
+        Log.d(TAG, "test: "+Preferences.getInstance().getBooleanPref(this,Preferences.PREF_TEST));
         bindVIews();
         init();
         StartAnimations();

@@ -15,6 +15,8 @@ public class Preferences {
     public static final String PREF_STAFF_DATA = "staffData";
     public static final String PREF_STATE = "state";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receiveNotifications";
+    public static final String PREF_LANGUAGE = "language";
+    public static final String PREF_TEST="test";
     public static final String PREF_HELP_ONBOARDER = "onboarder";
     public static final String PREF_HELP_HOME = "home";
     public static final String PREF_HELP_CONTACT = "contact";

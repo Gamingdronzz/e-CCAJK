@@ -51,7 +51,7 @@
             tools:targetApi="m" />
 
         <TextView
-            android:id="@+id/tv_settings_curent_state"
+            android:id="@+id/tv_settings_current_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/padding_xxxlarge"
@@ -61,6 +61,27 @@
             tools:ignore="RtlSymmetry" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_large"
+        android:background="@color/colorGray" />
+
+    <TextView
+        android:id="@+id/tv_settings_change_lang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/padding_large"
+        android:drawableTint="@color/colorAccent"
+        android:paddingBottom="@dimen/padding_large"
+        android:paddingLeft="@dimen/padding_medium"
+        android:paddingRight="@dimen/padding_medium"
+        android:paddingTop="@dimen/padding_xlarge"
+        android:text="@string/change_language"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_20"
+        tools:targetApi="m" />
 
     <View
         android:layout_width="match_parent"

@@ -289,7 +289,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         counterServerImages = 0;
         progressDialog.setMessage("Processing...");
         int totalFilesToAttach = attachmentModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php";
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
 
         if (totalFilesToAttach != 0) {
             try {
@@ -311,7 +311,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void sendFinalMail() {
 
         progressDialog.setMessage("Almost Done...");
-        String url = Helper.getInstance().getAPIUrl() + "sendUpdateGrievanceEmail.php";
+        String url = Helper.getInstance().getAPIUrl() + "sendUpdateGrievanceEmail.php/";
         Map<String, String> params = new HashMap<>();
         String pensionerCode = grievanceModel.getPensionerIdentifier();
 
@@ -500,7 +500,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
         textViewRefNo.setText(grievanceModel.getReferenceNo());
         textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
-        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), "MMM d, yyyy"));
+        textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
         editTextMessage.setText(grievanceModel.getMessage() == null ? getResources().getString(R.string.n_a) : grievanceModel.getMessage());
     }
 

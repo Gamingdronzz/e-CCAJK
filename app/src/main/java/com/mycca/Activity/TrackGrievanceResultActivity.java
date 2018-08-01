@@ -51,6 +51,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     private void init() {
 
+        progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
+        progressDialog.show();
+
         grievanceModelArrayList = new ArrayList<>();
         adapterTracking = new RecyclerViewAdapterTracking(grievanceModelArrayList, this);
 
@@ -78,9 +81,6 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
         ManageNoGrievanceLayout(true);
         textView.setText(getResources().getString(R.string.no_grievance));
-
-        progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
-        progressDialog.show();
 
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
@@ -112,7 +112,6 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     private void getGrievancesOnConnectionAvailable() {
 
-        progressDialog.show();
         dbref = FireBaseHelper.getInstance(this).versionedDbRef;
         pensionerCode = getIntent().getStringExtra("Code");
         try {
@@ -138,6 +137,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                                     if (dataSnapshot.getValue() != null) {
                                         Log.d(TAG, "Datasnapshot: " + dataSnapshot);
                                         ManageNoGrievanceLayout(false);
+                                        progressDialog.dismiss();
                                         getGrievanceOfPensioner(dataSnapshot1.getKey());
                                     }
                                 }
@@ -167,18 +167,6 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        dbref.child(FireBaseHelper.ROOT_GRIEVANCES).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "Dismissed Progress");
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }

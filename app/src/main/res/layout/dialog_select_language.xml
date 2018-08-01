@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/elevation_medium"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/corner_radius_large"
+    tools:targetApi="lollipop">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/padding_large"
+        android:textAlignment="center"
+        android:text="@string/choose_language"
+        android:textSize="@dimen/text_20"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_language"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_medium">
+
+        <RadioButton
+            android:id="@+id/rBEnglish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_18"
+            android:padding="@dimen/padding_large"
+            android:text="@string/english" />
+
+        <RadioButton
+            android:id="@+id/rBHindi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_large"
+            android:textSize="@dimen/text_18"
+            android:text="@string/hindi" />
+
+    </RadioGroup>
+
+</LinearLayout>
