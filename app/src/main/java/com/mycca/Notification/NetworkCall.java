@@ -23,15 +23,11 @@ import static com.mycca.Notification.Constants.CONTENT_TYPE;
 import static com.mycca.Notification.Constants.FCM_URL;
 import static com.mycca.Notification.Constants.SUCCESS_CODE;
 
-/**
- * Created by prabhat on 14/2/18.
- */
-
 public class NetworkCall extends AsyncTask<String, Void, String> {
-    private FirebaseNotiCallBack firebaseNotiCallBack;
+    private FireBaseCallBack firebaseCallBack;
 
-    public NetworkCall(FirebaseNotiCallBack firebaseNotiCallBack) {
-        this.firebaseNotiCallBack = firebaseNotiCallBack;
+    NetworkCall(FireBaseCallBack firebaseCallBack) {
+        this.firebaseCallBack = firebaseCallBack;
     }
 
     @Override
@@ -97,14 +93,14 @@ public class NetworkCall extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        if (firebaseNotiCallBack != null && s != null)
+        if (firebaseCallBack != null && s != null)
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 int successCode = jsonObject.getInt(SUCCESS_CODE);
                 if (successCode == 0) {
-                    firebaseNotiCallBack.fail(s);
+                    firebaseCallBack.fail(s);
                 } else if (successCode == 1) {
-                    firebaseNotiCallBack.success(s);
+                    firebaseCallBack.success(s);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

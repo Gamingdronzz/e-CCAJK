@@ -406,7 +406,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void sendNotification(String fcmKey, String token) {
 
         FirebaseNotificationHelper.initialize(fcmKey)
-                .defaultJson(false, getJsonBody())
+                .jsonBody(getJsonBody())
                 .receiverFirebaseToken(token)
                 .send();
 
@@ -433,9 +433,9 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         JSONObject jsonObjectData = new JSONObject();
         try {
             jsonObjectData.put(Constants.KEY_TITLE, "Grievance status updated");
-            jsonObjectData.put("body", "Your grievance for " + type + " is " + newStatus);
-            jsonObjectData.put("pensionerCode", textViewPensionerCode.getText());
-            jsonObjectData.put("grievanceType", grievanceModel.getGrievanceType());
+            jsonObjectData.put(Constants.KEY_BODY, "Your grievance for " + type + " is " + newStatus);
+            jsonObjectData.put(Constants.KEY_CODE, textViewPensionerCode.getText());
+            jsonObjectData.put(Constants.KEY_GTYPE, grievanceModel.getGrievanceType());
         } catch (JSONException e) {
             e.printStackTrace();
         }

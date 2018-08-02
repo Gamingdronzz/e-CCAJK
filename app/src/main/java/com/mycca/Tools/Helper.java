@@ -36,6 +36,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.mycca.Activity.SplashActivity;
 import com.mycca.Activity.TrackGrievanceResultActivity;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
 import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialog;
@@ -309,10 +310,10 @@ public class Helper {
         return progressDialog;
     }
 
-    public void setLocale(Context context){
+    public void setLocale(Context context) {
         Locale locale;
-        String lang=Preferences.getInstance().getStringPref(context,Preferences.PREF_LANGUAGE);
-        if(lang!=null)
+        String lang = Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE);
+        if (lang != null)
             locale = new Locale(lang);
         else
             locale = new Locale("en");
@@ -405,7 +406,7 @@ public class Helper {
 
     public void showUpdateOrMaintenanceDialog(boolean updateAvailable, final Activity activity) {
         if (updateAvailable) {
-            Helper.getInstance().showFancyAlertDialog(activity,
+            showFancyAlertDialog(activity,
                     "A new version of the application is available on Google Play Store\n\nUpdate to continue using the application",
                     "My CCA",
                     "Update",
@@ -417,7 +418,7 @@ public class Helper {
                     activity::finish,
                     FancyAlertDialogType.WARNING);
         } else {
-            Helper.getInstance().showFancyAlertDialog(activity,
+            showFancyAlertDialog(activity,
                     "The Application is in maintenance\nPlease wait for a while\n\nThank you for your patience",
                     "My CCA",
                     "OK",
@@ -436,6 +437,26 @@ public class Helper {
                 null,
                 null,
                 FancyAlertDialogType.ERROR);
+    }
+
+    public void showReloadWarningDialog(Activity context, IFancyAlertDialogListener positiveButtonOnClickListener) {
+        showFancyAlertDialog(context,
+                "This feature requires reloading of app",
+                "Reload App?",
+                "Reload",
+                positiveButtonOnClickListener,
+                "Cancel",
+                () -> {
+
+                },
+                FancyAlertDialogType.WARNING);
+    }
+
+    public void reloadApp(Activity activity){
+        Intent intent = new Intent(activity, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     public void showTrackWindow(final Activity context, View parent) {
@@ -511,7 +532,7 @@ public class Helper {
                 Toast.makeText(context, "Enter New Password", Toast.LENGTH_LONG).show();
             } else if (!confirmPwd.equals(newPwd)) {
                 Toast.makeText(context, "Confirm password not matching new password", Toast.LENGTH_LONG).show();
-            } else  if (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)
+            } else if (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)
                 showErrorDialog("Try again after Sign in", "Please Sign in with google first", context);
             else {
                 changePassword(oldPwd, newPwd, context);
@@ -548,7 +569,7 @@ public class Helper {
                                     },
                                     null, null, FancyAlertDialogType.SUCCESS);
                         } else {
-                                showErrorDialog("Try again", "Password could not be changed", context);
+                            showErrorDialog("Try again", "Password could not be changed", context);
                         }
                     });
                 } else {

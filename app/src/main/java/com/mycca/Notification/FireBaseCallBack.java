@@ -1,10 +1,6 @@
 package com.mycca.Notification;
 
-/**
- * Created by prabhat on 14/2/18.
- */
-
-public interface FirebaseNotiCallBack {
+public interface FireBaseCallBack {
     void success(String s);
 
     void fail(String s);

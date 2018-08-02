@@ -16,7 +16,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mycca.Activity.TrackGrievanceResultActivity;
+import com.mycca.Notification.Constants;
 import com.mycca.R;
+import com.mycca.Tools.Preferences;
 
 import java.util.Random;
 
@@ -29,25 +31,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        if (remoteMessage.getNotification() != null) {
-            Log.v(TAG, "title: " + remoteMessage.getNotification().getTitle());
-            Log.v(TAG, "body: " + remoteMessage.getNotification().getBody());
-        }
-        if (remoteMessage.getData() != null) {
+        //startService(new Intent(getBaseContext(), MyIntentService.class));
+        if (remoteMessage.getData().size() > 0) {
             Log.v(TAG, "data: " + remoteMessage.getData());
-        }
-        startService(new Intent(getBaseContext(), MyIntentService.class));
+            String title = remoteMessage.getData().get(Constants.KEY_TITLE);
+            Log.d(TAG, "title: " + title);
 
-        /*if(Preferences.getInstance().getBooleanPref(getApplicationContext(),Preferences.PREF_RECEIVE_NOTIFICATIONS))
-        {
-            if (remoteMessage.getData().size() > 0) {
-                String title = remoteMessage.getData().get("title");
-                String message = remoteMessage.getData().get("body");
-                String pensionerCode = remoteMessage.getData().get("pensionerCode");
-                String grievanceType = remoteMessage.getData().get("grievanceType");
-                sendUserNotification(title,message ,pensionerCode, Long.parseLong(grievanceType));
+            String message = remoteMessage.getData().get(Constants.KEY_BODY);
+            if (message != null && Preferences.getInstance().getBooleanPref(getApplicationContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS)) {
+                String pensionerCode = remoteMessage.getData().get(Constants.KEY_CODE);
+                String grievanceType = remoteMessage.getData().get(Constants.KEY_GTYPE);
+                sendUserNotification(title, message, pensionerCode, Long.parseLong(grievanceType));
             }
-        }*/
+        }
     }
 
     private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType) {
