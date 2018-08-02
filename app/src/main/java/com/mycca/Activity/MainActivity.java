@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
-        showFragment(getResources().getString(R.string.title_activity_home), new HomeFragment(), null);
+        showFragment(getResources().getString(R.string.home), new HomeFragment(), null);
     }
 
     @Override
@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("text/plain");
 
-        Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.invitation_title));
+        Intent openInChooser = Intent.createChooser(emailIntent, resources.getString(R.string.app_name));
 
         List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
         List<LabeledIntent> intentList = new ArrayList<>();

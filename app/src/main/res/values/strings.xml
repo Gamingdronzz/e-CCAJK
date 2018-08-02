@@ -1,64 +1,57 @@
 <resources>
-    <string name="app_name">My CCA JK</string>
 
-    <string name="contact_info"><b>Govt. of India
-\nMinistry of Communication &amp; IT Department of Telecom
-\nController of Communication Accounts, J&amp;K
-\nHUDCO Bhawan, Rail Head Complex
-\nJammu (J&amp;K)-180012
-\n\nToll Free No. 18001807036
-\nFAX - 0191-2477296, 2475251
-\nSTD CODE -0191</b></string>
+    <string name="app_name">My CCA</string>
 
-    <string name="about_us_string">This application is  developed and maintained by GAMING DRONZZ, Jammu.</string>
+    <!--Action bar titles -->
+    <string name="home">Home</string>
+    <string name="cca_jk">CCA JK</string>
+    <string name="pension_grievance">Pension Grievance</string>
+    <string name="gpf_grievance">GPF Grievance</string>
+    <string name="upload_aadhaar">Upload AADHAAR</string>
+    <string name="upload_pan">Upload PAN</string>
+    <string name="upload_life_certificate">Upload Life Certificate</string>
+    <string name="upload_re_marriage_certificate">Upload Re-Marriage Certificate</string>
+    <string name="upload_re_employment_certificate">Upload Re-Employment Certificate</string>
+    <string name="track_grievances">Track Grievances</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="latest_news">Latest News</string>
+    <string name="wifi">Wifi Hotspot Locations</string>
+    <string name="gp">Gram Panchayat Locations</string>
+    <string name="inspection">Inspection</string>
+    <string name="update_grievances">Update Grievances</string>
+    <string name="add_news">Add News</string>
+    <string name="feedback">Feedback</string>
+    <string name="settings">Settings</string>
+    <string name="about_us">About Us</string>
 
-    <string name="disclaimer_content">This is the official android application of Controller Communication Accounts, Jammu and Kashmir.
-Information for this app is provided by Controller Communication Accounts, Jammu and Kashmir.
-While every care has been taken to provide correct and updated information, Gaming Dronzz is not responsible for any error/ omission or delay in updating data/information and so on.
-The users of the app are therefore requested to contact CCA J&amp;K.</string>
-
-    <string name="tutorial_text1">CCA pensioners can register their grievances using the Pension or GPF Grievance option from the Main menu</string>
-
-    <string name="tutorial_text2">Pensioners can also check the <b>Status</b> of their grievances using Track Grievance option from the Main menu</string>
-
-    <string name="tutorial_text3">Pensioners can <b>link</b> other information like <b>aadhaar pan etc</b>. through Update Information section in the main menu</string>
-
-    <string name="tutorial_text4">App features require google sign in. You can manually sign in and sign out using Settings option in Secondary menu</string>
-
-    <!--invitation-->
-    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
-    <string name="invitation_title">My CCA</string>
-    <string name="invitation_message">Official Android Appication of CCA</string>
-    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
-
-    <!-- CropView -->
-    <string name="crop_image_activity_title">Crop</string>
-    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
-    <string name="crop_image_menu_rotate_right">Rotate</string>
-    <string name="crop_image_menu_crop">Crop</string>
-    <string name="pick_image_intent_chooser_title">Select source</string>
-    <string name="saving_image">Saving image …</string>
-
-    <string name="title_activity_ad">Ad</string>
-    <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
-    <string name="start_level">Level 1</string>
-    <string name="next_level">Next Level</string>
-    <!-- -
-        This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
-        For more information, see https://support.google.com/admob/answer/3052638
-    <!- -->
-    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
-
+    <!--Nav menu -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_home">Home</string>
-    <string name="contact_us_location">Click to Open Location</string>
-    <string name="add_image">Add Image</string>
-    <string name="remove">Remove All</string>
-    <string name="action_settings">Settings</string>
+    <string name="visit_cca_jk_website">Visit Website</string>
+    <string name="functions">Functions</string>
+    <string name="update_information">Update Information</string>
+    <string name="tracking">Tracking</string>
+    <string name="others">Others</string>
+    <string name="wifi_hotspot_locator">WIFI Hotspot Locator</string>
+    <string name="gp_lit_locator">GP LIT Locator</string>
+    <string name="staff_corner">Staff Corner</string>
+    <string name="log_out">Log Out</string>
+
+    <!--OPtions Menu-->
+    <string name="invite">Invite</string>
+    <string name="about">About</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_clear_all">Clear Form Data</string>
     <string name="clear">Clear All</string>
+
+    <!--Floating menu-->
+    <string name="add_image">Add Image</string>
+    <string name="remove">Remove All</string>
+    <string name="remove_image">Remove Image</string>
+    <string name="scan_adhaar">Scan Aadhaar Card</string>
+
+    <!--Form fields-->
+    <string name="no_image">NO IMAGE SELECTED</string>
     <string name="circle">Circle</string>
     <string name="g_type">Grievance Type</string>
     <string name="submitted_by">Grievance Submitted By</string>
@@ -69,119 +62,132 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="staff_num">Staff Number</string>
     <string name="mobile_num">Mobile Number</string>
     <string name="email">E-Mail</string>
-    <string name="submit">Submit</string>
-    <string name="no_image">NO IMAGE SELECTED</string>
+    <string name="applicant_name">Applicant\'s Name</string>
+    <string name="aadhaar_no">Aadhaar Number</string>
+    <string name="pan_no">PAN Number</string>
+    <string name="grievances_registered_using">Grievances Registered Using</string>
     <string name="location">Location Coordinates</string>
     <string name="location_hint">Enter Location Name</string>
-    <string name="no_internet">Internet Connection Not Available</string>
-    <string name="no_grievance">No Grievances Registered</string>
-    <string name="n_a">Not Available</string>
-    <string name="sign_in">Sign In with Google</string>
-    <string name="sign_out">Sign Out</string>
-    <string name="no_grievances_resolved">No Grievances Resolved</string>
-    <string name="no_grievances_submitted">No New Grievances Submitted</string>
-    <string name="no_grievances_processing">No Grievances under Process</string>
-    <string name="login">Log In</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="headline">Headline</string>
-    <string name="details">Details</string>
-    <string name="dateAdded">dateAdded</string>
-    <string name="latest_news">Latest News</string>
-    <string name="latest_from_cca">Latest From CCA</string>
-    <string name="visit_us">Visit Us</string>
-    <string name="notifications">Notifications:</string>
-    <string name="change_state">Change State</string>
-    <string name="current_state">Current State:</string>
-    <string name="view_tutorials_again">View Tutorials Again</string>
-    <string name="signed_in">Signed In:</string>
-    <string name="confirm_new_password">Confirm new Password</string>
-    <string name="new_password">New password</string>
-    <string name="old_password">Old password</string>
-    <string name="change">CHANGE</string>
-    <string name="change_password">Change Password</string>
     <string name="pensioner_hr_staff_code">Pensioner/HR/Staff Code</string>
     <string name="grievance">Grievance</string>
     <string name="grievance_application_date">Grievance Application Date</string>
+    <string name="reference_number">Reference Number</string>
     <string name="update_status">Update Status:</string>
     <string name="message">Message:</string>
+    <string name="headline">Headline</string>
+    <string name="details">Details</string>
+    <string name="confirm_new_password">Confirm new Password</string>
+    <string name="new_password">New password</string>
+    <string name="old_password">Old password</string>
+    <string name="change_password">Change Password</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="like_the_application">Like the Application?</string>
+    <string name="rate_5_stars">Rate 5 Stars</string>
+    <string name="have_a_suggestion">Have a suggestion?</string>
+    <string name="suggestion">Suggestion</string>
+    <string name="submit_advice">Submit Advice</string>
+    <string name="login">Log In</string>
+    <string name="change">CHANGE</string>
     <string name="update">UPDATE</string>
-    <string name="reference_number">Reference Number</string>
+    <string name="track">Track</string>
+    <string name="submit">Submit</string>
+
+    <!--tutorial Strings-->
     <string name="skip">SKIP</string>
     <string name="finish">FINISH</string>
+    <string name="tutorial_text1">CCA pensioners can register their grievances using the Pension or GPF Grievance option from the Main menu</string>
+    <string name="tutorial_text2">Pensioners can also check the <b>Status</b> of their grievances using Track Grievance option from the Main menu</string>
+    <string name="tutorial_text3">Pensioners can <b>link</b> other information like <b>aadhaar pan etc</b>. through Update Information section in the main menu</string>
+    <string name="tutorial_text4">App features require google sign in. You can manually sign in and sign out using Settings option in Secondary menu</string>
+
+    <!--splash -->
     <string name="splash_text">Office of CCA, J&amp;K Circle\nJAMMU\nDepartment of Telecommunications</string>
-    <string name="cca_jk">CCA JK</string>
-    <string name="confirm_input">PLEASE CONFIRM YOUR INPUT</string>
+    <string name="version">Version</string>
+
+    <!--home-->
+    <string name="hello">Hello</string>
+    <string name="latest_from_cca">Latest From CCA</string>
+    <string name="visit_us">Visit Us</string>
+
+    <!--browser-->
+
+
+    <!--contact us-->
+    <string name="office_address">Office Address</string>
+    <string name="locate_on_map">Locate on Map</string>
+    <string name="contact_persons">Contact Persons</string>
+
+    <!-- hotspots -->
+    <string name="search">Search</string>
+    <string name="sort">Sort</string>
     <string name="search_locations">Search Locations</string>
     <string name="select_state">Select State</string>
     <string name="select_district">Select District</string>
     <string name="sort_locations">Sort Locations</string>
     <string name="name">Name</string>
     <string name="district">District</string>
-    <string name="track_grievances">Track Grievances</string>
-    <string name="grievances_registered_using">Grievances Registered Using</string>
-    <string name="track">Track</string>
-    <string name="about_developer">About Developer</string>
-    <string name="disclaimer">Disclaimer</string>
-    <string name="add_news">Add News</string>
-    <string name="office_address">Office Address</string>
-    <string name="locate_on_map">Locate on Map</string>
-    <string name="contact_persons">Contact Persons</string>
-    <string name="like_the_application">Like the Application?</string>
-    <string name="rate_5_stars">Rate 5 Stars</string>
-    <string name="have_a_suggestion">Have a suggestion?</string>
-    <string name="suggestion">Suggestion</string>
-    <string name="submit_advice">Submit Advice</string>
-    <string name="no_internet_msg_locator">Locator will not work without Internet Connection.</string>
-    <string name="no_internet_msg_grievances_update">Grievances cannot be updated without Internet Connection.</string>
-    <string name="search">Search</string>
-    <string name="sort">SORT</string>
     <string name="msg_no_location">Nearby Locations will not be shown until Location and Internet is Turned On. Turn On Location and Refresh</string>
     <string name="within_36_km">WITHIN 36 KM</string>
-    <string name="home">Home</string>
-    <string name="visit_cca_jk_website">Visit CCA JK Website</string>
-    <string name="functions">Functions</string>
-    <string name="pension_grievance">Pension Grievance</string>
-    <string name="gpf_grievance">GPF Grievance</string>
-    <string name="update_information">Update Information</string>
-    <string name="upload_aadhaar">Upload AADHAAR</string>
-    <string name="upload_pan">Upload PAN</string>
-    <string name="upload_life_certificate">Upload Life Certificate</string>
-    <string name="upload_re_marriage_certificate">Upload Re-Marriage Certificate</string>
-    <string name="upload_re_employment_certificate">Upload Re-Employment Certificate</string>
-    <string name="tracking">Tracking</string>
-    <string name="others">Others</string>
-    <string name="contact_us">Contact Us</string>
-    <string name="wifi_hotspot_locator">WIFI Hotspot Locator</string>
-    <string name="gp_lit_locator">GP LIT Locator</string>
-    <string name="staff_corner">Staff Corner</string>
-    <string name="inspection">Inspection</string>
-    <string name="update_grievances">Update Grievances</string>
-    <string name="log_out">Log Out</string>
-    <string name="invite">Invite</string>
-    <string name="feedback">Feedback</string>
-    <string name="about">About</string>
+    <string name="within">WITHIN %1$s KM</string>
+    <string name="all_locations">All Locations</string>
+    <string name="nearby">Nearby</string>
+
+    <!--inspection-->
+    <string name="current_location">Current Location</string>
+
+    <!--update grievance-->
+    <string name="no_grievances_resolved">No Grievances Resolved</string>
+    <string name="no_grievances_submitted">No New Grievances Submitted</string>
+    <string name="no_grievances_processing">No Grievances under Process</string>
+
+    <!--About-->
+    <string name="about_us_string">This application is  developed and maintained by GAMING DRONZZ, Jammu.</string>
+    <string name="about_developer">About Developer</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="disclaimer_content">This is the official android application of Controller Communication Accounts, Jammu and Kashmir.
+Information for this app is provided by Controller Communication Accounts, Jammu and Kashmir.
+While every care has been taken to provide correct and updated information, Gaming Dronzz is not responsible for any error/ omission or delay in updating data/information and so on.
+The users of the app are therefore requested to contact CCA J&amp;K.</string>
+
+    <!--settings-->
+    <string name="notifications">Notifications:</string>
+    <string name="change_state">Change State</string>
+    <string name="current_state">Current State:</string>
     <string name="change_language">Change Language</string>
     <string name="choose_language">Choose Language</string>
     <string name="english">English</string>
     <string name="hindi">Hindi</string>
+    <string name="view_tutorials_again">View Tutorials Again</string>
+    <string name="signed_in">Signed In:</string>
+    <string name="sign_in">Sign In with Google</string>
+    <string name="sign_out">Sign Out</string>
 
-    <!-- Barcode -->
-    <string name="label_name">Name</string>
-    <string name="label_uid">UID</string>
-    <string name="label_gender">GENDER</string>
-    <string name="label_yob">YEAR OF BIRTH</string>
-    <string name="label_co">CARE OF</string>
-    <string name="label_vtc">VILLAGE TEHSIL</string>
-    <string name="label_po">POST OFFICE</string>
-    <string name="label_dist">DISTRICT</string>
-    <string name="label_state">STATE</string>
-    <string name="label_pc">POSTAL CODE</string>
-    <string name="label_save">SAVE</string>
-    <string name="label_cancel">CANCEL</string>
-    <string name="no_saved_card">There Is no Saved Aadhar Card</string>
-    <string name="label_home">HOME</string>
-    <string name="label_delete">DELETE</string>
+    <!--others-->
+    <string name="no_internet">Internet Connection Not Available</string>
+    <string name="no_grievance">No Grievances Registered</string>
+    <string name="n_a">Not Available</string>
+    <string name="confirm_input">PLEASE CONFIRM YOUR INPUT</string>
 
+    <!--invitation-->
+    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
+    <string name="invitation_message">Official Android Appication of CCA</string>
+    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
+
+    <!-- CropView -->
+    <string name="crop_image_activity_title">Crop</string>
+    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">Crop</string>
+    <string name="pick_image_intent_chooser_title">Select source</string>
+
+    <string name="contact_info"><b>Govt. of India
+\nMinistry of Communication &amp; IT Department of Telecom
+\nController of Communication Accounts, J&amp;K
+\nHUDCO Bhawan, Rail Head Complex
+\nJammu (J&amp;K)-180012
+\n\nToll Free No. 18001807036
+\nFAX - 0191-2477296, 2475251
+\nSTD CODE -0191</b></string>
 
 </resources>

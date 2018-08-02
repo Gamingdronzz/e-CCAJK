@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:fontFamily="serif"
-            android:text="@string/headline"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
             android:textStyle="bold" />
@@ -38,7 +37,6 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/padding_xxxlarge"
             android:paddingRight="@dimen/padding_xxxlarge"
-            android:text="@string/details"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
             android:visibility="gone" />
@@ -52,7 +50,6 @@
             android:fontFamily="serif"
             android:paddingEnd="@dimen/padding_xxxlarge"
             android:paddingStart="@dimen/padding_large"
-            android:text="@string/dateAdded"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_18"
             android:textStyle="italic" />

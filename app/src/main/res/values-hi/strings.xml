@@ -1,7 +1,46 @@
 ﻿<resources>
 
    <string name="app_name">मेरा सीसीए</string>
+
+   <!--Action bar titles -->
+   <string name="home">होम</string>
+
+   <!--Nav menu -->
+
+   <!--OPtions Menu-->
+
+   <!--Floating menu-->
+
+   <!--Form fields-->
+
+   <!--tutorial Strings-->
+
+   <!--splash -->
    <string name="splash_text">संचार लेखा नियंत्रक\nजम्मू-कश्मीर</string>
-   <string name="title_activity_home">होम</string>
+
+   <!--home-->
+
+   <!--browser-->
+
+
+   <!--contact us-->
+
+   <!-- hotspots -->
+
+
+   <!--inspection-->
+
+   <!--update grievance-->
+
+   <!--About-->
+
+   <!--settings-->
+
+   <!--others-->
+
+   <!--invitation-->
+
+   <!-- CropView -->
+
 
 </resources>

@@ -55,7 +55,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/colorWhite"
             android:padding="@dimen/padding_large"
-            android:text="@string/no_internet_msg_locator"
+            android:text="@string/no_internet"
             android:textAlignment="center"
             android:textSize="@dimen/text_20" />
 

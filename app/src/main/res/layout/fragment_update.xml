@@ -59,7 +59,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/colorOffWhite"
             android:padding="@dimen/padding_large"
-            android:text="@string/no_internet_msg_grievances_update"
+            android:text="@string/no_internet"
             android:textAlignment="center"
             android:textSize="@dimen/text_20" />
     </RelativeLayout>
