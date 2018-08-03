@@ -1,7 +1,6 @@
 package com.mycca.Fragments;
 
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,9 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -26,20 +23,19 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.mycca.Activity.MainActivity;
 import com.mycca.Adapter.GenericSpinnerAdapter;
-import com.mycca.CustomObjects.BarcodeScanner.utils.DataAttributes;
+import com.mycca.CustomObjects.BarCode.BarcodeCaptureActivity;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
 import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
 import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
@@ -74,6 +70,7 @@ import java.util.Map;
 
 public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
+    private static final int RC_BARCODE_CAPTURE = 9001;
     ImageView imageviewSelectedImage;
     TextView textViewFileName;
     Spinner spinnerCircle;
@@ -86,6 +83,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     ProgressDialog progressDialog;
 
     private static final String TAG = "PanAdhaarUpload";
+    public static final String AADHAAR_DATA_TAG = "PrintLetterBarcodeData", AADHAR_UID_ATTR = "uid";
     private String pensionerCode, number, root, hint = "Pensioner Code";
     private boolean isUploadedToFirebase = false, isUploadedToServer = false;
     private ArrayList<FABMenuItem> items;
@@ -240,7 +238,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void initItems() {
         items = new ArrayList<>();
 
-        items.add(new FABMenuItem("Scan Aadhar Card", AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
+        items.add(new FABMenuItem("Scan Aadhaar Card", AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
         items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
         items.add(new FABMenuItem("Remove Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
@@ -452,75 +450,103 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
     }
 
+    public void scanNow() {
+        // we need to check if the user has granted the camera permissions
+        // otherwise scanner will not work
+        Log.d(TAG, "scanNow: ");
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+//                == PackageManager.PERMISSION_DENIED) {
+//            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+//            return;
+//        }
+//        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+//        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+//        integrator.setPrompt("Scan Aadhar card QR Code");
+//        integrator.setResultDisplayDuration(500);
+//        integrator.setCameraId(0);  // Use a specific camera of the device
+//        integrator.initiateScan();
+
+        Intent intent = new Intent(mainActivity, BarcodeCaptureActivity.class);
+        intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
+        intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
+
+        startActivityForResult(intent, RC_BARCODE_CAPTURE);
+    }
+
+    protected void processScannedData(String scanData) {
+        Log.d("Aadhar Card Scan", scanData);
+
+        XmlPullParserFactory pullParserFactory;
+        try {
+            pullParserFactory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = pullParserFactory.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(new StringReader(scanData));
+
+            int eventType = parser.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if (eventType == XmlPullParser.START_DOCUMENT) {
+                    Log.d("AadharPan", "Start document");
+                } else if (eventType == XmlPullParser.START_TAG && AADHAAR_DATA_TAG.equals(parser.getName())) {
+                    // extract data from tag
+                    String uid = parser.getAttributeValue(null, AADHAR_UID_ATTR);
+                    inputNumber.setText(uid);
+
+                } else if (eventType == XmlPullParser.END_TAG) {
+                    Log.d("AadharPan", "End tag " + parser.getName());
+
+                } else if (eventType == XmlPullParser.TEXT) {
+                    Log.d("AadharPan", "Text " + parser.getText());
+
+                }
+                eventType = parser.next();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
-        if (imagePicker != null)
+        if (requestCode == RC_BARCODE_CAPTURE) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
+                    processScannedData(barcode.displayValue);
+                } else {
+                    Log.d(TAG, "No barcode captured, intent data is null");
+                }
+            } else {
+                Log.d(TAG, String.format(getString(R.string.barcode_error),
+                        CommonStatusCodes.getStatusCodeString(resultCode)));
+            }
+        } else if (imagePicker != null)
             imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
 
-        //retrieve QR Code scan result
-        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if (scanningResult != null) {
-            //we have a result
-            String scanContent = scanningResult.getContents();
-            String scanFormat = scanningResult.getFormatName();
-
-            // process received data
-            if(scanContent != null && !scanContent.isEmpty()){
-                processScannedData(scanContent);
-            }else{
-                Toast toast = Toast.makeText(getContext(),"Scan Cancelled", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-
-        }else{
-            Toast toast = Toast.makeText(getContext(),"No scan data received!", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-    }
-
-    protected void processScannedData(String scanData){
-        Log.d("Aadhar Card Scan",scanData);
-        XmlPullParserFactory pullParserFactory;
-
-        try {
-            // init the parserfactory
-            pullParserFactory = XmlPullParserFactory.newInstance();
-            // get the parser
-            XmlPullParser parser = pullParserFactory.newPullParser();
-
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(new StringReader(scanData));
-
-            // parse the XML
-            int eventType = parser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                if(eventType == XmlPullParser.START_DOCUMENT) {
-                    Log.d("AadharPan","Start document");
-                } else if(eventType == XmlPullParser.START_TAG && DataAttributes.AADHAAR_DATA_TAG.equals(parser.getName())) {
-                    // extract data from tag
-                    //uid
-                    String uid = parser.getAttributeValue(null, DataAttributes.AADHAR_UID_ATTR);
-                    textInputNumber.getEditText().setText(uid);
-
-                } else if(eventType == XmlPullParser.END_TAG) {
-                    Log.d("AadharPan","End tag "+parser.getName());
-
-                } else if(eventType == XmlPullParser.TEXT) {
-                    Log.d("AadharPan","Text "+parser.getText());
-
-                }
-                // update eventType
-                eventType = parser.next();
-            }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        //        //retrieve QR Code scan result
+//        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//
+//        if (scanningResult != null) {
+//            //we have a result
+//            String scanContent = scanningResult.getContents();
+//            String scanFormat = scanningResult.getFormatName();
+//
+//            // process received data
+//            if (scanContent != null && !scanContent.isEmpty()) {
+//                processScannedData(scanContent);
+//            } else {
+//                Toast toast = Toast.makeText(getContext(), "Scan Cancelled", Toast.LENGTH_SHORT);
+//                toast.show();
+//            }
+//
+//        } else {
+//            Toast toast = Toast.makeText(getContext(), "No scan data received!", Toast.LENGTH_SHORT);
+//            toast.show();
+//        }
     }
 
     @Override
@@ -530,16 +556,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         Log.d(TAG, "onRequestPermissionsResult: " + "PanAadhar " + requestCode);
 
         switch (requestCode) {
-            case(MY_CAMERA_REQUEST_CODE):
-            {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
+            case (MY_CAMERA_REQUEST_CODE): {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     scanNow();
-                }
-                else
-                {
+                } else {
                     Log.d(TAG, "onRequestPermissionsResult: Permission Denied");
                 }
+                break;
             }
             default: {
                 if (imagePicker != null)
@@ -597,27 +620,10 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         }
     }
 
-    public void scanNow(){
-        // we need to check if the user has granted the camera permissions
-        // otherwise scanner will not work
-        Log.d(TAG, "scanNow: ");
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            requestPermissions(new String[] {Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-            return;
-        }
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setPrompt("Scan Aadhar card QR Code");
-        integrator.setResultDisplayDuration(500);
-        integrator.setCameraId(0);  // Use a specific camera of the device
-        integrator.initiateScan();
-    }
-
     @Override
     public void onMenuItemSelected(View view, int id) {
         switch (items.get(id).getTitle()) {
-            case "Scan Aadhar Card":
+            case "Scan Aadhaar Card":
                 scanNow();
                 break;
             case "Add Image":
