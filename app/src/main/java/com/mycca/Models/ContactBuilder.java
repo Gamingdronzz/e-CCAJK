@@ -4,7 +4,6 @@ public class ContactBuilder {
 
     private String name;
     private String designation;
-    private String stateId;
     private String email;
     private String officeContact;
     private String mobileContact;
@@ -34,12 +33,8 @@ public class ContactBuilder {
         return this;
     }
 
-    public ContactBuilder setStateId(String stateId) {
-        this.stateId = stateId;
-        return this;
-    }
 
     public Contact createContact() {
-        return new Contact(name, designation, email, officeContact, mobileContact, stateId);
+        return new Contact(name, designation, email, officeContact, mobileContact);
     }
 }

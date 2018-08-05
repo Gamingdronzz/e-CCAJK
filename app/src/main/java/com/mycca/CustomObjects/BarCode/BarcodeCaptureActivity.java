@@ -41,7 +41,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
@@ -51,6 +50,7 @@ import com.mycca.CustomObjects.BarCode.ui.camera.GraphicOverlay;
 import com.mycca.R;
 
 import java.io.IOException;
+
 /**
  * Activity for the multi-tracker app.  This app detects barcodes and displays the value with the
  * rear facing camera. During detection overlay graphics are drawn to indicate the position,
@@ -86,8 +86,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         super.onCreate(icicle);
         setContentView(R.layout.barcode_capture);
 
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay<BarcodeGraphic>) findViewById(R.id.graphicOverlay);
+        mPreview =  findViewById(R.id.preview);
+        mGraphicOverlay =  findViewById(R.id.graphicOverlay);
 
         // read parameters from the intent used to launch the activity.
         boolean autoFocus = getIntent().getBooleanExtra(AutoFocus, false);
@@ -105,7 +105,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         gestureDetector = new GestureDetector(this, new CaptureGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
+        Snackbar.make(mGraphicOverlay, "Pinch/Stretch to zoom",
                 Snackbar.LENGTH_LONG)
                 .show();
     }
@@ -128,13 +128,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
 
         final Activity thisActivity = this;
 
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityCompat.requestPermissions(thisActivity, permissions,
-                        RC_HANDLE_CAMERA_PERM);
-            }
-        };
+        View.OnClickListener listener = view -> ActivityCompat.requestPermissions(thisActivity, permissions,
+                RC_HANDLE_CAMERA_PERM);
 
         findViewById(R.id.topLayout).setOnClickListener(listener);
         Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
@@ -156,7 +151,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
      * to other detection examples to enable the barcode detector to detect small barcodes
      * at long distances.
-     *
+     * <p>
      * Suppressing InlinedApi since there is a check that the minimum version is met before using
      * the constant.
      */
@@ -276,7 +271,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Camera permission granted - initialize the camera source");
             // we have permission, so create the camerasource
-            boolean autoFocus = getIntent().getBooleanExtra(AutoFocus,false);
+            boolean autoFocus = getIntent().getBooleanExtra(AutoFocus, false);
             boolean useFlash = getIntent().getBooleanExtra(UseFlash, false);
             createCameraSource(autoFocus, useFlash);
             return;
@@ -285,11 +280,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
                 " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
 
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                finish();
-            }
-        };
+        DialogInterface.OnClickListener listener = (dialog, id) -> finish();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Multitracker sample")
@@ -360,7 +351,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         if (best != null) {
             Intent data = new Intent();
             data.putExtra(BarcodeObject, best);
-            setResult(CommonStatusCodes.SUCCESS, data);
+            setResult(Activity.RESULT_OK, data);
             finish();
             return true;
         }
@@ -432,10 +423,13 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     public void onBarcodeDetected(Barcode barcode) {
         //do something with barcode data returned
         if (barcode != null) {
+            Log.d(TAG, "onBarcodeDetected: " + barcode.displayValue);
             Intent data = new Intent();
             data.putExtra(BarcodeObject, barcode);
-            setResult(CommonStatusCodes.SUCCESS, data);
+            setResult(Activity.RESULT_OK, data);
             finish();
+        } else {
+            Log.d(TAG, "onBarcodeDetected: barcode null");
         }
     }
 }

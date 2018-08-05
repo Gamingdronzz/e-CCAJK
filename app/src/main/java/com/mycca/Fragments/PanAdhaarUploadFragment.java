@@ -1,6 +1,7 @@
 package com.mycca.Fragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -70,7 +71,7 @@ import java.util.Map;
 
 public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    private static final int RC_BARCODE_CAPTURE = 9001;
+    private static final int RC_BARCODE = 9004;
     ImageView imageviewSelectedImage;
     TextView textViewFileName;
     Spinner spinnerCircle;
@@ -237,8 +238,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void initItems() {
         items = new ArrayList<>();
-
-        items.add(new FABMenuItem("Scan Aadhaar Card", AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
+        if (root.equals(FireBaseHelper.ROOT_ADHAAR))
+            items.add(new FABMenuItem("Scan Aadhaar Card", AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
         items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
         items.add(new FABMenuItem("Remove Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
@@ -451,10 +452,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     public void scanNow() {
-        // we need to check if the user has granted the camera permissions
-        // otherwise scanner will not work
+
         Log.d(TAG, "scanNow: ");
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+        //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
 //                == PackageManager.PERMISSION_DENIED) {
 //            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
 //            return;
@@ -469,8 +469,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         Intent intent = new Intent(mainActivity, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
         intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
-
-        startActivityForResult(intent, RC_BARCODE_CAPTURE);
+        mainActivity.startActivityForResult(intent, RC_BARCODE);
     }
 
     protected void processScannedData(String scanData) {
@@ -511,8 +510,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_BARCODE_CAPTURE) {
-            if (resultCode == CommonStatusCodes.SUCCESS) {
+        if (requestCode == RC_BARCODE) {
+            if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     Log.d(TAG, "Barcode read: " + barcode.displayValue);

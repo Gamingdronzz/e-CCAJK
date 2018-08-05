@@ -6,7 +6,6 @@ public class Contact {
     private String officeContact;
     private String mobileContact;
     private String email;
-    private String stateId;
 
     public boolean isExpanded() {
         return isExpanded;
@@ -58,22 +57,14 @@ public class Contact {
         this.email = email;
     }
 
-    public String getStateId() {
-        return stateId;
-    }
-
-    public void setStateId(String stateId) {
-        this.stateId = stateId;
-    }
-
-    Contact(String name, String designation, String email, String officeContact, String mobileContact, String stateId) {
+    Contact(String name, String designation, String email, String officeContact, String mobileContact) {
 
         this.name = name;
         this.email=email;
         this.designation = designation;
         this.officeContact = officeContact;
         this.mobileContact = mobileContact;
-        this.stateId=stateId;
+
     }
 
 

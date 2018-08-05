@@ -83,8 +83,8 @@ public class ContactUsFragment extends Fragment {
     private void init(boolean isMultiColumn) {
 
         activity = (MainActivity) getActivity();
-        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE));
-        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, getContext());
+        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList();
+        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, activity);
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

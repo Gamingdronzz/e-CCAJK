@@ -171,7 +171,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
 
     <!--invitation-->
     <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
-    <string name="invitation_message">Official Android Appication of CCA</string>
+    <string name="invitation_message">Official Android Application of CCA</string>
     <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
 
     <!-- CropView -->
