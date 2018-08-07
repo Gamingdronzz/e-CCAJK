@@ -1,6 +1,7 @@
-package com.mycca.Activity;
+package com.mycca.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,17 +15,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.mycca.Adapter.RecyclerViewAdapterTracking;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Listeners.ClickListener;
-import com.mycca.Listeners.OnConnectionAvailableListener;
-import com.mycca.Listeners.RecyclerViewTouchListeners;
-import com.mycca.Models.GrievanceModel;
+import com.mycca.adapter.RecyclerViewAdapterTracking;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.listeners.ClickListener;
+import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.listeners.RecyclerViewTouchListeners;
+import com.mycca.models.GrievanceModel;
 import com.mycca.R;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
 
@@ -45,13 +46,13 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_grievance_result);
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle("Track Grievance");
+            getSupportActionBar().setTitle(getString(R.string.track_grievances));
         init();
     }
 
     private void init() {
 
-        progressDialog = Helper.getInstance().getProgressWindow(this, "Checking for Applied Grievances\n\nPlease Wait...");
+        progressDialog = Helper.getInstance().getProgressWindow(this, getString(R.string.checking_grievance));
         progressDialog.show();
 
         grievanceModelArrayList = new ArrayList<>();
@@ -101,9 +102,9 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     private void onConnectionNotAvailable() {
         progressDialog.dismiss();
         Helper.getInstance().showFancyAlertDialog(this,
-                "No Internet Connection\nTurn on Internet Connection First",
-                "Track Grievance",
-                "OK",
+                getString(R.string.connect_to_internet),
+                getString(R.string.track_grievances),
+                getString(R.string.ok),
                 null,
                 null,
                 null,
@@ -127,13 +128,13 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
         dbref.child(FireBaseHelper.ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(final DataSnapshot dataSnapshot1, String s) {
+            public void onChildAdded(@NonNull final DataSnapshot dataSnapshot1, String s) {
                 try {
                     Log.d(TAG, "state key:" + dataSnapshot1.getKey());
                     dbref.child(FireBaseHelper.ROOT_GRIEVANCES).child(dataSnapshot1.getKey()).child(pensionerCode)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getValue() != null) {
                                         Log.d(TAG, "Datasnapshot: " + dataSnapshot);
                                         ManageNoGrievanceLayout(false);
@@ -143,7 +144,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
                             });
@@ -154,19 +155,19 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
@@ -178,7 +179,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                 .child(pensionerCode)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                         Log.d(TAG, "grievance key:" + dataSnapshot.getKey());
                         try {
 
@@ -202,7 +203,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
                         Log.d(TAG, "ChildChanged\n" + dataSnapshot);
                         GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
                         int counter = 0;
@@ -222,15 +223,15 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                     }
 
                     @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.d(TAG, "onCancelled: " + databaseError.getMessage());
                         progressDialog.dismiss();
                     }

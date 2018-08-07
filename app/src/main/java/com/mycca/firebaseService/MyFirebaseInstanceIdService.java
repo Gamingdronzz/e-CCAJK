@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.mycca.Tools.FireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 

@@ -7,12 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.mycca.adapter.RecyclerViewAdapterStates;
-import com.mycca.Listeners.ClickListener;
-import com.mycca.Listeners.RecyclerViewTouchListeners;
-import com.mycca.Models.State;
+import com.mycca.listeners.ClickListener;
+import com.mycca.listeners.RecyclerViewTouchListeners;
+import com.mycca.models.State;
 import com.mycca.R;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 public class StateSettingActivity extends AppCompatActivity {
 

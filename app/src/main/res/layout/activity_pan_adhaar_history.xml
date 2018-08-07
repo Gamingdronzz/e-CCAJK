@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mycca.Unused.PanAdhaarHistoryActivity">
+    tools:context="com.mycca.unused.PanAdhaarHistoryActivity">
 
     <TextView
         android:id="@+id/textview_current"

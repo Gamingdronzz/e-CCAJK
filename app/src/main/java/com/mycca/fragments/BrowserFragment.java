@@ -1,10 +1,9 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -130,13 +129,13 @@ public class BrowserFragment extends Fragment {
             }
 
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                setSubtitle("Some Error Occurred. Please Refresh");
+                setSubtitle(getString(R.string.some_error));
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                setSubtitle("Loading...");
+                setSubtitle(getString(R.string.loading));
                 progressBar.setVisibility(View.VISIBLE);
                 progressAnimator.setIntValues(50,progressBar.getProgress());
                 progressAnimator.setDuration(300);

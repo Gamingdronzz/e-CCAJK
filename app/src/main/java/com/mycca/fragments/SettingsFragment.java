@@ -1,4 +1,4 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.app.AlertDialog;
@@ -16,14 +16,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.mycca.Activity.IntroActivity;
-import com.mycca.Activity.MainActivity;
-import com.mycca.Activity.StateSettingActivity;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.activity.IntroActivity;
+import com.mycca.activity.MainActivity;
+import com.mycca.activity.StateSettingActivity;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 import java.util.Locale;
 
@@ -99,17 +99,15 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        String text = "Current State: " + Helper.getInstance().getStateName(
-                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE));
-        tvCurrentState.setText(text);
+        tvCurrentState.setText(String.format(getString(R.string.current_state),
+                Helper.getInstance().getStateName(Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE))));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);
         });
 
         Locale loc = Locale.getDefault();
-        String text1 = "Language: " + loc.getDisplayLanguage(loc);
-        tvCurrentLang.setText(text1);
+        tvCurrentLang.setText(String.format(getString(R.string.language), loc.getDisplayLanguage(loc)));
         layoutChangeLang.setOnClickListener(v -> showLanguageDialog());
 
         tvHelp.setOnClickListener(v -> {
@@ -121,19 +119,17 @@ public class SettingsFragment extends Fragment {
         layoutSignInOut.setOnClickListener(v -> {
             if (mAuth.getCurrentUser() != null) {
                 Helper.getInstance().showFancyAlertDialog(getActivity(),
-                        "Sign out from Google?",
-                        "Sign Out",
-                        "OK",
+                        getString(R.string.sign_out_from_google),
+                        getString(R.string.sign_out),
+                        getString(R.string.ok),
                         () -> {
                             activity.signOutFromGoogle();
-                            Helper.getInstance().showFancyAlertDialog(getActivity(), "", "Signed Out", "OK", () -> {
-
+                            Helper.getInstance().showFancyAlertDialog(getActivity(), "", getString(R.string.signed_out), getString(R.string.ok), () -> {
                             }, null, null, FancyAlertDialogType.SUCCESS);
                             manageSignOut();
                         },
-                        "Cancel",
+                        getString(android.R.string.cancel),
                         () -> {
-
                         },
                         FancyAlertDialogType.WARNING);
             } else {
@@ -152,10 +148,9 @@ public class SettingsFragment extends Fragment {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.dialog_select_language, (ViewGroup) getView(), false);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setView(v)
-                .setNegativeButton("Cancel", (dialog, which) -> {
-
+                .setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> {
                 })
-                .setPositiveButton("Select", (dialog, which) -> {
+                .setPositiveButton(getString(R.string.select), (dialog, which) -> {
                     final RadioGroup rg = v.findViewById(R.id.radio_group_language);
                     Helper.getInstance().showReloadWarningDialog(activity, () -> {
                         if (rg.getCheckedRadioButtonId() == R.id.rBEnglish)
@@ -171,12 +166,12 @@ public class SettingsFragment extends Fragment {
     public void manageSignOut() {
         if (mAuth.getCurrentUser() == null) {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawbale_login_24dp, 0, 0, 0);
-            tvSignOut.setText(getResources().getString(R.string.sign_in));
+            tvSignOut.setText(getString(R.string.sign_in));
             tvAccount.setVisibility(View.INVISIBLE);
         } else {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_logout, 0, 0, 0);
-            tvSignOut.setText(getResources().getString(R.string.sign_out));
-            String user = "Signed In: " + mAuth.getCurrentUser().getEmail();
+            tvSignOut.setText(getString(R.string.sign_out));
+            String user = String.format(getString(R.string.signed_in), mAuth.getCurrentUser().getEmail());
             tvAccount.setVisibility(View.VISIBLE);
             tvAccount.setText(user);
         }

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.Preferences;
 
 
 /**

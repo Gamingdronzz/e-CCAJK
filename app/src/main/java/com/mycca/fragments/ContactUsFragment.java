@@ -1,4 +1,4 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.content.Intent;
@@ -11,23 +11,18 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.mycca.Activity.MainActivity;
-import com.mycca.Adapter.RecyclerViewAdapterContacts;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
-import com.mycca.CustomObjects.FancyShowCase.FocusShape;
-import com.mycca.Models.Contact;
+import com.mycca.activity.MainActivity;
+import com.mycca.adapter.RecyclerViewAdapterContacts;
+import com.mycca.models.Contact;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
 
@@ -59,10 +54,10 @@ public class ContactUsFragment extends Fragment {
         else {
             init(false);
         }
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_CONTACT)) {
-            showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_CONTACT, false);
-        }
+        //        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_CONTACT)) {
+//            showTutorial();
+//            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_CONTACT, false);
+//        }
         return view;
 
     }
@@ -74,7 +69,7 @@ public class ContactUsFragment extends Fragment {
         textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
         textviewContactPersonHeading = view.findViewById(R.id.textview_contact_person_heading);
         textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
-        textViewOfficeAddress.setText(getGeneralText(Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_STATE)));
+        textViewOfficeAddress.setText(getGeneralText());
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
         compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
 
@@ -117,47 +112,50 @@ public class ContactUsFragment extends Fragment {
         }
     }
 
-    private void showTutorial() {
 
-        contactArrayList.get(0).setExpanded(true);
-        adapterContacts.notifyItemChanged(0);
 
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
-                .title("Touch to open office address")
-                .focusOn(textviewHeadingOfficeAddress)
-                .focusShape(FocusShape.ROUNDED_RECTANGLE)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
-                .title("Tap on any contact to open or close contact information")
-                .focusOn(recyclerView)
-                .focusCircleRadiusFactor(.8)
-                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
-                .title("Tap on phone numbers to make call or on email to compose email")
-                .focusOn(recyclerView)
-                .focusCircleRadiusFactor(.6)
-                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
-                .build();
-
-        activity.setmQueue(new FancyShowCaseQueue()
-                .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2)
-                .add(fancyShowCaseView3));
-
-        activity.getmQueue().setCompleteListener(() -> {
-            activity.setmQueue(null);
-            contactArrayList.get(0).setExpanded(false);
-            adapterContacts.notifyItemChanged(0);
-        });
-
-        activity.getmQueue().show();
-    }
-
-    private String getGeneralText(String prefState) {
+    private String getGeneralText() {
         return getResources().getString(R.string.contact_info);
     }
 
 }
+
+
+//    private void showTutorial() {
+//
+//        contactArrayList.get(0).setExpanded(true);
+//        adapterContacts.notifyItemChanged(0);
+//
+//        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
+//                .title("Touch to open office address")
+//                .focusOn(textviewHeadingOfficeAddress)
+//                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
+//                .title("Tap on any contact to open or close contact information")
+//                .focusOn(recyclerView)
+//                .focusCircleRadiusFactor(.8)
+//                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
+//                .title("Tap on phone numbers to make call or on email to compose email")
+//                .focusOn(recyclerView)
+//                .focusCircleRadiusFactor(.6)
+//                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.TOP | Gravity.CENTER)
+//                .build();
+//
+//        activity.setmQueue(new FancyShowCaseQueue()
+//                .add(fancyShowCaseView1)
+//                .add(fancyShowCaseView2)
+//                .add(fancyShowCaseView3));
+//
+//        activity.getmQueue().setCompleteListener(() -> {
+//            activity.setmQueue(null);
+//            contactArrayList.get(0).setExpanded(false);
+//            adapterContacts.notifyItemChanged(0);
+//        });
+//
+//        activity.getmQueue().show();
+//    }

@@ -1,4 +1,4 @@
-package com.mycca.Adapter;
+package com.mycca.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mycca.Models.Contact;
+import com.mycca.models.Contact;
 import com.mycca.R;
 
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                 String number = mobile.getText().toString();
                 Log.v("Adapter", "Contact = " + number);
                 if (number.equals(na)) {
-                    Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,context.getString(R.string.contact_na) , Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + number));
@@ -104,9 +104,8 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
             office.setOnClickListener(v -> {
                 String number = office.getText().toString();
-                Log.v("Adapter", "Contact = " + number);
                 if (number.equals(na)) {
-                    Toast.makeText(v.getContext(), "Contact details not available for this person", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.contact_na), Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + "0191" + number));
@@ -118,7 +117,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
                 String mail = email.getText().toString();
                 Log.v("Adapter", "Contact = " + mail);
                 if (mail.equals(na)) {
-                    Toast.makeText(v.getContext(), "Email not available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.email_na), Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Intent.ACTION_SENDTO);
                     intent.setData(Uri.parse("mailto:"));

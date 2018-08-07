@@ -1,8 +1,7 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +10,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,32 +22,26 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.mycca.Activity.MainActivity;
-import com.mycca.Adapter.RecyclerViewAdapterNews;
-import com.mycca.CustomObjects.CustomImageSlider.SliderLayout;
-import com.mycca.CustomObjects.CustomImageSlider.SliderTypes.BaseSliderView;
-import com.mycca.CustomObjects.CustomImageSlider.SliderTypes.TextSliderView;
-import com.mycca.CustomObjects.CustomImageSlider.Tricks.ViewPagerEx;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
-import com.mycca.CustomObjects.FancyShowCase.FocusShape;
-import com.mycca.Models.NewsModel;
-import com.mycca.Models.SliderImageModel;
+import com.mycca.activity.MainActivity;
+import com.mycca.adapter.RecyclerViewAdapterNews;
+import com.mycca.custom.CustomImageSlider.SliderLayout;
+import com.mycca.custom.CustomImageSlider.SliderTypes.BaseSliderView;
+import com.mycca.custom.CustomImageSlider.SliderTypes.TextSliderView;
+import com.mycca.custom.CustomImageSlider.Tricks.ViewPagerEx;
+import com.mycca.models.NewsModel;
+import com.mycca.models.SliderImageModel;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     SliderLayout sliderLayout;
-    ImageView imageView;
     RecyclerView recyclerView;
     TextView tvLatestNews, tvUserName, tvVisit;
     ImageButton moveRight, moveLeft;
     LinearLayoutManager linearLayoutManager;
-    //private TextView welcomeText, ccaDeskText;
     View view;
     final String TAG = "HomeFragment";
     RecyclerViewAdapterNews adapterNews;
@@ -68,18 +59,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         view = inflater.inflate(R.layout.fragment_home, container, false);
         bindViews(view);
         init();
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_HOME)) {
-            showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_HOME, false);
-        }
+        //        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_HOME)) {
+//            showTutorial();
+//            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_HOME, false);
+//        }
         return view;
     }
 
     private void bindViews(View view) {
-        //welcomeText = view.findViewById(R.id.textview_welcome_short);
-        //ccaDeskText = view.findViewById(R.id.textview_cca_desk);
         sliderLayout = view.findViewById(R.id.slider_home);
-        //imageView = view.findViewById(R.id.image_view_home);
         tvLatestNews = view.findViewById(R.id.tv_home_latest_news);
         recyclerView = view.findViewById(R.id.recycler_view_home_latest_news);
         moveRight = view.findViewById(R.id.img_btn_move_right);
@@ -89,43 +77,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void init() {
-        //        SpannableStringBuilder builder = new SpannableStringBuilder();
-//        SpannableString str1 = new SpannableString(getText(R.string.welcome_short));
-//        builder.append(str1);
-//        SpannableString str2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
-//        str2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, str2.length(), 0);
-//        builder.append(str2);
-//
-//        welcomeText.setText(builder, TextView.BufferType.SPANNABLE);
-//        welcomeText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(HomeFragment.this.activity, AboutUsActivity.class);
-//                intent.putExtra("Text", getString(R.string.welcome_full));
-//                intent.putExtra("Title", "Welcome to CCA JK");
-//                startActivity(intent);
-//            }
-//        });
-//
-//
-//        SpannableStringBuilder builder2 = new SpannableStringBuilder();
-//        SpannableString string1 = new SpannableString(getText(R.string.from_cca_desk_short));
-//        builder2.append(string1);
-//        SpannableString string2 = new SpannableString(Html.fromHtml("<b>Read More</b>"));
-//        string2.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, string2.length(), 0);
-//        builder2.append(string2);
-//
-//        ccaDeskText.setText(builder2, TextView.BufferType.SPANNABLE);
-//        ccaDeskText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(HomeFragment.this.activity, AboutUsActivity.class);
-//                intent.putExtra("Text", getString(R.string.from_cca_desk));
-//                intent.putExtra("Title", "From CCA's Desk");
-//                startActivity(intent);
-//            }
-//        });
-
 
         activity = (MainActivity) getActivity();
         tvVisit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
@@ -142,7 +93,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             }
         });
 
-        tvLatestNews.setOnClickListener(v -> activity.showFragment("Latest News", new LatestNewsFragment(), null));
+        tvLatestNews.setOnClickListener(v -> activity.showFragment(getString(R.string.latest_news), new LatestNewsFragment(), null));
 
         newsModelArrayList = new ArrayList<>();
         adapterNews = new RecyclerViewAdapterNews(newsModelArrayList, activity, true);
@@ -152,7 +103,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 //        linearLayoutManager.setStackFromEnd(true);
 //        linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-//
+
 //        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
 //        linearLayoutManager.setStackFromEnd(true);
 //        recyclerView.setLayoutManager(linearLayoutManager);
@@ -177,10 +128,10 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         dbref.child(FireBaseHelper.ROOT_NEWS)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                            newsModelArrayList.add(0,newsModel);
+                            newsModelArrayList.add(0, newsModel);
                             adapterNews.notifyItemInserted(0);
                             Log.d(TAG, "onChildAdded: " + newsModel.getHeadline());
                             recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
@@ -188,7 +139,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                             for (int i = 0; i < newsModelArrayList.size(); i++) {
@@ -197,7 +148,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                                     adapterNews.notifyItemRemoved(i);
                                     newsModelArrayList.add(i, newsModel);
                                     adapterNews.notifyItemInserted(i);
-                                    Log.d(TAG, "onChildChanged: "+ newsModel.getHeadline() + " pos - " + i);
+                                    Log.d(TAG, "onChildChanged: " + newsModel.getHeadline() + " pos - " + i);
                                     break;
                                 }
                             }
@@ -206,7 +157,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     }
 
                     @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                             for (NewsModel nm : newsModelArrayList) {
@@ -220,12 +171,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     }
 
                     @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });
@@ -235,7 +186,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
         if (user != null) {
             tvUserName.setVisibility(View.VISIBLE);
-            String username = "Hello " + user.getDisplayName();
+            String username = getString(R.string.hello) + " " + user.getDisplayName();
             tvUserName.setText(username);
         } else
             tvUserName.setVisibility(View.GONE);
@@ -256,22 +207,22 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
@@ -306,47 +257,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         }
     }
 
-    private void showTutorial() {
-
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
-                .title("Tap on images to open respective websites. Tap anywhere to continue")
-                .focusOn(sliderLayout)
-                .focusShape(FocusShape.ROUNDED_RECTANGLE)
-                .fitSystemWindows(true)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
-                .title("Tap on news to view in detail")
-                .focusOn(recyclerView)
-                .focusShape(FocusShape.ROUNDED_RECTANGLE)
-                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
-                .fitSystemWindows(true)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
-                .title("Open Main Menu from here")
-                .focusCircleAtPosition(0, 0, 200)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(activity)
-                .title("Touch here to open Secondary Menu")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
-                .build();
-
-        activity.setmQueue(new FancyShowCaseQueue()
-                .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2)
-                .add(fancyShowCaseView3)
-                .add(fancyShowCaseView4));
-        activity.getmQueue().setCompleteListener(() -> {
-            activity.setmQueue(null);
-            if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
-                activity.showAuthDialog(false);
-        });
-
-        activity.getmQueue().show();
-    }
-
     @Override
     public void onStop() {
         sliderLayout.stopAutoCycle();
@@ -377,3 +287,44 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
 }
+
+//    private void showTutorial() {
+//
+//        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
+//                .title("Tap on images to open respective websites. Tap anywhere to continue")
+//                .focusOn(sliderLayout)
+//                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+//                .fitSystemWindows(true)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
+//                .title("Tap on news to view in detail")
+//                .focusOn(recyclerView)
+//                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+//                .titleStyle(R.style.FancyShowCaseDefaultTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
+//                .fitSystemWindows(true)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
+//                .title("Open Main Menu from here")
+//                .focusCircleAtPosition(0, 0, 200)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView4 = new FancyShowCaseView.Builder(activity)
+//                .title("Touch here to open Secondary Menu")
+//                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels, 0, 200)
+//                .build();
+//
+//        activity.setmQueue(new FancyShowCaseQueue()
+//                .add(fancyShowCaseView1)
+//                .add(fancyShowCaseView2)
+//                .add(fancyShowCaseView3)
+//                .add(fancyShowCaseView4));
+//        activity.getmQueue().setCompleteListener(() -> {
+//            activity.setmQueue(null);
+//            if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null)
+//                activity.showAuthDialog(false);
+//        });
+//
+//        activity.getmQueue().show();
+//    }

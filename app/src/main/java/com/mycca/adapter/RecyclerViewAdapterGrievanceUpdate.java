@@ -13,9 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mycca.activity.UpdateGrievanceActivity;
-import com.mycca.Models.GrievanceModel;
+import com.mycca.models.GrievanceModel;
 import com.mycca.R;
-import com.mycca.Tools.Helper;
+import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
 

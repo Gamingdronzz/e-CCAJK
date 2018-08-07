@@ -1,4 +1,4 @@
-package com.mycca.Activity;
+package com.mycca.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,22 +8,19 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.mycca.Models.NewsModel;
+import com.mycca.models.NewsModel;
 import com.mycca.R;
-import com.mycca.Tools.Helper;
+import com.mycca.tools.Helper;
 
 public class NewsActivity extends AppCompatActivity {
-    //private AnimatedDismissableCard animatedCard;
     TextView headline, date, description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-        //MyNewAnimatedCardBinding binding = DataBindingUtil.setContentView(R.layout.activity_news);
-        //animatedCard = new AnimatedDismissableCard(this, binding.yourViewGroupLayout);
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle("Latest from CCA");
+            getSupportActionBar().setTitle(getString(R.string.latest_from_cca));
         bindViews();
         init();
     }

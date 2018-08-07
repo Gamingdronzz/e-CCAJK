@@ -16,9 +16,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mycca.activity.TrackGrievanceResultActivity;
-import com.mycca.Notification.Constants;
+import com.mycca.notification.Constants;
 import com.mycca.R;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.Preferences;
 
 import java.util.Random;
 

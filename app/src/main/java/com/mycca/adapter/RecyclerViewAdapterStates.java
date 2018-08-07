@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mycca.R;
-import com.mycca.Tools.Helper;
+import com.mycca.tools.Helper;
 
 
 public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerViewAdapterStates.StatesViewHolder> {

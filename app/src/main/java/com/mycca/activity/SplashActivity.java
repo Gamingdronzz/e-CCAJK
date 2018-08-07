@@ -1,9 +1,10 @@
-package com.mycca.Activity;
+package com.mycca.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -14,12 +15,12 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mycca.Listeners.OnConnectionAvailableListener;
+import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.R;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Helper.getInstance().setLocale(this);
         setContentView(R.layout.activity_splash);
-        Log.d(TAG, "test: "+Preferences.getInstance().getBooleanPref(this,Preferences.PREF_TEST));
+        //Log.d(TAG, "test: "+Preferences.getInstance().getBooleanPref(this,Preferences.PREF_TEST));
         bindVIews();
         init();
         StartAnimations();
@@ -48,10 +49,10 @@ public class SplashActivity extends AppCompatActivity {
         currentVersionName = getAppVersionName();
         String text;
         if (currentVersionName.equals(""))
-            text = "Version - N/A";
+            text = getString(R.string.n_a);
         else
-            text = "Version - " + currentVersionName;
-        tvSplashVersion.setText(text);
+            text = currentVersionName;
+        tvSplashVersion.setText(String.format(getString(R.string.version), text));
         Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
     }
 
@@ -99,13 +100,13 @@ public class SplashActivity extends AppCompatActivity {
                 Log.d(TAG, "version checked =" + Helper.versionChecked);
                 FireBaseHelper.getInstance(SplashActivity.this).checkForUpdate(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (Helper.getInstance().onLatestVersion(dataSnapshot, SplashActivity.this))
                             LoadNextActivity();
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         LoadNextActivity();
                     }
                 });

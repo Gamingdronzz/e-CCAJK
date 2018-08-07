@@ -78,10 +78,6 @@
     <string name="message">Message:</string>
     <string name="headline">Headline</string>
     <string name="details">Details</string>
-    <string name="confirm_new_password">Confirm new Password</string>
-    <string name="new_password">New password</string>
-    <string name="old_password">Old password</string>
-    <string name="change_password">Change Password</string>
     <string name="login">Log In</string>
     <string name="change">CHANGE</string>
     <string name="update">UPDATE</string>
@@ -105,6 +101,27 @@
     <string name="under_process">Under Process</string>
     <string name="resolved">Resolved</string>
 
+    <!--grievance types-->
+    <string name="change_of_pda">Change of PDA</string>
+    <string name="correction_in_ppo">Correction in PPO</string>
+    <string name="wrong_fixation">Wrong Fixation of Pension</string>
+    <string name="non_updation_da">Non Updation of DA</string>
+    <string name="non_payment_monthly">Non Payment of Monthly Pension</string>
+    <string name="non_payment_medical">Non Payment of Medical Allowance</string>
+    <string name="non_starting_pension">Non Starting of Family Pension</string>
+    <string name="non_revision">Non Revision as per Latest CPC</string>
+    <string name="request_cgies">Request for CGIES</string>
+    <string name="excess_short_payment">Excess/Short Payment</string>
+    <string name="enhancement_on_75_80">Enhancement of Pension on Attaining 75/80</string>
+    <string name="other_pension_gr">Other Pension Grievance</string>
+    <string name="gpf_final_not_received">GPF Final Payment not received</string>
+    <string name="correction_name">Correction in the Name</string>
+    <string name="change_nomination">Change of Nomination</string>
+    <string name="gpf_acc_not_transferred">GPF Account not transferred</string>
+    <string name="details_of_gpf_deposit">Details of GPF Deposit A/C Slip</string>
+    <string name="non_payment_gpf_withdrawal">Non Payment of GPF Withdrawal</string>
+    <string name="other_gpf_gr">Other GPF Grievance</string>
+
     <!--splash -->
     <string name="splash_text">Office of CCA, J&amp;K Circle\nJAMMU\nDepartment of Telecommunications</string>
     <string name="version">Version %1$s</string>
@@ -123,14 +140,29 @@
     <string name="password_mismatch">Password Mismatch</string>
 
     <!--grievance-->
+    <string name="pension">Pension</string>
+    <string name="gpf">GPF</string>
     <string name="invalid_p_code">Enter Valid Pensioner Code</string>
     <string name="invalid_hr_num">Enter Valid HR Number</string>
     <string name="invalid_staff_num">Enter Valid Staff Number</string>
     <string name="invalid_mobile">Enter Valid Mobile No</string>
     <string name="invalid_email">Enter Valid Email</string>
     <string name="empty_detail">Add details</string>
+    <string name="pensioner">Pensioner</string>
+    <string name="gpf_benificiary">GPF Benificiary</string>
+    <string name="other">Other</string>
     <string name="grievance_submission_success">%1$s Grievance for\n %2$s \nwith Reference Number\n %3$s \nhas been successfully submitted</string>
     <string name="grievance_submission_fail">Grievance Submission Failed\nTry Again</string>
+
+    <!--panAdhaar-->
+    <string name="number">%1$s Number</string>
+    <string name="invalid_aadhaar">Invalid Aadhaar Number</string>
+    <string name="invalid_pan">Invalid Pan Number</string>
+    <string name="invalid_name">Invalid Name</string>
+    <string name="re_marriage">Re-Marriage Certificate</string>
+    <string name="re_employment">Re-Employment Certificate</string>
+    <string name="updation_success">update request for %1$s has been submitted successfully</string>
+    <string name="updation_failed">Request for Updation Failed\nTry Again</string>
 
     <!--contact us-->
     <string name="office_address">Office Address</string>
@@ -153,6 +185,15 @@
     <string name="within">WITHIN %1$s KM</string>
     <string name="all_locations">ALL LOCATIONS</string>
     <string name="nearby">NEARBY</string>
+    <string name="no_locations_found">No Locations found</string>
+    <string name="increase_radius">No Locations nearby\nIncrease Radius</string>
+    <string name="current_pos">Current Position</string>
+    <string name="enable_location">Please Enable Location and Internet</string>
+    <string name="you_are_here">You are here</string>
+    <string name="turning_on_location">Turning Location On\nPlease wait…</string>
+    <string name="loc_off">LOCATION OFF!\nUnable to get nearby locations without location access.</string>
+    <string name="location_denied">Location Permission denied !\nHotspot Locator will not work without location access.\n\nPlease grant location access</string>
+
 
     <!--inspection-->
     <string name="current_location">Current Location\n%1$s,%2$s</string>
@@ -216,6 +257,20 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="signed_out">Signed Out</string>
     <string name="select">SELECT</string>
 
+    <!--change password-->
+    <string name="confirm_new_password">Confirm new Password</string>
+    <string name="new_password">New password</string>
+    <string name="old_password">Old password</string>
+    <string name="change_password">Change Password</string>
+    <string name="empty_old">Enter Old Password</string>
+    <string name="empty_new">Enter New Password</string>
+    <string name="new_not_matching">Confirm password not matching new password</string>
+    <string name="google_signin_first">Please Sign in with google first</string>
+    <string name="try_after_signin">Try again after Sign in</string>
+    <string name="password_change_success">Password Changed Successfully</string>
+    <string name="password_change_fail">Password could not be changed</string>
+    <string name="incorrect_old">Incorrect old password</string>
+
     <!--progress dialog messages-->
     <string name="signing_in">Signing In…</string>
     <string name="please_wait">Please Wait…</string>
@@ -225,7 +280,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="uploading_files">Uploading Files…\nPlease Wait</string>
     <string name="uploaded_file">Uploaded File %1$s / %2$s</string>
     <string name="almost_done">Almost Done…</string>
-
+    <string name="getting_coordinates">Getting Current Location Coordinates</string>
 
     <!--others-->
     <string name="no_internet">Internet Connection Not Available</string>
@@ -236,6 +291,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="skip">SKIP</string>
     <string name="finish">FINISH</string>
     <string name="ok">OK</string>
+    <string name="confirm">CONFIRM</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_in_with_google">Sign In with Google</string>
     <string name="sign_in_success">Sign in Successful</string>
@@ -253,6 +309,11 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="file_not_uploaded">Files could not be uploaded\nTry Again</string>
     <string name="loading">Loading…</string>
     <string name="file">File-</string>
+    <string name="reload_app">Reload App?</string>
+    <string name="reload">RELOAD</string>
+    <string name="reload_req">This feature requires reloading of app</string>
+    <string name="update_available">A new version of the application is available on Google Play Store\nUpdate to continue using the application</string>
+    <string name="app_maintenance">The Application is in maintenance\nPlease wait for a while\nThank you for your patience</string>
 
     <!--invitation-->
     <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>

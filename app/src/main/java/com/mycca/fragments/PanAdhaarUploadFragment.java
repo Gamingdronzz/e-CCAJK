@@ -1,4 +1,4 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.app.Activity;
@@ -34,27 +34,27 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
-import com.mycca.Activity.MainActivity;
-import com.mycca.Adapter.GenericSpinnerAdapter;
-import com.mycca.CustomObjects.BarCode.BarcodeCaptureActivity;
-import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImage;
-import com.mycca.CustomObjects.CustomImagePicker.Cropper.CropImageView;
-import com.mycca.CustomObjects.CustomImagePicker.ImagePicker;
-import com.mycca.CustomObjects.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
-import com.mycca.CustomObjects.FabRevealMenu.FabModel.FABMenuItem;
-import com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Listeners.OnConnectionAvailableListener;
-import com.mycca.Models.PanAdhaar;
-import com.mycca.Models.SelectedImageModel;
-import com.mycca.Models.State;
+import com.mycca.activity.MainActivity;
+import com.mycca.adapter.GenericSpinnerAdapter;
+import com.mycca.custom.barCode.BarcodeCaptureActivity;
+import com.mycca.custom.customImagePicker.cropper.CropImage;
+import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.custom.customImagePicker.ImagePicker;
+import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
+import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
+import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.PanAdhaar;
+import com.mycca.models.SelectedImageModel;
+import com.mycca.models.State;
 import com.mycca.R;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.DataSubmissionAndMail;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.VolleyHelper;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.DataSubmissionAndMail;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -129,19 +129,19 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void init(View view) {
         mainActivity = (MainActivity) getActivity();
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), getString(R.string.please_wait));
         volleyHelper = new VolleyHelper(this, getContext());
         initItems();
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioButtonPensioner:
-                    hint = "Pensioner Code";
+                    hint = getString(R.string.p_code);
                     inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
                     break;
 
                 case R.id.radioButtonHR:
-                    hint = "HR Number";
+                    hint = getString(R.string.hr_num);
                     inputPCode.setFilters(new InputFilter[]{});
                     break;
             }
@@ -155,7 +155,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
                 inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
                 inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
-                textInputNumber.setHint(root + " Number");
+                textInputNumber.setHint(getString(R.string.aadhaar_no));
                 break;
             case FireBaseHelper.ROOT_PAN:
 
@@ -168,11 +168,11 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     }
                     return "";
                 }});
-                textInputNumber.setHint(root + " Number");
+                textInputNumber.setHint(getString(R.string.pan_no));
                 break;
             default:
                 linearLayout.setVisibility(View.GONE);
-                textInputNumber.setHint("Applicant's Name");
+                textInputNumber.setHint(getString(R.string.applicant_name));
                 break;
         }
 
@@ -239,9 +239,9 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void initItems() {
         items = new ArrayList<>();
         if (root.equals(FireBaseHelper.ROOT_ADHAAR))
-            items.add(new FABMenuItem("Scan Aadhaar Card", AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
-        items.add(new FABMenuItem("Add Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem("Remove Image", AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+            items.add(new FABMenuItem(getString(R.string.scan_adhaar), AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
+        items.add(new FABMenuItem(getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem(getString(R.string.remove_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
     private boolean checkInputBeforeSubmission() {
@@ -249,28 +249,28 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         number = inputNumber.getText().toString();
         state = (State) spinnerCircle.getSelectedItem();
         //If Pensioner code is empty
-        if (pensionerCode.trim().length() != 15 && hint.equals("Pensioner Code")) {
-            inputPCode.setError("Enter Valid Pensioner Code");
+        if (pensionerCode.trim().length() != 15 && hint.equals(getString(R.string.p_code))) {
+            inputPCode.setError(getString(R.string.invalid_p_code));
             inputPCode.requestFocus();
             return false;
-        } else if (pensionerCode.trim().isEmpty() && hint.equals("HR Number")) {
-            inputPCode.setError("Enter Valid HR Code");
+        } else if (pensionerCode.trim().isEmpty() && hint.equals(getString(R.string.hr_num))) {
+            inputPCode.setError(getString(R.string.invalid_hr_num));
             inputPCode.requestFocus();
             return false;
         }
         //If Aadhar Number is not complete
         else if ((root.equals(FireBaseHelper.ROOT_ADHAAR)) && (number.length() != 12)) {
-            inputNumber.setError("Invalid Aadhaar Number");
+            inputNumber.setError(getString(R.string.invalid_aadhaar));
             inputNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
         else if ((root.equals(FireBaseHelper.ROOT_PAN)) && (number.length() != 10)) {
-            inputNumber.setError("Invalid Pan Number");
+            inputNumber.setError(getString(R.string.invalid_pan));
             inputNumber.requestFocus();
             return false;
         } else if (number.isEmpty()) {
-            inputNumber.setError("Invalid Name");
+            inputNumber.setError(getString(R.string.invalid_name));
             inputNumber.requestFocus();
             return false;
         }
@@ -300,14 +300,14 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
                                 doSubmissionOnInternetAvailable();
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Helper.getInstance().showMaintenanceDialog(getActivity());
                         }
                     });
                 } else
@@ -323,10 +323,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void showNoInternetConnectionDialog() {
-        Helper.getInstance().showErrorDialog(
-                "No Internet Connection\nPlease turn on internet connection before updating " + root,
-                "Update " + root,
-                getActivity());
+        Helper.getInstance().showErrorDialog(getString(R.string.no_internet),
+                getString(R.string.update_information), getActivity());
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -355,10 +353,17 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         circle.setText(state.getName());
         TextView heading = v.findViewById(R.id.textview_mobile_no);
         String text;
-        if (root.equals(FireBaseHelper.ROOT_PAN) || root.equals(FireBaseHelper.ROOT_ADHAAR))
-            text = root + " No:";
-        else
-            text = "Applicant's Name: ";
+        switch (root) {
+            case FireBaseHelper.ROOT_PAN:
+                text = getString(R.string.pan_no);
+                break;
+            case FireBaseHelper.ROOT_ADHAAR:
+                text = getString(R.string.aadhaar_no);
+                break;
+            default:
+                text = getString(R.string.applicant_name);
+                break;
+        }
         heading.setText(text);
 
         TextView value = v.findViewById(R.id.textview_mobile_value);
@@ -390,7 +395,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                Helper.getInstance().showMaintenanceDialog(getActivity());
             }
         });
     }
@@ -405,7 +410,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(exception -> {
-                Helper.getInstance().showErrorDialog("Unable to Upload file", "Update Error", getActivity());
+                Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.update_information), getActivity());
                 Log.d(TAG, "onFailure: " + exception.getMessage());
                 progressDialog.dismiss();
             }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
@@ -420,7 +425,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void uploadImagesToServer() {
 
-        progressDialog.setMessage("Processing..");
+        progressDialog.setMessage(getString(R.string.processing));
         String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
 
         try {
@@ -431,13 +436,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     volleyHelper);
         } catch (Exception e) {
             e.printStackTrace();
-            Helper.getInstance().showErrorDialog("Some Error Occured", "Update Error", getActivity());
+            Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), getActivity());
         }
     }
 
     private void sendFinalMail() {
 
-        progressDialog.setMessage("Almost Done..");
+        progressDialog.setMessage(getString(R.string.almost_done));
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
         Map<String, String> params = new HashMap<>();
 
@@ -575,7 +580,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     @Override
     public void onError(VolleyError volleyError) {
         progressDialog.dismiss();
-        Helper.getInstance().showErrorDialog("Some Error Occurred.", "Please try Again", mainActivity);
+        Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
     }
 
     @Override
@@ -590,45 +595,45 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     doSubmission();
                 } else {
                     Log.d(TAG, "onResponse: Image upload failed");
-                    Helper.getInstance().showErrorDialog("File Uploading Failed", "Update Error", getActivity());
+                    Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.update_information), getActivity());
                     progressDialog.dismiss();
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     progressDialog.dismiss();
                     isUploadedToServer = isUploadedToFirebase = false;
-                    String alertMessage = (root + " update request for<br>") +
-                            "<b>" + pensionerCode + "</b>" +
-                            "<br>has been submitted successfully";
-                    Helper.getInstance().showFancyAlertDialog(getActivity(), alertMessage, root
-                                    + " Update", "OK", () -> {
+
+                    Helper.getInstance().showFancyAlertDialog(getActivity(),
+                            String.format(getString(R.string.updation_success), pensionerCode),
+                            getString(R.string.update_information),
+                            getString(R.string.ok), () -> {
                             },
                             null, null, FancyAlertDialogType.SUCCESS);
 
                 } else {
                     progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog(root + " update request failed",
-                            "Update Error",
+                    Helper.getInstance().showErrorDialog(getString(R.string.updation_failed),
+                            getString(R.string.update_information),
                             getActivity());
                 }
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
-            Helper.getInstance().showErrorDialog("Please Try Again", "Some Error Occurred", mainActivity);
+            Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
             progressDialog.dismiss();
         }
     }
 
     @Override
     public void onMenuItemSelected(View view, int id) {
-        switch (items.get(id).getTitle()) {
-            case "Scan Aadhaar Card":
+        switch (id) {
+            case R.string.scan_adhaar:
                 scanNow();
                 break;
-            case "Add Image":
+            case R.string.add_image:
                 showImageChooser();
                 break;
-            case "Remove Image":
+            case R.string.remove_image:
                 imageviewSelectedImage.setImageResource(0);
                 textViewFileName.setText(getResources().getString(R.string.no_image));
                 break;

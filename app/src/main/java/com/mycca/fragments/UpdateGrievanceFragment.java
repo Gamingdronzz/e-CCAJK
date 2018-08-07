@@ -1,8 +1,7 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -18,18 +17,15 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.mycca.Activity.MainActivity;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Listeners.OnConnectionAvailableListener;
+import com.mycca.activity.MainActivity;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.R;
-import com.mycca.Tabs.UpdateGrievance.TabResolved;
-import com.mycca.Tabs.UpdateGrievance.TabSubmitted;
-import com.mycca.Tabs.UpdateGrievance.TabUnderProcess;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tabs.updateGrievance.TabResolved;
+import com.mycca.tabs.updateGrievance.TabSubmitted;
+import com.mycca.tabs.updateGrievance.TabUnderProcess;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.Helper;
 
 import java.util.List;
 
@@ -82,7 +78,7 @@ public class UpdateGrievanceFragment extends Fragment {
 
     private void init() {
         activity = (MainActivity) getActivity();
-        progressDialog = Helper.getInstance().getProgressWindow(activity, "Checking for Internet Connectivity...");
+        progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
         progressDialog.show();
         checkConnection();
     }
@@ -110,38 +106,12 @@ public class UpdateGrievanceFragment extends Fragment {
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
-        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE)) {
-            showTutorial();
-            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE, false);
-        }
+        //        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE)) {
+//            showTutorial();
+//            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_UPDATE, false);
+//        }
     }
 
-    private void showTutorial() {
-
-        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
-                .title("These are submitted grievances")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
-                .title("-------->\nSwipe to view Grievances Under process")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 2, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
-                .build();
-
-        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
-                .title("-------->\nSwipe again to view Resolved Grievances")
-                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
-                .build();
-
-        activity.setmQueue(new FancyShowCaseQueue()
-                .add(fancyShowCaseView1)
-                .add(fancyShowCaseView2)
-                .add(fancyShowCaseView3));
-
-        activity.getmQueue().setCompleteListener(() -> activity.setmQueue(null));
-
-        activity.getmQueue().show();
-    }
 
     class MyAdapter extends FragmentPagerAdapter {
 
@@ -172,11 +142,11 @@ public class UpdateGrievanceFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    return "SUBMITTED";
+                    return getString(R.string.submitted).toUpperCase();
                 case 1:
-                    return "UNDER PROCESS";
+                    return getString(R.string.under_process).toUpperCase();
                 case 2:
-                    return "RESOLVED";
+                    return getString(R.string.resolved).toUpperCase();
 
             }
             return null;
@@ -194,3 +164,31 @@ public class UpdateGrievanceFragment extends Fragment {
         }
     }
 }
+
+
+//    private void showTutorial() {
+//
+//        final FancyShowCaseView fancyShowCaseView1 = new FancyShowCaseView.Builder(activity)
+//                .title("These are submitted grievances")
+//                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView2 = new FancyShowCaseView.Builder(activity)
+//                .title("-------->\nSwipe to view Grievances Under process")
+//                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels / 2, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
+//                .build();
+//
+//        final FancyShowCaseView fancyShowCaseView3 = new FancyShowCaseView.Builder(activity)
+//                .title("-------->\nSwipe again to view Resolved Grievances")
+//                .focusCircleAtPosition(Resources.getSystem().getDisplayMetrics().widthPixels * 5 / 6, Resources.getSystem().getDisplayMetrics().heightPixels / 6, 150)
+//                .build();
+//
+//        activity.setmQueue(new FancyShowCaseQueue()
+//                .add(fancyShowCaseView1)
+//                .add(fancyShowCaseView2)
+//                .add(fancyShowCaseView3));
+//
+//        activity.getmQueue().setCompleteListener(() -> activity.setmQueue(null));
+//
+//        activity.getmQueue().show();
+//    }

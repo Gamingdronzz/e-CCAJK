@@ -1,4 +1,4 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.os.Bundle;
@@ -19,12 +19,12 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mycca.Activity.MainActivity;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Models.StaffModel;
+import com.mycca.activity.MainActivity;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.models.StaffModel;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 
 public class LoginFragment extends Fragment {
 
@@ -67,15 +67,15 @@ public class LoginFragment extends Fragment {
         String password = editTextPassword.getText().toString();
 
         if (!Helper.getInstance().checkInput(username)) {
-            Toast.makeText(getContext(), "Please input Username", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.input_username), Toast.LENGTH_SHORT).show();
             return;
         }
         if (!Helper.getInstance().checkInput(password)) {
-            Toast.makeText(getContext(), "Please input Password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.input_password), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Logging In...");
+        final ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(getActivity(), getString(R.string.signing_in));
         progressDialog.show();
 
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference()
@@ -83,26 +83,26 @@ public class LoginFragment extends Fragment {
                 .child(username);
         dbref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
                 if (dataSnapshot.getValue() == null) {
-                    mainActivity.OnLoginFailure("No user found");
+                    mainActivity.OnLoginFailure(getString(R.string.no_user_found));
                 } else if (dataSnapshot.child("password").getValue().equals(password)) {
                     try {
                         StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
                         mainActivity.OnLoginSuccessful(staffModel);
                     } catch (DatabaseException dbe){
                         dbe.printStackTrace();
-                        mainActivity.OnLoginFailure("Some Error Occurred");
+                        mainActivity.OnLoginFailure(getString(R.string.some_error));
                     }
                 } else {
                     Log.d("login", "password mismatch");
-                    mainActivity.OnLoginFailure("Password Mismatch");
+                    mainActivity.OnLoginFailure(getString(R.string.password_mismatch));
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

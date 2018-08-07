@@ -1,12 +1,12 @@
-package com.mycca.Activity;
+package com.mycca.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.mycca.CustomObjects.Onboarder.OnboarderActivity;
-import com.mycca.CustomObjects.Onboarder.OnboarderPage;
+import com.mycca.custom.Onboarder.OnboarderActivity;
+import com.mycca.custom.Onboarder.OnboarderPage;
 import com.mycca.R;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,27 +25,28 @@ public class IntroActivity extends OnboarderActivity {
         onBoarderPages = new ArrayList<>();
 
         try {
-            OnboarderPage onboarderPage1 = new OnboarderPage("Welcome", "Welcome to Official Android Application of\n" +
-                    "Controller of Communication Accounts", R.drawable.cca2);
+            OnboarderPage onboarderPage1 = new OnboarderPage(getString(R.string.tutorial_title0),
+                    getString(R.string.tutorial_text0),
+                    R.drawable.cca2);
             setOnboarderPageProperties(onboarderPage1);
 
-            OnboarderPage onboarderPage2 = new OnboarderPage("Functions",
-                    getResources().getString(R.string.tutorial_text1),
+            OnboarderPage onboarderPage2 = new OnboarderPage(getString(R.string.tutorial_title1),
+                    getString(R.string.tutorial_text1),
                     R.drawable.drawable_functions);
             setOnboarderPageProperties(onboarderPage2);
 
-            OnboarderPage onboarderPage3 = new OnboarderPage("Tracking",
-                    getResources().getString(R.string.tutorial_text2),
+            OnboarderPage onboarderPage3 = new OnboarderPage(getString(R.string.tutorial_title2),
+                    getString(R.string.tutorial_text2),
                     R.drawable.drawable_track);
             setOnboarderPageProperties(onboarderPage3);
 
-            OnboarderPage onboarderPage4 = new OnboarderPage("Add Other Information",
-                    getResources().getString(R.string.tutorial_text3),
+            OnboarderPage onboarderPage4 = new OnboarderPage(getString(R.string.tutorial_title3),
+                    getString(R.string.tutorial_text3),
                     R.drawable.drawable_update_info);
             setOnboarderPageProperties(onboarderPage4);
 
-            OnboarderPage onboarderPage5 = new OnboarderPage("Google Sign In",
-                    getResources().getString(R.string.tutorial_text4),
+            OnboarderPage onboarderPage5 = new OnboarderPage(getString(R.string.tutorial_title4),
+                    getString(R.string.tutorial_text4),
                     R.drawable.index);
             setOnboarderPageProperties(onboarderPage5);
 

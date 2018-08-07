@@ -1,6 +1,7 @@
 package com.mycca.app;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,7 +11,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.mycca.Tools.LruBitmapCache;
+import com.mycca.tools.LruBitmapCache;
 
 import io.fabric.sdk.android.Fabric;
 import shortbread.Shortbread;
@@ -18,6 +19,9 @@ import shortbread.Shortbread;
 public class AppController extends Application {
 
     private static AppController mInstance;
+
+    private static Resources res;
+
     public static final String TAG = AppController.class.getSimpleName();
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
@@ -31,7 +35,12 @@ public class AppController extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         mInstance = this;
+        res = getResources();
         Shortbread.create(this);
+    }
+
+    public static Resources getResourses(){
+        return res;
     }
 
     public static synchronized AppController getInstance() {

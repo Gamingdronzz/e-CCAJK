@@ -1,4 +1,4 @@
-package com.mycca.Adapter;
+package com.mycca.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mycca.Models.GrievanceModel;
+import com.mycca.models.GrievanceModel;
 import com.mycca.R;
-import com.mycca.Tools.Helper;
+import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         holder.textViewRefNo.setText("");
         holder.textViewRefNo.setText(grievanceModel.getReferenceNo());
         holder.textViewStatus.setText("");
-        holder.textViewStatus.setText(Html.fromHtml("Status : <b>" + Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()) + "</b>"));
+        holder.textViewStatus.setText(Html.fromHtml("<b>" + Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()) + "</b>"));
 
         String text = Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType())
                 + " - " + Helper.getInstance().getGrievanceString((int) grievanceModel.getGrievanceType());
@@ -53,7 +53,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         if (grievanceModel.getMessage() != null && !grievanceModel.getMessage().isEmpty())
             holder.textViewMessage.setText(grievanceModel.getMessage());
         else
-            holder.textViewMessage.setText(appCompatActivity.getResources().getString(R.string.n_a));
+            holder.textViewMessage.setText(appCompatActivity.getString(R.string.n_a));
 
         if (grievanceModel.isExpanded()) {
             holder.linearLayoutExpandableArea.setVisibility(View.VISIBLE);

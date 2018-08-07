@@ -1,4 +1,4 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -26,19 +26,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.mycca.Activity.MainActivity;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Listeners.OnConnectionAvailableListener;
-import com.mycca.Models.LocationModel;
-import com.mycca.Providers.LocationDataProvider;
+import com.mycca.activity.MainActivity;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.LocationModel;
+import com.mycca.providers.LocationDataProvider;
 import com.mycca.R;
-import com.mycca.Tabs.Locator.TabAllLocations;
-import com.mycca.Tabs.Locator.TabNearby;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.IOHelper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tabs.locator.TabAllLocations;
+import com.mycca.tabs.locator.TabNearby;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.IOHelper;
+import com.mycca.tools.Preferences;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -90,9 +90,9 @@ public class LocatorFragment extends Fragment {
         activity = (MainActivity) getActivity();
         manageNoLocationLayout(true);
 
-        progressDialog = Helper.getInstance().getProgressWindow(activity, "Getting Locations...");
+        progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
         imageButtonRefresh.setOnClickListener(v -> checkConnection(false));
-        String noInternet = textViewLocatorInfo.getText() + "\nTurn On Internet and Refresh";
+        String noInternet = textViewLocatorInfo.getText() + "\n" + getString(R.string.refresh);
         textViewLocatorInfo.setText(noInternet);
 
         //fetch from local storage
@@ -263,28 +263,28 @@ public class LocatorFragment extends Fragment {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: got locations from firebase");
                 setTabLayout();
                 if (locationModelArrayList.size() > 0)
@@ -292,7 +292,7 @@ public class LocatorFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
@@ -351,9 +351,9 @@ public class LocatorFragment extends Fragment {
 
             switch (position) {
                 case 1:
-                    return "NEARBY";
+                    return getString(R.string.nearby);
                 case 0:
-                    return "ALL LOCATIONS";
+                    return getString(R.string.all_locations);
             }
             return null;
         }

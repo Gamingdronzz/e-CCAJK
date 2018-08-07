@@ -1,4 +1,4 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
 import android.os.Bundle;
@@ -16,10 +16,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
-import com.mycca.Adapter.RecyclerViewAdapterNews;
-import com.mycca.Models.NewsModel;
+import com.mycca.adapter.RecyclerViewAdapterNews;
+import com.mycca.models.NewsModel;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -66,7 +66,7 @@ public class LatestNewsFragment extends Fragment {
         dbref.child(FireBaseHelper.ROOT_NEWS)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
                             try {
                                 NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
@@ -79,7 +79,7 @@ public class LatestNewsFragment extends Fragment {
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                             for (int i = 0; i < newsModelArrayList.size(); i++) {
@@ -96,7 +96,7 @@ public class LatestNewsFragment extends Fragment {
                     }
 
                     @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                             for (NewsModel nm : newsModelArrayList) {
@@ -110,12 +110,12 @@ public class LatestNewsFragment extends Fragment {
                     }
 
                     @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });

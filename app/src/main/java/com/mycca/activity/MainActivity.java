@@ -1,4 +1,4 @@
-package com.mycca.Activity;
+package com.mycca.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -32,30 +32,30 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.mycca.CustomObjects.CustomDrawer.CardDrawerLayout;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu;
-import com.mycca.Fragments.AboutUsFragment;
-import com.mycca.Fragments.AddNewsFragment;
-import com.mycca.Fragments.BrowserFragment;
-import com.mycca.Fragments.ContactUsFragment;
-import com.mycca.Fragments.FeedbackFragment;
-import com.mycca.Fragments.HomeFragment;
-import com.mycca.Fragments.InspectionFragment;
-import com.mycca.Fragments.LatestNewsFragment;
-import com.mycca.Fragments.LocatorFragment;
-import com.mycca.Fragments.LoginFragment;
-import com.mycca.Fragments.PanAdhaarUploadFragment;
-import com.mycca.Fragments.SettingsFragment;
-import com.mycca.Fragments.SubmitGrievanceFragment;
-import com.mycca.Fragments.UpdateGrievanceFragment;
-import com.mycca.Models.StaffModel;
+import com.mycca.custom.CustomDrawer.CardDrawerLayout;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
+import com.mycca.fragments.AboutUsFragment;
+import com.mycca.fragments.AddNewsFragment;
+import com.mycca.fragments.BrowserFragment;
+import com.mycca.fragments.ContactUsFragment;
+import com.mycca.fragments.FeedbackFragment;
+import com.mycca.fragments.HomeFragment;
+import com.mycca.fragments.InspectionFragment;
+import com.mycca.fragments.LatestNewsFragment;
+import com.mycca.fragments.LocatorFragment;
+import com.mycca.fragments.LoginFragment;
+import com.mycca.fragments.PanAdhaarUploadFragment;
+import com.mycca.fragments.SettingsFragment;
+import com.mycca.fragments.SubmitGrievanceFragment;
+import com.mycca.fragments.UpdateGrievanceFragment;
+import com.mycca.models.StaffModel;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,13 +93,12 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
-        showFragment(getResources().getString(R.string.home), new HomeFragment(), null);
+        showFragment(getString(R.string.home), new HomeFragment(), null);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -107,16 +106,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                showFragment("Settings", new SettingsFragment(), null);
+                showFragment(getString(R.string.settings), new SettingsFragment(), null);
                 break;
             case R.id.action_invite:
                 showInviteIntent();
                 break;
             case R.id.action_about_us:
-                showFragment("About Us", new AboutUsFragment(), null);
+                showFragment(getString(R.string.about_us), new AboutUsFragment(), null);
                 break;
             case R.id.action_feedback:
-                showFragment("Feedback", new FeedbackFragment(), null);
+                showFragment(getString(R.string.feedback), new FeedbackFragment(), null);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -128,19 +127,19 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.navmenu_home:
-                showFragment("Home", new HomeFragment(), null);
+                showFragment(getString(R.string.home), new HomeFragment(), null);
                 break;
             case R.id.navmenu_visit_cca_website:
                 fragment = new BrowserFragment();
                 bundle = new Bundle();
                 bundle.putString("url", "http://ccajk.gov.in");
-                showFragment("CCA J&K", fragment, bundle);
+                showFragment(getString(R.string.cca_jk), fragment, bundle);
                 break;
             case R.id.navmenu_pension:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type", FireBaseHelper.GRIEVANCE_PENSION);
-                title = "Register Pension Grievance";
+                bundle.putString("Type",getString(R.string.pension));
+                title = getString(R.string.pension_grievance);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -148,8 +147,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_gpf:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type", FireBaseHelper.GRIEVANCE_GPF);
-                title = "Register GPF Grievance";
+                bundle.putString("Type",getString(R.string.gpf));
+                title = getString(R.string.gpf_grievance);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
-                title = "Upload Aadhar";
+                title = getString(R.string.upload_aadhaar);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_PAN);
-                title = "Upload PAN";
+                title = getString(R.string.upload_pan);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
-                title = "Upload Life Certificate";
+                title = getString(R.string.upload_life_certificate);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -185,7 +184,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
-                title = "Upload Re-Marriage Certificate";
+                title = getString(R.string.upload_re_marriage_certificate);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
-                title = "Upload Re-Employment Certificate";
+                title = getString(R.string.upload_re_employment_certificate);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
                 }
@@ -203,44 +202,44 @@ public class MainActivity extends AppCompatActivity
                 Helper.getInstance().showTrackWindow(this, frameLayout);
                 break;
             case R.id.navmenu_contact_us:
-                showFragment("Contact Us", new ContactUsFragment(), null);
+                showFragment(getString(R.string.contact_us), new ContactUsFragment(), null);
                 break;
             case R.id.navmenu_latest_news:
                 fragment = new LatestNewsFragment();
-                showFragment("Latest News", fragment, null);
+                showFragment(getString(R.string.latest_news), fragment, null);
                 break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
                 bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
-                showFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
+                showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_gp_locator:
                 bundle = new Bundle();
                 bundle.putString("Locator", FireBaseHelper.ROOT_GP);
-                showFragment("Gram Panchayat Locations", new LocatorFragment(), bundle);
+                showFragment(getString(R.string.gp), new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
                 fragment = new LoginFragment();
-                title = "CCA JK";
+                title = getString(R.string.cca_jk);
                 showFragment(title, fragment, null);
                 break;
             case R.id.navmenu_update_grievances:
                 fragment = new UpdateGrievanceFragment();
-                title = "Update Grievance Status";
+                title = getString(R.string.update_grievances);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, null);
                 }
                 break;
             case R.id.navmenu_inspection:
                 fragment = new InspectionFragment();
-                title = "Inspection";
+                title = getString(R.string.inspection);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, null);
                 }
                 break;
             case R.id.navmenu_add_news:
                 fragment = new AddNewsFragment();
-                title = "Add Latest News";
+                title = getString(R.string.add_news);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, null);
                 }
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "ShowHotSpotLocations: ");
         Bundle bundle = new Bundle();
         bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
-        showFragment("Wifi Hotspot Locations", new LocatorFragment(), bundle);
+        showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
     }
 
     private void setupToolbar() {
@@ -270,7 +269,7 @@ public class MainActivity extends AppCompatActivity
         frameLayout = findViewById(R.id.fragmentPlaceholder);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        progressDialog = Helper.getInstance().getProgressWindow(this, "Signing in...");
+        progressDialog = Helper.getInstance().getProgressWindow(this, getString(R.string.signing_in));
     }
 
     private void init() {
@@ -335,21 +334,21 @@ public class MainActivity extends AppCompatActivity
     public void showAuthDialog(boolean skipped) {
         if (skipped) {
             Helper.getInstance().showFancyAlertDialog(this,
-                    "Please Sign in with google to access this app feature.",
-                    "Login with google",
-                    "Sign in",
+                    getString(R.string.auth_message1),
+                    getString(R.string.sign_in_with_google),
+                    getString(R.string.sign_in),
                     this::signInWithGoogle,
-                    "Cancel",
+                    getString(android.R.string.cancel),
                     () -> {
 
                     },
                     FancyAlertDialogType.WARNING);
         } else Helper.getInstance().showFancyAlertDialog(this,
-                "Most App functions require you to authenticate yourself with google. Please Sign in to access all app features.",
-                "Login with google",
-                "Sign in",
+                getString(R.string.auth_message2),
+                getString(R.string.sign_in_with_google),
+                getString(R.string.sign_in),
                 this::signInWithGoogle,
-                "Skip",
+                getString(R.string.skip),
                 () -> {
                 },
                 FancyAlertDialogType.WARNING
@@ -366,11 +365,10 @@ public class MainActivity extends AppCompatActivity
         mAuth.signOut();
         mGoogleSignInClient.signOut();
 
-        if (staffModel != null) {
-            Preferences.getInstance().clearStaffPrefs(MainActivity.this);
-            ManageNavigationView(false, false);
-            //GrievanceDataProvider.getInstance().setAllGrievanceList(null);
-        }
+        //        if (staffModel != null) {
+//            Preferences.getInstance().clearStaffPrefs(MainActivity.this);
+//            ManageNavigationView(false, false);
+//        }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -383,7 +381,9 @@ public class MainActivity extends AppCompatActivity
 
                         Log.d(TAG, "signInWithCredential:success");
                         FireBaseHelper.getInstance(MainActivity.this).setToken();
-                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Sign in Successful", "OK",
+                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
+                                getString(R.string.sign_in_success),
+                                getString(R.string.ok),
                                 () -> {
                                     if (fragment != null) {
                                         showFragment(title, fragment, bundle);
@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity
 
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Unable to Sign in", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
                     }
 
                 });
@@ -407,19 +407,17 @@ public class MainActivity extends AppCompatActivity
 
     private void logout() {
         Helper.getInstance().showFancyAlertDialog(this,
-                "Do you want to logout?",
-                "MY CCA JK",
-                "YES",
+                "",
+                getString(R.string.logout),
+                getString(android.R.string.yes),
                 () -> {
-                    showFragment("Home", new HomeFragment(), null);
+                    showFragment(getString(R.string.home), new HomeFragment(), null);
                     Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                     ManageNavigationView(false, false);
-                    //GrievanceDataProvider.getInstance().setAllGrievanceList(null);
-                    Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", "Logged Out", "OK", () -> {
-                    }, null, null, FancyAlertDialogType.SUCCESS);
+                    Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", getString(R.string.logged_out), getString(R.string.ok), () -> { }, null, null, FancyAlertDialogType.SUCCESS);
 
                 },
-                "NO",
+                getString(android.R.string.no),
                 () -> {
 
                 },
@@ -431,23 +429,23 @@ public class MainActivity extends AppCompatActivity
     private void doExit() {
 
         Helper.getInstance().showFancyAlertDialog(this,
-                "Do you want to exit?",
-                "MY CCA JK",
-                "YES",
+                "",
+                getString(R.string.exit),
+                getString(android.R.string.yes),
                 this::finish,
-                "NO",
+                getString(android.R.string.no),
                 () -> {},
                 FancyAlertDialogType.WARNING);
     }
 
     public void OnLoginFailure(String message) {
         Helper.getInstance().showFancyAlertDialog(this,
-                message, "Login", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                message, getString(R.string.login), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
     }
 
     public void OnLoginSuccessful(StaffModel staffModel) {
         this.staffModel = staffModel;
-        Toast.makeText(this, "Staff Successfully Logged In", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.staff_login_success), Toast.LENGTH_SHORT).show();
         Preferences.getInstance().setStaffPref(this, Preferences.PREF_STAFF_DATA, staffModel);
         if (staffModel.getType() == TYPE_ADMIN) {
             ManageNavigationView(true, true);
@@ -455,7 +453,7 @@ public class MainActivity extends AppCompatActivity
             ManageNavigationView(true, false);
         }
 
-        showFragment("Home", new HomeFragment(), null);
+        showFragment(getString(R.string.home), new HomeFragment(), null);
     }
 
     public void ManageNavigationView(boolean signedIn, boolean admin) {
@@ -550,18 +548,18 @@ public class MainActivity extends AppCompatActivity
         if (mQueue != null) {
             try {
                 Helper.getInstance().showFancyAlertDialog(this,
-                        "Skip CCA Tutorial Messages?",
-                        "CCA Help",
-                        "SKIP", () -> {
+                        "",
+                        getString(R.string.skip_tutorial),
+                        getString(R.string.skip), () -> {
                             mQueue.cancel(true);
                             Preferences.getInstance().setTutorialPrefs(MainActivity.this);
                         },
-                        "CANCEL", () -> {
+                        getString(android.R.string.cancel), () -> {
 
                         },
                         FancyAlertDialogType.WARNING);
             } catch (Exception e) {
-                showFragment("Home", new HomeFragment(), null);
+                showFragment(getString(R.string.home), new HomeFragment(), null);
                 Preferences.getInstance().setTutorialPrefs(MainActivity.this);
             }
         } else if (fabRevealMenu != null && fabRevealMenu.isShowing()) {
@@ -576,10 +574,10 @@ public class MainActivity extends AppCompatActivity
                 ((BrowserFragment) f).goBack();
             } else {
                 ((BrowserFragment) f).stopLoading();
-                showFragment("Home", new HomeFragment(), null);
+                showFragment(getString(R.string.home), new HomeFragment(), null);
             }
         } else {
-            showFragment("Home", new HomeFragment(), null);
+            showFragment(getString(R.string.home), new HomeFragment(), null);
         }
     }
 
@@ -598,7 +596,7 @@ public class MainActivity extends AppCompatActivity
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
                 progressDialog.dismiss();
-                Helper.getInstance().showFancyAlertDialog(MainActivity.this, "Please try Again", "Google sign in failed", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
             }
         } else {
             for (Fragment frag : allFragments) {

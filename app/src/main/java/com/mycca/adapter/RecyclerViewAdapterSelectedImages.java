@@ -1,4 +1,4 @@
-package com.mycca.Adapter;
+package com.mycca.adapter;
 
 
 import android.support.annotation.NonNull;
@@ -13,10 +13,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mycca.Activity.UpdateGrievanceActivity;
-import com.mycca.Fragments.SubmitGrievanceFragment;
-import com.mycca.Fragments.InspectionFragment;
-import com.mycca.Models.SelectedImageModel;
+import com.mycca.activity.UpdateGrievanceActivity;
+import com.mycca.fragments.SubmitGrievanceFragment;
+import com.mycca.fragments.InspectionFragment;
+import com.mycca.models.SelectedImageModel;
 import com.mycca.R;
 
 import java.util.ArrayList;
@@ -49,14 +49,17 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
     public void onBindViewHolder(@NonNull SelectedImageViewHolder holder, int position) {
         SelectedImageModel selectedImageModel = selectedImageModelArrayList.get(position);
         holder.removeClickListener.setPosition(position);
-        String filename = "File-" + (position + 1);
-        holder.selectedImageTitle.setText(filename);
+        String filename = null;
+
         if (fragment != null) {
-            Glide.with(fragment.getContext()).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
+            filename = fragment.getString(R.string.file) + (position + 1);
+            Glide.with(fragment).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
         }
         if (appCompatActivity != null) {
+            filename = appCompatActivity.getString(R.string.file) + (position + 1);
             Glide.with(appCompatActivity.getBaseContext()).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
         }
+        holder.selectedImageTitle.setText(filename);
     }
 
     @Override
@@ -106,8 +109,7 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
                 }
             }
 
-            if(appCompatActivity != null)
-            {
+            if (appCompatActivity != null) {
                 UpdateGrievanceActivity updateGrievanceActivity = (UpdateGrievanceActivity) appCompatActivity;
                 updateGrievanceActivity.setSelectedFileCount(selectedImageModelArrayList.size());
             }

@@ -1,7 +1,6 @@
-package com.mycca.Fragments;
+package com.mycca.fragments;
 
 
-import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -16,15 +15,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.CustomObjects.Progress.ProgressDialog;
-import com.mycca.Listeners.OnConnectionAvailableListener;
-import com.mycca.Models.NewsModel;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.NewsModel;
 import com.mycca.R;
-import com.mycca.Tools.ConnectionUtility;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -56,7 +55,7 @@ public class AddNewsFragment extends Fragment {
         textTitle = view.findViewById(R.id.text_add_news_headline);
         textDescription = view.findViewById(R.id.text_add_news_description);
         add = view.findViewById(R.id.button_add_news);
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), "Please Wait...");
+        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), getString(R.string.please_wait));
     }
 
     private void init() {
@@ -76,11 +75,11 @@ public class AddNewsFragment extends Fragment {
     private boolean checkInput() {
 
         if (textTitle.getText().toString().trim().isEmpty()) {
-            textTitle.setError("Add Headline");
+            textTitle.setError(getString(R.string.headline_req));
             textTitle.requestFocus();
             return false;
         } else if (textDescription.getText().toString().trim().isEmpty()) {
-            textDescription.setError("Add Description");
+            textDescription.setError(getString(R.string.description_req));
             textDescription.requestFocus();
             return false;
         } else {
@@ -97,14 +96,14 @@ public class AddNewsFragment extends Fragment {
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
                                 addNewsToFireBase();
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Helper.getInstance().showMaintenanceDialog(getActivity());
                         }
                     });
                 } else
@@ -114,7 +113,7 @@ public class AddNewsFragment extends Fragment {
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showFancyAlertDialog(getActivity(), "Please connect to internet", "No Internet", "OK", null, null, null, FancyAlertDialogType.ERROR);
+                Helper.getInstance().showFancyAlertDialog(getActivity(), getString(R.string.connect_to_internet), getString(R.string.no_internet), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -152,10 +151,10 @@ public class AddNewsFragment extends Fragment {
         task.addOnCompleteListener(task1 -> {
             progressDialog.dismiss();
             if (task1.isSuccessful()) {
-                Helper.getInstance().showFancyAlertDialog(getActivity(), "", "News Added", "OK", null, null, null, FancyAlertDialogType.SUCCESS);
+                Helper.getInstance().showFancyAlertDialog(getActivity(), "", getString(R.string.news_added), getString(R.string.ok), null, null, null, FancyAlertDialogType.SUCCESS);
                 if (json != null) json = null;
             } else {
-                Helper.getInstance().showUpdateOrMaintenanceDialog(false, getActivity());
+                Helper.getInstance().showMaintenanceDialog(getActivity());
 
             }
         });

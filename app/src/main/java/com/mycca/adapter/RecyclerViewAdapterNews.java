@@ -1,4 +1,4 @@
-package com.mycca.Adapter;
+package com.mycca.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,14 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
-import com.mycca.Activity.NewsActivity;
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.Fragments.AddNewsFragment;
-import com.mycca.Models.NewsModel;
+import com.mycca.activity.NewsActivity;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.fragments.AddNewsFragment;
+import com.mycca.models.NewsModel;
 import com.mycca.R;
-import com.mycca.Tools.FireBaseHelper;
-import com.mycca.Tools.Helper;
-import com.mycca.Tools.Preferences;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -162,24 +162,24 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
         @Override
         public void onClick(View v) {
             try {
-                Helper.getInstance().showFancyAlertDialog(context, "Delete this News?", "",
-                        "Delete", () -> {
+                Helper.getInstance().showFancyAlertDialog(context, context.getString(R.string.delete_news), "",
+                        context.getString(R.string.delete), () -> {
                             NewsModel newsModel = newsModelArrayList.get(position);
                             DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
                                     .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
                             dbref.removeValue().addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getString(R.string.news_deleted),Toast.LENGTH_SHORT).show();
                                 }
                             });
                         },
-                        "Cancel", () -> {
+                        context.getString(android.R.string.cancel), () -> {
 
                         },
                         FancyAlertDialogType.WARNING);
 
             } catch (ArrayIndexOutOfBoundsException e) {
-                Toast.makeText(context, "News Deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.news_deleted), Toast.LENGTH_SHORT).show();
             }
         }
     }

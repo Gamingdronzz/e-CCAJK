@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.mycca.Models.GrievanceType;
-import com.mycca.Models.State;
-import com.mycca.Models.StatusModel;
+import com.mycca.models.GrievanceType;
+import com.mycca.models.State;
+import com.mycca.models.StatusModel;
 import com.mycca.R;
 
 public class GenericSpinnerAdapter<T> extends BaseAdapter {
