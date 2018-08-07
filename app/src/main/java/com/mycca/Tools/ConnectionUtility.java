@@ -6,7 +6,7 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.mycca.Interfaces.IConnectivityProcessor;
+import com.mycca.interfaces.IConnectivityProcessor;
 import com.mycca.Listeners.OnConnectionAvailableListener;
 
 import java.net.URL;

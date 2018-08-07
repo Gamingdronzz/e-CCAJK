@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/padding_xlarge"
-    tools:context="com.mycca.Activity.NewsActivity">
+    tools:context="com.mycca.activity.NewsActivity">
 
     <TextView
         android:id="@+id/textview_news_activity_headline"

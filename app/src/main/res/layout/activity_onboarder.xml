@@ -5,7 +5,7 @@
     android:id="@+id/cl_onboarder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mycca.CustomObjects.Onboarder.OnboarderActivity">
+    tools:context="com.mycca.custom.Onboarder.OnboarderActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_onboarder_pager"
@@ -48,7 +48,7 @@
             android:layout_gravity="center"
             android:orientation="horizontal">
 
-            <com.mycca.CustomObjects.Onboarder.views.CircleIndicatorView
+            <com.mycca.custom.Onboarder.views.CircleIndicatorView
                 android:id="@+id/circle_indicator_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

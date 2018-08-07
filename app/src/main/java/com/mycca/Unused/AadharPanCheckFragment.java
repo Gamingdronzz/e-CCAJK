@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mycca.Activity.MainActivity;
+import com.mycca.activity.MainActivity;
 import com.mycca.R;
 import com.google.firebase.database.DatabaseReference;
 

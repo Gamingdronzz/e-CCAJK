@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.mycca.CustomObjects.CustomImageSlider.Tricks.InfiniteViewPager
+    <com.mycca.custom.CustomImageSlider.Tricks.InfiniteViewPager
         android:id="@+id/glide_slider_viewpager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.mycca.CustomObjects.CustomImageSlider.Indicators.PagerIndicator
+    <com.mycca.custom.CustomImageSlider.Indicators.PagerIndicator
         android:id="@+id/default_center_bottom_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:paddingBottom="10dp"
         custom:shape="oval" />
 
-    <com.mycca.CustomObjects.CustomImageSlider.Indicators.PagerIndicator
+    <com.mycca.custom.CustomImageSlider.Indicators.PagerIndicator
         android:id="@+id/default_bottom_right_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:paddingEnd="10dp"
         tools:ignore="RtlSymmetry" />
 
-    <com.mycca.CustomObjects.CustomImageSlider.Indicators.PagerIndicator
+    <com.mycca.custom.CustomImageSlider.Indicators.PagerIndicator
         android:id="@+id/default_bottom_left_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:paddingStart="10dp"
         tools:ignore="RtlSymmetry" />
 
-    <com.mycca.CustomObjects.CustomImageSlider.Indicators.PagerIndicator
+    <com.mycca.custom.CustomImageSlider.Indicators.PagerIndicator
         android:id="@+id/default_center_top_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         android:gravity="center"
         android:paddingTop="10dp" />
 
-    <com.mycca.CustomObjects.CustomImageSlider.Indicators.PagerIndicator
+    <com.mycca.custom.CustomImageSlider.Indicators.PagerIndicator
         android:id="@+id/default_center_top_right_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         android:paddingTop="10dp"
         tools:ignore="RtlSymmetry" />
 
-    <com.mycca.CustomObjects.CustomImageSlider.Indicators.PagerIndicator
+    <com.mycca.custom.CustomImageSlider.Indicators.PagerIndicator
         android:id="@+id/default_center_top_left_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

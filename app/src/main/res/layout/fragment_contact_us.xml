@@ -5,7 +5,7 @@
     android:animateLayoutChanges="true"
     android:background="@color/colorAccentLight"
     android:orientation="vertical"
-    tools:context="com.mycca.Fragments.ContactUsFragment">
+    tools:context="com.mycca.fragments.ContactUsFragment">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textview_heading_office_address"

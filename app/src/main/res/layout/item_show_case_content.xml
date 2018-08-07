@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mycca.CustomObjects.ShowcaseCard.widget.WrapWidthTextView
+<com.mycca.custom.ShowcaseCard.widget.WrapWidthTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/showcase_text"
     style="@style/ShowCaseText"

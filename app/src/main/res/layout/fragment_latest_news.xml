@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="com.mycca.Fragments.LatestNewsFragment">
+    tools:context="com.mycca.fragments.LatestNewsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_latest_news"

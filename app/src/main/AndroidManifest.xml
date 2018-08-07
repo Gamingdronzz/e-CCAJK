@@ -20,7 +20,7 @@
 
 
     <application
-        android:name=".App.AppController"
+        android:name="com.mycca.app.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_cca_new"
         android:label="@string/app_name"
@@ -51,7 +51,7 @@
             android:value="47a89879c667dbd29e47d8494b60254be6efa616" />
 
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Splash"
             android:windowSoftInputMode="adjustNothing">
@@ -62,41 +62,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
-            android:name=".CustomObjects.CustomImagePicker.Cropper.CropImageActivity"
+            android:name=".custom.customImagePicker.cropper.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".Activity.TrackGrievanceResultActivity"
+            android:name=".activity.TrackGrievanceResultActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activity.UpdateGrievanceActivity"
+            android:name=".activity.UpdateGrievanceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activity.StateSettingActivity"
+            android:name=".activity.StateSettingActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".Activity.NewsActivity" />
+        <activity android:name=".activity.NewsActivity" />
 
-        <activity android:name=".Activity.IntroActivity" />
+        <activity android:name=".activity.IntroActivity" />
 
-        <activity android:name=".CustomObjects.BarCode.BarcodeCaptureActivity"
-            android:label="Read Barcode"/>
+        <activity
+            android:name=".custom.barCode.BarcodeCaptureActivity"
+            android:label="Read Barcode"
+            android:screenOrientation="portrait" />
 
         <service
-            android:name=".FirebaseService.MyIntentService"
+            android:name=".firebaseService.MyIntentService"
             android:exported="false" />
-        <service android:name=".FirebaseService.MyFirebaseInstanceIdService">
+        <service android:name=".firebaseService.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".FirebaseService.MyFirebaseMessagingService">
+        <service android:name=".firebaseService.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

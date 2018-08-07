@@ -23,11 +23,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.mycca.Activity.MainActivity;
-import com.mycca.Adapter.RecyclerViewAdapterHotspotLocation;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseQueue;
-import com.mycca.CustomObjects.FancyShowCase.FancyShowCaseView;
-import com.mycca.CustomObjects.FancyShowCase.FocusShape;
+import com.mycca.activity.MainActivity;
+import com.mycca.adapter.RecyclerViewAdapterHotspotLocation;
+import com.mycca.custom.FancyShowCase.FancyShowCaseQueue;
+import com.mycca.custom.FancyShowCase.FancyShowCaseView;
+import com.mycca.custom.FancyShowCase.FocusShape;
 import com.mycca.Listeners.ClickListener;
 import com.mycca.Listeners.RecyclerViewTouchListeners;
 import com.mycca.Models.LocationModel;

@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.mycca.Adapter.RecyclerViewAdapterTracking;
+import com.mycca.adapter.RecyclerViewAdapterTracking;
 import com.mycca.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;

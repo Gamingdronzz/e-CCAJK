@@ -37,7 +37,7 @@
         <!--app:seekBarRotation="CW270"-->
         <!--/>-->
         <!--</com.ccajk.CustomObjects.VerticalSeekBarWrapper>-->
-        <com.mycca.CustomObjects.IndicatorSeekBar.IndicatorSeekBar
+        <com.mycca.custom.IndicatorSeekBar.IndicatorSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

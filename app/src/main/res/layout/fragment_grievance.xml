@@ -1,11 +1,11 @@
-<com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mycca.custom.CircularReveal.Widget.RevealRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorLightGray"
     android:tag="grievancefragment"
-    tools:context=".Fragments.SubmitGrievanceFragment">
+    tools:context=".fragments.SubmitGrievanceFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -311,7 +311,7 @@
         app:srcCompat="@drawable/ic_view_menu_black_24dp"
         tools:targetApi="m" />
 
-    <com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu
+    <com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu
         android:id="@+id/fabMenu_submit_grievance"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -340,6 +340,6 @@
 
 
 
-</com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout>
+</com.mycca.custom.CircularReveal.Widget.RevealRelativeLayout>
 
 

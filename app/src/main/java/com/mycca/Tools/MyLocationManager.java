@@ -12,7 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.mycca.CustomObjects.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;

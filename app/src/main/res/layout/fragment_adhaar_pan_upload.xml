@@ -1,10 +1,10 @@
-<com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mycca.custom.CircularReveal.Widget.RevealRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorLightGray"
-    tools:context="com.mycca.Fragments.PanAdhaarUploadFragment">
+    tools:context="com.mycca.fragments.PanAdhaarUploadFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -185,7 +185,7 @@
         app:srcCompat="@drawable/ic_view_menu_black_24dp"
         tools:targetApi="m" />
 
-    <com.mycca.CustomObjects.FabRevealMenu.FabView.FABRevealMenu
+    <com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu
         android:id="@+id/fabMenu_pan_aadhar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -212,4 +212,4 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18" />
 
-</com.mycca.CustomObjects.CircularReveal.Widget.RevealRelativeLayout>
+</com.mycca.custom.CircularReveal.Widget.RevealRelativeLayout>

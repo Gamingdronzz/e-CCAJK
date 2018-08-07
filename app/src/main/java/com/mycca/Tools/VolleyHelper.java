@@ -19,7 +19,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
-import com.mycca.App.AppController;
+import com.mycca.app.AppController;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
