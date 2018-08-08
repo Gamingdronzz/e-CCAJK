@@ -238,10 +238,11 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void initItems() {
         items = new ArrayList<>();
+        items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem(1, getString(R.string.remove_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
         if (root.equals(FireBaseHelper.ROOT_ADHAAR))
-            items.add(new FABMenuItem(getString(R.string.scan_adhaar), AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
-        items.add(new FABMenuItem(getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem(getString(R.string.remove_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+            items.add(new FABMenuItem(2, getString(R.string.scan_adhaar), AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
+
     }
 
     private boolean checkInputBeforeSubmission() {
@@ -626,16 +627,16 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     @Override
     public void onMenuItemSelected(View view, int id) {
-        switch (id) {
-            case R.string.scan_adhaar:
-                scanNow();
-                break;
-            case R.string.add_image:
+        switch (items.get(id).getId()) {
+            case 0:
                 showImageChooser();
                 break;
-            case R.string.remove_image:
+            case 1:
                 imageviewSelectedImage.setImageResource(0);
                 textViewFileName.setText(getResources().getString(R.string.no_image));
+                break;
+            case 2:
+                scanNow();
                 break;
         }
     }

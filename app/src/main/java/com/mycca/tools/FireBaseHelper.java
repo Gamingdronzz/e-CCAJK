@@ -90,19 +90,19 @@ public class FireBaseHelper {
         _instance = null;
     }
 
-    public void setToken() {
-        CustomLogger.getInstance().logDebug( "setToken: ");
+    public void addTokenOnFirebaseDatabase() {
+        CustomLogger.getInstance().logDebug("addTokenOnFirebaseDatabase: ");
         DatabaseReference dbref = versionedDbRef;
-        if (mAuth.getCurrentUser() != null) {
-            CustomLogger.getInstance().logDebug( "setToken: user found");
-            dbref.child(ROOT_TOKEN).child(mAuth.getCurrentUser().getUid()).
-                    setValue(FirebaseInstanceId.getInstance().getToken())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            CustomLogger.getInstance().logDebug( "Token added");
-                        }
-                    });
-        }
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+            if (mAuth.getCurrentUser() != null) {
+                dbref.child(ROOT_TOKEN).child(mAuth.getCurrentUser().getUid()).
+                        setValue(instanceIdResult.getToken()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        CustomLogger.getInstance().logDebug("Token added");
+                    }
+                });
+            }
+        });
     }
 
     public Task<Void> uploadDataToFirebase(Object model, String... params) {
@@ -110,12 +110,12 @@ public class FireBaseHelper {
         DatabaseReference dbref = versionedDbRef;
 
         for (String key : params) {
-            CustomLogger.getInstance().logDebug( "Firebase Helper child : " + key);
+            CustomLogger.getInstance().logDebug("Firebase Helper child : " + key);
             dbref = dbref.child(key);
         }
-        CustomLogger.getInstance().logDebug( "uploadDataToFirebase: loop ended");
+        CustomLogger.getInstance().logDebug("uploadDataToFirebase: loop ended");
         task = dbref.setValue(model);
-        CustomLogger.getInstance().logDebug( "uploadDataToFirebase: setting value");
+        CustomLogger.getInstance().logDebug("uploadDataToFirebase: setting value");
         return task;
     }
 
@@ -128,7 +128,7 @@ public class FireBaseHelper {
             case ROOT_NEWS:
                 NewsModel newsModel = (NewsModel) model;
                 if (newsModel.getKey() == null) {
-                    CustomLogger.getInstance().logDebug( "news key null");
+                    CustomLogger.getInstance().logDebug("news key null");
                     String key = dbref.push().getKey();
                     newsModel.setKey(key);
                     task = dbref.child(key).setValue(newsModel);
@@ -170,9 +170,9 @@ public class FireBaseHelper {
         else
             dbref = nonVersionedStateDbRef;
 
-        CustomLogger.getInstance().logDebug( "getting DataFromFirebase: ");
+        CustomLogger.getInstance().logDebug("getting DataFromFirebase: ");
         for (String key : params) {
-            CustomLogger.getInstance().logDebug( "Firebase key : " + key);
+            CustomLogger.getInstance().logDebug("Firebase key : " + key);
             dbref = dbref.child(key);
         }
 
@@ -189,7 +189,7 @@ public class FireBaseHelper {
             dbref = nonVersionedDbref;
 
         for (String key : params) {
-            CustomLogger.getInstance().logDebug( "Firebase Helper key : " + key);
+            CustomLogger.getInstance().logDebug("Firebase Helper key : " + key);
             dbref = dbref.child(key);
         }
         if (singleValueEvent)
@@ -221,7 +221,7 @@ public class FireBaseHelper {
     }
 
     public void getReferenceNumber(Transaction.Handler handler, String circleCode) {
-        CustomLogger.getInstance().logDebug( "getReferenceNumber: ");
+        CustomLogger.getInstance().logDebug("getReferenceNumber: ");
         DatabaseReference dbref;
         dbref = nonVersionedStateDbRef.child(circleCode).child(ROOT_REF_COUNT);
         dbref.runTransaction(handler);

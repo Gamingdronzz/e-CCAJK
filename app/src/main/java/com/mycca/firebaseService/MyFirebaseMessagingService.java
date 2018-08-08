@@ -18,6 +18,7 @@ import com.mycca.R;
 import com.mycca.activity.TrackGrievanceResultActivity;
 import com.mycca.notification.Constants;
 import com.mycca.tools.CustomLogger;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.Random;
@@ -52,6 +53,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
+    }
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+        CustomLogger.getInstance().logDebug("new token");
+        FireBaseHelper.getInstance(this).addTokenOnFirebaseDatabase();
     }
 
     private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType) {

@@ -93,12 +93,9 @@
         <service
             android:name=".firebaseService.MyIntentService"
             android:exported="false" />
-        <service android:name=".firebaseService.MyFirebaseInstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".firebaseService.MyFirebaseMessagingService">
+        <service
+            android:name=".firebaseService.MyFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

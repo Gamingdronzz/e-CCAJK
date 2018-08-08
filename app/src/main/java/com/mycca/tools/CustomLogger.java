@@ -22,32 +22,32 @@ public class CustomLogger {
 
     public void logVerbose(String message) {
         if (logEnabled)
-            Log.v(TAG, "Verbose: " + message);
+            Log.v(TAG,  message);
     }
 
     public void logVerbose(String tag, String message) {
         if (logEnabled)
-            Log.v(tag, "Verbose: " + message);
+            Log.v(tag,  message);
     }
 
     public void logDebug(String message) {
         if (logEnabled)
-            Log.d(TAG, "Debug: " + message);
+            Log.d(TAG,  message);
     }
 
     public void logDebug(String tag, String message) {
         if (logEnabled)
-            Log.d(tag, "Debug: " + message);
+            Log.d(tag,  message);
     }
 
     public void logInfo(String message) {
         if (logEnabled)
-            Log.i(TAG, "warning: " + message);
+            Log.i(TAG,  message);
     }
 
     public void logInfo(String tag, String message) {
         if (logEnabled)
-            Log.i(tag, "warning: " + message);
+            Log.i(tag,  message);
     }
 
     public void logWarn(String message, Throwable e) {
@@ -62,11 +62,11 @@ public class CustomLogger {
 
     public void logError(String message, Throwable e) {
         if (logEnabled)
-            Log.e(TAG, "warning: " + message, e);
+            Log.e(TAG, message, e);
     }
 
     public void logError(String tag, String message, Throwable e) {
         if (logEnabled)
-            Log.e(tag, "warning: " + message, e);
+            Log.e(tag, message, e);
     }
 }

@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity
                     if (task.isSuccessful()) {
 
                         CustomLogger.getInstance().logDebug( "signInWithCredential:success");
-                        FireBaseHelper.getInstance(MainActivity.this).setToken();
+                        FireBaseHelper.getInstance(MainActivity.this).addTokenOnFirebaseDatabase();
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
                                 getString(R.string.sign_in_success),
                                 getString(R.string.ok),

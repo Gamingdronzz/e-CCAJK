@@ -174,8 +174,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void initItems() {
         items = new ArrayList<>();
-        items.add(new FABMenuItem(getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem(getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+        items.add(new FABMenuItem(0,getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem(1,getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -543,11 +543,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     @Override
     public void onMenuItemSelected(View view, int id) {
-        switch (id) {
-            case R.string.add_image:
+        switch (items.get(id).getId()) {
+            case 0:
                 showImageChooser();
                 break;
-            case R.string.remove_all:
+            case 1:
                 removeAllSelectedImages();
                 break;
         }
