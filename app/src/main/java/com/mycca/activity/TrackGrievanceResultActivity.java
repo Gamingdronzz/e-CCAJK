@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.R;
 import com.mycca.adapter.RecyclerViewAdapterTracking;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.custom.Progress.ProgressDialog;
@@ -22,8 +22,8 @@ import com.mycca.listeners.ClickListener;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.GrievanceModel;
-import com.mycca.R;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 
@@ -67,7 +67,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Log.d(TAG, "onClick: " + position);
+                CustomLogger.getInstance().logDebug( "onClick: " + position);
                 grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
                 if (grievanceModelArrayList.get(position).isHighlighted())
                     grievanceModelArrayList.get(position).setHighlighted(false);
@@ -124,19 +124,19 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     }
 
     private void getGrievances() {
-        Log.d(TAG, "getGrievances for: " + pensionerCode);
+        CustomLogger.getInstance().logDebug( "getGrievances for: " + pensionerCode);
 
         dbref.child(FireBaseHelper.ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull final DataSnapshot dataSnapshot1, String s) {
                 try {
-                    Log.d(TAG, "state key:" + dataSnapshot1.getKey());
+                    CustomLogger.getInstance().logDebug( "state key:" + dataSnapshot1.getKey());
                     dbref.child(FireBaseHelper.ROOT_GRIEVANCES).child(dataSnapshot1.getKey()).child(pensionerCode)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getValue() != null) {
-                                        Log.d(TAG, "Datasnapshot: " + dataSnapshot);
+                                        CustomLogger.getInstance().logDebug( "Datasnapshot: " + dataSnapshot);
                                         ManageNoGrievanceLayout(false);
                                         progressDialog.dismiss();
                                         getGrievanceOfPensioner(dataSnapshot1.getKey());
@@ -180,7 +180,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                        Log.d(TAG, "grievance key:" + dataSnapshot.getKey());
+                        CustomLogger.getInstance().logDebug( "grievance key:" + dataSnapshot.getKey());
                         try {
 
                             GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
@@ -193,7 +193,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                                 }
                                 if (model.isSubmissionSuccess()) {
                                     grievanceModelArrayList.add(model);
-                                    Log.d(TAG, "arraylist size:" + grievanceModelArrayList.size());
+                                    CustomLogger.getInstance().logDebug( "arraylist size:" + grievanceModelArrayList.size());
                                     adapterTracking.notifyDataSetChanged();
                                 }
                             }
@@ -204,7 +204,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-                        Log.d(TAG, "ChildChanged\n" + dataSnapshot);
+                        CustomLogger.getInstance().logDebug( "ChildChanged\n" + dataSnapshot);
                         GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
                         int counter = 0;
                         if (model != null) {
@@ -232,7 +232,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                        CustomLogger.getInstance().logDebug( "onCancelled: " + databaseError.getMessage());
                         progressDialog.dismiss();
                     }
                 });

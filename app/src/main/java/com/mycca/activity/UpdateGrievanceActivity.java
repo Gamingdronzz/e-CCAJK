@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,25 +23,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
+import com.mycca.R;
 import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.adapter.RecyclerViewAdapterSelectedImages;
-import com.mycca.custom.customImagePicker.cropper.CropImage;
-import com.mycca.custom.customImagePicker.cropper.CropImageView;
-import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.custom.customImagePicker.ImagePicker;
+import com.mycca.custom.customImagePicker.cropper.CropImage;
+import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.GrievanceModel;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.StatusModel;
 import com.mycca.notification.Constants;
 import com.mycca.notification.FirebaseNotificationHelper;
-import com.mycca.R;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
@@ -193,13 +193,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     }
 
     private void doUpdateOnInternetAvailable() {
-        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFireBaseDatabase + "\n" +
+        CustomLogger.getInstance().logDebug( "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFireBaseDatabase + "\n" +
                 "Server = " + isUploadedToServer);
         progressDialog.show();
 
         if (isUploadedToFireBase) {
             if (isUploadedToServer) {
-                Log.d(TAG, "doUpdateOnInternetAvailable: Data uploaded on server");
+                CustomLogger.getInstance().logDebug( "doUpdateOnInternetAvailable: Data uploaded on server");
                 sendFinalMail();
             } else {
                 uploadImagesToServer();
@@ -229,7 +229,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             } else {
                 progressDialog.dismiss();
                 Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this);
-                Log.d(TAG, "onComplete: " + task1.toString());
+                CustomLogger.getInstance().logDebug( "onComplete: " + task1.toString());
             }
         });
 
@@ -238,7 +238,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void uploadAllImagesToFirebase() {
         if (attachmentModelArrayList.size() > 0) {
             progressDialog.setMessage(getString(R.string.uploading_files));
-            Log.d(TAG, "uploadAllImagesToFirebase: uploading");
+            CustomLogger.getInstance().logDebug( "uploadAllImagesToFirebase: uploading");
             counterUpload = 0;
 
             for (int i = 0; i < attachmentModelArrayList.size(); i++) {
@@ -352,7 +352,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
-                Log.d(TAG, "Notification : Key received");
+                CustomLogger.getInstance().logDebug( "Notification : Key received");
                 getTokenAndSendNotification(fcmKey);
 
             }
@@ -373,7 +373,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
                             String token = (String) dataSnapshot.getValue();
-                            Log.d(TAG, "Notification : Token received");
+                            CustomLogger.getInstance().logDebug( "Notification : Token received");
                             sendNotification(fcmKey, token);
                         }
                     }
@@ -430,18 +430,18 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, this, true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                Log.d(TAG, "onPickImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug( "onPickImage: " + imageUri.getPath());
 
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-                Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug( "onCropImage: " + imageUri.getPath());
                 int currentPosition = attachmentModelArrayList.size();
                 attachmentModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
                 adapterSelectedImages.notifyItemInserted(currentPosition);
                 adapterSelectedImages.notifyDataSetChanged();
-                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition);
+                CustomLogger.getInstance().logDebug( "onCropImage: Item inserted at " + currentPosition);
                 setSelectedFileCount(currentPosition + 1);
             }
 
@@ -458,7 +458,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug( "onPermissionDenied: Permission not given to choose textViewMessage");
             }
         });
 
@@ -509,13 +509,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        Log.d(TAG, jsonObject.toString());
+        CustomLogger.getInstance().logDebug( jsonObject.toString());
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 counterServerImages++;
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     if (counterServerImages == attachmentModelArrayList.size()) {
-                        Log.d(TAG, "onResponse: Files uploaded");
+                        CustomLogger.getInstance().logDebug( "onResponse: Files uploaded");
                         isUploadedToServer = true;
                         doUpdateOnInternetAvailable();
                     }
@@ -549,7 +549,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
+        CustomLogger.getInstance().logDebug( "onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(this, requestCode, resultCode, data);
@@ -557,27 +557,27 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     //    private void addImageDataToFirebaseDatabase() {
 //
-//        Log.d(TAG, "addImageDataToFireBaseDatabase: ");
+//        CustomLogger.getInstance().logDebug( "addImageDataToFireBaseDatabase: ");
 //        AtomicInteger uriCounter = new AtomicInteger();
-//        Log.d(TAG, "addImageDataToFireBaseDatabase: size = " + attachmentModelArrayList.size());
+//        CustomLogger.getInstance().logDebug( "addImageDataToFireBaseDatabase: size = " + attachmentModelArrayList.size());
 //        for (int i = 0; i < attachmentModelArrayList.size(); i++) {
 //
 //            Task<Void> task = FireBaseHelper.getInstance(this).uploadDataToFirebase(attachmentModelArrayList.get(i).getImageURI().toString(),
 //                    FireBaseHelper.ROOT_IMAGES_BY_STAFF,
 //                    grievanceModel.getReferenceNo(),
 //                    "Image" + i);
-//            Log.d(TAG, "addImageDataToFireBaseDatabase: Adding Task");
+//            CustomLogger.getInstance().logDebug( "addImageDataToFireBaseDatabase: Adding Task");
 //            if (task != null) {
-//                Log.d(TAG, "addImageDataToFireBaseDatabase: task not null");
+//                CustomLogger.getInstance().logDebug( "addImageDataToFireBaseDatabase: task not null");
 //                task.addOnFailureListener(exception -> {
-//                    Log.d(TAG, "addImageDataToFirebaseDatabase: failure");
+//                    CustomLogger.getInstance().logDebug( "addImageDataToFirebaseDatabase: failure");
 //                    progressDialog.dismiss();
 //                    Helper.getInstance().showErrorDialog("Data could not be uploaded\nTry Again", "Submission Error", this);
-//                    Log.d(TAG, "onFailure: " + exception.getMessage());
+//                    CustomLogger.getInstance().logDebug( "onFailure: " + exception.getMessage());
 //                })
 //                        .addOnSuccessListener(taskSnapshot -> {
 //                                    uriCounter.incrementAndGet();
-//                                    Log.d(TAG, "onSuccess: counter = " + uriCounter + "size = " + attachmentModelArrayList.size());
+//                                    CustomLogger.getInstance().logDebug( "onSuccess: counter = " + uriCounter + "size = " + attachmentModelArrayList.size());
 //                                    if (uriCounter.get() == attachmentModelArrayList.size()) {
 //                                        isUploadedToFireBaseDatabase = true;
 //                                        doUpdateOnInternetAvailable();

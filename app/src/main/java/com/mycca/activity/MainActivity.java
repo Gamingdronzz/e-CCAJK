@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +31,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.mycca.R;
 import com.mycca.custom.CustomDrawer.CardDrawerLayout;
+import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.custom.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.custom.Progress.ProgressDialog;
-import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.fragments.AboutUsFragment;
 import com.mycca.fragments.AddNewsFragment;
 import com.mycca.fragments.BrowserFragment;
@@ -52,7 +52,6 @@ import com.mycca.fragments.SettingsFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
 import com.mycca.fragments.UpdateGrievanceFragment;
 import com.mycca.models.StaffModel;
-import com.mycca.R;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
@@ -399,7 +398,7 @@ public class MainActivity extends AppCompatActivity
                             ((HomeFragment) f).setupWelcomeBar();
 
                     } else {
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        CustomLogger.getInstance().logWarn("signInWithCredential:failure", task.getException());
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
                     }
 
@@ -584,7 +583,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult()", Integer.toString(resultCode));
+        CustomLogger.getInstance().logDebug( Integer.toString(resultCode));
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         if (requestCode == RC_SIGN_IN) {
@@ -595,7 +594,7 @@ public class MainActivity extends AppCompatActivity
                 CustomLogger.getInstance().logDebug( "signed in: " + account.getEmail());
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                Log.w(TAG, "Google sign in failed", e);
+                CustomLogger.getInstance().logWarn("Google sign in failed", e);
                 progressDialog.dismiss();
                 Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
             }

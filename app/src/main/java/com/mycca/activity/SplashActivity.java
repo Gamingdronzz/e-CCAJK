@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -15,9 +14,10 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.R;
+import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Helper.getInstance().setLocale(this);
         setContentView(R.layout.activity_splash);
-        //Log.d(TAG, "test: "+Preferences.getInstance().getBooleanPref(this,Preferences.PREF_TEST));
+        //CustomLogger.getInstance().logDebug( "test: "+Preferences.getInstance().getBooleanPref(this,Preferences.PREF_TEST));
         bindVIews();
         init();
         StartAnimations();
@@ -53,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         else
             text = currentVersionName;
         tvSplashVersion.setText(String.format(getString(R.string.version), text));
-        Log.d(TAG, "onCreate: " + currentAppVersion + ": " + currentVersionName);
+        CustomLogger.getInstance().logDebug( "onCreate: " + currentAppVersion + ": " + currentVersionName);
     }
 
     private void bindVIews() {
@@ -97,7 +97,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void OnConnectionAvailable() {
 
-                Log.d(TAG, "version checked =" + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug( "version checked =" + Helper.versionChecked);
                 FireBaseHelper.getInstance(SplashActivity.this).checkForUpdate(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -114,7 +114,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void OnConnectionNotAvailable() {
-                Log.d(TAG, "OnConnectionNotAvailable: ");
+                CustomLogger.getInstance().logDebug( "OnConnectionNotAvailable: ");
                 LoadNextActivity();
             }
         });
