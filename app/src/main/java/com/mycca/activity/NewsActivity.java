@@ -3,13 +3,13 @@ package com.mycca.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.mycca.models.NewsModel;
 import com.mycca.R;
+import com.mycca.models.NewsModel;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 
 public class NewsActivity extends AppCompatActivity {
@@ -30,7 +30,7 @@ public class NewsActivity extends AppCompatActivity {
         try {
 
             NewsModel newsModel = new Gson().fromJson(json, NewsModel.class);
-            Log.d("News", json);
+            CustomLogger.getInstance().logDebug(json);
 
             headline.setText(newsModel.getHeadline());
             description.setText(newsModel.getDescription());

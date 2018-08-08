@@ -180,7 +180,7 @@
     <string name="sort_locations">Sort Locations</string>
     <string name="name">Name</string>
     <string name="district">District</string>
-    <string name="msg_no_location">This feature requires Location. Turn On Location and Refresh</string>
+    <string name="msg_no_location">This feature requires Location.\nTurn On Location and Refresh</string>
     <string name="within_36_km">WITHIN 36 KM</string>
     <string name="within">WITHIN %1$s KM</string>
     <string name="all_locations">ALL LOCATIONS</string>
@@ -191,8 +191,8 @@
     <string name="enable_location">Please Enable Location and Internet</string>
     <string name="you_are_here">You are here</string>
     <string name="turning_on_location">Turning Location On\nPlease wait…</string>
-    <string name="loc_off">LOCATION OFF!\nUnable to get nearby locations without location access.</string>
-    <string name="location_denied">Location Permission denied !\nHotspot Locator will not work without location access.\n\nPlease grant location access</string>
+    <string name="loc_off">LOCATION OFF! \nUnable to get nearby locations without location access.</string>
+    <string name="location_denied">Location Permission denied! \nHotspot Locator will not work without location access.\n\nPlease grant location access</string>
 
 
     <!--inspection-->
@@ -208,7 +208,7 @@
     <string name="no_grievances_resolved">No Grievances Resolved</string>
     <string name="no_grievances_submitted">No New Grievances Submitted</string>
     <string name="no_grievances_processing">No Grievances under Process</string>
-    <string name="grievance_updation_success">Grievance status of\n<b> %1$s </b>\nfor\n <b> %2$s </b> \nhas been successfully updated to\n <b> %3$s </b> </string>
+    <string name="grievance_updation_success">Grievance status of\n<b>%1$s</b>\nfor\n<b>%2$s</b>\nhas been successfully updated to\n<b>%3$s</b></string>
     <string name="grievance_updation_fail">Grievance Updation Failed\nTry Again</string>
     <string name="notification_title">Grievance status updated</string>
     <string name="notification_body">Your grievance for %1$s is %2$s</string>

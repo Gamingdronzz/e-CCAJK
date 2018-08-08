@@ -53,6 +53,7 @@ import com.mycca.fragments.SubmitGrievanceFragment;
 import com.mycca.fragments.UpdateGrievanceFragment;
 import com.mycca.models.StaffModel;
 import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
@@ -254,7 +255,7 @@ public class MainActivity extends AppCompatActivity
 
     @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi_black_24dp, shortLabel = "HotSpot Locations")
     public void ShowHotSpotLocations() {
-        Log.d(TAG, "ShowHotSpotLocations: ");
+        CustomLogger.getInstance().logDebug("ShowHotSpotLocations");
         Bundle bundle = new Bundle();
         bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
         showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
@@ -373,13 +374,13 @@ public class MainActivity extends AppCompatActivity
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        Log.d(TAG, "firebaseAuthWithGoogle: " + credential.getSignInMethod());
+        CustomLogger.getInstance().logDebug( "firebaseAuthWithGoogle: " + credential.getSignInMethod());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
 
-                        Log.d(TAG, "signInWithCredential:success");
+                        CustomLogger.getInstance().logDebug( "signInWithCredential:success");
                         FireBaseHelper.getInstance(MainActivity.this).setToken();
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
                                 getString(R.string.sign_in_success),
@@ -591,7 +592,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 progressDialog.show();
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "signed in: " + account.getEmail());
+                CustomLogger.getInstance().logDebug( "signed in: " + account.getEmail());
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
@@ -612,7 +613,7 @@ public class MainActivity extends AppCompatActivity
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + frag.toString());
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
