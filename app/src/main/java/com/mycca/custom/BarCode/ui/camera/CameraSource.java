@@ -28,7 +28,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringDef;
-import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -37,6 +36,7 @@ import android.view.WindowManager;
 import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
+import com.mycca.tools.CustomLogger;
 
 import java.io.IOException;
 import java.lang.Thread.State;
@@ -92,26 +92,28 @@ public class CameraSource {
     private static final float ASPECT_RATIO_TOLERANCE = 0.01f;
 
     @StringDef({
-        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE,
-        Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO,
-        Camera.Parameters.FOCUS_MODE_AUTO,
-        Camera.Parameters.FOCUS_MODE_EDOF,
-        Camera.Parameters.FOCUS_MODE_FIXED,
-        Camera.Parameters.FOCUS_MODE_INFINITY,
-        Camera.Parameters.FOCUS_MODE_MACRO
+            Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE,
+            Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO,
+            Camera.Parameters.FOCUS_MODE_AUTO,
+            Camera.Parameters.FOCUS_MODE_EDOF,
+            Camera.Parameters.FOCUS_MODE_FIXED,
+            Camera.Parameters.FOCUS_MODE_INFINITY,
+            Camera.Parameters.FOCUS_MODE_MACRO
     })
     @Retention(RetentionPolicy.SOURCE)
-    private @interface FocusMode {}
+    private @interface FocusMode {
+    }
 
     @StringDef({
-        Camera.Parameters.FLASH_MODE_ON,
-        Camera.Parameters.FLASH_MODE_OFF,
-        Camera.Parameters.FLASH_MODE_AUTO,
-        Camera.Parameters.FLASH_MODE_RED_EYE,
-        Camera.Parameters.FLASH_MODE_TORCH
+            Camera.Parameters.FLASH_MODE_ON,
+            Camera.Parameters.FLASH_MODE_OFF,
+            Camera.Parameters.FLASH_MODE_AUTO,
+            Camera.Parameters.FLASH_MODE_RED_EYE,
+            Camera.Parameters.FLASH_MODE_TORCH
     })
     @Retention(RetentionPolicy.SOURCE)
-    private @interface FlashMode {}
+    private @interface FlashMode {
+    }
 
     private Context mContext;
 
@@ -332,6 +334,7 @@ public class CameraSource {
      *
      * @throws IOException if the camera's preview texture or display could not be initialized
      */
+    @SuppressLint("MissingPermission")
     @RequiresPermission(Manifest.permission.CAMERA)
     public CameraSource start() throws IOException {
         synchronized (mCameraLock) {
@@ -366,6 +369,7 @@ public class CameraSource {
      * @param surfaceHolder the surface holder to use for the preview frames
      * @throws IOException if the supplied surface holder could not be used as the preview display
      */
+    @SuppressLint("MissingPermission")
     @RequiresPermission(Manifest.permission.CAMERA)
     public CameraSource start(SurfaceHolder surfaceHolder) throws IOException {
         synchronized (mCameraLock) {
@@ -403,7 +407,7 @@ public class CameraSource {
                     // quickly after stop).
                     mProcessingThread.join();
                 } catch (InterruptedException e) {
-                    Log.d(TAG, "Frame processing thread interrupted on release.");
+                    CustomLogger.getInstance().logDebug("Frame processing thread interrupted on release.");
                 }
                 mProcessingThread = null;
             }
@@ -427,7 +431,7 @@ public class CameraSource {
                         mCamera.setPreviewDisplay(null);
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "Failed to clear camera preview: " + e);
+                    CustomLogger.getInstance().logError("Failed to clear camera preview: ", e);
                 }
                 mCamera.release();
                 mCamera = null;
@@ -459,7 +463,7 @@ public class CameraSource {
             int maxZoom;
             Camera.Parameters parameters = mCamera.getParameters();
             if (!parameters.isZoomSupported()) {
-                Log.w(TAG, "Zoom is not supported on this device");
+                CustomLogger.getInstance().logWarn("Zoom is not supported on this device", null);
                 return currentZoom;
             }
             maxZoom = parameters.getMaxZoom();
@@ -777,7 +781,7 @@ public class CameraSource {
                     mFocusMode)) {
                 parameters.setFocusMode(mFocusMode);
             } else {
-                Log.i(TAG, "Camera focus mode: " + mFocusMode + " is not supported on this device.");
+                CustomLogger.getInstance().logInfo("Camera focus mode: " + mFocusMode + " is not supported on this device.");
             }
         }
 
@@ -790,7 +794,7 @@ public class CameraSource {
                         mFlashMode)) {
                     parameters.setFlashMode(mFlashMode);
                 } else {
-                    Log.i(TAG, "Camera flash mode: " + mFlashMode + " is not supported on this device.");
+                    CustomLogger.getInstance().logInfo("Camera flash mode: " + mFlashMode + " is not supported on this device.");
                 }
             }
         }
@@ -929,7 +933,7 @@ public class CameraSource {
         // of the preview sizes and hope that the camera can handle it.  Probably unlikely, but we
         // still account for it.
         if (validPreviewSizes.size() == 0) {
-            Log.w(TAG, "No preview sizes have a corresponding same-aspect-ratio picture size");
+            CustomLogger.getInstance().logWarn("No preview sizes have a corresponding same-aspect-ratio picture size", null);
             for (android.hardware.Camera.Size previewSize : supportedPreviewSizes) {
                 // The null picture size will let us know that we shouldn't set a picture size.
                 validPreviewSizes.add(new SizePair(previewSize, null));
@@ -998,7 +1002,7 @@ public class CameraSource {
                 degrees = 270;
                 break;
             default:
-                Log.e(TAG, "Bad rotation value: " + rotation);
+                CustomLogger.getInstance().logError("Bad rotation value: " + rotation, null);
         }
 
         CameraInfo cameraInfo = new CameraInfo();
@@ -1125,9 +1129,9 @@ public class CameraSource {
                 }
 
                 if (!mBytesToByteBuffer.containsKey(data)) {
-                    Log.d(TAG,
-                        "Skipping frame.  Could not find ByteBuffer associated with the image " +
-                        "data from the camera.");
+                    CustomLogger.getInstance().logDebug(
+                            "Skipping frame.  Could not find ByteBuffer associated with the image " +
+                                    "data from the camera.");
                     return;
                 }
 
@@ -1169,7 +1173,7 @@ public class CameraSource {
                             // don't have it yet.
                             mLock.wait();
                         } catch (InterruptedException e) {
-                            Log.d(TAG, "Frame processing loop terminated.", e);
+                            CustomLogger.getInstance().logError("Frame processing loop terminated.", e);
                             return;
                         }
                     }
@@ -1198,13 +1202,12 @@ public class CameraSource {
                 }
 
                 // The code below needs to run outside of synchronization, because this will allow
-                // the camera to add pending frame(s) while we are running detection on the current
-                // frame.
+                // the camera to add pending frame(s) while we are running detection on the current frame.
 
                 try {
                     mDetector.receiveFrame(outputFrame);
                 } catch (Throwable t) {
-                    Log.e(TAG, "Exception thrown from receiver.", t);
+                    CustomLogger.getInstance().logError("Exception thrown from receiver.", t);
                 } finally {
                     mCamera.addCallbackBuffer(data.array());
                 }

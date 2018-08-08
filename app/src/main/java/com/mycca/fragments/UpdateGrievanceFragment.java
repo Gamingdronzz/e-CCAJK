@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +16,15 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.listeners.OnConnectionAvailableListener;
-import com.mycca.R;
 import com.mycca.tabs.updateGrievance.TabResolved;
 import com.mycca.tabs.updateGrievance.TabSubmitted;
 import com.mycca.tabs.updateGrievance.TabUnderProcess;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 
 import java.util.List;
@@ -159,7 +159,7 @@ public class UpdateGrievanceFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + frag.toString());
             frag.onActivityResult(requestCode, resultCode, data);
         }
     }

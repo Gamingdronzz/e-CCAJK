@@ -1,7 +1,6 @@
 package com.mycca.tools;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ public class DataSubmissionAndMail {
     public static final String UPDATE="update";
 
     private static DataSubmissionAndMail _instance;
-    private String TAG="Mail and Image";
 
     private DataSubmissionAndMail() {
         _instance = this;
@@ -28,10 +26,10 @@ public class DataSubmissionAndMail {
     }
 
     public void uploadImagesToServer(String url,ArrayList<Uri> firebaseImageURLs, String folderName, String uploadType,VolleyHelper volleyHelper) {
-        Log.d("Data Submission", "uploadImagesToServer: Starting Upload");
+        CustomLogger.getInstance().logDebug("uploadImagesToServer: Starting Upload");
         for (int i = 0; i < firebaseImageURLs.size(); i++) {
 
-            Log.d("Data Submission", "uploadAllImagesToServer: Current = " + i);
+            CustomLogger.getInstance().logDebug("uploadAllImagesToServer: Current = " + i);
 
             Map<String, String> params = new HashMap<>();
             params.put("folder",uploadType);
@@ -48,7 +46,7 @@ public class DataSubmissionAndMail {
     public void sendMail(Map<String, String> hashMap, String tag, VolleyHelper volleyHelper,String url) {
         if (volleyHelper.countRequestsInFlight(tag) == 0)
             volleyHelper.makeStringRequest(url, tag, hashMap);
-        Log.d(TAG, "sendFinalMail: ");
+        CustomLogger.getInstance().logDebug( "sendFinalMail: ");
     }
 
 

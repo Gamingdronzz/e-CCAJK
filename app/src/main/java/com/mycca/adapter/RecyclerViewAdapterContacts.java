@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mycca.models.Contact;
 import com.mycca.R;
+import com.mycca.models.Contact;
+import com.mycca.tools.CustomLogger;
 
 import java.util.ArrayList;
 
@@ -92,7 +92,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
             mobile.setOnClickListener(v -> {
                 String number = mobile.getText().toString();
-                Log.v("Adapter", "Contact = " + number);
+                CustomLogger.getInstance().logDebug("Contact = " + number);
                 if (number.equals(na)) {
                     Toast.makeText(context,context.getString(R.string.contact_na) , Toast.LENGTH_SHORT).show();
                 } else {
@@ -115,7 +115,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
             email.setOnClickListener(v -> {
                 String mail = email.getText().toString();
-                Log.v("Adapter", "Contact = " + mail);
+                CustomLogger.getInstance().logDebug("Contact = " + mail);
                 if (mail.equals(na)) {
                     Toast.makeText(context, context.getString(R.string.email_na), Toast.LENGTH_SHORT).show();
                 } else {

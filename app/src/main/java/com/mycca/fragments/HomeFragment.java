@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterNews;
 import com.mycca.custom.CustomImageSlider.SliderLayout;
@@ -30,7 +30,7 @@ import com.mycca.custom.CustomImageSlider.SliderTypes.TextSliderView;
 import com.mycca.custom.CustomImageSlider.Tricks.ViewPagerEx;
 import com.mycca.models.NewsModel;
 import com.mycca.models.SliderImageModel;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 
 import java.util.ArrayList;
@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                             NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                             newsModelArrayList.add(0, newsModel);
                             adapterNews.notifyItemInserted(0);
-                            Log.d(TAG, "onChildAdded: " + newsModel.getHeadline());
+                            CustomLogger.getInstance().logDebug( "onChildAdded: " + newsModel.getHeadline());
                             recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
                         }
                     }
@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                                     adapterNews.notifyItemRemoved(i);
                                     newsModelArrayList.add(i, newsModel);
                                     adapterNews.notifyItemInserted(i);
-                                    Log.d(TAG, "onChildChanged: " + newsModel.getHeadline() + " pos - " + i);
+                                    CustomLogger.getInstance().logDebug( "onChildChanged: " + newsModel.getHeadline() + " pos - " + i);
                                     break;
                                 }
                             }
@@ -193,15 +193,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void getSliderData() {
-        Log.d(TAG, "getting SliderData: ");
+        CustomLogger.getInstance().logDebug( "getting SliderData: ");
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "ChildAdded: ");
+                CustomLogger.getInstance().logDebug( "ChildAdded: ");
                 SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
                 if (sliderImageModel != null) {
-                    Log.d(TAG, "Image: " + sliderImageModel.getImageName());
-                    Log.d(TAG, "url: " + sliderImageModel.getImageUrl());
+                    CustomLogger.getInstance().logDebug( "Image: " + sliderImageModel.getImageName());
+                    CustomLogger.getInstance().logDebug( "url: " + sliderImageModel.getImageUrl());
                     addImageToSlider(sliderImageModel);
                 }
             }
@@ -278,7 +278,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageSelected(int position) {
-        Log.d("Slider", "Page Changed: " + position);
+        CustomLogger.getInstance().logDebug("Slider Page Changed: " + position);
     }
 
     @Override

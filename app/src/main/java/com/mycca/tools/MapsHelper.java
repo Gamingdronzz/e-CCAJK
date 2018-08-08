@@ -3,11 +3,8 @@ package com.mycca.tools;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.mycca.R;
-import com.mycca.models.LocationModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -15,12 +12,13 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mycca.R;
+import com.mycca.models.LocationModel;
 
 import java.util.ArrayList;
 
 public class MapsHelper {
 
-    private final String TAG = "MapsHelper";
     private Context context;
 
     public MapsHelper(Context context) {
@@ -43,7 +41,7 @@ public class MapsHelper {
                 .tilt(0)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Log.v(TAG, "Animation Done");
+        CustomLogger.getInstance().logDebug("Maps Animation Done");
 
         ArrayList<LocationModel> filteredLocations = filterLocations(allLocations, value, mLastLocation);
         if (filteredLocations.size() == 0) {
@@ -81,7 +79,7 @@ public class MapsHelper {
 
     public double getRadius(int value) {
         double radius = Math.pow(value + 5, 2);
-        Log.v(TAG, "Radius = " + radius);
+        CustomLogger.getInstance().logDebug("Radius = " + radius);
         return radius;
     }
 

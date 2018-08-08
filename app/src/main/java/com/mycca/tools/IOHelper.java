@@ -2,7 +2,6 @@ package com.mycca.tools;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.mycca.listeners.ReadFileCompletionListener;
 
@@ -53,10 +52,10 @@ public class IOHelper {
             try {
                 FileOutputStream outputStream = new FileOutputStream(file);
                 outputStream.write(jsonObject.getBytes());
-                Log.d(TAG, "WRITING TO FILE: " + file.getCanonicalPath());
+                CustomLogger.getInstance().logDebug( "WRITING TO FILE: " + file.getCanonicalPath());
                 outputStream.close();
             } catch (FileNotFoundException e) {
-                Log.d(TAG, "Could not write");
+                CustomLogger.getInstance().logDebug( "Could not write");
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -81,7 +80,7 @@ public class IOHelper {
             path.mkdirs();
             File file = new File(path, filename + ".json");
             try {
-                Log.d(TAG, "readFromFile: file path = " + file.getPath());
+                CustomLogger.getInstance().logDebug( "readFromFile: file path = " + file.getPath());
                 FileInputStream fin = new FileInputStream(file);
                 int size = fin.available();
                 byte[] buffer = new byte[size];
@@ -89,7 +88,7 @@ public class IOHelper {
                 fin.close();
                 return new String(buffer);
             } catch (FileNotFoundException e) {
-                Log.d(TAG, "could not read");
+                CustomLogger.getInstance().logDebug( "could not read");
                 e.printStackTrace();
                 return null;
             } catch (IOException e) {

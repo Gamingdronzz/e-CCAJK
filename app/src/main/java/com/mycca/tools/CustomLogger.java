@@ -40,13 +40,33 @@ public class CustomLogger {
             Log.d(tag, "Debug: " + message);
     }
 
-    public void logWarn(String message,Exception e) {
+    public void logInfo(String message) {
         if (logEnabled)
-            Log.w(TAG, "warning: " + message,e);
+            Log.i(TAG, "warning: " + message);
     }
 
-    public void logWarn(String tag, String message,Exception e) {
+    public void logInfo(String tag, String message) {
         if (logEnabled)
-            Log.w(tag, "warning: " + message,e);
+            Log.i(tag, "warning: " + message);
+    }
+
+    public void logWarn(String message, Throwable e) {
+        if (logEnabled)
+            Log.w(TAG, "warning: " + message, e);
+    }
+
+    public void logWarn(String tag, String message, Throwable e) {
+        if (logEnabled)
+            Log.w(tag, "warning: " + message, e);
+    }
+
+    public void logError(String message, Throwable e) {
+        if (logEnabled)
+            Log.e(TAG, "warning: " + message, e);
+    }
+
+    public void logError(String tag, String message, Throwable e) {
+        if (logEnabled)
+            Log.e(tag, "warning: " + message, e);
     }
 }

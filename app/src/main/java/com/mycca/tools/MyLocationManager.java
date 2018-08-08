@@ -10,10 +10,7 @@ import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
-import com.mycca.R;
-import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -24,6 +21,8 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.Task;
+import com.mycca.R;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 
 public class MyLocationManager {
 
@@ -47,13 +46,13 @@ public class MyLocationManager {
 
     @SuppressLint("NewApi")
     public Task<LocationSettingsResponse> ManageLocation() {
-        Log.v(TAG, "Checking for location permission");
+        CustomLogger.getInstance().logDebug("Checking for location permission");
         if (checkForLocationPermission()) {
-            Log.v(TAG, "Permission Available\nChecking for location on or off");
+            CustomLogger.getInstance().logDebug("Permission Available\nChecking for location on or off");
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             return createLocationRequest();
         } else {
-            Log.v(TAG, "Permission not Available");
+            CustomLogger.getInstance().logDebug("Permission not Available");
             if (context.getParentFragment() != null)
                 requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
             else
@@ -67,7 +66,7 @@ public class MyLocationManager {
             if (ContextCompat.checkSelfPermission(context.getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                Log.v(TAG, "Permission Granted");
+                CustomLogger.getInstance().logDebug("Permission Granted");
                 return true;
             } else {
                 return false;
@@ -92,7 +91,7 @@ public class MyLocationManager {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
 
         SettingsClient client = LocationServices.getSettingsClient(context.getActivity());
-        Log.v(TAG, "Location Request Created");
+        CustomLogger.getInstance().logDebug("Location Request Created");
 
         return client.checkLocationSettings(builder.build());
     }
@@ -115,7 +114,7 @@ public class MyLocationManager {
     }
 
     public void onLocationAcccessRequestFailure(Exception e) {
-        Log.v(TAG, "Request Failure Further process");
+        CustomLogger.getInstance().logDebug("Request Failure Further process");
         try {
             // Show the dialog by calling startResolutionForResult(),
             // and check the result in onActivityResult().

@@ -20,7 +20,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -239,7 +238,7 @@ public class Helper {
         long newVersion;
         int version = getAppVersion(activity);
         if (dataSnapshot.getValue() == null) {
-            Log.d(TAG, "onLatestVersion: Data snapshot null");
+            CustomLogger.getInstance().logDebug("onLatestVersion: Data snapshot null");
             showMaintenanceDialog(activity);
             return false;
         }
@@ -309,10 +308,10 @@ public class Helper {
 
     public boolean checkInput(String input) {
 
-        Log.d(TAG, "checkInput: = " + input);
+        CustomLogger.getInstance().logDebug("checkInput: = " + input);
         boolean result;
         result = !(input == null || input.trim().isEmpty());
-        Log.d(TAG, "checkInput: result = " + result);
+        CustomLogger.getInstance().logDebug("checkInput: result = " + result);
         return result;
     }
 
@@ -339,7 +338,7 @@ public class Helper {
         boolean isTab = (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-        Log.d(TAG, "Tab = " + isTab);
+        CustomLogger.getInstance().logDebug("Tab = " + isTab);
         return isTab;
     }
 
@@ -353,7 +352,7 @@ public class Helper {
             title = AppController.getResourses().getString(R.string.app_name);
         }
         if (message == null) {
-            Log.d(TAG, "showFancyAlertDialog: Message cant be null");
+            CustomLogger.getInstance().logDebug("showFancyAlertDialog: Message cant be null");
             return;
         }
         int bgColor = 1;
@@ -547,8 +546,8 @@ public class Helper {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot.getValue());
-                if (dataSnapshot.getValue()!=null && dataSnapshot.getValue().equals(oldPwd)) {
+                CustomLogger.getInstance().logDebug("onDataChange: " + dataSnapshot.getValue());
+                if (dataSnapshot.getValue() != null && dataSnapshot.getValue().equals(oldPwd)) {
                     Task<Void> task = FireBaseHelper.getInstance(context).updatePassword(newPwd, staffId);
                     task.addOnCompleteListener(task1 -> {
                         progressDialog.dismiss();
@@ -564,7 +563,7 @@ public class Helper {
                     });
                 } else {
                     progressDialog.dismiss();
-                    showErrorDialog( AppController.getResourses().getString(R.string.incorrect_old),
+                    showErrorDialog(AppController.getResourses().getString(R.string.incorrect_old),
                             AppController.getResourses().getString(R.string.password_change_fail), context);
                 }
             }
@@ -593,7 +592,7 @@ public class Helper {
                 return new JSONObject(input.substring(input.indexOf("{"), input.indexOf("}") + 1));
             } catch (JSONException jse) {
                 jse.printStackTrace();
-                Log.v("Helper", "Error creating json");
+                CustomLogger.getInstance().logVerbose("getJson: Error creating json");
                 return null;
             }
         } catch (StringIndexOutOfBoundsException sioobe) {
@@ -622,7 +621,7 @@ public class Helper {
 
     public Bitmap getBitmapFromString(String value) {
         byte[] inter = Base64.decode(value, 0);
-        Log.d("Helper", "Byte Array = " + inter.toString());
+        CustomLogger.getInstance().logDebug("Byte Array = " + inter.toString());
         return BitmapFactory.decodeByteArray(inter, 0, inter.length);
     }
 
@@ -655,27 +654,12 @@ public class Helper {
 
     public void showSnackBar(CharSequence message, View view) {
         Snackbar.make(view.findViewById(R.id.fragmentPlaceholder), message, Snackbar.LENGTH_INDEFINITE)
-                .setAction("OK", v -> Log.v(TAG, "Yes Clicked"))
+                .setAction("OK", v ->CustomLogger.getInstance().logVerbose("Yes Clicked"))
                 .show();
     }
 
 
-    /*public void addLocations(int value) {
-        Random random = new Random();
-        double maxLongitude = 32.8, minLongitude = 32.1;
-        double maxLatitude = 74.5, minLatitude = 75.5;
-        for (int i = 0; i < value; i++) {
-            double randomLongitude = minLatitude + random.nextDouble() * (maxLatitude - minLatitude);
-            double randomLatitude = minLongitude + random.nextDouble() * (maxLongitude - minLongitude);
-            DatabaseReference versionedDbRef = FireBaseHelper.getInstance().versionedDbRef;
-            versionedDbRef.child("Locations").child("Location" + "-" + i).child("Latitude").setValue(randomLatitude);
-            versionedDbRef.child("Locations").child("Location" + "-" + i).child("Longitude").setValue(randomLongitude);
-            versionedDbRef.child("Locations").child("Location" + "-" + i).child("StateID").setValue("jnk");
-            versionedDbRef.child("Locations").child("Location" + "-" + i).child("District").setValue("jammu");
-            versionedDbRef.child("Locations").child("Location" + "-" + i).child("LocationName").setValue("Location-" + i);
-            Log.d("Helper", "Adding Location = " + randomLatitude + " : " + randomLongitude);
-        }
-    }
+   /*
     public void remove() {
         DatabaseReference versionedDbRef = FireBaseHelper.getInstance().versionedDbRef;
         versionedDbRef.child("Locations").removeValue();

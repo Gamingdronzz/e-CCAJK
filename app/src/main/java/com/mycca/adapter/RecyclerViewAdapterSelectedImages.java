@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mycca.activity.UpdateGrievanceActivity;
-import com.mycca.fragments.SubmitGrievanceFragment;
-import com.mycca.fragments.InspectionFragment;
-import com.mycca.models.SelectedImageModel;
 import com.mycca.R;
+import com.mycca.activity.UpdateGrievanceActivity;
+import com.mycca.fragments.InspectionFragment;
+import com.mycca.fragments.SubmitGrievanceFragment;
+import com.mycca.models.SelectedImageModel;
+import com.mycca.tools.CustomLogger;
 
 import java.util.ArrayList;
 
@@ -95,7 +95,7 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
         @Override
         public void onClick(View v) {
-            Log.d("Adapter", "onClick: Item removed at " + position);
+            CustomLogger.getInstance().logDebug("onClick: Item removed at " + position);
             selectedImageModelArrayList.remove(position);
             notifyItemRemoved(position);
             notifyDataSetChanged();

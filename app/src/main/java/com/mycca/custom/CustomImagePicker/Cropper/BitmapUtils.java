@@ -12,8 +12,10 @@ import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Pair;
+
+import com.mycca.tools.CustomLogger;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -301,7 +304,7 @@ final class BitmapUtils {
      * Write the given bitmap to the given uri using the given compression.
      */
     static void writeBitmapToUri(Context context, Bitmap bitmap, Uri uri, Bitmap.CompressFormat compressFormat, int compressQuality) throws
-        FileNotFoundException {
+            FileNotFoundException {
         OutputStream outputStream = null;
         try {
             outputStream = context.getContentResolver().openOutputStream(uri);
@@ -339,7 +342,7 @@ final class BitmapUtils {
                 }
             }
         } catch (Exception e) {
-            Log.w("AIC", "Failed to resize cropped image, return bitmap before resize", e);
+            CustomLogger.getInstance().logWarn("Failed to resize cropped image, return bitmap before resize", e);
         }
         return bitmap;
     }
@@ -349,8 +352,8 @@ final class BitmapUtils {
     /**
      * Crop image bitmap from URI by decoding it with specific width and height to down-sample if required.
      *
-     * @param orgWidth used to get rectangle from points (handle edge cases to limit rectangle)
-     * @param orgHeight used to get rectangle from points (handle edge cases to limit rectangle)
+     * @param orgWidth    used to get rectangle from points (handle edge cases to limit rectangle)
+     * @param orgHeight   used to get rectangle from points (handle edge cases to limit rectangle)
      * @param sampleMulti used to increase the sampling of the image to handle memory issues.
      */
     private static BitmapSampled cropBitmap(Context context, Uri loadedImageUri, float[] points,
@@ -441,7 +444,7 @@ final class BitmapUtils {
      * Decode image from uri using "inJustDecodeBounds" to get the image dimensions.
      */
     private static BitmapFactory.Options decodeImageForOption(ContentResolver resolver, Uri uri) throws
-        FileNotFoundException {
+            FileNotFoundException {
         InputStream stream = null;
         try {
             stream = resolver.openInputStream(uri);
@@ -460,7 +463,7 @@ final class BitmapUtils {
      * the inSampleSize until success.
      */
     private static Bitmap decodeImage(ContentResolver resolver, Uri uri, BitmapFactory.Options options) throws
-        FileNotFoundException {
+            FileNotFoundException {
         do {
             InputStream stream = null;
             try {
@@ -590,7 +593,7 @@ final class BitmapUtils {
         // try reading real path from content resolver (gallery images)
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA};
+            String[] proj = {MediaStore.Images.Media.DATA};
             cursor = context.getContentResolver().query(uri, proj, null, null, null);
             if (cursor != null) {
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

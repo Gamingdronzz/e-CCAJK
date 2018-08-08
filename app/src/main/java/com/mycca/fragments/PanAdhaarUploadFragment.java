@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,23 +33,24 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
-import com.mycca.custom.barCode.BarcodeCaptureActivity;
-import com.mycca.custom.customImagePicker.cropper.CropImage;
-import com.mycca.custom.customImagePicker.cropper.CropImageView;
-import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.custom.barCode.BarcodeCaptureActivity;
+import com.mycca.custom.customImagePicker.ImagePicker;
+import com.mycca.custom.customImagePicker.cropper.CropImage;
+import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.PanAdhaar;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.State;
-import com.mycca.R;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
@@ -231,7 +231,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
             }
         });
     }
@@ -296,7 +296,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                Log.d(TAG, "version checked = " + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
@@ -328,7 +328,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmissionOnInternetAvailable() {
-        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
         if (isUploadedToFirebase) {
             if (isUploadedToServer) {
@@ -411,11 +411,11 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(exception -> {
                 Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.update_information), getActivity());
-                Log.d(TAG, "onFailure: " + exception.getMessage());
+                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
                 progressDialog.dismiss();
             }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                 downloadUrl = uri;
-                Log.d(TAG, "onSuccess: " + downloadUrl);
+                CustomLogger.getInstance().logDebug("onSuccess: " + downloadUrl);
                 firebaseImageURLs.add(downloadUrl);
                 isUploadedToFirebase = true;
                 doSubmission();
@@ -458,7 +458,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     public void scanNow() {
 
-        Log.d(TAG, "scanNow: ");
+        CustomLogger.getInstance().logDebug("scanNow: ");
         //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
 //                == PackageManager.PERMISSION_DENIED) {
 //            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
@@ -478,29 +478,29 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     protected void processScannedData(String scanData) {
-        Log.d("Aadhar Card Scan", scanData);
+        CustomLogger.getInstance().logDebug(scanData);
 
         XmlPullParserFactory pullParserFactory;
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(new StringReader(scanData));
+            parser.setInput(new StringReader("Scanned data: " + scanData));
 
             int eventType = parser.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_DOCUMENT) {
-                    Log.d("AadharPan", "Start document");
+                    CustomLogger.getInstance().logDebug("AadharPan Start document");
                 } else if (eventType == XmlPullParser.START_TAG && AADHAAR_DATA_TAG.equals(parser.getName())) {
                     // extract data from tag
                     String uid = parser.getAttributeValue(null, AADHAR_UID_ATTR);
                     inputNumber.setText(uid);
 
                 } else if (eventType == XmlPullParser.END_TAG) {
-                    Log.d("AadharPan", "End tag " + parser.getName());
+                    CustomLogger.getInstance().logDebug("AadharPan End tag " + parser.getName());
 
                 } else if (eventType == XmlPullParser.TEXT) {
-                    Log.d("AadharPan", "Text " + parser.getText());
+                    CustomLogger.getInstance().logDebug("AadharPan Text " + parser.getText());
 
                 }
                 eventType = parser.next();
@@ -513,19 +513,19 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
+        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_BARCODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
+                    CustomLogger.getInstance().logDebug("Barcode read: " + barcode.displayValue);
                     processScannedData(barcode.displayValue);
                 } else {
-                    Log.d(TAG, "No barcode captured, intent data is null");
+                    CustomLogger.getInstance().logDebug("No barcode captured, intent data is null");
                 }
             } else {
-                Log.d(TAG, String.format(getString(R.string.barcode_error),
+                CustomLogger.getInstance().logDebug(String.format(getString(R.string.barcode_error),
                         CommonStatusCodes.getStatusCodeString(resultCode)));
             }
         } else if (imagePicker != null)
@@ -557,14 +557,14 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult: " + "PanAadhar " + requestCode);
+        CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + "PanAadhar " + requestCode);
 
         switch (requestCode) {
             case (MY_CAMERA_REQUEST_CODE): {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     scanNow();
                 } else {
-                    Log.d(TAG, "onRequestPermissionsResult: Permission Denied");
+                    CustomLogger.getInstance().logDebug("onRequestPermissionsResult: Permission Denied");
                 }
                 break;
             }
@@ -586,15 +586,15 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        Log.d(TAG, jsonObject.toString());
+        CustomLogger.getInstance().logDebug(jsonObject.toString());
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
-                    Log.d(TAG, "onResponse: Files uploaded");
+                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
                     isUploadedToServer = true;
                     doSubmission();
                 } else {
-                    Log.d(TAG, "onResponse: Image upload failed");
+                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
                     Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.update_information), getActivity());
                     progressDialog.dismiss();
                 }

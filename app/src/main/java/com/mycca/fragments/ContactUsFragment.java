@@ -10,23 +10,20 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterContacts;
 import com.mycca.models.Contact;
-import com.mycca.R;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
 
 public class ContactUsFragment extends Fragment {
 
@@ -45,7 +42,6 @@ public class ContactUsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: done");
         View view = inflater.inflate(R.layout.fragment_contact_us, container, false);
         isTab = Helper.getInstance().isTab(this.getContext());
         bindViews(view);

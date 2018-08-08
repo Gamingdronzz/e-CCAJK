@@ -11,20 +11,19 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.mycca.R;
 import com.mycca.activity.TrackGrievanceResultActivity;
 import com.mycca.notification.Constants;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Preferences;
 
 import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "FCM Service";
     private Context context = this;
     String groupKey = "grievanceGroupKey";
 
@@ -33,9 +32,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         //startService(new Intent(getBaseContext(), MyIntentService.class));
         if (remoteMessage.getData().size() > 0) {
-            Log.v(TAG, "data: " + remoteMessage.getData());
+            CustomLogger.getInstance().logDebug( "data: " + remoteMessage.getData());
             String title = remoteMessage.getData().get(Constants.KEY_TITLE);
-            Log.d(TAG, "title: " + title);
+            CustomLogger.getInstance().logDebug( "title: " + title);
 
             String message = remoteMessage.getData().get(Constants.KEY_BODY);
             if (message != null && Preferences.getInstance().getBooleanPref(getApplicationContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS)) {
@@ -57,7 +56,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType) {
 
-        Log.d(TAG, "sendUserNotification: ");
+        CustomLogger.getInstance().logDebug( "sendUserNotification: ");
         int notifyID = new Random().nextInt();
         Intent intent;
         NotificationChannel mChannel;

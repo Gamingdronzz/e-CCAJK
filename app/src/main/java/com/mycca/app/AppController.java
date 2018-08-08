@@ -4,13 +4,13 @@ import android.app.Application;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.LruBitmapCache;
 
 import io.fabric.sdk.android.Fabric;
@@ -68,7 +68,7 @@ public class AppController extends Application {
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
-        Log.d(TAG, "added To Request Queue");
+        CustomLogger.getInstance().logDebug( "added To Request Queue");
         if (TextUtils.isEmpty(tag)) {
             tag = TAG;
         }

@@ -9,7 +9,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.mycca.R;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.custom.IndicatorSeekBar.IndicatorSeekBar;
 import com.mycca.custom.IndicatorSeekBar.IndicatorSeekBarType;
@@ -36,7 +36,7 @@ import com.mycca.custom.IndicatorSeekBar.TickType;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.models.LocationModel;
 import com.mycca.providers.LocationDataProvider;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 import com.mycca.tools.MapsHelper;
 import com.mycca.tools.MyLocationManager;
@@ -70,7 +70,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
-            Log.v(TAG, "Updating My Location");
+            CustomLogger.getInstance().logVerbose( "Updating My Location");
 
             progressDialog.dismiss();
 
@@ -88,20 +88,20 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         View view = inflater.inflate(R.layout.tab_nearby_locations, container, false);
         if (getArguments() != null)
             locatorType = getArguments().getString("Locator");
-        Log.d(TAG, "onCreateView: tabnearby created");
+        CustomLogger.getInstance().logDebug( "onCreateView: tabnearby created");
         bindViews(view);
         init();
         return view;
     }
 
     private void init() {
-        Log.d(TAG, "init: tabnearby init");
+        CustomLogger.getInstance().logDebug( "init: tabnearby init");
 
         activity = getActivity();
         progressDialog = Helper.getInstance().getProgressWindow(activity, "");
 
         buttonRefresh.setOnClickListener(v -> {
-            Log.d(TAG, "onClick: managing");
+            CustomLogger.getInstance().logDebug( "onClick: managing");
             //locationManager.ManageLocation();
             startLocationProcess();
         });
@@ -147,19 +147,19 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     Task<LocationSettingsResponse> task = locationManager.ManageLocation();
                     if (task != null) {
                         task.addOnCompleteListener(task1 -> {
-                            Log.v(TAG, "On Task Complete");
+                            CustomLogger.getInstance().logVerbose( "On Task Complete");
                             if (task1.isSuccessful()) {
-                                Log.v(TAG, "Task is Successful");
+                                CustomLogger.getInstance().logVerbose( "Task is Successful");
                                 locationManager.requestLocationUpdates(mMap);
                                 manageNoLocationLayout(false);
 
 
                             } else {
-                                Log.v(TAG, "Task is not Successful");
+                                CustomLogger.getInstance().logVerbose( "Task is not Successful");
                             }
                         });
                         task.addOnSuccessListener(activity, locationSettingsResponse -> {
-                            Log.v(TAG, "On Task Success");
+                            CustomLogger.getInstance().logVerbose( "On Task Success");
                             // All location settings are satisfied. The client can initialize
                             // location requests here.
                             // ...
@@ -167,7 +167,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                         });
 
                         task.addOnFailureListener(activity, e -> {
-                            Log.v(TAG, "On Task Failed");
+                            CustomLogger.getInstance().logVerbose( "On Task Failed");
                             if (e instanceof ResolvableApiException) {
                                 locationManager.onLocationAcccessRequestFailure(e);
                                 // Location settings are not satisfied, but this can be fixed
@@ -183,7 +183,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     }
 
     private void bindViews(View view) {
-        Log.d(TAG, "bindViews: ");
+        CustomLogger.getInstance().logDebug( "bindViews: ");
         kilometres = view.findViewById(R.id.textview_range);
         relativeLayoutNoLocation = view.findViewById(R.id.layout_no_location);
         mapsHelper = new MapsHelper(view.getContext());
@@ -206,19 +206,19 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         Task<LocationSettingsResponse> task = locationManager.ManageLocation();
         if (task != null) {
             task.addOnCompleteListener(task1 -> {
-                Log.v(TAG, "On Task Complete");
+                CustomLogger.getInstance().logVerbose( "On Task Complete");
                 if (task1.isSuccessful()) {
-                    Log.v(TAG, "Task is Successful");
+                    CustomLogger.getInstance().logVerbose( "Task is Successful");
                     progressDialog.setMessage(getString(R.string.getting_coordinates));
                     progressDialog.show();
                     locationManager.requestLocationUpdates(mMap);
                     manageNoLocationLayout(false);
                 } else {
-                    Log.v(TAG, "Task is not Successful");
+                    CustomLogger.getInstance().logVerbose( "Task is not Successful");
                 }
             });
             task.addOnSuccessListener(activity, locationSettingsResponse -> {
-                Log.v(TAG, "On Task Success");
+                CustomLogger.getInstance().logVerbose( "On Task Success");
                 // All location settings are satisfied. The client can initialize
                 // location requests here.
                 // ...
@@ -226,7 +226,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
             });
 
             task.addOnFailureListener(activity, e -> {
-                Log.v(TAG, "On Task Failed");
+                CustomLogger.getInstance().logVerbose( "On Task Failed");
                 if (e instanceof ResolvableApiException) {
                     locationManager.onLocationAcccessRequestFailure(e);
                     // Location settings are not satisfied, but this can be fixed
@@ -255,7 +255,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         mMap = googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        Log.v(TAG, "Maps Set");
+        CustomLogger.getInstance().logVerbose( "Maps Set");
 
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("4"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
@@ -274,14 +274,14 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     }
 
     private void placeMarkerOnMyLocation(Location location) {
-        Log.v(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude());
+        CustomLogger.getInstance().logVerbose( "Location: " + location.getLatitude() + " " + location.getLongitude());
         mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title(getString(R.string.current_pos));
         mapsHelper.AnimateCamera(locationModels, 12, mMap, mLastLocation, seekBarValue);
-        Log.v(TAG, "Animating through Callback ");
+        CustomLogger.getInstance().logVerbose( "Animating through Callback ");
     }
 
     private int getZoomValue(int seekBarValue) {
@@ -325,30 +325,30 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         for (String s : permissions) {
-            Log.v(TAG, "Permissions = " + s);
+            CustomLogger.getInstance().logVerbose( "Permissions = " + s);
         }
 
-        Log.d(TAG, "onRequestPermissionsResult: rc = " + requestCode + " l rc = " + LOCATION_REQUEST_CODE + "result = " + grantResults[0]);
+        CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: rc = " + requestCode + " l rc = " + LOCATION_REQUEST_CODE + "result = " + grantResults[0]);
         switch (requestCode) {
             case LOCATION_REQUEST_CODE: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Task<LocationSettingsResponse> task = locationManager.ManageLocation();
                     if (task != null) {
                         final Task<LocationSettingsResponse> locationSettingsResponseTask = task.addOnCompleteListener(task1 -> {
-                            Log.v(TAG, "On Task Complete");
+                            CustomLogger.getInstance().logVerbose( "On Task Complete");
                             if (task1.isSuccessful()) {
-                                Log.v(TAG, "Task is Successful");
+                                CustomLogger.getInstance().logVerbose( "Task is Successful");
                                 progressDialog.setMessage(getString(R.string.getting_coordinates));
                                 progressDialog.show();
                                 locationManager.requestLocationUpdates(mMap);
                                 manageNoLocationLayout(false);
 
                             } else {
-                                Log.v(TAG, "Task is not Successful");
+                                CustomLogger.getInstance().logVerbose( "Task is not Successful");
                             }
                         });
                         task.addOnSuccessListener(activity, locationSettingsResponse -> {
-                            Log.v(TAG, "On Task Success");
+                            CustomLogger.getInstance().logVerbose( "On Task Success");
                             // All location settings are satisfied. The client can initialize
                             // location requests here.
                             // ...
@@ -356,7 +356,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                         });
 
                         task.addOnFailureListener(activity, e -> {
-                            Log.v(TAG, "On Task Failed");
+                            CustomLogger.getInstance().logVerbose( "On Task Failed");
                             if (e instanceof ResolvableApiException) {
                                 locationManager.onLocationAcccessRequestFailure(e);
                                 // Location settings are not satisfied, but this can be fixed
@@ -375,14 +375,14 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "Result Code = " + Integer.toString(resultCode) + "Request code = " + requestCode + " connection code = " + CONNECTION_FAILURE_RESOLUTION_REQUEST);
+        CustomLogger.getInstance().logDebug( "Result Code = " + Integer.toString(resultCode) + "Request code = " + requestCode + " connection code = " + CONNECTION_FAILURE_RESOLUTION_REQUEST);
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
 
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
                 switch (resultCode) {
                     case Activity.RESULT_OK: {
-                        Log.v(TAG, "Resolution success");
+                        CustomLogger.getInstance().logVerbose( "Resolution success");
                         locationManager.requestLocationUpdates(mMap);
                         manageNoLocationLayout(false);
                         progressDialog.setMessage(getString(R.string.turning_on_location));
@@ -391,7 +391,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                     }
                     case Activity.RESULT_CANCELED: {
                         // The user was asked to change settings, but chose not to
-                        Log.v(TAG, "Resolution denied");
+                        CustomLogger.getInstance().logVerbose( "Resolution denied");
                         Helper.getInstance().showFancyAlertDialog(activity,
                                 getString(R.string.loc_off),
                                 getString(R.string.nearby),
@@ -404,7 +404,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
                         break;
                     }
                     default: {
-                        Log.v(TAG, "User unable to do anything");
+                        CustomLogger.getInstance().logVerbose( "User unable to do anything");
                         break;
                     }
                 }

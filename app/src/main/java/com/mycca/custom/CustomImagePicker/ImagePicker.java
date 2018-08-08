@@ -17,19 +17,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.mycca.R;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 
 import java.io.File;
 import java.util.List;
 
 
 public class ImagePicker {
-
-    private static final String TAG = "ImagePicker";
 
     private Callback callback;
     private boolean isCropImage = true;
@@ -76,7 +74,7 @@ public class ImagePicker {
     public void startChooser(Fragment fragment, @NonNull Callback callback) {
         if(fragment == null || callback ==null)
         {
-            Log.d(TAG, "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
         }
         this.callback = callback;
         if (CropImage.isExplicitCameraPermissionRequired(fragment.getActivity())) {
@@ -96,7 +94,7 @@ public class ImagePicker {
     public void startCamera(Activity activity, @NonNull Callback callback) {
         if(activity == null || callback ==null)
         {
-            Log.d(TAG, "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
         }
         this.callback = callback;
         if (CropImage.isExplicitCameraPermissionRequired(activity)) {
@@ -115,7 +113,7 @@ public class ImagePicker {
     public void startCamera(Fragment fragment, @NonNull Callback callback) {
         if(fragment == null || callback ==null)
         {
-            Log.d(TAG, "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
         }
         this.callback = callback;
         if (CropImage.isExplicitCameraPermissionRequired(fragment.getActivity())) {
@@ -133,7 +131,7 @@ public class ImagePicker {
     public void startGallery(Activity activity, @NonNull Callback callback) {
         if(activity == null || callback ==null)
         {
-            Log.d(TAG, "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
         }
         this.callback = callback;
         activity.startActivityForResult(getGalleryIntent(activity, false), CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE);
@@ -321,7 +319,7 @@ public class ImagePicker {
                 callback.onCropImage(handleUri(context, cropImageUri));
             }
         } else {
-            Log.e(TAG, "handleCropResult error", result.getError());
+            CustomLogger.getInstance().logError( "handleCropResult error", result.getError());
         }
     }
 

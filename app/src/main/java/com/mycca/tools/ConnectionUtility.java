@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.mycca.interfaces.IConnectivityProcessor;
 import com.mycca.listeners.OnConnectionAvailableListener;
@@ -96,12 +95,12 @@ public class ConnectionUtility implements IConnectivityProcessor {
         protected void onPostExecute(Boolean result) {
             boolean bResponse = result;
             if (bResponse) {
-                Log.d(TAG, "URl Exists");
+                CustomLogger.getInstance().logDebug("URl Exists");
                 if (onConnectionAvailableListener != null) {
                     onConnectionAvailableListener.OnConnectionAvailable();
                 }
             } else {
-                Log.d(TAG, "URl Does not Exist");
+                CustomLogger.getInstance().logDebug("URl Does not Exist");
                 if (onConnectionAvailableListener != null) {
                     onConnectionAvailableListener.OnConnectionNotAvailable();
                 }

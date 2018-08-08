@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.listeners.OnConnectionAvailableListener;
-import com.mycca.R;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 
@@ -80,7 +80,7 @@ public class FeedbackFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                Log.d(TAG, "version checked= " + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug( "version checked= " + Helper.versionChecked);
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override

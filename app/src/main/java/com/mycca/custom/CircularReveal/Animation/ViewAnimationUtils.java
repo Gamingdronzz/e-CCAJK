@@ -1,12 +1,10 @@
 package com.mycca.custom.CircularReveal.Animation;
 
 import android.animation.Animator;
-import android.util.Log;
 import android.view.View;
 
-
-import com.google.android.gms.common.util.CrashUtils;
 import com.mycca.BuildConfig;
+import com.mycca.tools.CustomLogger;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
@@ -65,7 +63,7 @@ public final class ViewAnimationUtils {
     public static Animator createCircularReveal(View view, int centerX, int centerY,
                                                 float startRadius, float endRadius, int layerType) {
 
-        Log.d("Utils", "createCircularReveal: parent = " + view.toString() + "\n" + view.getParent() + "\n" + view.getParent().getParent() + "\n" + view.getParent().getParent().getParent() + "\n" + view.getRootView());
+        CustomLogger.getInstance().logDebug("createCircularReveal: parent = " + view.toString() + "\n" + view.getParent() + "\n" + view.getParent().getParent() + "\n" + view.getParent().getParent().getParent() + "\n" + view.getRootView());
         if (!(view.getParent() instanceof RevealViewGroup))
             if (!(view.getParent().getParent() instanceof RevealViewGroup))
                 if (!(view.getParent().getParent().getParent() instanceof RevealViewGroup))

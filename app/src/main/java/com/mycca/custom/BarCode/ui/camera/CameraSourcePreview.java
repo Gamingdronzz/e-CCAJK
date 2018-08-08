@@ -20,12 +20,12 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.support.annotation.RequiresPermission;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.images.Size;
+import com.mycca.tools.CustomLogger;
 
 import java.io.IOException;
 
@@ -112,9 +112,9 @@ public class CameraSourcePreview extends ViewGroup {
             try {
                 startIfReady();
             } catch (SecurityException se) {
-                Log.e(TAG,"Do not have permission to start the camera", se);
+                CustomLogger.getInstance().logError(TAG, "Do not have permission to start the camera", se);
             } catch (IOException e) {
-                Log.e(TAG, "Could not start camera source.", e);
+                CustomLogger.getInstance().logError(TAG, "Could not start camera source.", e);
             }
         }
 
@@ -153,12 +153,12 @@ public class CameraSourcePreview extends ViewGroup {
 
         // Computes height and width for potentially doing fit width.
         int childWidth = layoutWidth;
-        int childHeight = (int)(((float) layoutWidth / (float) width) * height);
+        int childHeight = (int) (((float) layoutWidth / (float) width) * height);
 
         // If height is too tall using fit width, does fit height instead.
         if (childHeight > layoutHeight) {
             childHeight = layoutHeight;
-            childWidth = (int)(((float) layoutHeight / (float) height) * width);
+            childWidth = (int) (((float) layoutHeight / (float) height) * width);
         }
 
         for (int i = 0; i < getChildCount(); ++i) {
@@ -168,9 +168,9 @@ public class CameraSourcePreview extends ViewGroup {
         try {
             startIfReady();
         } catch (SecurityException se) {
-            Log.e(TAG,"Do not have permission to start the camera", se);
+            CustomLogger.getInstance().logError(TAG, "Do not have permission to start the camera", se);
         } catch (IOException e) {
-            Log.e(TAG, "Could not start camera source.", e);
+            CustomLogger.getInstance().logError(TAG, "Could not start camera source.", e);
         }
     }
 
@@ -183,7 +183,7 @@ public class CameraSourcePreview extends ViewGroup {
             return true;
         }
 
-        Log.d(TAG, "isPortraitMode returning false by default");
+        CustomLogger.getInstance().logDebug(TAG, "isPortraitMode returning false by default");
         return false;
     }
 }

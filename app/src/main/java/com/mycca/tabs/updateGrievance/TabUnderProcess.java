@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +19,12 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.models.GrievanceModel;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
@@ -76,7 +76,7 @@ public class TabUnderProcess extends Fragment {
     private void init() {
         progressDialog.show();
         processingGrievances = new ArrayList<>();
-        Log.d(TAG, "init: " + processingGrievances);
+        CustomLogger.getInstance().logDebug( "init: " + processingGrievances);
         adapter = new RecyclerViewAdapterGrievanceUpdate(processingGrievances, (MainActivity) getActivity(), false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -105,7 +105,7 @@ public class TabUnderProcess extends Fragment {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
                 ArrayList<GrievanceModel> temp1=new ArrayList<>();
-                Log.d(TAG, "\nonChildChanged: Arraylist" + processingGrievances);
+                CustomLogger.getInstance().logDebug( "\nonChildChanged: Arraylist" + processingGrievances);
                 if (dataSnapshot.getValue() != null) {
                     String code=dataSnapshot.getKey();
                     for(GrievanceModel model:processingGrievances){
@@ -113,7 +113,7 @@ public class TabUnderProcess extends Fragment {
                             temp1.add(model);
                     }
                     processingGrievances.removeAll(temp1);
-                    Log.d(TAG, "\nonChildChanged: Arraylist after removal " + processingGrievances);
+                    CustomLogger.getInstance().logDebug( "\nonChildChanged: Arraylist after removal " + processingGrievances);
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         GrievanceModel grievanceModel = ds.getValue(GrievanceModel.class);
                         if (grievanceModel != null) {
@@ -121,7 +121,7 @@ public class TabUnderProcess extends Fragment {
                                 processingGrievances.add(grievanceModel);
                         }
                     }
-                    Log.d(TAG, "\nonChildChanged: Arraylist after addition " + processingGrievances);
+                    CustomLogger.getInstance().logDebug( "\nonChildChanged: Arraylist after addition " + processingGrievances);
                     adapter = new RecyclerViewAdapterGrievanceUpdate(processingGrievances, (MainActivity) getActivity(), false);
                     recyclerView.setAdapter(adapter);
                 }

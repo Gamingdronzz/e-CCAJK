@@ -1,7 +1,8 @@
 package com.mycca.notification;
 
 import android.os.AsyncTask;
-import android.util.Log;
+
+import com.mycca.tools.CustomLogger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +17,6 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static android.content.ContentValues.TAG;
 import static com.mycca.notification.Constants.APPLICATION_JSON;
 import static com.mycca.notification.Constants.AUTHORIZATION;
 import static com.mycca.notification.Constants.CONTENT_TYPE;
@@ -68,7 +68,7 @@ public class NetworkCall extends AsyncTask<String, Void, String> {
             }
             JsonResponse = buffer.toString();
             //response data
-            Log.i(TAG, JsonResponse);
+            CustomLogger.getInstance().logInfo(JsonResponse);
             //send to post execute
             return JsonResponse;
 
@@ -82,7 +82,7 @@ public class NetworkCall extends AsyncTask<String, Void, String> {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(TAG, "Error closing stream", e);
+                    CustomLogger.getInstance().logError("Error closing stream", e);
                 }
             }
         }

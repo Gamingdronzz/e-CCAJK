@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.mycca.R;
@@ -28,14 +26,13 @@ import com.mycca.listeners.ClickListener;
 import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.LocationModel;
 import com.mycca.providers.LocationDataProvider;
+import com.mycca.tools.CustomLogger;
 
 import java.util.ArrayList;
 
 public class TabAllLocations extends Fragment {
 
     String TAG = "All Locations";
-    RadioGroup radioGroup;
-    Spinner districtSpinner, stateSpinner;
     Button search, sort;
     RecyclerView recyclerView;
     RecyclerViewAdapterHotspotLocation adapter;
@@ -52,7 +49,7 @@ public class TabAllLocations extends Fragment {
         View view = inflater.inflate(R.layout.tab_all_locations, container, false);
         if (getArguments() != null)
             locatorType = getArguments().getString("Locator");
-        Log.d(TAG, "onCreateView: locator type = " + locatorType);
+        CustomLogger.getInstance().logDebug( "onCreateView: locator type = " + locatorType);
         init(view);
         //        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_LOCATOR)) {
 //            showTutorial();

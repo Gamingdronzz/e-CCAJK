@@ -15,7 +15,6 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +24,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.mycca.R;
 import com.mycca.custom.FabRevealMenu.Enums.Direction;
 import com.mycca.custom.FabRevealMenu.FabHelper.AnimationHelper;
 import com.mycca.custom.FabRevealMenu.FabHelper.ViewHelper;
@@ -32,7 +32,7 @@ import com.mycca.custom.FabRevealMenu.FabListeners.AnimationListener;
 import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabListeners.OnMenuStateChangedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 
 import java.util.ArrayList;
 
@@ -141,12 +141,12 @@ public class FABRevealMenu extends FrameLayout {
             //initialization
             if (mMenuRes != -1) {
                 {
-                    Log.d("FAB Menu", "initView: not custom");
+                    CustomLogger.getInstance().logDebug("FAB Menu - initView: not custom");
                     setMenu(mMenuRes);
                 }
             } else if (mCustomView != null) {
                 {
-                    Log.d("FAB Menu", "initView: custom");
+                    CustomLogger.getInstance().logDebug("FAB Menu - initView: custom");
                     setCustomView(mCustomView);
                 }
             }

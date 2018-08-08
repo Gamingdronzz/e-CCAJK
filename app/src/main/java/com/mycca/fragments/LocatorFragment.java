@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +25,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.LocationModel;
 import com.mycca.providers.LocationDataProvider;
-import com.mycca.R;
 import com.mycca.tabs.locator.TabAllLocations;
 import com.mycca.tabs.locator.TabNearby;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
@@ -114,7 +114,7 @@ public class LocatorFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                Log.d(TAG, "onPageSelected: selected = " + position);
+                CustomLogger.getInstance().logDebug( "onPageSelected: selected = " + position);
 
                 Fragment fragment = adapter.getCurrentFragment();
                 if (fragment instanceof TabNearby) {
@@ -169,8 +169,8 @@ public class LocatorFragment extends Fragment {
     private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
         try {
             String jsonObject = Helper.getInstance().getJsonFromObject(locationModels);
-            Log.d(TAG, "Json: " + jsonObject);
-            Log.d(TAG, "adding LocationsToLocalStorage: ");
+            CustomLogger.getInstance().logDebug( "Json: " + jsonObject);
+            CustomLogger.getInstance().logDebug( "adding LocationsToLocalStorage: ");
             IOHelper.getInstance().writeToFile(jsonObject, locatorType, getContext());
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
@@ -183,10 +183,10 @@ public class LocatorFragment extends Fragment {
             @Override
             public void OnConnectionAvailable() {
                 if (locationModelArrayList == null) {
-                    Log.d(TAG, "init: No Locations in Local Storage");
+                    CustomLogger.getInstance().logDebug( "init: No Locations in Local Storage");
                     fetchLocationsFromFirebase();
                 } else {
-                    Log.d(TAG, "init: Locations found in local storage");
+                    CustomLogger.getInstance().logDebug( "init: Locations found in local storage");
                     checkNewLocationsInFirebase();
                 }
             }
@@ -222,10 +222,10 @@ public class LocatorFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
-                        Log.d(TAG, "init: same amount of locations in firebase");
+                        CustomLogger.getInstance().logDebug( "init: same amount of locations in firebase");
                         setTabLayout();
                     } else {
-                        Log.d(TAG, "init: new locations in firebase");
+                        CustomLogger.getInstance().logDebug( "init: new locations in firebase");
                         fetchLocationsFromFirebase();
                     }
                 } catch (DatabaseException dbe) {
@@ -236,7 +236,7 @@ public class LocatorFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                CustomLogger.getInstance().logDebug( "onCancelled: " + databaseError.getMessage());
             }
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(vel,
@@ -253,7 +253,7 @@ public class LocatorFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue() != null) {
                     try {
-                        Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
+                        CustomLogger.getInstance().logDebug( "onChildAdded: " + dataSnapshot.getKey());
                         LocationModel location = dataSnapshot.getValue(LocationModel.class);
                         locationModelArrayList.add(location);
                     } catch (DatabaseException dbe) {
@@ -285,7 +285,7 @@ public class LocatorFragment extends Fragment {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: got locations from firebase");
+                CustomLogger.getInstance().logDebug( "onDataChange: got locations from firebase");
                 setTabLayout();
                 if (locationModelArrayList.size() > 0)
                     addLocationsToLocalStorage(locationModelArrayList);
@@ -383,7 +383,7 @@ public class LocatorFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            Log.d(TAG, "onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + frag.toString());
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
@@ -394,7 +394,7 @@ public class LocatorFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            Log.d(TAG, "onActivityResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug( "onActivityResult: " + frag.toString());
             frag.onActivityResult(requestCode, resultCode, data);
         }
 

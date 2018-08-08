@@ -2,11 +2,11 @@ package com.mycca.custom.CustomImageSlider.Tricks;
 
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mycca.custom.CustomImageSlider.SliderAdapter;
+import com.mycca.tools.CustomLogger;
 
 
 /**
@@ -103,7 +103,7 @@ public class InfinitePagerAdapter extends PagerAdapter {
 
     private void debug(String message) {
         if (DEBUG) {
-            Log.d(TAG, message);
+            CustomLogger.getInstance().logDebug(TAG, message);
         }
     }
 }

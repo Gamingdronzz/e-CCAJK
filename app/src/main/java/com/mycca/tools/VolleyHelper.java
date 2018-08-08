@@ -1,7 +1,6 @@
 package com.mycca.tools;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.volley.Cache.Entry;
@@ -76,7 +75,7 @@ public class VolleyHelper {
             if (error != null) {
                 VolleyHelper.this.delegate.onError(error);
             } else {
-                Log.d(TAG, "onErrorResponse: Null Error Object ");
+                CustomLogger.getInstance().logDebug("onErrorResponse: Null Error Object ");
             }
         }
     }
@@ -112,11 +111,11 @@ public class VolleyHelper {
     }
 
     public void makeStringRequest(String url, String TAG, Map<String, String> params) {
-        Log.d("Volley", "makeStringRequest: " + url);
+        CustomLogger.getInstance().logDebug("makeStringRequest: " + url);
         final Map<String, String> map = params;
         StringRequest strReq = new StringRequest(Request.Method.POST, url, this.stringResponseListener, this.errorListener) {
             protected Map<String, String> getParams() {
-                Log.d(TAG, "get Params: ");
+                CustomLogger.getInstance().logDebug("get Params: ");
                 return map;
             }
         };
@@ -125,7 +124,7 @@ public class VolleyHelper {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         setShouldCache(strReq, true);
-        Log.d("Volley", "Adding to request Queue");
+        CustomLogger.getInstance().logDebug("Adding to request Queue");
         AppController.getInstance().addToRequestQueue(strReq, TAG);
     }
 
@@ -136,7 +135,7 @@ public class VolleyHelper {
     public void makeJsonRequest(String url, String TAG, Map<String, String> params) {
         final Map<String, String> map = params;
         AppController.getInstance().addToRequestQueue(new JsonObjectRequest(1, url, null, this.jsonObjectResponseListener, this.errorListener) {
-            protected Map<String, String> getParams()  {
+            protected Map<String, String> getParams() {
                 return map;
             }
         }, TAG);
@@ -144,9 +143,9 @@ public class VolleyHelper {
 
     public void makeJsonRequest(String url, String TAG, JSONObject notification_data, Map<String, String> header) {
 
-        Log.d("Volley", "makeStringRequest: " + url);
+        CustomLogger.getInstance().logDebug("makeStringRequest: " + url);
         final Map<String, String> headerMap = header;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url, notification_data,  this.jsonObjectResponseListener, this.errorListener) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, notification_data, this.jsonObjectResponseListener, this.errorListener) {
             @Override
             public Map<String, String> getHeaders() {
                 return headerMap;

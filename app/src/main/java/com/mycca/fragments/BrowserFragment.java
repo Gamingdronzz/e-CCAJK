@@ -31,12 +31,12 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 
-import static android.content.ContentValues.TAG;
 
 public class BrowserFragment extends Fragment {
 
-
+    String TAG = "browser";
     WebView webView;
     ProgressBar progressBar;
     String url;
@@ -73,7 +73,7 @@ public class BrowserFragment extends Fragment {
         if (args != null) {
             url = args.getString("url");
         }
-        progressAnimator = ObjectAnimator.ofInt(progressBar,"progress",0);
+        progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class BrowserFragment extends Fragment {
             @RequiresApi(Build.VERSION_CODES.O)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                Log.d("UrlO", url);
+                CustomLogger.getInstance().logDebug("UrlO", url);
                 view.loadUrl(request.getUrl().toString());
                 return true;
 
@@ -122,7 +122,7 @@ public class BrowserFragment extends Fragment {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    Log.d("Url", url);
+                    CustomLogger.getInstance().logDebug("Url", url);
                     view.loadUrl(url);
                 }
                 return true;
@@ -137,7 +137,7 @@ public class BrowserFragment extends Fragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 setSubtitle(getString(R.string.loading));
                 progressBar.setVisibility(View.VISIBLE);
-                progressAnimator.setIntValues(50,progressBar.getProgress());
+                progressAnimator.setIntValues(50, progressBar.getProgress());
                 progressAnimator.setDuration(300);
                 progressAnimator.setInterpolator(new LinearInterpolator());
                 progressAnimator.start();
@@ -165,11 +165,11 @@ public class BrowserFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                progressAnimator.setIntValues(newProgress*10, previousProgress);
+                progressAnimator.setIntValues(newProgress * 10, previousProgress);
                 progressAnimator.setDuration(100);
                 progressAnimator.setInterpolator(new LinearInterpolator());
                 progressAnimator.start();
-                previousProgress = newProgress*10;
+                previousProgress = newProgress * 10;
             }
 
             @Override
@@ -204,32 +204,32 @@ public class BrowserFragment extends Fragment {
 
     @Override
     public void onPause() {
-        Log.d(TAG, "onPause: ");
+        CustomLogger.getInstance().logDebug(TAG, "onPause: ");
         super.onPause();
     }
 
     @Override
     public void onDetach() {
-        Log.d(TAG, "onDetach: ");
+        CustomLogger.getInstance().logDebug(TAG, "onDetach: ");
         super.onDetach();
     }
 
     @Override
     public void onStop() {
-        Log.d(TAG, "onStop: ");
+        CustomLogger.getInstance().logDebug(TAG, "onStop: ");
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
+        CustomLogger.getInstance().logDebug(TAG, "onDestroy: ");
         stopLoading();
         super.onDestroy();
     }
 
     @Override
     public void onDestroyView() {
-        Log.d(TAG, "onDestroyView: ");
+        CustomLogger.getInstance().logDebug(TAG, "onDestroyView: ");
         super.onDestroyView();
     }
 }

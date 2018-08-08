@@ -25,7 +25,6 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.FocusFinder;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -39,6 +38,8 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
+
+import com.mycca.tools.CustomLogger;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -254,9 +255,9 @@ public class ViewPagerEx extends ViewGroup {
          * This method will be invoked when the current page is scrolled, either as part
          * of a programmatically initiated smooth scroll or a user initiated touch scroll.
          *
-         * @param position Position index of the first page currently being displayed.
-         *                 Page position+1 will be visible if positionOffset is nonzero.
-         * @param positionOffset Value from [0, 1) indicating the offset from the page at position.
+         * @param position             Position index of the first page currently being displayed.
+         *                             Page position+1 will be visible if positionOffset is nonzero.
+         * @param positionOffset       Value from [0, 1) indicating the offset from the page at position.
          * @param positionOffsetPixels Value in pixels indicating the offset from position.
          */
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels);
@@ -324,7 +325,7 @@ public class ViewPagerEx extends ViewGroup {
      * A PageTransformer is invoked whenever a visible/attached page is scrolled.
      * This offers an opportunity for the application to apply a custom transformation
      * to the page views using animation properties.
-     *
+     * <p>
      * <p>As property animation is only supported as of Android 3.0 and forward,
      * setting a PageTransformer on a ViewPager on earlier platform versions will
      * be ignored.</p>
@@ -333,7 +334,7 @@ public class ViewPagerEx extends ViewGroup {
         /**
          * Apply a property transformation to the given page.
          *
-         * @param page Apply the transformation to this page
+         * @param page     Apply the transformation to this page
          * @param position Position of page relative to the current front-and-center
          *                 position of the pager. 0 is front and center. 1 is one full
          *                 page position to the right, and -1 is one page position to the left.
@@ -511,7 +512,7 @@ public class ViewPagerEx extends ViewGroup {
     /**
      * Set the currently selected page.
      *
-     * @param item Item index to select
+     * @param item         Item index to select
      * @param smoothScroll True to smoothly scroll to the new item, false to transition immediately
      */
     public void setCurrentItem(int item, boolean smoothScroll) {
@@ -615,13 +616,13 @@ public class ViewPagerEx extends ViewGroup {
      * Set a {@link PageTransformer} that will be called for each attached page whenever
      * the scroll position is changed. This allows the application to apply custom property
      * transformations to each page, overriding the default sliding look and feel.
-     *
+     * <p>
      * <p><em>Note:</em> Prior to Android 3.0 the property animation APIs did not exist.
      * As a result, setting a PageTransformer prior to Android 3.0 (API 11) will have no effect.</p>
      *
      * @param reverseDrawingOrder true if the supplied PageTransformer requires page views
      *                            to be drawn from last to first instead of first to last.
-     * @param transformer PageTransformer that will modify each page's animation properties
+     * @param transformer         PageTransformer that will modify each page's animation properties
      */
     public void setPageTransformer(boolean reverseDrawingOrder, PageTransformer transformer) {
         final boolean hasTransformer = transformer != null;
@@ -643,13 +644,13 @@ public class ViewPagerEx extends ViewGroup {
                     mSetChildrenDrawingOrderEnabled = ViewGroup.class.getDeclaredMethod(
                             "setChildrenDrawingOrderEnabled", new Class[]{Boolean.TYPE});
                 } catch (NoSuchMethodException e) {
-                    Log.e(TAG, "Can't find setChildrenDrawingOrderEnabled", e);
+                    CustomLogger.getInstance().logError(TAG, "Can't find setChildrenDrawingOrderEnabled", e);
                 }
             }
             try {
                 mSetChildrenDrawingOrderEnabled.invoke(this, enable);
             } catch (Exception e) {
-                Log.e(TAG, "Error changing children drawing order", e);
+                CustomLogger.getInstance().logError(TAG, "Error changing children drawing order", e);
             }
         }
     }
@@ -688,14 +689,14 @@ public class ViewPagerEx extends ViewGroup {
      * Set the number of pages that should be retained to either side of the
      * current page in the view hierarchy in an idle state. Pages beyond this
      * limit will be recreated from the adapter when needed.
-     *
+     * <p>
      * <p>This is offered as an optimization. If you know in advance the number
      * of pages you will need to support or have lazy-loading mechanisms in place
      * on your pages, tweaking this setting can have benefits in perceived smoothness
      * of paging animations and interaction. If you have a small number of pages (3-4)
      * that you can keep active all at once, less time will be spent in layout for
      * newly created view subtrees as the user pages back and forth.</p>
-     *
+     * <p>
      * <p>You should keep this limit low, especially if your pages have complex layouts.
      * This setting defaults to 1.</p>
      *
@@ -703,8 +704,8 @@ public class ViewPagerEx extends ViewGroup {
      */
     public void setOffscreenPageLimit(int limit) {
         if (limit < DEFAULT_OFFSCREEN_PAGES) {
-            Log.w(TAG, "Requested offscreen page limit " + limit + " too small; defaulting to " +
-                    DEFAULT_OFFSCREEN_PAGES);
+            CustomLogger.getInstance().logWarn(TAG, "Requested offscreen page limit " + limit + " too small; defaulting to " +
+                    DEFAULT_OFFSCREEN_PAGES, null);
             limit = DEFAULT_OFFSCREEN_PAGES;
         }
         if (limit != mOffscreenPageLimit) {
@@ -798,8 +799,8 @@ public class ViewPagerEx extends ViewGroup {
     /**
      * Like {@link View#scrollBy}, but scroll smoothly instead of immediately.
      *
-     * @param x the number of pixels to scroll by on the X axis
-     * @param y the number of pixels to scroll by on the Y axis
+     * @param x        the number of pixels to scroll by on the X axis
+     * @param y        the number of pixels to scroll by on the Y axis
      * @param velocity the velocity associated with a fling, if applicable. (0 otherwise)
      */
     void smoothScrollTo(int x, int y, int velocity) {
@@ -950,7 +951,8 @@ public class ViewPagerEx extends ViewGroup {
         // fling to a new position until we have finished the scroll to
         // that position, avoiding glitches from happening at that point.
         if (mPopulatePending) {
-            if (DEBUG) Log.i(TAG, "populate is pending, skipping for now...");
+            if (DEBUG)
+                CustomLogger.getInstance().logInfo(TAG, "populate is pending, skipping for now...");
             sortChildDrawingOrder();
             return;
         }
@@ -1018,7 +1020,7 @@ public class ViewPagerEx extends ViewGroup {
                         mItems.remove(itemIndex);
                         mAdapter.destroyItem(this, pos, ii.object);
                         if (DEBUG) {
-                            Log.i(TAG, "populate() - destroyItem() with pos: " + pos +
+                            CustomLogger.getInstance().logInfo(TAG, "populate() - destroyItem() with pos: " + pos +
                                     " view: " + ((View) ii.object));
                         }
                         itemIndex--;
@@ -1052,7 +1054,7 @@ public class ViewPagerEx extends ViewGroup {
                             mItems.remove(itemIndex);
                             mAdapter.destroyItem(this, pos, ii.object);
                             if (DEBUG) {
-                                Log.i(TAG, "populate() - destroyItem() with pos: " + pos +
+                                CustomLogger.getInstance().logInfo(TAG, "populate() - destroyItem() with pos: " + pos +
                                         " view: " + ((View) ii.object));
                             }
                             ii = itemIndex < mItems.size() ? mItems.get(itemIndex) : null;
@@ -1074,9 +1076,9 @@ public class ViewPagerEx extends ViewGroup {
         }
 
         if (DEBUG) {
-            Log.i(TAG, "Current page list:");
+            CustomLogger.getInstance().logInfo(TAG, "Current page list:");
             for (int i = 0; i < mItems.size(); i++) {
-                Log.i(TAG, "#" + i + ": page " + mItems.get(i).position);
+                CustomLogger.getInstance().logInfo(TAG, "#" + i + ": page " + mItems.get(i).position);
             }
         }
 
@@ -1459,8 +1461,9 @@ public class ViewPagerEx extends ViewGroup {
         for (int i = 0; i < size; ++i) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                if (DEBUG) Log.v(TAG, "Measuring #" + i + " " + child
-                        + ": " + mChildWidthMeasureSpec);
+                if (DEBUG)
+                    CustomLogger.getInstance().logVerbose(TAG, "Measuring #" + i + " " + child
+                            + ": " + mChildWidthMeasureSpec);
 
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 if (lp == null || !lp.isDecor) {
@@ -1601,9 +1604,10 @@ public class ViewPagerEx extends ViewGroup {
                                 MeasureSpec.EXACTLY);
                         child.measure(widthSpec, heightSpec);
                     }
-                    if (DEBUG) Log.v(TAG, "Positioning #" + i + " " + child + " f=" + ii.object
-                            + ":" + childLeft + "," + childTop + " " + child.getMeasuredWidth()
-                            + "x" + child.getMeasuredHeight());
+                    if (DEBUG)
+                        CustomLogger.getInstance().logVerbose(TAG, "Positioning #" + i + " " + child + " f=" + ii.object
+                                + ":" + childLeft + "," + childTop + " " + child.getMeasuredWidth()
+                                + "x" + child.getMeasuredHeight());
                     child.layout(childLeft, childTop,
                             childLeft + child.getMeasuredWidth(),
                             childTop + child.getMeasuredHeight());
@@ -1680,9 +1684,9 @@ public class ViewPagerEx extends ViewGroup {
      * (e.g. super.onPageScrolled(position, offset, offsetPixels)) before onPageScrolled
      * returns.
      *
-     * @param position Position index of the first page currently being displayed.
-     *                 Page position+1 will be visible if positionOffset is nonzero.
-     * @param offset Value from [0, 1) indicating the offset from the page at position.
+     * @param position     Position index of the first page currently being displayed.
+     *                     Page position+1 will be visible if positionOffset is nonzero.
+     * @param offset       Value from [0, 1) indicating the offset from the page at position.
      * @param offsetPixels Value in pixels indicating the offset from position.
      */
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
@@ -1808,7 +1812,7 @@ public class ViewPagerEx extends ViewGroup {
         // Always take care of the touch gesture being complete.
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
             // Release the drag.
-            if (DEBUG) Log.v(TAG, "Intercept done!");
+            if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept done!");
             mIsBeingDragged = false;
             mIsUnableToDrag = false;
             mActivePointerId = INVALID_POINTER;
@@ -1823,11 +1827,11 @@ public class ViewPagerEx extends ViewGroup {
         // are dragging.
         if (action != MotionEvent.ACTION_DOWN) {
             if (mIsBeingDragged) {
-                if (DEBUG) Log.v(TAG, "Intercept returning true!");
+                if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept returning true!");
                 return true;
             }
             if (mIsUnableToDrag) {
-                if (DEBUG) Log.v(TAG, "Intercept returning false!");
+                if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept returning false!");
                 return false;
             }
         }
@@ -1840,9 +1844,9 @@ public class ViewPagerEx extends ViewGroup {
                  */
 
                 /*
-                * Locally do absolute value. mLastMotionY is set to the y value
-                * of the down event.
-                */
+                 * Locally do absolute value. mLastMotionY is set to the y value
+                 * of the down event.
+                 */
                 final int activePointerId = mActivePointerId;
                 if (activePointerId == INVALID_POINTER) {
                     // If we don't have a valid id, the touch down wasn't on content.
@@ -1855,7 +1859,8 @@ public class ViewPagerEx extends ViewGroup {
                 final float xDiff = Math.abs(dx);
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
                 final float yDiff = Math.abs(y - mInitialMotionY);
-                if (DEBUG) Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+                if (DEBUG)
+                    CustomLogger.getInstance().logVerbose(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
 
                 if (dx != 0 && !isGutterDrag(mLastMotionX, dx) &&
                         canScroll(this, false, (int) dx, (int) x, (int) y)) {
@@ -1866,7 +1871,7 @@ public class ViewPagerEx extends ViewGroup {
                     return false;
                 }
                 if (xDiff > mTouchSlop && xDiff * 0.5f > yDiff) {
-                    if (DEBUG) Log.v(TAG, "Starting drag!");
+                    if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Starting drag!");
                     mIsBeingDragged = true;
                     requestParentDisallowInterceptTouchEvent(true);
                     setScrollState(SCROLL_STATE_DRAGGING);
@@ -1879,7 +1884,8 @@ public class ViewPagerEx extends ViewGroup {
                     // direction to be counted as a drag...  abort
                     // any attempt to drag horizontally, to work correctly
                     // with children that have scrolling containers.
-                    if (DEBUG) Log.v(TAG, "Starting unable to drag!");
+                    if (DEBUG)
+                        CustomLogger.getInstance().logVerbose(TAG, "Starting unable to drag!");
                     mIsUnableToDrag = true;
                 }
                 if (mIsBeingDragged) {
@@ -1916,9 +1922,10 @@ public class ViewPagerEx extends ViewGroup {
                     mIsBeingDragged = false;
                 }
 
-                if (DEBUG) Log.v(TAG, "Down at " + mLastMotionX + "," + mLastMotionY
-                        + " mIsBeingDragged=" + mIsBeingDragged
-                        + "mIsUnableToDrag=" + mIsUnableToDrag);
+                if (DEBUG)
+                    CustomLogger.getInstance().logVerbose(TAG, "Down at " + mLastMotionX + "," + mLastMotionY
+                            + " mIsBeingDragged=" + mIsBeingDragged
+                            + "mIsUnableToDrag=" + mIsUnableToDrag);
                 break;
             }
 
@@ -1987,9 +1994,9 @@ public class ViewPagerEx extends ViewGroup {
                     final float y = MotionEventCompat.getY(ev, pointerIndex);
                     final float yDiff = Math.abs(y - mLastMotionY);
                     if (DEBUG)
-                        Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+                        CustomLogger.getInstance().logVerbose(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
                     if (xDiff > mTouchSlop && xDiff > yDiff) {
-                        if (DEBUG) Log.v(TAG, "Starting drag!");
+                        if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Starting drag!");
                         mIsBeingDragged = true;
                         requestParentDisallowInterceptTouchEvent(true);
                         mLastMotionX = x - mInitialMotionX > 0 ? mInitialMotionX + mTouchSlop :
@@ -2122,7 +2129,7 @@ public class ViewPagerEx extends ViewGroup {
 
     /**
      * @return Info about the page at the current scroll position.
-     *         This can be synthetic for a missing middle page; the 'object' field can be null.
+     * This can be synthetic for a missing middle page; the 'object' field can be null.
      */
     private ItemInfo infoForCurrentScrollPosition() {
         final int width = getClientWidth();
@@ -2274,18 +2281,17 @@ public class ViewPagerEx extends ViewGroup {
 
     /**
      * Start a fake drag of the pager.
-     *
+     * <p>
      * <p>A fake drag can be useful if you want to synchronize the motion of the ViewPager
      * with the touch scrolling of another view, while still letting the ViewPager
      * control the snapping motion and fling behavior. (e.g. parallax-scrolling tabs.)
      * Call {@link #fakeDragBy(float)} to simulate the actual drag motion. Call
      * {@link #endFakeDrag()} to complete the fake drag and fling as necessary.
-     *
+     * <p>
      * <p>During a fake drag the ViewPager will ignore all touch events. If a real drag
      * is already in progress, this method will return false.
      *
      * @return true if the fake drag began successfully, false if it could not be started.
-     *
      * @see #fakeDragBy(float)
      * @see #endFakeDrag()
      */
@@ -2391,7 +2397,6 @@ public class ViewPagerEx extends ViewGroup {
      * Returns true if a fake drag is in progress.
      *
      * @return true if currently in a fake drag, false otherwise.
-     *
      * @see #beginFakeDrag()
      * @see #fakeDragBy(float)
      * @see #endFakeDrag()
@@ -2459,12 +2464,12 @@ public class ViewPagerEx extends ViewGroup {
     /**
      * Tests scrollability within child views of v given a delta of dx.
      *
-     * @param v View to test for horizontal scrollability
+     * @param v      View to test for horizontal scrollability
      * @param checkV Whether the view v passed should itself be checked for scrollability (true),
      *               or just its children (false).
-     * @param dx Delta scrolled in pixels
-     * @param x X coordinate of the active touch point
-     * @param y Y coordinate of the active touch point
+     * @param dx     Delta scrolled in pixels
+     * @param x      X coordinate of the active touch point
+     * @param y      Y coordinate of the active touch point
      * @return true if child views of v can be scrolled by delta of dx.
      */
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
@@ -2540,8 +2545,8 @@ public class ViewPagerEx extends ViewGroup {
                      parent = parent.getParent()) {
                     sb.append(" => ").append(parent.getClass().getSimpleName());
                 }
-                Log.e(TAG, "arrowScroll tried to find focus based on non-child " +
-                        "current focused view " + sb.toString());
+                CustomLogger.getInstance().logError(TAG, "arrowScroll tried to find focus based on non-child " +
+                        "current focused view " + sb.toString(),null);
                 currentFocused = null;
             }
         }

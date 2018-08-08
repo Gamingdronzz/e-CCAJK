@@ -10,10 +10,12 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
+import com.mycca.tools.CustomLogger;
+
 import java.util.Arrays;
 
 /**
@@ -214,8 +216,8 @@ public class CropOverlayView extends View {
      * ImageView. This is necessary to call in order to draw the crop window.
      *
      * @param boundsPoints the image's bounding points
-     * @param viewWidth The bounding image view width.
-     * @param viewHeight The bounding image view height.
+     * @param viewWidth    The bounding image view width.
+     * @param viewHeight   The bounding image view height.
      */
     public void setBounds(float[] boundsPoints, int viewWidth, int viewHeight) {
         if (boundsPoints == null || !Arrays.equals(mBoundsPoints, boundsPoints)) {
@@ -350,7 +352,7 @@ public class CropOverlayView extends View {
      * Sets the Y value of the aspect ratio; is defaulted to 1.
      *
      * @param aspectRatioY int that specifies the new Y value of the aspect
-     * ratio
+     *                     ratio
      */
     public void setAspectRatioY(int aspectRatioY) {
         if (aspectRatioY <= 0) {
@@ -989,7 +991,7 @@ public class CropOverlayView extends View {
                 mCropWindowChangeListener.onCropWindowChanged(inProgress);
             }
         } catch (Exception e) {
-            Log.e("AIC", "Exception in crop window changed", e);
+            CustomLogger.getInstance().logError("AIC", "Exception in crop window changed", e);
         }
     }
     //endregion

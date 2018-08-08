@@ -13,7 +13,6 @@ import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,6 +53,7 @@ import com.mycca.models.GrievanceType;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.State;
 import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
@@ -255,22 +255,19 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, mainActivity, true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                Log.d(TAG, "onPickImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug( "onPickImage: " + imageUri.getPath());
 
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-                Log.d(TAG, "onCropImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug( "onCropImage: " + imageUri.getPath());
                 int currentPosition = selectedImageModelArrayList.size();
                 selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
                 adapterSelectedImages.notifyItemInserted(currentPosition);
                 adapterSelectedImages.notifyDataSetChanged();
-                Log.d(TAG, "onCropImage: Item inserted at " + currentPosition);
+                CustomLogger.getInstance().logDebug( "onCropImage: Item inserted at " + currentPosition);
                 setSelectedFileCount(currentPosition + 1);
-//                File file = new File(imageUri.getPath());
-//                Picasso.with(getContext()).load(imageUri).into(imageviewSelectedImage);
-//                setupSelectedFile(file);
             }
 
 
@@ -286,7 +283,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                Log.d(TAG, "onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug( "onPermissionDenied: Permission not given to choose textViewMessage");
             }
         });
 
@@ -384,7 +381,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                Log.d(TAG, "version checked =" + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug( "version checked =" + Helper.versionChecked);
                 if (!Helper.versionChecked) {
                     FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
                         @Override
@@ -415,7 +412,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmissionOnInternetAvailable() {
-        Log.d(TAG, "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+        CustomLogger.getInstance().logDebug( "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
         if (isUploadedToFirebase) {
             if (isUploadedToServer) {
@@ -434,7 +431,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         Transaction.Handler handler = new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Log.d(TAG, "doTransaction: " + mutableData.getValue());
+                CustomLogger.getInstance().logDebug( "doTransaction: " + mutableData.getValue());
                 long count = 0;
                 if (mutableData.getValue() != null) {
                     count = (long) mutableData.getValue();
@@ -442,7 +439,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
                 // Set value and report transaction success
                 mutableData.setValue(++count);
-                Log.d(TAG, "count= " + count);
+                CustomLogger.getInstance().logDebug( "count= " + count);
                 return Transaction.success(mutableData);
             }
 
@@ -453,7 +450,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     uploadData();
                 } else {
                     progressDialog.dismiss();
-                    Log.d(TAG, "database error: " + databaseError);
+                    CustomLogger.getInstance().logDebug( "database error: " + databaseError);
                     Helper.getInstance().showMaintenanceDialog(mainActivity);
                 }
             }
@@ -513,7 +510,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     uploadTask.addOnFailureListener(
                             exception -> {
                                 Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), type, mainActivity);
-                                Log.d(TAG, "onFailure: " + exception.getMessage());
+                                CustomLogger.getInstance().logDebug( "onFailure: " + exception.getMessage());
                                 progressDialog.dismiss();
                             })
                             .addOnSuccessListener(
@@ -522,7 +519,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                                         taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                                             firebaseImageURLs.add(uri);
                                             progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(selectedImageModelArrayList.size())));
-                                            Log.d(TAG, "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
+                                            CustomLogger.getInstance().logDebug( "onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
                                             if (counterUpload == selectedImageModelArrayList.size()) {
                                                 isUploadedToFirebase = true;
                                                 doSubmission();
@@ -618,20 +615,20 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        Log.d(TAG, jsonObject.toString());
+        CustomLogger.getInstance().logDebug( jsonObject.toString());
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 counterServerImages++;
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
                     if (counterServerImages == selectedImageModelArrayList.size()) {
-                        Log.d(TAG, "onResponse: Files uploaded");
+                        CustomLogger.getInstance().logDebug( "onResponse: Files uploaded");
                         isUploadedToServer = true;
                         doSubmission();
                     }
                 } else {
                     progressDialog.dismiss();
                     Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), type, mainActivity);
-                    Log.d(TAG, "onResponse: Image = " + counterServerImages + " failed");
+                    CustomLogger.getInstance().logDebug( "onResponse: Image = " + counterServerImages + " failed");
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
@@ -661,7 +658,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: " + requestCode + " ," + resultCode);
+        CustomLogger.getInstance().logDebug( "onActivityResult: " + requestCode + " ," + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
@@ -671,7 +668,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult: " + "Inspection");
+        CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + "Inspection");
 
         switch (requestCode) {
             default: {

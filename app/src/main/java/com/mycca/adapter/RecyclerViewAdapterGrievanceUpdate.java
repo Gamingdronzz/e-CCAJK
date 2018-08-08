@@ -5,16 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mycca.R;
 import com.mycca.activity.UpdateGrievanceActivity;
 import com.mycca.models.GrievanceModel;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
@@ -131,7 +131,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         @Override
         public void onClick(View v) {
             grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
-            Log.d(TAG, "onClick: " + position);
+            CustomLogger.getInstance().logDebug( "onClick: " + position);
             notifyItemChanged(position);
         }
     }

@@ -4,7 +4,6 @@ package com.mycca.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,11 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.models.StaffModel;
-import com.mycca.R;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 
@@ -96,7 +96,7 @@ public class LoginFragment extends Fragment {
                         mainActivity.OnLoginFailure(getString(R.string.some_error));
                     }
                 } else {
-                    Log.d("login", "password mismatch");
+                    CustomLogger.getInstance().logDebug("password mismatch");
                     mainActivity.OnLoginFailure(getString(R.string.password_mismatch));
                 }
             }
