@@ -4,8 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.mycca.tools.Preferences;
-
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -23,7 +21,7 @@ public class MyIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             Toast.makeText(getBaseContext(),"Service",Toast.LENGTH_LONG).show();
-            Preferences.getInstance().setBooleanPref(getApplicationContext(),Preferences.PREF_TEST,false);
+            //Preferences.getInstance().setBooleanPref(getApplicationContext(),Preferences.PREF_TEST,false);
         }
     }
 

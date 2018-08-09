@@ -100,7 +100,7 @@ public class SettingsFragment extends Fragment {
         });
 
         tvCurrentState.setText(String.format(getString(R.string.current_state),
-                Helper.getInstance().getStateName(Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE))));
+                Helper.getInstance().getStateName(Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),activity)));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);

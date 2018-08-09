@@ -3,21 +3,12 @@ package com.mycca.models;
 public class StaffModel {
 
     private String id;
-    private String password;
-    private long type;
     private String state;
     private String name;
     private String email;
+    private long type;
 
     public StaffModel() {
-    }
-
-    public StaffModel(String id, String password, long type, String state, String name) {
-        this.id = id;
-        this.password = password;
-        this.type = type;
-        this.state = state;
-        this.name = name;
     }
 
     public String getName() {
@@ -34,14 +25,6 @@ public class StaffModel {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public long getType() {

@@ -54,6 +54,7 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
@@ -351,7 +352,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         pensionerValue.setText(pensionerCode);
 
         TextView circle = v.findViewById(R.id.textview_circle_value);
-        circle.setText(state.getName());
+        circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
+                .equals("hi") ? state.getHi() : state.getEn());
         TextView heading = v.findViewById(R.id.textview_mobile_no);
         String text;
         switch (root) {
@@ -384,7 +386,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         PanAdhaar panAadharModel = new PanAdhaar(pensionerCode,
                 number,
                 null,
-                state.getCircleCode());
+                state.getCode());
 
         Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(panAadharModel,
                 root,
@@ -590,7 +592,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         CustomLogger.getInstance().logDebug(jsonObject.toString());
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
                     isUploadedToServer = true;
                     doSubmission();
@@ -600,7 +602,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     progressDialog.dismiss();
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     progressDialog.dismiss();
                     isUploadedToServer = isUploadedToFirebase = false;
 

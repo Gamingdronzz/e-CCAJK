@@ -1,7 +1,7 @@
 package com.mycca.models;
 
 public class GrievanceType {
-    private  String name;
+    private String name;
     private int id;
 
     public GrievanceType(String name, int id) {
@@ -9,10 +9,7 @@ public class GrievanceType {
         this.id = id;
     }
 
-    public String getName() {
-
-        return name;
-    }
+    public String getName() { return name; }
 
     public void setName(String name) {
         this.name = name;

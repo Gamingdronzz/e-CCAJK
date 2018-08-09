@@ -11,6 +11,7 @@ import com.mycca.models.GrievanceType;
 import com.mycca.models.State;
 import com.mycca.models.StatusModel;
 import com.mycca.R;
+import com.mycca.tools.Preferences;
 
 public class GenericSpinnerAdapter<T> extends BaseAdapter {
 
@@ -57,7 +58,10 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
                 textView.setText(type.getName());
             } else if (item instanceof State) {
                 State state = (State) item;
-                textView.setText(state.getName());
+                if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
+                    textView.setText(state.getHi());
+                else
+                    textView.setText(state.getEn());
             } else if (item instanceof StatusModel) {
                 StatusModel status = (StatusModel) item;
                 textView.setText(status.getStatusString());

@@ -66,11 +66,11 @@ public class LoginFragment extends Fragment {
         String username = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
 
-        if (!Helper.getInstance().checkInput(username)) {
+        if (Helper.getInstance().checkEmptyInput(username)) {
             Toast.makeText(getContext(), getString(R.string.input_username), Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!Helper.getInstance().checkInput(password)) {
+        if (Helper.getInstance().checkEmptyInput(password)) {
             Toast.makeText(getContext(), getString(R.string.input_password), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -85,19 +85,19 @@ public class LoginFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
-                if (dataSnapshot.getValue() == null) {
-                    mainActivity.OnLoginFailure(getString(R.string.no_user_found));
-                } else if (dataSnapshot.child("password").getValue().equals(password)) {
-                    try {
+                try {
+                    if (dataSnapshot.getValue() == null) {
+                        mainActivity.OnLoginFailure(getString(R.string.no_user_found));
+                    } else if (dataSnapshot.child("password").getValue().equals(password)) {
                         StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
                         mainActivity.OnLoginSuccessful(staffModel);
-                    } catch (DatabaseException dbe){
-                        dbe.printStackTrace();
-                        mainActivity.OnLoginFailure(getString(R.string.some_error));
+                    } else {
+                        CustomLogger.getInstance().logDebug("password mismatch");
+                        mainActivity.OnLoginFailure(getString(R.string.password_mismatch));
                     }
-                } else {
-                    CustomLogger.getInstance().logDebug("password mismatch");
-                    mainActivity.OnLoginFailure(getString(R.string.password_mismatch));
+                } catch (DatabaseException | NullPointerException e) {
+                    e.printStackTrace();
+                    mainActivity.OnLoginFailure(getString(R.string.some_error));
                 }
             }
 

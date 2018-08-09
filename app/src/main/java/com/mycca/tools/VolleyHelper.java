@@ -27,8 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public class VolleyHelper {
-    private Context context;
-    private final String TAG = "Volley";
+
+    public final String SUCCESS = "success";
 
     private VolleyResponse delegate;
     private ErrorListener errorListener = new VolleyErrorListener();

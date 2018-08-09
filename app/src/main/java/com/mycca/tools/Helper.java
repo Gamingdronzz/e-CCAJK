@@ -58,25 +58,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/*
- * Created by hp on 09-02-2018.
- */
-
-
 public class Helper {
 
-    public static boolean versionChecked = false;
     private static Helper _instance;
-    public final String SUCCESS = "success";
-    private final String TAG = "Helper";
+
     private String hint = "Pensioner Code";
+    public static boolean versionChecked = false;
+    public static boolean dataChecked = false;
 
     private State stateList[] = {
-            new State("05", "Jammu & Kashmir"),
-            new State("100", "Haryana")
+            new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true),
+            new State("100", "Haryana", "Haryana", "cca-haryana", null, false)
     };
 
-    private State stateListJK[] = {new State("05", "Jammu & Kashmir")};
+    private State stateListJK[] = {new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true)};
 
     private GrievanceType pensionGrievanceTypes[] = {
             new GrievanceType(AppController.getResourses().getString(R.string.change_of_pda), 0),
@@ -141,10 +136,13 @@ public class Helper {
         return stateListJK;
     }
 
-    public String getStateName(String stateId) {
+    public String getStateName(String stateId, Context context) {
         for (State s : stateList) {
-            if (s.getCircleCode().equals(stateId))
-                return s.getName();
+            if (s.getCode().equals(stateId))
+                if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
+                    return s.getHi();
+                else
+                    return s.getEn();
         }
         return null;
     }
@@ -207,7 +205,6 @@ public class Helper {
         else
             return AppController.getResourses().getString(R.string.gpf);
     }
-
 
     public String getStatusString(long status) {
         switch ((int) status) {
@@ -306,12 +303,12 @@ public class Helper {
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
-    public boolean checkInput(String input) {
+    public boolean checkEmptyInput(String input) {
 
-        CustomLogger.getInstance().logDebug("checkInput: = " + input);
+        CustomLogger.getInstance().logDebug("checkEmptyInput: = " + input);
         boolean result;
-        result = !(input == null || input.trim().isEmpty());
-        CustomLogger.getInstance().logDebug("checkInput: result = " + result);
+        result = (input == null || input.trim().isEmpty());
+        CustomLogger.getInstance().logDebug("checkEmptyInput: result = " + result);
         return result;
     }
 
@@ -386,7 +383,8 @@ public class Helper {
                 .build();
     }
 
-    public void showUpdateDialog(final Activity activity) {
+
+    private void showUpdateDialog(final Activity activity) {
         showFancyAlertDialog(activity,
                 AppController.getResourses().getString(R.string.update_available),
                 AppController.getResourses().getString(R.string.app_name),
@@ -406,8 +404,8 @@ public class Helper {
                 AppController.getResourses().getString(R.string.app_maintenance),
                 AppController.getResourses().getString(R.string.app_name),
                 AppController.getResourses().getString(R.string.ok),
-                activity::finish,
-                null, null,
+                () -> {
+                }, null, null,
                 FancyAlertDialogType.WARNING);
     }
 
@@ -654,7 +652,7 @@ public class Helper {
 
     public void showSnackBar(CharSequence message, View view) {
         Snackbar.make(view.findViewById(R.id.fragmentPlaceholder), message, Snackbar.LENGTH_INDEFINITE)
-                .setAction("OK", v ->CustomLogger.getInstance().logVerbose("Yes Clicked"))
+                .setAction("OK", v -> CustomLogger.getInstance().logVerbose("Yes Clicked"))
                 .show();
     }
 

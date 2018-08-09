@@ -504,7 +504,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 counterServerImages++;
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == selectedImageModelArrayList.size()) {
                         CustomLogger.getInstance().logDebug( "onResponse: Files uploaded");
                         isUploadedToServer = true;
@@ -517,7 +517,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
 
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
 
                     progressDialog.dismiss();
                     String alertMessage = String.format(getString(R.string.inspection_success),

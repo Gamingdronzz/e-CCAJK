@@ -1,5 +1,6 @@
 package com.mycca.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,9 +10,16 @@ import android.widget.TextView;
 
 import com.mycca.R;
 import com.mycca.tools.Helper;
+import com.mycca.tools.Preferences;
 
 
 public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerViewAdapterStates.StatesViewHolder> {
+
+    private Context context;
+
+    public RecyclerViewAdapterStates(Context context) {
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -21,7 +29,10 @@ public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull StatesViewHolder holder, int position) {
-        holder.textView.setText(Helper.getInstance().getStateList()[position].getName());
+        if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
+            holder.textView.setText(Helper.getInstance().getStateList()[position].getHi());
+        else
+            holder.textView.setText(Helper.getInstance().getStateList()[position].getEn());
     }
 
     @Override

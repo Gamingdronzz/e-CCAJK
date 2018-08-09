@@ -61,7 +61,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     int counterUpload = 0;
     int counterServerImages = 0;
     long status;
-    String TAG = "UpdateGrievance", message;
+    String TAG = "UpdateGrievance", message, grievanceString;
 
     TextView textViewPensionerCode, textViewRefNo, textViewGrievanceString, textViewDateOfApplication, textViewAttachedFileCount;
     Spinner statusSpinner;
@@ -88,6 +88,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
         grievanceModel = (GrievanceModel) Helper.getInstance().getObjectFromJson(getIntent().getStringExtra("Model"), GrievanceModel.class);
+        grievanceString = Helper.getInstance().getGrievanceString((grievanceModel.getGrievanceType()));
         bindViews();
         init();
         setLayoutData();
@@ -306,7 +307,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         params.put("status", Helper.getInstance().getStatusString(status));
         params.put("refNo", grievanceModel.getReferenceNo());
         params.put("grievanceType", Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
-        params.put("grievanceSubType", Helper.getInstance().getGrievanceString((grievanceModel.getGrievanceType())));
+        params.put("grievanceSubType", grievanceString);
         params.put("message", message);
         params.put("fileCount", attachmentModelArrayList.size() + "");
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
@@ -333,7 +334,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
         String alertMessage = String.format(getString(R.string.grievance_updation_success),
                 grievanceModel.getPensionerIdentifier(),
-                Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()),
+                grievanceString,
                 Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
         progressDialog.dismiss();
@@ -411,7 +412,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private String getJsonBody() {
 
         String newStatus = Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus());
-        String type = Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType());
+        String type = grievanceString;
         JSONObject jsonObjectData = new JSONObject();
         try {
             jsonObjectData.put(Constants.KEY_TITLE, getString(R.string.notification_title));
@@ -480,7 +481,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void setLayoutData() {
         textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
         textViewRefNo.setText(grievanceModel.getReferenceNo());
-        textViewGrievanceString.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
+        textViewGrievanceString.setText(grievanceString);
         textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
         editTextMessage.setText(grievanceModel.getMessage() == null ? getResources().getString(R.string.n_a) : grievanceModel.getMessage());
     }
@@ -513,7 +514,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 counterServerImages++;
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == attachmentModelArrayList.size()) {
                         CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
                         isUploadedToServer = true;
@@ -523,7 +524,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                     onFailure(getString(R.string.file_not_uploaded));
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail to user")) {
-                if (jsonObject.get("result").equals(Helper.getInstance().SUCCESS)) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     showSuccessDialog();
                 } else {
                     onFailure(getString(R.string.grievance_updation_fail));
