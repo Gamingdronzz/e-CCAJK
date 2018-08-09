@@ -49,7 +49,7 @@ public class TabAllLocations extends Fragment {
         View view = inflater.inflate(R.layout.tab_all_locations, container, false);
         if (getArguments() != null)
             locatorType = getArguments().getString("Locator");
-        CustomLogger.getInstance().logDebug( "onCreateView: locator type = " + locatorType);
+        CustomLogger.getInstance().logDebug("onCreateView: locator type = " + locatorType);
         init(view);
         //        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_LOCATOR)) {
 //            showTutorial();
@@ -85,12 +85,16 @@ public class TabAllLocations extends Fragment {
         stateLocations = LocationDataProvider.getInstance().getLocationModelArrayList(locatorType);
         adapter = new RecyclerViewAdapterHotspotLocation(stateLocations);
 
-        locations = new String[stateLocations.size()];
-        int i = 0;
-        for (LocationModel locationModel : stateLocations) {
-            locations[i] = locationModel.getLocationName();
-            i++;
+        if (stateLocations != null) {
+            locations = new String[stateLocations.size()];
+            int i = 0;
+            for (LocationModel locationModel : stateLocations) {
+                locations[i] = locationModel.getLocationName();
+                i++;
+            }
         }
+        else
+            locations=new String[0];
 
         recyclerView = view.findViewById(R.id.recyclerview_locations);
         recyclerView.setAdapter(adapter);

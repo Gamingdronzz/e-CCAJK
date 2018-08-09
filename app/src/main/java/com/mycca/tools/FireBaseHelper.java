@@ -110,12 +110,12 @@ public class FireBaseHelper {
         DatabaseReference dbref = versionedDbRef;
 
         for (String key : params) {
-            CustomLogger.getInstance().logDebug("Firebase Helper child : " + key);
+            CustomLogger.getInstance().logDebug("FireBase Helper child : " + key);
             dbref = dbref.child(key);
         }
-        CustomLogger.getInstance().logDebug("uploadDataToFirebase: loop ended");
+        CustomLogger.getInstance().logDebug("uploadDataToFireBase: loop ended");
         task = dbref.setValue(model);
-        CustomLogger.getInstance().logDebug("uploadDataToFirebase: setting value");
+        CustomLogger.getInstance().logDebug("uploadDataToFireBase: setting value");
         return task;
     }
 

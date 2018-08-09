@@ -13,17 +13,27 @@ public class Preferences {
     private static Preferences _instance;
 
     public static final String PREF_STAFF_DATA = "staffData";
-    public static final String PREF_STATE = "state";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receiveNotifications";
     public static final String PREF_LANGUAGE = "language";
-    public static final String PREF_TEST="test";
-    public static final String PREF_HELP_ONBOARDER = "onboarder";
-    public static final String PREF_HELP_HOME = "home";
-    public static final String PREF_HELP_CONTACT = "contact";
-    public static final String PREF_HELP_INSPECTION = "inspection";
-    public static final String PREF_HELP_GRIEVANCE = "grievance";
-    public static final String PREF_HELP_LOCATOR = "locator";
-    public static final String PREF_HELP_UPDATE = "update";
+    public static final String PREF_STATE = "state";
+    public static final String PREF_HELP_ONBOARDER = "onBoarder";
+    public static final String PREF_CIRCLES = "circles";
+    public static final String PREF_ACTIVE_CIRCLES = "activeCircles";
+    public static final String PREF_WIFI = "wifi";
+    public static final String PREF_GP = "gp";
+    public static final String PREF_CONTACTS = "contacts";
+    public static final String PREF_OFFICE_ADDRESS = "officeAddress";
+    public static final String PREF_OFFICE_LABEL = "officeLabel";
+    public static final String PREF_OFFICE_LAT = "officeLatitude";
+    public static final String PREF_OFFICE_LONG = "officeLongitude";
+    public static final String PREF_WEBSITE = "website";
+
+    //    public static final String PREF_HELP_HOME = "home";
+//    public static final String PREF_HELP_CONTACT = "contact";
+//    public static final String PREF_HELP_INSPECTION = "inspection";
+//    public static final String PREF_HELP_GRIEVANCE = "grievance";
+//    public static final String PREF_HELP_LOCATOR = "locator";
+//    public static final String PREF_HELP_UPDATE = "update";
 
     public Preferences() {
         _instance = this;
@@ -102,24 +112,24 @@ public class Preferences {
     public void clearTutorialPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.remove(PREF_HELP_ONBOARDER);
-        editor.remove(PREF_HELP_HOME);
-        editor.remove(PREF_HELP_INSPECTION);
-        editor.remove(PREF_HELP_UPDATE);
-        editor.remove(PREF_HELP_GRIEVANCE);
-        editor.remove(PREF_HELP_LOCATOR);
-        editor.remove(PREF_HELP_CONTACT);
+        //        editor.remove(PREF_HELP_HOME);
+//        editor.remove(PREF_HELP_INSPECTION);
+//        editor.remove(PREF_HELP_UPDATE);
+//        editor.remove(PREF_HELP_GRIEVANCE);
+//        editor.remove(PREF_HELP_LOCATOR);
+//        editor.remove(PREF_HELP_CONTACT);
         editor.apply();
     }
 
     public void setTutorialPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putBoolean(PREF_HELP_ONBOARDER, false);
-        editor.putBoolean(PREF_HELP_HOME, false);
-        editor.putBoolean(PREF_HELP_INSPECTION, false);
-        editor.putBoolean(PREF_HELP_UPDATE, false);
-        editor.putBoolean(PREF_HELP_GRIEVANCE, false);
-        editor.putBoolean(PREF_HELP_LOCATOR, false);
-        editor.putBoolean(PREF_HELP_CONTACT, false);
+        //        editor.putBoolean(PREF_HELP_HOME, false);
+//        editor.putBoolean(PREF_HELP_INSPECTION, false);
+//        editor.putBoolean(PREF_HELP_UPDATE, false);
+//        editor.putBoolean(PREF_HELP_GRIEVANCE, false);
+//        editor.putBoolean(PREF_HELP_LOCATOR, false);
+//        editor.putBoolean(PREF_HELP_CONTACT, false);
         editor.apply();
     }
 }
