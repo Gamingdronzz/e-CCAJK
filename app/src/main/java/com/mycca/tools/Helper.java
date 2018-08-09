@@ -403,7 +403,7 @@ public class Helper {
 
     public void showMaintenanceDialog(Activity activity) {
         showFancyAlertDialog(activity,
-                AppController.getResourses().getString(R.string.update_available),
+                AppController.getResourses().getString(R.string.app_maintenance),
                 AppController.getResourses().getString(R.string.app_name),
                 AppController.getResourses().getString(R.string.ok),
                 activity::finish,

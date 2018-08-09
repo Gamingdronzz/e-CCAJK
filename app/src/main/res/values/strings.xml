@@ -297,6 +297,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="sign_in_success">Sign in Successful</string>
     <string name="sign_in_fail">Unable to Sign in</string>
     <string name="try_again">"Please try Again"</string>
+    <string name="try_again_different_account">"Unable to authenticate with this account.\nPlease try Again with a different account"</string>
     <string name="some_error">Some Error Occurred</string>
     <string name="confirm_input">PLEASE CONFIRM YOUR INPUT</string>
     <string name="auth_message1">Please Sign in with google to access this app feature.</string>
@@ -348,6 +349,8 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
 \n\nToll Free No. 18001807036
 \nFAX - 0191-2477296, 2475251
 \nSTD CODE -0191</b></string>
+    <string name="download_kyp_form">Download KYP Form</string>
+    <string name="submit_kyp_form">Submit KYP Form</string>
 
 
 </resources>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -13,6 +14,7 @@ import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -450,7 +452,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     uploadData();
                 } else {
                     progressDialog.dismiss();
-                    CustomLogger.getInstance().logDebug( "database error: " + databaseError);
+                    CustomLogger.getInstance().logDebug( "database error: " +
+                            "Details" + databaseError.getDetails() +
+                            "Message = " + databaseError.getMessage() +
+                            "Code = " + databaseError.getCode() +
+                            "Sapshot = " + dataSnapshot.toString());
+                     ;
                     Helper.getInstance().showMaintenanceDialog(mainActivity);
                 }
             }
@@ -481,9 +488,13 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
                 uploadAllImagesToFirebase();
-            } else {
+            } else  {
                 progressDialog.dismiss();
                 Helper.getInstance().showMaintenanceDialog(mainActivity);
+                Log.d(TAG, "uploadData: Failed Message= " + task1.getException().getMessage());
+                Log.d(TAG, "uploadData: Failed Cause= " + task1.getException().getCause());
+                Log.d(TAG, "uploadData: Failed Stack= " + task1.getException().getStackTrace());
+                Log.d(TAG, "uploadData: Failed Result= " + task1.getResult());
             }
         });
 

@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.mycca.R;
 import com.mycca.custom.CustomDrawer.CardDrawerLayout;
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_pension:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type",getString(R.string.pension));
+                bundle.putString("Type", getString(R.string.pension));
                 title = getString(R.string.pension_grievance);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_gpf:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type",getString(R.string.gpf));
+                bundle.putString("Type", getString(R.string.gpf));
                 title = getString(R.string.gpf_grievance);
                 if (checkCurrentUser()) {
                     showFragment(title, fragment, bundle);
@@ -373,13 +374,13 @@ public class MainActivity extends AppCompatActivity
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        CustomLogger.getInstance().logDebug( "firebaseAuthWithGoogle: " + credential.getSignInMethod());
+        CustomLogger.getInstance().logDebug("firebaseAuthWithGoogle: " + credential.getSignInMethod());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
 
-                        CustomLogger.getInstance().logDebug( "signInWithCredential:success");
+                        CustomLogger.getInstance().logDebug("signInWithCredential:success");
                         FireBaseHelper.getInstance(MainActivity.this).addTokenOnFirebaseDatabase();
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
                                 getString(R.string.sign_in_success),
@@ -399,7 +400,11 @@ public class MainActivity extends AppCompatActivity
 
                     } else {
                         CustomLogger.getInstance().logWarn("signInWithCredential:failure", task.getException());
-                        Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
+                        if (task.getException().getClass() == FirebaseAuthInvalidUserException.class) {
+                            Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again_different_account), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
+                        } else {
+                            Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
+                        }
                     }
 
                 });
@@ -414,7 +419,8 @@ public class MainActivity extends AppCompatActivity
                     showFragment(getString(R.string.home), new HomeFragment(), null);
                     Preferences.getInstance().clearStaffPrefs(MainActivity.this);
                     ManageNavigationView(false, false);
-                    Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", getString(R.string.logged_out), getString(R.string.ok), () -> { }, null, null, FancyAlertDialogType.SUCCESS);
+                    Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", getString(R.string.logged_out), getString(R.string.ok), () -> {
+                    }, null, null, FancyAlertDialogType.SUCCESS);
 
                 },
                 getString(android.R.string.no),
@@ -434,7 +440,8 @@ public class MainActivity extends AppCompatActivity
                 getString(android.R.string.yes),
                 this::finish,
                 getString(android.R.string.no),
-                () -> {},
+                () -> {
+                },
                 FancyAlertDialogType.WARNING);
     }
 
@@ -583,7 +590,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CustomLogger.getInstance().logDebug( Integer.toString(resultCode));
+        CustomLogger.getInstance().logDebug(Integer.toString(resultCode));
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         if (requestCode == RC_SIGN_IN) {
@@ -591,7 +598,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 progressDialog.show();
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                CustomLogger.getInstance().logDebug( "signed in: " + account.getEmail());
+                CustomLogger.getInstance().logDebug("signed in: " + account.getEmail());
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 CustomLogger.getInstance().logWarn("Google sign in failed", e);
@@ -612,7 +619,7 @@ public class MainActivity extends AppCompatActivity
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString());
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
