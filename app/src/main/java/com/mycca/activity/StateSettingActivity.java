@@ -46,6 +46,7 @@ public class StateSettingActivity extends AppCompatActivity {
     public void changeState(int position) {
         State state = Helper.getInstance().getStateList()[position];
         Preferences.getInstance().setModelPref(this, Preferences.PREF_STATE_DATA, state);
+        Preferences.getInstance().clearOtherStateDataPrefs(this);
         Helper.getInstance().reloadApp(this);
     }
 }

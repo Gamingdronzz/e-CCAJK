@@ -114,6 +114,16 @@ public class Preferences {
         editor.apply();
     }
 
+    public void clearOtherStateDataPrefs(Context context){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.remove(PREF_OFFICE_ADDRESS);
+        editor.remove(PREF_OFFICE_LABEL);
+        editor.remove(PREF_OFFICE_LAT);
+        editor.remove(PREF_OFFICE_LONG);
+        editor.remove(PREF_WEBSITE);
+        editor.apply();
+    }
+
     public void clearTutorialPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.remove(PREF_HELP_ONBOARDER);
