@@ -234,20 +234,19 @@ public class Helper {
     public boolean onLatestVersion(DataSnapshot dataSnapshot, final Activity activity) {
         long newVersion;
         int version = getAppVersion(activity);
-        if (dataSnapshot.getValue() == null) {
-            CustomLogger.getInstance().logDebug("onLatestVersion: Data snapshot null");
-            showMaintenanceDialog(activity);
-            return false;
-        }
+
         try {
             newVersion = (long) dataSnapshot.getValue();
         } catch (Exception e) {
             e.printStackTrace();
-            showMaintenanceDialog(activity);
+            if (activity instanceof SplashActivity)
+                ((SplashActivity) activity).checkCircles();
+            else
+                showMaintenanceDialog(activity);
             return false;
         }
 
-        if (version == -1 || newVersion == version) {
+        if (newVersion == version) {
             versionChecked = true;
             return true;
         } else {
@@ -406,6 +405,15 @@ public class Helper {
                 AppController.getResourses().getString(R.string.ok),
                 () -> {
                 }, null, null,
+                FancyAlertDialogType.WARNING);
+    }
+
+    public void showMaintenanceDialog(Activity activity, String message, IFancyAlertDialogListener dialogListener) {
+        showFancyAlertDialog(activity,
+                message,
+                AppController.getResourses().getString(R.string.app_name),
+                AppController.getResourses().getString(R.string.ok),
+                dialogListener, null, null,
                 FancyAlertDialogType.WARNING);
     }
 

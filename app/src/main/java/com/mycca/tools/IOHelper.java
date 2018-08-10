@@ -16,7 +16,6 @@ public class IOHelper {
     private static IOHelper _instance;
     private String TAG = "iohelper";
 
-
     private IOHelper() {
         _instance = this;
     }
@@ -29,12 +28,24 @@ public class IOHelper {
         }
     }
 
-    public void writeToFile(Object jsonObject, String filename, Context context) {
-        new WriteFile().execute(context, filename, jsonObject);
+    public void writeToFile(Object jsonObject, String filename, boolean general, Context context) {
+        new WriteFile().execute(context, filename, jsonObject, general);
     }
 
-    public void readFromFile(String filename, Context context, ReadFileCompletionListener readFileCompletionListener) {
-        new ReadFile().execute(context, filename, readFileCompletionListener);
+    public void readFromFile(String filename, Context context, boolean general, ReadFileCompletionListener readFileCompletionListener) {
+        new ReadFile().execute(context, filename, readFileCompletionListener, general);
+    }
+
+    private File getFile(boolean general, Context context, String filename) {
+        File file;
+        if (!general) {
+            String folder = Preferences.getInstance().getStatePref(context, Preferences.PREF_STATE_DATA).getCode();
+            File path = new File(context.getFilesDir(), folder);
+            path.mkdirs();
+            file = new File(path, filename + ".json");
+        } else
+            file = new File(filename + ".json");
+        return file;
     }
 
     class WriteFile extends AsyncTask<Object, Object, Object> {
@@ -44,18 +55,16 @@ public class IOHelper {
             Context context = (Context) objects[0];
             String filename = (String) objects[1];
             String jsonObject = (String) objects[2];
+            boolean general = (boolean) objects[3];
 
-            String folder = Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE);
-            File path = new File(context.getFilesDir(), folder);
-            path.mkdirs();
-            File file = new File(path, filename + ".json");
+            File file = getFile(general, context, filename);
             try {
                 FileOutputStream outputStream = new FileOutputStream(file);
                 outputStream.write(jsonObject.getBytes());
-                CustomLogger.getInstance().logDebug( "WRITING TO FILE: " + file.getCanonicalPath());
+                CustomLogger.getInstance().logDebug("WRITING TO FILE: " + file.getCanonicalPath());
                 outputStream.close();
             } catch (FileNotFoundException e) {
-                CustomLogger.getInstance().logDebug( "Could not write");
+                CustomLogger.getInstance().logDebug("Could not write");
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -74,13 +83,11 @@ public class IOHelper {
             Context context = (Context) objects[0];
             String filename = (String) objects[1];
             readFileCompletionListener = (ReadFileCompletionListener) objects[2];
+            boolean general = (boolean) objects[3];
 
-            String folder = Preferences.getInstance().getStringPref(context, Preferences.PREF_STATE);
-            File path = new File(context.getFilesDir(), folder);
-            path.mkdirs();
-            File file = new File(path, filename + ".json");
+            File file = getFile(general, context, filename);
             try {
-                CustomLogger.getInstance().logDebug( "readFromFile: file path = " + file.getPath());
+                CustomLogger.getInstance().logDebug("readFromFile: file path = " + file.getPath());
                 FileInputStream fin = new FileInputStream(file);
                 int size = fin.available();
                 byte[] buffer = new byte[size];
@@ -88,7 +95,7 @@ public class IOHelper {
                 fin.close();
                 return new String(buffer);
             } catch (FileNotFoundException e) {
-                CustomLogger.getInstance().logDebug( "could not read");
+                CustomLogger.getInstance().logDebug("could not read");
                 e.printStackTrace();
                 return null;
             } catch (IOException e) {

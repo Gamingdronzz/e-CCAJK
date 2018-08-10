@@ -52,7 +52,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
 
             holder.customClickListener.setPosition(position);
             holder.customUpdateClickListener.setPosition(position);
-            holder.textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
+            holder.textViewPensionerCode.setText(grievanceModel.getIdentifierNumber());
             holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
             holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
             holder.textViewPensionerMobile.setText(grievanceModel.getMobile());

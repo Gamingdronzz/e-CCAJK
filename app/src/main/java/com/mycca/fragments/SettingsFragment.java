@@ -99,8 +99,12 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        tvCurrentState.setText(String.format(getString(R.string.current_state),
-                Helper.getInstance().getStateName(Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),activity)));
+        String lang;
+        if(Preferences.getInstance().getStringPref(activity,Preferences.PREF_LANGUAGE).equals("hi"))
+            lang= Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getHi();
+        else
+            lang=Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getEn();
+        tvCurrentState.setText(String.format(getString(R.string.current_state), lang));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);

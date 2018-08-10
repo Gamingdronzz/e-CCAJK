@@ -146,7 +146,7 @@ public class LocatorFragment extends Fragment {
 
     private void getLocationsFromLocalStorage() {
 
-        IOHelper.getInstance().readFromFile(locatorType, getContext(), jsonObject -> {
+        IOHelper.getInstance().readFromFile(locatorType, getContext(),false, jsonObject -> {
             String json = (String) jsonObject;
             try {
                 Gson gson = new Gson();
@@ -171,7 +171,7 @@ public class LocatorFragment extends Fragment {
             String jsonObject = Helper.getInstance().getJsonFromObject(locationModels);
             CustomLogger.getInstance().logDebug( "Json: " + jsonObject);
             CustomLogger.getInstance().logDebug( "adding LocationsToLocalStorage: ");
-            IOHelper.getInstance().writeToFile(jsonObject, locatorType, getContext());
+            IOHelper.getInstance().writeToFile(jsonObject, locatorType, false,getContext());
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
         }
@@ -241,7 +241,7 @@ public class LocatorFragment extends Fragment {
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(vel,
                 FireBaseHelper.NONVERSIONED_STATEWISE, false,
-                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),
+                Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getCode(),
                 locatorType);
     }
 
@@ -298,11 +298,11 @@ public class LocatorFragment extends Fragment {
         };
         FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
                 FireBaseHelper.NONVERSIONED_STATEWISE,
-                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),
+                Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getCode(),
                 locatorType);
         FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
                 FireBaseHelper.NONVERSIONED_STATEWISE, true,
-                Preferences.getInstance().getStringPref(activity, Preferences.PREF_STATE),
+                Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getCode(),
                 locatorType);
     }
 

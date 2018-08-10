@@ -4,10 +4,11 @@ import java.util.Date;
 
 public class GrievanceModel {
 
-    private String details;
+    private String identifierType;
+    private String identifierNumber;
     private String email;
     private String mobile;
-    private String pensionerIdentifier;
+    private String details;
     private String state;
     private String submittedBy;
     private String message;
@@ -16,6 +17,7 @@ public class GrievanceModel {
     private Date date;
     private long grievanceStatus;
     private long grievanceType;
+    private long fileCount;
     private boolean expanded;
     private boolean highlighted = false;
     private boolean submissionSuccess;
@@ -30,7 +32,7 @@ public class GrievanceModel {
         this.details = details;
         this.email = email;
         this.mobile = mobile;
-        this.pensionerIdentifier = pensionerIdentifier;
+        this.identifierNumber = pensionerIdentifier;
         this.state = state;
         this.submittedBy = submittedBy;
         this.uid = uid;
@@ -38,6 +40,21 @@ public class GrievanceModel {
         this.date = date;
         this.grievanceStatus = grievanceStatus;
         this.grievanceType = grievanceType;
+    }
+
+    public GrievanceModel(String identifierType, String identifierNumber, String email, String mobile, String details, String submittedBy, String uid, String referenceNo, Date date, long grievanceStatus, long grievanceType, long fileCount) {
+        this.identifierType = identifierType;
+        this.identifierNumber = identifierNumber;
+        this.email = email;
+        this.mobile = mobile;
+        this.details = details;
+        this.submittedBy = submittedBy;
+        this.uid = uid;
+        this.referenceNo = referenceNo;
+        this.date = date;
+        this.grievanceStatus = grievanceStatus;
+        this.grievanceType = grievanceType;
+        this.fileCount = fileCount;
     }
 
     public String getUid() {
@@ -64,12 +81,12 @@ public class GrievanceModel {
         this.expanded = expanded;
     }
 
-    public String getPensionerIdentifier() {
-        return pensionerIdentifier;
+    public String getIdentifierNumber() {
+        return identifierNumber;
     }
 
-    public void setPensionerIdentifier(String pensionerIdentifier) {
-        this.pensionerIdentifier = pensionerIdentifier;
+    public void setIdentifierNumber(String identifierNumber) {
+        this.identifierNumber = identifierNumber;
     }
 
     public String getMobile() {
@@ -158,5 +175,21 @@ public class GrievanceModel {
 
     public void setSubmissionSuccess(boolean submissionSuccess) {
         this.submissionSuccess = submissionSuccess;
+    }
+
+    public String getIdentifierType() {
+        return identifierType;
+    }
+
+    public void setIdentifierType(String identifierType) {
+        this.identifierType = identifierType;
+    }
+
+    public long getFileCount() {
+        return fileCount;
+    }
+
+    public void setFileCount(long fileCount) {
+        this.fileCount = fileCount;
     }
 }

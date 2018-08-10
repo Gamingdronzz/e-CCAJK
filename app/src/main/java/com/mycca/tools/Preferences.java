@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.mycca.models.StaffModel;
+import com.mycca.models.State;
 
 
 public class Preferences {
@@ -13,9 +14,9 @@ public class Preferences {
     private static Preferences _instance;
 
     public static final String PREF_STAFF_DATA = "staffData";
+    public static final String PREF_STATE_DATA = "stateData";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receiveNotifications";
     public static final String PREF_LANGUAGE = "language";
-    public static final String PREF_STATE = "state";
     public static final String PREF_HELP_ONBOARDER = "onBoarder";
     public static final String PREF_CIRCLES = "circles";
     public static final String PREF_ACTIVE_CIRCLES = "activeCircles";
@@ -53,13 +54,7 @@ public class Preferences {
 
 
     public String getStringPref(Context context, String key) {
-        String res = getSharedPreferences(context).getString(key, null);
-        if (res == null) {
-            if (key.equals(PREF_STATE)) {
-                return "05";
-            }
-        }
-        return res;
+        return getSharedPreferences(context).getString(key, null);
     }
 
     public void setStringPref(Context context, String key, String value) {
@@ -89,19 +84,29 @@ public class Preferences {
         editor.apply();
     }
 
-    public StaffModel getStaffPref(Context context, String key) {
-        Gson gson = new Gson();
-        String json = getSharedPreferences(context).getString(key, null);
-        return gson.fromJson(json, StaffModel.class);
-    }
-
-    public void setStaffPref(Context context, String key, StaffModel value) {
+    public void setModelPref(Context context, String key, Object value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         Gson gson = new Gson();
         String json = gson.toJson(value);
         editor.putString(key, json);
         editor.apply();
     }
+
+    public StaffModel getStaffPref(Context context, String key) {
+        Gson gson = new Gson();
+        String json = getSharedPreferences(context).getString(key, null);
+        return gson.fromJson(json, StaffModel.class);
+    }
+
+    public State getStatePref(Context context, String key) {
+        Gson gson = new Gson();
+        String json = getSharedPreferences(context).getString(key, null);
+        if(json==null){
+            return new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true);
+        }
+        return gson.fromJson(json, State.class);
+    }
+
 
     public void clearStaffPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();

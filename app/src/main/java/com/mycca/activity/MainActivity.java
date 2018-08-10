@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity
     public void OnLoginSuccessful(StaffModel staffModel) {
         this.staffModel = staffModel;
         Toast.makeText(this, getString(R.string.staff_login_success), Toast.LENGTH_SHORT).show();
-        Preferences.getInstance().setStaffPref(this, Preferences.PREF_STAFF_DATA, staffModel);
+        Preferences.getInstance().setModelPref(this, Preferences.PREF_STAFF_DATA, staffModel);
         if (staffModel.getType() == TYPE_ADMIN) {
             ManageNavigationView(true, true);
         } else {

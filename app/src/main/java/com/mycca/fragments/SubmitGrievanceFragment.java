@@ -482,7 +482,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 grievanceModel,
                 FireBaseHelper.ROOT_GRIEVANCES,
                 grievanceModel.getState(),
-                grievanceModel.getPensionerIdentifier(),
+                grievanceModel.getIdentifierNumber(),
                 String.valueOf(grievanceType.getId()));
 
         task.addOnCompleteListener(task1 -> {
@@ -599,10 +599,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,
                 grievanceModel.getState(),
-                grievanceModel.getPensionerIdentifier()
+                grievanceModel.getIdentifierNumber()
         );
 
-        FireBaseHelper.getInstance(mainActivity).uploadDataToFirebase(grievanceModel.getPensionerIdentifier(),
+        FireBaseHelper.getInstance(mainActivity).uploadDataToFirebase(grievanceModel.getIdentifierNumber(),
                 FireBaseHelper.ROOT_REF_NUMBERS,
                 refNo);
     }

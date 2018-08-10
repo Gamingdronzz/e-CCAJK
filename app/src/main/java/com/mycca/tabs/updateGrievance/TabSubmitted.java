@@ -107,7 +107,7 @@ public class TabSubmitted extends Fragment {
                 if (dataSnapshot.getValue() != null) {
                     String code = dataSnapshot.getKey();
                     for (GrievanceModel model : submittedGrievances) {
-                        if (model.getPensionerIdentifier().equals(code))
+                        if (model.getIdentifierNumber().equals(code))
                             temp.add(model);
                     }
                     submittedGrievances.removeAll(temp);

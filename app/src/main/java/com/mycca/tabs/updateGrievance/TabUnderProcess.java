@@ -109,7 +109,7 @@ public class TabUnderProcess extends Fragment {
                 if (dataSnapshot.getValue() != null) {
                     String code=dataSnapshot.getKey();
                     for(GrievanceModel model:processingGrievances){
-                        if(model.getPensionerIdentifier().equals(code))
+                        if(model.getIdentifierNumber().equals(code))
                             temp1.add(model);
                     }
                     processingGrievances.removeAll(temp1);

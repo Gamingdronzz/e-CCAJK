@@ -223,7 +223,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,
                 grievanceModel.getState(),
-                grievanceModel.getPensionerIdentifier());
+                grievanceModel.getIdentifierNumber());
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
                 uploadAllImagesToFirebase();
@@ -248,7 +248,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                         true,
                         i,
                         FireBaseHelper.ROOT_GRIEVANCES,
-                        grievanceModel.getPensionerIdentifier(),
+                        grievanceModel.getIdentifierNumber(),
                         String.valueOf(grievanceModel.getGrievanceType()),
                         FireBaseHelper.ROOT_BY_STAFF);
 
@@ -281,7 +281,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             try {
                 DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                         fireBaseImageURLs,
-                        grievanceModel.getPensionerIdentifier(),
+                        grievanceModel.getIdentifierNumber(),
                         DataSubmissionAndMail.UPDATE,
                         volleyHelper);
             } catch (Exception e) {
@@ -299,7 +299,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         progressDialog.setMessage(getString(R.string.almost_done));
         String url = Helper.getInstance().getAPIUrl() + "sendUpdateGrievanceEmail.php/";
         Map<String, String> params = new HashMap<>();
-        String pensionerCode = grievanceModel.getPensionerIdentifier();
+        String pensionerCode = grievanceModel.getIdentifierNumber();
 
         params.put("pensionerCode", pensionerCode);
         params.put("folder", DataSubmissionAndMail.UPDATE);
@@ -322,7 +322,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,
                 grievanceModel.getState(),
-                grievanceModel.getPensionerIdentifier());
+                grievanceModel.getIdentifierNumber());
     }
 
     private void showSuccessDialog() {
@@ -333,7 +333,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         isUploadedToServer = isUploadedToFireBase = isUploadedToFireBaseDatabase = false;
 
         String alertMessage = String.format(getString(R.string.grievance_updation_success),
-                grievanceModel.getPensionerIdentifier(),
+                grievanceModel.getIdentifierNumber(),
                 grievanceString,
                 Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
 
@@ -479,7 +479,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     }
 
     private void setLayoutData() {
-        textViewPensionerCode.setText(grievanceModel.getPensionerIdentifier());
+        textViewPensionerCode.setText(grievanceModel.getIdentifierNumber());
         textViewRefNo.setText(grievanceModel.getReferenceNo());
         textViewGrievanceString.setText(grievanceString);
         textViewDateOfApplication.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
