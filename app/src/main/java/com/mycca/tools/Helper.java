@@ -237,6 +237,8 @@ public class Helper {
 
         try {
             newVersion = (long) dataSnapshot.getValue();
+            CustomLogger.getInstance().logDebug("Version: "+ newVersion);
+
         } catch (Exception e) {
             e.printStackTrace();
             if (activity instanceof SplashActivity)
@@ -289,12 +291,9 @@ public class Helper {
     }
 
     public void setLocale(Context context) {
-        Locale locale;
+
         String lang = Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE);
-        if (lang != null)
-            locale = new Locale(lang);
-        else
-            locale = new Locale("en");
+        Locale locale=new Locale(lang);
         Locale.setDefault(locale);
         Resources resources = context.getApplicationContext().getResources();
         Configuration configuration = resources.getConfiguration();

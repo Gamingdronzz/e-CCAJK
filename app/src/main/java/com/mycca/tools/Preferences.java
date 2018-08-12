@@ -52,9 +52,13 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-
     public String getStringPref(Context context, String key) {
-        return getSharedPreferences(context).getString(key, null);
+        String s = getSharedPreferences(context).getString(key, null);
+        if (s == null) {
+            if (key.equals(PREF_LANGUAGE))
+                return "en";
+        }
+        return s;
     }
 
     public void setStringPref(Context context, String key, String value) {
@@ -62,7 +66,6 @@ public class Preferences {
         editor.putString(key, value);
         editor.apply();
     }
-
 
     public int getIntPref(Context context, String key) {
         return getSharedPreferences(context).getInt(key, -1);
@@ -101,7 +104,7 @@ public class Preferences {
     public State getStatePref(Context context, String key) {
         Gson gson = new Gson();
         String json = getSharedPreferences(context).getString(key, null);
-        if(json==null){
+        if (json == null) {
             return new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true);
         }
         return gson.fromJson(json, State.class);
@@ -114,7 +117,7 @@ public class Preferences {
         editor.apply();
     }
 
-    public void clearOtherStateDataPrefs(Context context){
+    public void clearOtherStateDataPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.remove(PREF_OFFICE_ADDRESS);
         editor.remove(PREF_OFFICE_LABEL);

@@ -146,8 +146,8 @@ public class LocatorFragment extends Fragment {
 
     private void getLocationsFromLocalStorage() {
 
-        IOHelper.getInstance().readFromFile(locatorType, getContext(),false, jsonObject -> {
-            String json = (String) jsonObject;
+        IOHelper.getInstance().readFromFile(locatorType, getContext(), false, jsonObject -> {
+            String json = String.valueOf(jsonObject);
             try {
                 Gson gson = new Gson();
                 Type collectionType = new TypeToken<ArrayList<LocationModel>>() {
@@ -171,7 +171,7 @@ public class LocatorFragment extends Fragment {
             String jsonObject = Helper.getInstance().getJsonFromObject(locationModels);
             CustomLogger.getInstance().logDebug( "Json: " + jsonObject);
             CustomLogger.getInstance().logDebug( "adding LocationsToLocalStorage: ");
-            IOHelper.getInstance().writeToFile(jsonObject, locatorType, false,getContext());
+            IOHelper.getInstance().writeToFile(jsonObject, locatorType, false, getContext(), success -> {});
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
         }

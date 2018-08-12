@@ -13,21 +13,16 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 import com.mycca.R;
 import com.mycca.listeners.OnConnectionAvailableListener;
-import com.mycca.models.State;
+import com.mycca.listeners.PreferencesSetListener;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
-import com.mycca.tools.IOHelper;
 import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
-
-import java.util.ArrayList;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -36,7 +31,6 @@ public class SplashActivity extends AppCompatActivity {
     int currentAppVersion;
     String currentVersionName;
     private String TAG = "Splash";
-    long circleCount;
     //boolean animDone = false;
     //boolean checksDone = false;
     Animation animationScale;
@@ -72,7 +66,7 @@ public class SplashActivity extends AppCompatActivity {
             text = currentVersionName;
         tvSplashVersion.setText(String.format(getString(R.string.version), text));
 
-        CustomLogger.getInstance().logDebug("onCreate: " + currentAppVersion + ": " + currentVersionName);
+        CustomLogger.getInstance().logDebug(TAG + " " + currentAppVersion + ": " + currentVersionName);
     }
 
     private void StartAnimations() {
@@ -89,18 +83,23 @@ public class SplashActivity extends AppCompatActivity {
 
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) { }
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
                     @Override
                     public void OnConnectionAvailable() {
+                        CustomLogger.getInstance().logDebug(TAG + " Connection Available");
                         checkForNewVersion();
                     }
 
                     @Override
                     public void OnConnectionNotAvailable() {
+                        CustomLogger.getInstance().logDebug(TAG + " Connection Not Available");
+                        if(Preferences.getInstance().getIntPref(SplashActivity.this,Preferences.PREF_CIRCLES)!= -1)
+                            CircleDataProvider.getInstance().setCircleData(false,getApplicationContext());
                         LoadNextActivity();
                     }
                 });
@@ -137,6 +136,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForNewVersion() {
+        CustomLogger.getInstance().logDebug(TAG + " Checking version");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -153,17 +153,24 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void checkCircles() {
+        CustomLogger.getInstance().logDebug(TAG + " Checking Circles");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
-                    circleCount = (long) dataSnapshot.getValue();
-                    if (circleCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES))
+                    long circleCount = (long) dataSnapshot.getValue();
+                    if (circleCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES)) {
+                        CustomLogger.getInstance().logDebug("No new data");
                         checkActiveCircles();
-                    else
-                        getCircleData();
-                } else
+                    } else {
+                        CustomLogger.getInstance().logDebug("New data available");
+                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext());
+                        checkOtherStateData();
+                    }
+                } else {
+                    CustomLogger.getInstance().logDebug("Data null...checking other state data");
                     checkOtherStateData();
+                }
             }
 
             @Override
@@ -175,17 +182,25 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkActiveCircles() {
+
+        CustomLogger.getInstance().logDebug(TAG + " Checking Active Circles");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
-                    Helper.dataChecked = true;
                     long activeCount = (long) dataSnapshot.getValue();
                     if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
-                        checkOtherStateData();
-                    } else
-                        getCircleData();
-                } else checkOtherStateData();
+                        CustomLogger.getInstance().logDebug("No new data");
+                        Helper.dataChecked = true;
+                        CircleDataProvider.getInstance().setCircleData(false, getApplicationContext());
+                    } else {
+                        CustomLogger.getInstance().logDebug("New data available");
+                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext());
+                    }
+                } else {
+                    CustomLogger.getInstance().logDebug("Data null...checking other state data");
+                }
+                checkOtherStateData();
             }
 
             @Override
@@ -202,104 +217,21 @@ public class SplashActivity extends AppCompatActivity {
                 Preferences.getInstance().getStringPref(this, Preferences.PREF_WEBSITE) == null ||
                 Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_LABEL) == null) {
 
+            CustomLogger.getInstance().logDebug("Other state Preferences null");
             getOtherData();
         } else {
-                LoadNextActivity();
+            CustomLogger.getInstance().logDebug("Other state Preferences not null");
+            LoadNextActivity();
         }
     }
 
-    private void getCircleData() {
-        ArrayList<State> stateArrayList = new ArrayList<>();
-
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    try {
-                        State state = ds.getValue(State.class);
-                        stateArrayList.add(state);
-                    } catch (DatabaseException | NullPointerException e) {
-                        CustomLogger.getInstance().logDebug(e.getMessage());
-                    }
-                }
-                Gson gson = new Gson();
-                IOHelper.getInstance().writeToFile(gson.toJson(stateArrayList), "Circle Data", true, SplashActivity.this);
-                CircleDataProvider.getInstance().setStates(stateArrayList);
-                Helper.dataChecked = true;
-                checkOtherStateData();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                checkOtherStateData();
-            }
-        };
-
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_CIRCLE_DATA);
-    }
-
     private void getOtherData() {
-        State state = Preferences.getInstance().getStatePref(this, Preferences.PREF_STATE_DATA);
-
-        ValueEventListener valueEventListener3 = new ValueEventListener() {
+        NewFireBaseHelper.getInstance().getOtherStateData(this, new PreferencesSetListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_OFFICE_LABEL,
-                            (String) dataSnapshot.child("label").getValue());
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_OFFICE_LAT,
-                            (String) dataSnapshot.child("latitude").getValue());
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_OFFICE_LONG,
-                            (String) dataSnapshot.child("longitude").getValue());
-                } catch (DatabaseException | NullPointerException e) {
-                    e.printStackTrace();
-                }
-                    LoadNextActivity();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                    LoadNextActivity();
-            }
-        };
-
-        ValueEventListener valueEventListener2 = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_WEBSITE, (String) dataSnapshot.getValue());
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(state.getDatabase(), valueEventListener3, true, NewFireBaseHelper.ROOT_OFFICE_COORDINATES);
-                } catch (DatabaseException | NullPointerException e) {
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_WEBSITE, getString(R.string.n_a));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_WEBSITE, getString(R.string.n_a));
+            public void afterPreferencesSet() {
                 LoadNextActivity();
             }
-        };
-
-        ValueEventListener valueEventListener1 = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_OFFICE_ADDRESS, (String) dataSnapshot.getValue());
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(state.getDatabase(), valueEventListener2, true, NewFireBaseHelper.ROOT_WEBSITE);
-                } catch (DatabaseException | NullPointerException e) {
-                    Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_OFFICE_ADDRESS, getString(R.string.n_a));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Preferences.getInstance().setStringPref(SplashActivity.this, Preferences.PREF_OFFICE_ADDRESS, getString(R.string.n_a));
-                LoadNextActivity();
-            }
-        };
-
-        NewFireBaseHelper.getInstance().getDataFromFireBase(state.getDatabase(), valueEventListener1, true, NewFireBaseHelper.ROOT_OFFICE_ADDRESS);
+        });
     }
 
 }

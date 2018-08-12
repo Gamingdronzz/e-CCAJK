@@ -1,10 +1,15 @@
 package com.mycca.tools;
 
+import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Transaction;
@@ -13,8 +18,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mycca.listeners.PreferencesSetListener;
 import com.mycca.models.NewsModel;
 import com.mycca.models.SelectedImageModel;
+import com.mycca.models.State;
 
 import java.util.HashMap;
 
@@ -120,7 +127,7 @@ public class NewFireBaseHelper {
         DatabaseReference databaseReference = getDatabaseReference(stateInstance);
 
         for (String key : params) {
-            CustomLogger.getInstance().logDebug("child : " + key);
+            CustomLogger.getInstance().logDebug("\nkey" + key);
             databaseReference = databaseReference.child(key);
         }
         task = databaseReference.setValue(model);
@@ -160,9 +167,8 @@ public class NewFireBaseHelper {
     public void getDataFromFireBase(String stateInstance, ChildEventListener childEventListener, String... params) {
 
         DatabaseReference dbref = getDatabaseReference(stateInstance);
-        CustomLogger.getInstance().logDebug("getting DataFromFirebase: ");
         for (String key : params) {
-            CustomLogger.getInstance().logDebug("Firebase key : " + key);
+            CustomLogger.getInstance().logDebug("\nkey : " + key);
             dbref = dbref.child(key);
         }
         dbref.addChildEventListener(childEventListener);
@@ -172,7 +178,7 @@ public class NewFireBaseHelper {
 
         DatabaseReference dbref = getDatabaseReference(stateInstance);
         for (String key : params) {
-            CustomLogger.getInstance().logDebug("Firebase Helper key : " + key);
+            CustomLogger.getInstance().logDebug("\nkey : " + key);
             dbref = dbref.child(key);
         }
         if (singleValueEvent)
@@ -206,4 +212,67 @@ public class NewFireBaseHelper {
         return getStorageReference(stateInstance).child(path).getDownloadUrl();
     }
 
+    public void getOtherStateData(Context context, PreferencesSetListener preferencesSetListener) {
+
+        State state = Preferences.getInstance().getStatePref(context, Preferences.PREF_STATE_DATA);
+        CustomLogger.getInstance().logDebug("Getting other data");
+
+        ValueEventListener valueEventListener3 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_LABEL,
+                            (String) dataSnapshot.child("label").getValue());
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_LAT,
+                            String.valueOf(dataSnapshot.child("latitude").getValue()));
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_LONG,
+                            String.valueOf(dataSnapshot.child("longitude").getValue()));
+                } catch (DatabaseException | NullPointerException e) {
+                    CustomLogger.getInstance().logDebug(e.getMessage());
+                }
+                preferencesSetListener.afterPreferencesSet();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                preferencesSetListener.afterPreferencesSet();
+            }
+        };
+
+        ValueEventListener valueEventListener2 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(state.getDatabase(), valueEventListener3, true, ROOT_OFFICE_COORDINATES);
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_WEBSITE, (String) dataSnapshot.getValue());
+                } catch (DatabaseException | NullPointerException e) {
+                    CustomLogger.getInstance().logDebug(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                preferencesSetListener.afterPreferencesSet();
+            }
+        };
+
+        ValueEventListener valueEventListener1 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(state.getDatabase(), valueEventListener2, true, ROOT_WEBSITE);
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_ADDRESS, (String) dataSnapshot.getValue());
+                } catch (DatabaseException | NullPointerException e) {
+                    CustomLogger.getInstance().logDebug(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                preferencesSetListener.afterPreferencesSet();
+            }
+        };
+
+        NewFireBaseHelper.getInstance().getDataFromFireBase(state.getDatabase(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
+    }
 }
