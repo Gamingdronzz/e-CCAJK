@@ -15,8 +15,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.R;
+import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.listeners.OnConnectionAvailableListener;
-import com.mycca.listeners.PreferencesSetListener;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
@@ -98,8 +98,8 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void OnConnectionNotAvailable() {
                         CustomLogger.getInstance().logDebug(TAG + " Connection Not Available");
-                        if(Preferences.getInstance().getIntPref(SplashActivity.this,Preferences.PREF_CIRCLES)!= -1)
-                            CircleDataProvider.getInstance().setCircleData(false,getApplicationContext());
+                        if (Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES) != -1)
+                            CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(),null);
                         else
                             CustomLogger.getInstance().logDebug("Circle data not available");
                         LoadNextActivity();
@@ -166,7 +166,7 @@ public class SplashActivity extends AppCompatActivity {
                         checkActiveCircles();
                     } else {
                         CustomLogger.getInstance().logDebug("New data available");
-                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext());
+                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(),null);
                         checkOtherStateData();
                     }
                 } else {
@@ -194,10 +194,10 @@ public class SplashActivity extends AppCompatActivity {
                     if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
                         CustomLogger.getInstance().logDebug("No new data");
                         Helper.dataChecked = true;
-                        CircleDataProvider.getInstance().setCircleData(false, getApplicationContext());
+                        CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(),null);
                     } else {
                         CustomLogger.getInstance().logDebug("New data available");
-                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext());
+                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(),null);
                     }
                 } else {
                     CustomLogger.getInstance().logDebug("Data null...checking other state data");
@@ -228,9 +228,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void getOtherData() {
-        NewFireBaseHelper.getInstance().getOtherStateData(this, new PreferencesSetListener() {
+        NewFireBaseHelper.getInstance().getOtherStateData(this, new DownloadCompleteListener() {
             @Override
-            public void afterPreferencesSet() {
+            public void onDownloadSuccess() {
+                LoadNextActivity();
+            }
+
+            @Override
+            public void onDownloadFailure() {
                 LoadNextActivity();
             }
         });

@@ -4,18 +4,16 @@ public class State {
     private String code;
     private String en;
     private String hi;
-    private String database;
     private String mails;
     private boolean active;
 
     public State() {
     }
 
-    public State(String code, String en, String hi, String database, String mails, boolean active) {
+    public State(String code, String en, String hi, String mails, boolean active) {
         this.code = code;
         this.en = en;
         this.hi = hi;
-        this.database = database;
         this.mails = mails;
         this.active = active;
     }
@@ -42,14 +40,6 @@ public class State {
 
     public void setHi(String hi) {
         this.hi = hi;
-    }
-
-    public String getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(String database) {
-        this.database = database;
     }
 
     public String getMails() {

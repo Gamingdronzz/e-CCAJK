@@ -357,24 +357,24 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void loadValues(View v) {
-        TextView pensionerHeading = v.findViewById(R.id.textview_pensioner_code_confirm);
+        TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
         pensionerHeading.setText(hint);
 
-        TextView pensionerValue = v.findViewById(R.id.textview_pensioner_code_confirm_value);
+        TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
         pensionerValue.setText(code);
 
-        TextView mobNo = v.findViewById(R.id.textview_mobile_value);
+        TextView mobNo = v.findViewById(R.id.textview_confirm2_value);
         mobNo.setText(inputMobile.getText());
-        TextView emailValue = v.findViewById(R.id.textview_email_value);
+        TextView emailValue = v.findViewById(R.id.textview_confirm3_value);
         emailValue.setText(email);
-        TextView circle = v.findViewById(R.id.textview_circle_value);
+        TextView circle = v.findViewById(R.id.textview_confirm4_value);
         circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
                 .equals("hi") ? state.getHi() : state.getEn());
-        TextView grievance = v.findViewById(R.id.textview_grievance_value);
+        TextView grievance = v.findViewById(R.id.textview_confirm5_value);
         grievance.setText(grievanceType.getName());
-        TextView gr_by = v.findViewById(R.id.textview_submitted_by_value);
+        TextView gr_by = v.findViewById(R.id.textview_confirm6_value);
         gr_by.setText(spinnerInputSubmittedBy.getSelectedItem().toString());
-        TextView details = v.findViewById(R.id.textview_grievance_details);
+        TextView details = v.findViewById(R.id.textview_confirm7_value);
         details.setText(inputDetails.getText().toString().trim());
     }
 

@@ -67,11 +67,11 @@ public class Helper {
     public static boolean dataChecked = false;
 
     private State stateList[] = {
-            new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true),
-            new State("100", "Haryana", "Haryana", "cca-haryana", null, false)
+            new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true),
+            new State("100", "Haryana", "Haryana", null, false)
     };
 
-    private State stateListJK[] = {new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true)};
+    private State stateListJK[] = {new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true)};
 
     private GrievanceType pensionGrievanceTypes[] = {
             new GrievanceType(AppController.getResourses().getString(R.string.change_of_pda), 0),
@@ -414,6 +414,21 @@ public class Helper {
                 AppController.getResourses().getString(R.string.ok),
                 dialogListener, null, null,
                 FancyAlertDialogType.WARNING);
+    }
+
+    public void showMessage(Activity activity,String message,String title, FancyAlertDialogType dialogType){
+        showFancyAlertDialog(activity, message, title,
+                activity.getString(R.string.ok), () -> {
+                }, null, null, dialogType);
+
+    }
+
+    public void noInternetDialog(Activity activity){
+        Helper.getInstance().showFancyAlertDialog(activity,
+                activity.getString(R.string.connect_to_internet),
+                activity.getString(R.string.no_internet),
+                activity.getString(R.string.ok), () -> {
+                }, null, null, FancyAlertDialogType.ERROR);
     }
 
     public void showErrorDialog(String message, String title, Activity activity) {

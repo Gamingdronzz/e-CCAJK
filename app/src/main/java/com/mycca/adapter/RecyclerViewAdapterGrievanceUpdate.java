@@ -94,7 +94,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         GrievanceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener, boolean resolved) {
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
-            textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
+            textViewGrievanceType = itemView.findViewById(R.id.textview_confirm5);
 
             textViewGrievanceSubtype = itemView.findViewById(R.id.textview_grievance_subtype);
             expandableArea = itemView.findViewById(R.id.expandable_layout_grievance);

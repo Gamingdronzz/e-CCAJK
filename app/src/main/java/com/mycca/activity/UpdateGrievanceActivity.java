@@ -97,7 +97,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void bindViews() {
         textViewPensionerCode = findViewById(R.id.textview_pensioner);
         textViewRefNo = findViewById(R.id.textview_reference_number);
-        textViewGrievanceString = findViewById(R.id.textview_grievance_type);
+        textViewGrievanceString = findViewById(R.id.textview_confirm5);
         textViewDateOfApplication = findViewById(R.id.textview_date);
         statusSpinner = findViewById(R.id.spinner_status);
         editTextMessage = findViewById(R.id.edittext_message);

@@ -164,6 +164,10 @@
     <string name="updation_success">update request for %1$s has been submitted successfully</string>
     <string name="updation_failed">Request for Updation Failed\nTry Again</string>
 
+    <!--kyp-->
+    <string name="download_kyp_form">Download KYP Form</string>
+    <string name="submit_kyp_form">Submit KYP Form</string>
+
     <!--contact us-->
     <string name="office_address">Office Address</string>
     <string name="locate_on_map">Locate on Map</string>
@@ -284,13 +288,14 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
 
     <!--others-->
     <string name="no_internet">Internet Connection Not Available</string>
-    <string name="connect_to_internet">Please connect to internet first</string>
+    <string name="connect_to_internet">Please connect to internet first.</string>
     <string name="refresh">Turn On Internet and Refresh</string>
     <string name="no_grievance">No Grievances Registered</string>
     <string name="n_a">Not Available</string>
     <string name="skip">SKIP</string>
     <string name="finish">FINISH</string>
     <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
     <string name="confirm">CONFIRM</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_in_with_google">Sign In with Google</string>
@@ -315,6 +320,16 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="reload_req">This feature requires reloading of app</string>
     <string name="update_available">A new version of the application is available on Google Play Store\nUpdate to continue using the application</string>
     <string name="app_maintenance">The Application is in maintenance\nPlease wait for a while\nThank you for your patience</string>
+    <string name="website_n_a">Website Data Not Available</string>
+    <string name="office_location_n_a">Office Location Data Not Available</string>
+    <string name="office_address_n_a">Office Address Not Available</string>
+    <string name="no_map_app">No Map Application Installed</string>
+    <string name="data_missing_message">To continue using this app feature please download the necessary data.</string>
+    <string name="data_missing_title">Some Data Unavailable!</string>
+    <string name="download">DOWNLOAD</string>
+    <string name="download_success_title">Data Downloaded Successfully</string>
+    <string name="download_success_message">You can continue using the app features.</string>
+    <string name="download_fail_title">Data downloading failed</string>
 
     <!--invitation-->
     <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
@@ -349,8 +364,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
 \n\nToll Free No. 18001807036
 \nFAX - 0191-2477296, 2475251
 \nSTD CODE -0191</b></string>
-    <string name="download_kyp_form">Download KYP Form</string>
-    <string name="submit_kyp_form">Submit KYP Form</string>
+
 
 
 </resources>

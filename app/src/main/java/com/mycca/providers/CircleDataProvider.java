@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.models.State;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
@@ -39,9 +40,9 @@ public class CircleDataProvider {
         }
     }
 
-    public void setCircleData(Boolean checkForNew, Context context) {
+    public void setCircleData(Boolean checkForNew, Context context, DownloadCompleteListener downloadCompleteListener) {
         if (checkForNew) {
-            getCircleDataFromFireBase(context);
+            getCircleDataFromFireBase(context, downloadCompleteListener);
         } else {
             IOHelper.getInstance().readFromFile(context, "Circle Data", null,
                     jsonObject -> {
@@ -77,7 +78,7 @@ public class CircleDataProvider {
         return states;
     }
 
-    public void getCircleDataFromFireBase(Context context) {
+    public void getCircleDataFromFireBase(Context context, DownloadCompleteListener downloadCompleteListener) {
 
         ArrayList<State> stateArrayList = new ArrayList<>();
 
@@ -110,15 +111,20 @@ public class CircleDataProvider {
                                 CustomLogger.getInstance().logDebug("Write circle Success..Setting Preferences = " + stateCount + "," + activeCount);
                                 Preferences.getInstance().setIntPref(context, Preferences.PREF_CIRCLES, stateCount);
                                 Preferences.getInstance().setIntPref(context, Preferences.PREF_ACTIVE_CIRCLES, activeCount);
+                                if (downloadCompleteListener != null)
+                                    downloadCompleteListener.onDownloadSuccess();
                             } else {
                                 CustomLogger.getInstance().logDebug("Write circle Failed");
+                                if (downloadCompleteListener != null)
+                                    downloadCompleteListener.onDownloadFailure();
                             }
                         });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                if (downloadCompleteListener != null)
+                    downloadCompleteListener.onDownloadFailure();
             }
         };
 

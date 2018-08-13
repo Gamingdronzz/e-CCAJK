@@ -20,7 +20,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_pensioner_code_confirm"
+            android:id="@+id/textview_confirm1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -30,7 +30,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_pensioner_code_confirm_value"
+            android:id="@+id/textview_confirm1_value"
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:background="@color/colorOffWhite"
@@ -41,7 +41,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_mobile_no"
+            android:id="@+id/textview_confirm2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -51,7 +51,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_mobile_value"
+            android:id="@+id/textview_confirm2_value"
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:background="@color/colorOffWhite"
@@ -62,7 +62,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_email"
+            android:id="@+id/textview_confirm3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -72,7 +72,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_email_value"
+            android:id="@+id/textview_confirm3_value"
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:background="@color/colorOffWhite"
@@ -83,7 +83,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_circle"
+            android:id="@+id/textview_confirm4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -93,7 +93,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_circle_value"
+            android:id="@+id/textview_confirm4_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
@@ -104,7 +104,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_grievance_type"
+            android:id="@+id/textview_confirm5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -114,7 +114,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_grievance_value"
+            android:id="@+id/textview_confirm5_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
@@ -125,7 +125,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_grievance_by"
+            android:id="@+id/textview_confirm6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -135,7 +135,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_submitted_by_value"
+            android:id="@+id/textview_confirm6_value"
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:background="@color/colorOffWhite"
@@ -146,7 +146,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/detail"
+            android:id="@+id/textview_confirm7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -158,7 +158,7 @@
             android:textColor="@color/colorBlack" />
 
         <TextView
-            android:id="@+id/textview_grievance_details"
+            android:id="@+id/textview_confirm7_value"
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:background="@color/colorOffWhite"

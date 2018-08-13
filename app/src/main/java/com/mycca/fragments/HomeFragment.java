@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterNews;
@@ -28,10 +27,13 @@ import com.mycca.custom.CustomImageSlider.SliderLayout;
 import com.mycca.custom.CustomImageSlider.SliderTypes.BaseSliderView;
 import com.mycca.custom.CustomImageSlider.SliderTypes.TextSliderView;
 import com.mycca.custom.CustomImageSlider.Tricks.ViewPagerEx;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.models.NewsModel;
 import com.mycca.models.SliderImageModel;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
 
@@ -83,13 +85,20 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         tvLatestNews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_news_icon, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
 
         tvVisit.setOnClickListener(v -> {
-            String location = "32.707500,74.874217";
-            Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
-                startActivity(mapIntent);
+            String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
+            if (location != null) {
+                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location +
+                        Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL));
+
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.no_map_app), Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(getContext(), "No Map Application Installed", Toast.LENGTH_SHORT).show();
+                Helper.getInstance().showMessage(activity, getString(R.string.office_location_n_a),
+                        getString(R.string.app_name), FancyAlertDialogType.WARNING);
             }
         });
 
@@ -100,11 +109,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         recyclerView.setAdapter(adapterNews);
         linearLayoutManager = new LinearLayoutManager(getContext());
-//        linearLayoutManager.setStackFromEnd(true);
-//        linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
-//        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
+        //        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
 //        linearLayoutManager.setStackFromEnd(true);
 //        recyclerView.setLayoutManager(linearLayoutManager);
 //        SnapHelper snapHelperStart = new GravitySnapHelper(Gravity.START);
@@ -124,66 +130,66 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void getNews() {
-        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef;
-        dbref.child(FireBaseHelper.ROOT_NEWS)
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue() != null) {
-                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                            newsModelArrayList.add(0, newsModel);
-                            adapterNews.notifyItemInserted(0);
-                            CustomLogger.getInstance().logDebug( "onChildAdded: " + newsModel.getHeadline());
-                            recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
+
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                    newsModelArrayList.add(0, newsModel);
+                    adapterNews.notifyItemInserted(0);
+                    CustomLogger.getInstance().logDebug("onChildAdded: " + newsModel.getHeadline());
+                    recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                    for (int i = 0; i < newsModelArrayList.size(); i++) {
+                        if (newsModel != null && newsModelArrayList.get(i).getKey().equals(newsModel.getKey())) {
+                            newsModelArrayList.remove(i);
+                            adapterNews.notifyItemRemoved(i);
+                            newsModelArrayList.add(i, newsModel);
+                            adapterNews.notifyItemInserted(i);
+                            CustomLogger.getInstance().logDebug("onChildChanged: " + newsModel.getHeadline() + " pos - " + i);
+                            break;
                         }
                     }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue() != null) {
-                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                            for (int i = 0; i < newsModelArrayList.size(); i++) {
-                                if (newsModel != null && newsModelArrayList.get(i).getKey().equals(newsModel.getKey())) {
-                                    newsModelArrayList.remove(i);
-                                    adapterNews.notifyItemRemoved(i);
-                                    newsModelArrayList.add(i, newsModel);
-                                    adapterNews.notifyItemInserted(i);
-                                    CustomLogger.getInstance().logDebug( "onChildChanged: " + newsModel.getHeadline() + " pos - " + i);
-                                    break;
-                                }
-                            }
+                }
+            }
 
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
+                    for (NewsModel nm : newsModelArrayList) {
+                        if (newsModel != null && nm.getKey().equals(newsModel.getKey())) {
+                            newsModelArrayList.remove(nm);
+                            break;
                         }
                     }
+                    adapterNews.notifyDataSetChanged();
+                }
+            }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
-                            for (NewsModel nm : newsModelArrayList) {
-                                if (newsModel != null && nm.getKey().equals(newsModel.getKey())) {
-                                    newsModelArrayList.remove(nm);
-                                    break;
-                                }
-                            }
-                            adapterNews.notifyDataSetChanged();
-                        }
-                    }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
+            }
 
-                    }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+            }
+        };
+        NewFireBaseHelper.getInstance().getDataFromFireBase(null, childEventListener, NewFireBaseHelper.ROOT_NEWS);
     }
 
     public void setupWelcomeBar() {
-        FirebaseUser user = FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser();
+        FirebaseUser user = NewFireBaseHelper.getInstance().getAuth().getCurrentUser();
         if (user != null) {
             tvUserName.setVisibility(View.VISIBLE);
             String username = getString(R.string.hello) + " " + user.getDisplayName();
@@ -193,15 +199,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void getSliderData() {
-        CustomLogger.getInstance().logDebug( "getting SliderData: ");
+        CustomLogger.getInstance().logDebug("getting SliderData: ");
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                CustomLogger.getInstance().logDebug( "ChildAdded: ");
+                CustomLogger.getInstance().logDebug("ChildAdded: ");
                 SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
                 if (sliderImageModel != null) {
-                    CustomLogger.getInstance().logDebug( "Image: " + sliderImageModel.getImageName());
-                    CustomLogger.getInstance().logDebug( "url: " + sliderImageModel.getImageUrl());
+                    CustomLogger.getInstance().logDebug("Image: " + sliderImageModel.getImageName());
+                    CustomLogger.getInstance().logDebug("url: " + sliderImageModel.getImageUrl());
                     addImageToSlider(sliderImageModel);
                 }
             }
@@ -226,7 +232,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             }
         };
-        FireBaseHelper.getInstance(getContext()).getDataFromFirebase(childEventListener, FireBaseHelper.NONVERSIONED, FireBaseHelper.ROOT_SLIDER);
+        NewFireBaseHelper.getInstance().getDataFromFireBase(null, childEventListener, NewFireBaseHelper.ROOT_SLIDER);
     }
 
     private void addImageToSlider(SliderImageModel sliderImageModel) {

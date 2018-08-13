@@ -49,11 +49,12 @@ import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.PanAdhaar;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.State;
+import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -76,8 +77,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     ImageView imageviewSelectedImage;
     TextView textViewFileName;
     Spinner spinnerCircle;
-    TextInputLayout textInputIdentifier, textInputNumber;
-    TextInputEditText inputPCode, inputNumber;
+    TextInputLayout textInputLayoutIdentifier, textInputLayoutCardNumber;
+    TextInputEditText editTextIdentifier, editTextCardNumber;
     Button buttonUpload;
     FloatingActionButton fab;
     RadioGroup radioGroup;
@@ -86,7 +87,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private static final String TAG = "PanAdhaarUpload";
     public static final String AADHAAR_DATA_TAG = "PrintLetterBarcodeData", AADHAR_UID_ATTR = "uid";
-    private String pensionerCode, number, root, hint = "Pensioner Code";
+    private String pensionerIdentifier, cardNumber, root, field2Hint, identifierHint = "Pensioner Code";
     private boolean isUploadedToFirebase = false, isUploadedToServer = false;
     private ArrayList<FABMenuItem> items;
     SelectedImageModel imageModel;
@@ -117,10 +118,10 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void bindViews(View view) {
         linearLayout = view.findViewById(R.id.layout_radio_group);
         radioGroup = view.findViewById(R.id.groupNumberType);
-        textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
-        textInputNumber = view.findViewById(R.id.text_number);
-        inputPCode = view.findViewById(R.id.et_pan_adhaar_pcode);
-        inputNumber = view.findViewById(R.id.et_pan_adhaar_number);
+        textInputLayoutIdentifier = view.findViewById(R.id.text_input_pensioner_code);
+        textInputLayoutCardNumber = view.findViewById(R.id.text_number);
+        editTextIdentifier = view.findViewById(R.id.et_pan_adhaar_pcode);
+        editTextCardNumber = view.findViewById(R.id.et_pan_adhaar_number);
         spinnerCircle = view.findViewById(R.id.spinner_pan_adhaar_circle);
         textViewFileName = view.findViewById(R.id.textview_filename);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
@@ -137,30 +138,30 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioButtonPensioner:
-                    hint = getString(R.string.p_code);
-                    inputPCode.setFilters(Helper.getInstance().limitInputLength(15));
+                    identifierHint = getString(R.string.p_code);
+                    editTextIdentifier.setFilters(Helper.getInstance().limitInputLength(15));
                     break;
 
                 case R.id.radioButtonHR:
-                    hint = getString(R.string.hr_num);
-                    inputPCode.setFilters(new InputFilter[]{});
+                    identifierHint = getString(R.string.hr_num);
+                    editTextIdentifier.setFilters(new InputFilter[]{});
                     break;
             }
-            inputPCode.setText("");
-            inputPCode.setError(null);
-            textInputIdentifier.setHint(hint);
+            editTextIdentifier.setText("");
+            editTextIdentifier.setError(null);
+            textInputLayoutIdentifier.setHint(identifierHint);
         });
 
         switch (root) {
-            case FireBaseHelper.ROOT_ADHAAR:
+            case NewFireBaseHelper.ROOT_ADHAAR:
 
-                inputNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
-                inputNumber.setFilters(Helper.getInstance().limitInputLength(12));
-                textInputNumber.setHint(getString(R.string.aadhaar_no));
+                editTextCardNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editTextCardNumber.setFilters(Helper.getInstance().limitInputLength(12));
+                field2Hint = getString(R.string.aadhaar_no);
                 break;
-            case FireBaseHelper.ROOT_PAN:
+            case NewFireBaseHelper.ROOT_PAN:
 
-                inputNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), (source, start, end, dest, dstart, dend) -> {
+                editTextCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), (source, start, end, dest, dstart, dend) -> {
                     if (source.equals("")) { // for backspace
                         return source;
                     }
@@ -169,16 +170,17 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     }
                     return "";
                 }});
-                textInputNumber.setHint(getString(R.string.pan_no));
+                field2Hint = getString(R.string.pan_no);
                 break;
             default:
                 linearLayout.setVisibility(View.GONE);
-                textInputNumber.setHint(getString(R.string.applicant_name));
+                field2Hint = getString(R.string.applicant_name);
                 break;
-        }
 
-        inputPCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
-        inputNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_card_black_24dp, 0, 0, 0);
+        }
+        textInputLayoutCardNumber.setHint(field2Hint);
+        editTextIdentifier.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        editTextCardNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_card_black_24dp, 0, 0, 0);
 
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_pan_aadhar);
         try {
@@ -192,16 +194,16 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             e.printStackTrace();
         }
 
+        firebaseImageURLs = new ArrayList<>();
 
-        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(), Helper.getInstance().getStateListJK());
+        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(),
+                CircleDataProvider.getInstance().getActiveCircleData());
         spinnerCircle.setAdapter(statesAdapter);
 
         buttonUpload.setOnClickListener(v -> {
             if (checkInputBeforeSubmission())
                 showConfirmSubmissionDialog();
         });
-
-        firebaseImageURLs = new ArrayList<>();
     }
 
     private void showImageChooser() {
@@ -241,39 +243,39 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         items = new ArrayList<>();
         items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
         items.add(new FABMenuItem(1, getString(R.string.remove_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
-        if (root.equals(FireBaseHelper.ROOT_ADHAAR))
+        if (root.equals(NewFireBaseHelper.ROOT_ADHAAR))
             items.add(new FABMenuItem(2, getString(R.string.scan_adhaar), AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
 
     }
 
     private boolean checkInputBeforeSubmission() {
-        pensionerCode = inputPCode.getText().toString();
-        number = inputNumber.getText().toString();
+        pensionerIdentifier = editTextIdentifier.getText().toString();
+        cardNumber = editTextCardNumber.getText().toString();
         state = (State) spinnerCircle.getSelectedItem();
         //If Pensioner code is empty
-        if (pensionerCode.trim().length() != 15 && hint.equals(getString(R.string.p_code))) {
-            inputPCode.setError(getString(R.string.invalid_p_code));
-            inputPCode.requestFocus();
+        if (pensionerIdentifier.trim().length() != 15 && identifierHint.equals(getString(R.string.p_code))) {
+            editTextIdentifier.setError(getString(R.string.invalid_p_code));
+            editTextIdentifier.requestFocus();
             return false;
-        } else if (pensionerCode.trim().isEmpty() && hint.equals(getString(R.string.hr_num))) {
-            inputPCode.setError(getString(R.string.invalid_hr_num));
-            inputPCode.requestFocus();
+        } else if (pensionerIdentifier.trim().isEmpty() && identifierHint.equals(getString(R.string.hr_num))) {
+            editTextIdentifier.setError(getString(R.string.invalid_hr_num));
+            editTextIdentifier.requestFocus();
             return false;
         }
         //If Aadhar Number is not complete
-        else if ((root.equals(FireBaseHelper.ROOT_ADHAAR)) && (number.length() != 12)) {
-            inputNumber.setError(getString(R.string.invalid_aadhaar));
-            inputNumber.requestFocus();
+        else if ((root.equals(NewFireBaseHelper.ROOT_ADHAAR)) && (cardNumber.length() != 12)) {
+            editTextCardNumber.setError(getString(R.string.invalid_aadhaar));
+            editTextCardNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
-        else if ((root.equals(FireBaseHelper.ROOT_PAN)) && (number.length() != 10)) {
-            inputNumber.setError(getString(R.string.invalid_pan));
-            inputNumber.requestFocus();
+        else if ((root.equals(NewFireBaseHelper.ROOT_PAN)) && (cardNumber.length() != 10)) {
+            editTextCardNumber.setError(getString(R.string.invalid_pan));
+            editTextCardNumber.requestFocus();
             return false;
-        } else if (number.isEmpty()) {
-            inputNumber.setError(getString(R.string.invalid_name));
-            inputNumber.requestFocus();
+        } else if (cardNumber.isEmpty()) {
+            editTextCardNumber.setError(getString(R.string.invalid_name));
+            editTextCardNumber.requestFocus();
             return false;
         }
         //if no file selected
@@ -299,8 +301,10 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
-                if (!Helper.versionChecked) {
-                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                if (Helper.versionChecked) {
+                    doSubmissionOnInternetAvailable();
+                } else {
+                    ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
@@ -311,22 +315,19 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Helper.getInstance().showMaintenanceDialog(getActivity());
                         }
-                    });
-                } else
-                    doSubmissionOnInternetAvailable();
+                    };
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(null,
+                            valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                }
+
             }
 
             @Override
             public void OnConnectionNotAvailable() {
-                showNoInternetConnectionDialog();
+                Helper.getInstance().noInternetDialog(mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
-    }
-
-    private void showNoInternetConnectionDialog() {
-        Helper.getInstance().showErrorDialog(getString(R.string.no_internet),
-                getString(R.string.update_information), getActivity());
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -345,50 +346,36 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void loadValues(View v) {
 
-        TextView pensionerHeading = v.findViewById(R.id.textview_pensioner_code_confirm);
-        pensionerHeading.setText(hint);
+        TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
+        TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
+        TextView heading = v.findViewById(R.id.textview_confirm2);
+        TextView value = v.findViewById(R.id.textview_confirm2_value);
+        TextView circle = v.findViewById(R.id.textview_confirm4_value);
 
-        TextView pensionerValue = v.findViewById(R.id.textview_pensioner_code_confirm_value);
-        pensionerValue.setText(pensionerCode);
-
-        TextView circle = v.findViewById(R.id.textview_circle_value);
+        pensionerHeading.setText(identifierHint);
+        pensionerValue.setText(pensionerIdentifier);
+        heading.setText(field2Hint);
+        value.setText(cardNumber);
         circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
                 .equals("hi") ? state.getHi() : state.getEn());
-        TextView heading = v.findViewById(R.id.textview_mobile_no);
-        String text;
-        switch (root) {
-            case FireBaseHelper.ROOT_PAN:
-                text = getString(R.string.pan_no);
-                break;
-            case FireBaseHelper.ROOT_ADHAAR:
-                text = getString(R.string.aadhaar_no);
-                break;
-            default:
-                text = getString(R.string.applicant_name);
-                break;
-        }
-        heading.setText(text);
 
-        TextView value = v.findViewById(R.id.textview_mobile_value);
-        value.setText(number);
-        v.findViewById(R.id.textview_email).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_email_value).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_grievance_type).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_grievance_value).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_grievance_by).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_submitted_by_value).setVisibility(View.GONE);
-        v.findViewById(R.id.detail).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_grievance_details).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm3).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm3_value).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm5).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm5_value).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm6).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm6_value).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm7).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm7_value).setVisibility(View.GONE);
     }
 
     private void uploadDataToFirebase() {
         progressDialog.show();
-        PanAdhaar panAadharModel = new PanAdhaar(hint, pensionerCode, number);
+        PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
 
-        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(panAadharModel,
+        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), panAadharModel,
                 root,
-                state.getCode(),
-                pensionerCode);
+                pensionerIdentifier);
 
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
@@ -401,12 +388,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void uploadAllImagesToFirebase() {
-        UploadTask uploadTask = FireBaseHelper.getInstance(getContext()).uploadFiles(
+        UploadTask uploadTask = NewFireBaseHelper.getInstance().uploadFiles(state.getCode(),
                 imageModel,
                 false,
                 0,
                 root,
-                pensionerCode);
+                pensionerIdentifier);
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(exception -> {
@@ -431,7 +418,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         try {
             DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
                     firebaseImageURLs,
-                    pensionerCode,
+                    pensionerIdentifier,
                     DataSubmissionAndMail.SUBMIT,
                     volleyHelper);
         } catch (Exception e) {
@@ -446,14 +433,14 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
         Map<String, String> params = new HashMap<>();
 
-        params.put("pensionerCode", pensionerCode);
+        params.put("pensionerIdentifier", pensionerIdentifier);
         params.put("folder", DataSubmissionAndMail.SUBMIT);
-        params.put("personType", hint);
+        params.put("personType", identifierHint);
         params.put("updateType", root);
-        params.put("fieldName", textInputNumber.getHint().toString());
-        params.put("value", inputNumber.getText().toString());
+        params.put("fieldName", textInputLayoutCardNumber.getHint().toString());
+        params.put("value", editTextCardNumber.getText().toString());
 
-        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerIdentifier, volleyHelper, url);
     }
 
     public void scanNow() {
@@ -494,7 +481,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 } else if (eventType == XmlPullParser.START_TAG && AADHAAR_DATA_TAG.equals(parser.getName())) {
                     // extract data from tag
                     String uid = parser.getAttributeValue(null, AADHAR_UID_ATTR);
-                    inputNumber.setText(uid);
+                    editTextCardNumber.setText(uid);
 
                 } else if (eventType == XmlPullParser.END_TAG) {
                     CustomLogger.getInstance().logDebug("AadharPan End tag " + parser.getName());
@@ -604,7 +591,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                     isUploadedToServer = isUploadedToFirebase = false;
 
                     Helper.getInstance().showFancyAlertDialog(getActivity(),
-                            String.format(getString(R.string.updation_success), pensionerCode),
+                            String.format(getString(R.string.updation_success), pensionerIdentifier),
                             getString(R.string.update_information),
                             getString(R.string.ok), () -> {
                             },

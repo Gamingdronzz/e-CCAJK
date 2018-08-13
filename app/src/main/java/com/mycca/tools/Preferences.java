@@ -25,8 +25,7 @@ public class Preferences {
     public static final String PREF_CONTACTS = "contacts";
     public static final String PREF_OFFICE_ADDRESS = "officeAddress";
     public static final String PREF_OFFICE_LABEL = "officeLabel";
-    public static final String PREF_OFFICE_LAT = "officeLatitude";
-    public static final String PREF_OFFICE_LONG = "officeLongitude";
+    public static final String PREF_OFFICE_COORDINATES = "coordinates";
     public static final String PREF_WEBSITE = "website";
 
     //    public static final String PREF_HELP_HOME = "home";
@@ -111,7 +110,7 @@ public class Preferences {
         Gson gson = new Gson();
         String json = getSharedPreferences(context).getString(PREF_STATE_DATA, null);
         if (json == null) {
-            return new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true);
+            return new State("05", "Jammu & Kashmir", "Jammu & Kashmir",  "ccajk@nic.in", true);
         }
         return gson.fromJson(json, State.class);
     }
@@ -126,8 +125,7 @@ public class Preferences {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.remove(PREF_OFFICE_ADDRESS);
         editor.remove(PREF_OFFICE_LABEL);
-        editor.remove(PREF_OFFICE_LAT);
-        editor.remove(PREF_OFFICE_LONG);
+        editor.remove(PREF_OFFICE_COORDINATES);
         editor.remove(PREF_WEBSITE);
         editor.apply();
     }

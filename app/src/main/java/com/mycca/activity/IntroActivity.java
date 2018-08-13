@@ -86,8 +86,7 @@ public class IntroActivity extends OnboarderActivity {
 
     @Override
     public void onFinishButtonPressed() {
-        //Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
-        Preferences.getInstance().setTutorialPrefs(this);
+        Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
         nextActions();
     }
 

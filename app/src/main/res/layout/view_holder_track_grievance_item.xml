@@ -46,7 +46,7 @@
         android:paddingTop="@dimen/padding_small">
 
         <TextView
-            android:id="@+id/textview_grievance_type"
+            android:id="@+id/textview_confirm5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/padding_large"

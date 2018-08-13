@@ -52,10 +52,14 @@ import com.mycca.fragments.PanAdhaarUploadFragment;
 import com.mycca.fragments.SettingsFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
 import com.mycca.fragments.UpdateGrievanceFragment;
+import com.mycca.listeners.DownloadCompleteListener;
+import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.StaffModel;
+import com.mycca.providers.CircleDataProvider;
+import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -107,7 +111,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                showFragment(getString(R.string.settings), new SettingsFragment(), null);
+                if (checkCircleDataAvailable())
+                    showFragment(getString(R.string.settings), new SettingsFragment(), null);
                 break;
             case R.id.action_invite:
                 showInviteIntent();
@@ -133,16 +138,24 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_visit_cca_website:
                 fragment = new BrowserFragment();
                 bundle = new Bundle();
-                bundle.putString("url", "http://ccajk.gov.in");
-                showFragment(getString(R.string.cca_jk), fragment, bundle);
+                String url = Preferences.getInstance().getStringPref(this, Preferences.PREF_WEBSITE);
+                if (url == null)
+                    Helper.getInstance().showMessage(this, getString(R.string.website_n_a),
+                            getString(R.string.app_name), FancyAlertDialogType.WARNING);
+                else {
+                    bundle.putString("url", url);
+                    showFragment(getString(R.string.cca_jk), fragment, bundle);
+                }
                 break;
             case R.id.navmenu_pension:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
                 bundle.putString("Type", getString(R.string.pension));
                 title = getString(R.string.pension_grievance);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_gpf:
@@ -150,57 +163,71 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Type", getString(R.string.gpf));
                 title = getString(R.string.gpf_grievance);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
+                bundle.putString("Root", NewFireBaseHelper.ROOT_ADHAAR);
                 title = getString(R.string.upload_aadhaar);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.ROOT_PAN);
+                bundle.putString("Root", NewFireBaseHelper.ROOT_PAN);
                 title = getString(R.string.upload_pan);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_life_certificate:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
+                bundle.putString("Root", NewFireBaseHelper.ROOT_LIFE);
                 title = getString(R.string.upload_life_certificate);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_remarriage_certificate:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
+                bundle.putString("Root", NewFireBaseHelper.ROOT_RE_MARRIAGE);
                 title = getString(R.string.upload_re_marriage_certificate);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_reemployment:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
+                bundle.putString("Root", NewFireBaseHelper.ROOT_RE_EMPLOYMENT);
                 title = getString(R.string.upload_re_employment_certificate);
-                if (checkCurrentUser()) {
-                    showFragment(title, fragment, bundle);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, bundle);
+                    }
                 }
                 break;
             case R.id.navmenu_tracking:
-                Helper.getInstance().showTrackWindow(this, frameLayout);
+                if (checkCircleDataAvailable()) {
+                    Helper.getInstance().showTrackWindow(this, frameLayout);
+                }
                 break;
             case R.id.navmenu_contact_us:
                 showFragment(getString(R.string.contact_us), new ContactUsFragment(), null);
@@ -211,37 +238,39 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
+                bundle.putString("Locator", NewFireBaseHelper.ROOT_WIFI);
                 showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_gp_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", FireBaseHelper.ROOT_GP);
+                bundle.putString("Locator", NewFireBaseHelper.ROOT_GP);
                 showFragment(getString(R.string.gp), new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
                 fragment = new LoginFragment();
                 title = getString(R.string.cca_jk);
-                showFragment(title, fragment, null);
+                if (checkCircleDataAvailable()) {
+                    showFragment(title, fragment, null);
+                }
                 break;
             case R.id.navmenu_update_grievances:
                 fragment = new UpdateGrievanceFragment();
                 title = getString(R.string.update_grievances);
-                if (checkCurrentUser()) {
+                if (checkUserAuthenticated()) {
                     showFragment(title, fragment, null);
                 }
                 break;
             case R.id.navmenu_inspection:
                 fragment = new InspectionFragment();
                 title = getString(R.string.inspection);
-                if (checkCurrentUser()) {
+                if (checkUserAuthenticated()) {
                     showFragment(title, fragment, null);
                 }
                 break;
             case R.id.navmenu_add_news:
                 fragment = new AddNewsFragment();
                 title = getString(R.string.add_news);
-                if (checkCurrentUser()) {
+                if (checkUserAuthenticated()) {
                     showFragment(title, fragment, null);
                 }
                 break;
@@ -257,7 +286,7 @@ public class MainActivity extends AppCompatActivity
     public void ShowHotSpotLocations() {
         CustomLogger.getInstance().logDebug("ShowHotSpotLocations");
         Bundle bundle = new Bundle();
-        bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
+        bundle.putString("Locator", NewFireBaseHelper.ROOT_WIFI);
         showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
     }
 
@@ -270,7 +299,7 @@ public class MainActivity extends AppCompatActivity
         frameLayout = findViewById(R.id.fragmentPlaceholder);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        progressDialog = Helper.getInstance().getProgressWindow(this, getString(R.string.signing_in));
+        progressDialog = new ProgressDialog(this);
     }
 
     private void init() {
@@ -304,7 +333,7 @@ public class MainActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
 
-        mAuth = FireBaseHelper.getInstance(this).mAuth;
+        mAuth = NewFireBaseHelper.getInstance().getAuth();
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -324,12 +353,78 @@ public class MainActivity extends AppCompatActivity
         navigationView.setCheckedItem(R.id.navmenu_home);
     }
 
-    private boolean checkCurrentUser() {
+    private boolean checkUserAuthenticated() {
         if (mAuth.getCurrentUser() == null) {
             showAuthDialog(true);
             return false;
         } else
             return true;
+    }
+
+    private boolean checkCircleDataAvailable() {
+        if (Preferences.getInstance().getIntPref(this, Preferences.PREF_CIRCLES) == -1) {
+            Helper.getInstance().showFancyAlertDialog(this,
+                    getString(R.string.data_missing_message),
+                    getString(R.string.data_missing_title),
+                    getString(R.string.download), this::downloadData,
+                    getString(android.R.string.cancel), () -> {
+                    },
+                    FancyAlertDialogType.WARNING);
+            return false;
+        } else
+            return true;
+    }
+
+    private void downloadData() {
+        progressDialog.setMessage(getString(R.string.please_wait));
+
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+
+                progressDialog.show();
+                CircleDataProvider.getInstance().getCircleDataFromFireBase(getApplicationContext(), new DownloadCompleteListener() {
+                    @Override
+                    public void onDownloadSuccess() {
+
+                      if(Preferences.getInstance().getStringPref(MainActivity.this,Preferences.PREF_OFFICE_LABEL)==null){
+                          NewFireBaseHelper.getInstance().getOtherStateData(MainActivity.this, new DownloadCompleteListener() {
+                              @Override
+                              public void onDownloadSuccess() {
+                                  downloadComplete();
+                              }
+
+                              @Override
+                              public void onDownloadFailure() {
+                                  downloadComplete();
+                              }
+                          });
+                      }
+                      else
+                          downloadComplete();
+                    }
+
+                    @Override
+                    public void onDownloadFailure() {
+                        progressDialog.dismiss();
+                        Helper.getInstance().showMessage(MainActivity.this, getString(R.string.try_again),
+                                getString(R.string.download_fail_title), FancyAlertDialogType.ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().noInternetDialog(MainActivity.this);
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void downloadComplete(){
+        progressDialog.dismiss();
+        Helper.getInstance().showMessage(MainActivity.this, getString(R.string.download_success_message),
+                getString(R.string.download_success_title), FancyAlertDialogType.ERROR);
     }
 
     public void showAuthDialog(boolean skipped) {
@@ -381,7 +476,7 @@ public class MainActivity extends AppCompatActivity
                     if (task.isSuccessful()) {
 
                         CustomLogger.getInstance().logDebug("signInWithCredential:success");
-                        FireBaseHelper.getInstance(MainActivity.this).addTokenOnFirebaseDatabase();
+                        NewFireBaseHelper.getInstance().addTokenOnFireBase();
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
                                 getString(R.string.sign_in_success),
                                 getString(R.string.ok),
@@ -437,9 +532,9 @@ public class MainActivity extends AppCompatActivity
         Helper.getInstance().showFancyAlertDialog(this,
                 "",
                 getString(R.string.exit),
-                getString(android.R.string.yes),
+                getString(R.string.ok),
                 this::finish,
-                getString(android.R.string.no),
+                getString(R.string.cancel),
                 () -> {
                 },
                 FancyAlertDialogType.WARNING);
@@ -596,6 +691,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                progressDialog.setMessage(getString(R.string.signing_in));
                 progressDialog.show();
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 CustomLogger.getInstance().logDebug("signed in: " + account.getEmail());

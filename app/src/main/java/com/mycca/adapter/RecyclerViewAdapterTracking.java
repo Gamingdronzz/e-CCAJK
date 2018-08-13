@@ -85,7 +85,7 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
             super(itemView);
             textViewRefNo = itemView.findViewById(R.id.textview_ref_no);
 
-            textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
+            textViewGrievanceType = itemView.findViewById(R.id.textview_confirm5);
             textViewGrievanceType.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_grievance, 0, 0, 0);
 
             textViewDate = itemView.findViewById(R.id.textview_date);
