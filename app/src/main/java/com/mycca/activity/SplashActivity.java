@@ -100,6 +100,8 @@ public class SplashActivity extends AppCompatActivity {
                         CustomLogger.getInstance().logDebug(TAG + " Connection Not Available");
                         if(Preferences.getInstance().getIntPref(SplashActivity.this,Preferences.PREF_CIRCLES)!= -1)
                             CircleDataProvider.getInstance().setCircleData(false,getApplicationContext());
+                        else
+                            CustomLogger.getInstance().logDebug("Circle data not available");
                         LoadNextActivity();
                     }
                 });

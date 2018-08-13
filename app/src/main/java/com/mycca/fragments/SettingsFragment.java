@@ -101,9 +101,9 @@ public class SettingsFragment extends Fragment {
 
         String lang;
         if(Preferences.getInstance().getStringPref(activity,Preferences.PREF_LANGUAGE).equals("hi"))
-            lang= Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getHi();
+            lang= Preferences.getInstance().getStatePref(activity).getHi();
         else
-            lang=Preferences.getInstance().getStatePref(activity, Preferences.PREF_STATE_DATA).getEn();
+            lang=Preferences.getInstance().getStatePref(activity).getEn();
         tvCurrentState.setText(String.format(getString(R.string.current_state), lang));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
@@ -141,7 +141,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        if (Preferences.getInstance().getStaffPref(activity, Preferences.PREF_STAFF_DATA) != null)
+        if (Preferences.getInstance().getStaffPref(activity) != null)
             layoutChangePwd.setVisibility(View.VISIBLE);
         else
             layoutChangePwd.setVisibility(View.GONE);

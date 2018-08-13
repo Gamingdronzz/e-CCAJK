@@ -43,7 +43,7 @@ public class CircleDataProvider {
         if (checkForNew) {
             getCircleDataFromFireBase(context);
         } else {
-            IOHelper.getInstance().readFromFile("Circle Data", context, true,
+            IOHelper.getInstance().readFromFile(context, "Circle Data", null,
                     jsonObject -> {
                         Gson gson = new Gson();
                         Type collectionType = new TypeToken<ArrayList<State>>() {
@@ -103,8 +103,8 @@ public class CircleDataProvider {
                 setArrayLists(stateArrayList, activeCount);
                 Helper.dataChecked = true;
 
-                IOHelper.getInstance().writeToFile(new Gson().toJson(stateArrayList),
-                        "Circle Data", true, context,
+                IOHelper.getInstance().writeToFile(context, new Gson().toJson(stateArrayList),
+                        "Circle Data", null,
                         success -> {
                             if (success) {
                                 CustomLogger.getInstance().logDebug("Write circle Success..Setting Preferences = " + stateCount + "," + activeCount);

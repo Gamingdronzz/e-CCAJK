@@ -129,10 +129,10 @@ public class AddNewsFragment extends Fragment {
                     new Date(),
                     textTitle.getText().toString(),
                     textDescription.getText().toString(),
-                    Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState(),
+                    Preferences.getInstance().getStaffPref(getContext()).getState(),
                     null,
-                    Preferences.getInstance().getStaffPref(getContext(),Preferences.PREF_STAFF_DATA).getId(),
-                    Preferences.getInstance().getStaffPref(getContext(),Preferences.PREF_STAFF_DATA).getId());
+                    Preferences.getInstance().getStaffPref(getContext()).getId(),
+                    Preferences.getInstance().getStaffPref(getContext()).getId());
             task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
                     newsModel,
                     FireBaseHelper.ROOT_NEWS);
@@ -142,7 +142,7 @@ public class AddNewsFragment extends Fragment {
             HashMap<String, Object> result = new HashMap<>();
             result.put("headline", newsModel.getHeadline().trim());
             result.put("description", newsModel.getDescription().trim());
-            result.put("updatedBy",Preferences.getInstance().getStaffPref(getContext(),Preferences.PREF_STAFF_DATA).getId());
+            result.put("updatedBy",Preferences.getInstance().getStaffPref(getContext()).getId());
             result.put("dateUpdated",new Date());
             task = FireBaseHelper.getInstance(getContext()).updateData(newsModel.getKey(), result, FireBaseHelper.ROOT_NEWS);
 

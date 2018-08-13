@@ -546,7 +546,7 @@ public class Helper {
 
         ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, AppController.getResourses().getString(R.string.please_wait));
         progressDialog.show();
-        String staffId = Preferences.getInstance().getStaffPref(context, Preferences.PREF_STAFF_DATA).getId();
+        String staffId = Preferences.getInstance().getStaffPref(context).getId();
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override

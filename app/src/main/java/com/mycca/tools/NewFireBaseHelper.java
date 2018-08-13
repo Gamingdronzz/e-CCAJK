@@ -30,25 +30,13 @@ public class NewFireBaseHelper {
     private static NewFireBaseHelper mInstance;
 
     public final static String ROOT_FCM_KEY = "FCMServerKey";
-    public final static String ROOT_APP_VERSION = "Latest Version";
     public final static String ROOT_SLIDER = "Slider Data";
     public final static String ROOT_CIRCLE_DATA = "Circle Data";
     public final static String ROOT_CIRCLE_COUNT = "Circle Data Count";
     public final static String ROOT_ACTIVE_COUNT = "Circle Data Count Active";
-    public final static String ROOT_NEWS = "Latest News";
-    public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_TOKEN = "Tokens";
-    public final static String ROOT_GRIEVANCES = "Grievances";
-    public final static String ROOT_REF_COUNT = "Reference Number Count";
-    public final static String ROOT_REF_NUMBERS = "Reference Numbers";
-    public final static String ROOT_ADHAAR = "Aadhaar";
-    public final static String ROOT_PAN = "Pan";
-    public final static String ROOT_LIFE = "Life Certificate";
-    public final static String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
-    public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
     public final static String ROOT_STAFF = "Staff Data";
     public final static String ROOT_PASSWORD = "password";
-    public final static String ROOT_INSPECTION = "Inspection";
     public final static String ROOT_WEBSITE = "Website";
     public final static String ROOT_OFFICE_ADDRESS = "Office Address";
     public final static String ROOT_OFFICE_COORDINATES = "Office Coordinates";
@@ -58,8 +46,31 @@ public class NewFireBaseHelper {
     public final static String ROOT_WIFI_COUNT = "Wifi Locations Count";
     public final static String ROOT_GP = "GP Locations";
     public final static String ROOT_GP_COUNT = "GP Locations Count";
+    public final static String ROOT_SUGGESTIONS = "Suggestions";
     public final static String ROOT_BY_USER = "By User";
     public final static String ROOT_BY_STAFF = "By Staff";
+    public final static String ROOT_ADHAAR = "Aadhaar";
+    public final static String ROOT_PAN = "Pan";
+    public final static String ROOT_LIFE = "Life Certificate";
+    public final static String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
+    public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
+    public final static String ROOT_INSPECTION = "Inspection";
+
+    /*Release*/
+    public final static String ROOT_APP_VERSION = "Latest Version";
+    public final static String ROOT_NEWS = "Latest News";
+    public final static String ROOT_GRIEVANCES = "Grievances";
+    public final static String ROOT_REF_COUNT = "Reference Number Count";
+    public final static String ROOT_REF_NUMBERS = "Reference Numbers";
+
+    /*Debug*/
+//    public final static String ROOT_APP_VERSION = "Debug Latest Version";
+//    public final static String ROOT_NEWS = "Debug Latest News";
+//    public final static String ROOT_GRIEVANCES = "Debug Grievances";
+//    public final static String ROOT_REF_COUNT = "Debug Reference Number Count";
+//    public final static String ROOT_REF_NUMBERS = "Debug Reference Numbers";
+
+
 
     public NewFireBaseHelper() {
         mInstance = this;
@@ -214,7 +225,7 @@ public class NewFireBaseHelper {
 
     public void getOtherStateData(Context context, PreferencesSetListener preferencesSetListener) {
 
-        State state = Preferences.getInstance().getStatePref(context, Preferences.PREF_STATE_DATA);
+        State state = Preferences.getInstance().getStatePref(context);
         CustomLogger.getInstance().logDebug("Getting other data");
 
         ValueEventListener valueEventListener3 = new ValueEventListener() {

@@ -95,7 +95,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
                 delete.setOnClickListener(this.deleteNewsListener);
                 edit.setOnClickListener(this.editNewsListener);
 
-                if ((Preferences.getInstance().getStaffPref(context, Preferences.PREF_STAFF_DATA) == null)
+                if ((Preferences.getInstance().getStaffPref(context) == null)
                         || (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)) {
                     edit.setVisibility(View.GONE);
                     delete.setVisibility(View.GONE);

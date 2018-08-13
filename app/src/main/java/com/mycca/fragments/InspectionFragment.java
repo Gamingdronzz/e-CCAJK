@@ -334,7 +334,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         final String key = locName.replaceAll("\\s", "-") + "-" +
                 Helper.getInstance().formatDate(date, Helper.DateFormat.DD_MM_YYYY);
 
-        staffModel = Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA);
+        staffModel = Preferences.getInstance().getStaffPref(getContext());
         InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
 
         Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(

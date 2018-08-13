@@ -52,6 +52,9 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+
+    /* --------------------basic preferences---------------------- */
+
     public String getStringPref(Context context, String key) {
         String s = getSharedPreferences(context).getString(key, null);
         if (s == null) {
@@ -87,6 +90,9 @@ public class Preferences {
         editor.apply();
     }
 
+
+    /* --------------------custom preferences---------------------- */
+
     public void setModelPref(Context context, String key, Object value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         Gson gson = new Gson();
@@ -95,21 +101,20 @@ public class Preferences {
         editor.apply();
     }
 
-    public StaffModel getStaffPref(Context context, String key) {
+    public StaffModel getStaffPref(Context context) {
         Gson gson = new Gson();
-        String json = getSharedPreferences(context).getString(key, null);
+        String json = getSharedPreferences(context).getString(PREF_STAFF_DATA, null);
         return gson.fromJson(json, StaffModel.class);
     }
 
-    public State getStatePref(Context context, String key) {
+    public State getStatePref(Context context) {
         Gson gson = new Gson();
-        String json = getSharedPreferences(context).getString(key, null);
+        String json = getSharedPreferences(context).getString(PREF_STATE_DATA, null);
         if (json == null) {
             return new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "cca-jammukashmir", "ccajk@nic.in", true);
         }
         return gson.fromJson(json, State.class);
     }
-
 
     public void clearStaffPrefs(Context context) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();

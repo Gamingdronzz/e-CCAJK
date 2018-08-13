@@ -160,12 +160,12 @@ public class TabUnderProcess extends Fragment {
         FireBaseHelper.getInstance(getActivity()).getDataFromFirebase(childEventListener,
                 FireBaseHelper.VERSIONED,
                 FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
+                Preferences.getInstance().getStaffPref(getContext()).getState());
         FireBaseHelper.getInstance(getActivity()).getDataFromFirebase(valueEventListener,
                 FireBaseHelper.VERSIONED,
                 false,
                 FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(getContext(), Preferences.PREF_STAFF_DATA).getState());
+                Preferences.getInstance().getStaffPref(getContext()).getState());
     }
 
     @Override

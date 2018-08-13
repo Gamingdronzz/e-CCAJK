@@ -28,23 +28,22 @@ public class IOHelper {
         }
     }
 
-    public void writeToFile(Object jsonObject, String filename, boolean general, Context context, WriteFileCompletionListener writeFileCompletionListener) {
-        new WriteFile().execute(context, filename, jsonObject, general, writeFileCompletionListener);
+    public void writeToFile(Context context, Object jsonObject, String filename, String folder, WriteFileCompletionListener writeFileCompletionListener) {
+        new WriteFile().execute(context, filename, jsonObject, folder, writeFileCompletionListener);
     }
 
-    public void readFromFile(String filename, Context context, boolean general, ReadFileCompletionListener readFileCompletionListener) {
-        new ReadFile().execute(context, filename, readFileCompletionListener, general);
+    public void readFromFile(Context context, String filename, String folder, ReadFileCompletionListener readFileCompletionListener) {
+        new ReadFile().execute(context, filename, readFileCompletionListener, folder);
     }
 
-    private static File getFile(boolean general, Context context, String filename) {
+    private static File getFile(Context context, String filename, String folder) {
         File file;
-        if (!general) {
-            String folder = Preferences.getInstance().getStatePref(context, Preferences.PREF_STATE_DATA).getCode();
+        if (folder != null) {
             File path = new File(context.getFilesDir(), folder);
             path.mkdirs();
             file = new File(path, filename + ".json");
         } else
-            file = new File(context.getFilesDir(),filename + ".json");
+            file = new File(context.getFilesDir(), filename + ".json");
         return file;
     }
 
@@ -57,10 +56,10 @@ public class IOHelper {
             Context context = (Context) objects[0];
             String filename = (String) objects[1];
             String jsonObject = (String) objects[2];
-            boolean general = (boolean) objects[3];
+            String folder = (String) objects[3];
             writeFileCompletionListener = (WriteFileCompletionListener) objects[4];
 
-            File file = getFile(general, context, filename);
+            File file = getFile(context, filename, folder);
             try {
                 FileOutputStream outputStream = new FileOutputStream(file);
                 outputStream.write(jsonObject.getBytes());
@@ -91,15 +90,15 @@ public class IOHelper {
             Context context = (Context) objects[0];
             String filename = (String) objects[1];
             readFileCompletionListener = (ReadFileCompletionListener) objects[2];
-            boolean general = (boolean) objects[3];
+            String folder = (String) objects[3];
 
-            File file = getFile(general, context, filename);
+            File file = getFile(context, filename, folder);
             try {
                 CustomLogger.getInstance().logDebug("readFromFile: file path = " + file.getPath());
                 FileInputStream fin = new FileInputStream(file);
                 int size = fin.available();
                 byte[] buffer = new byte[size];
-                int i = fin.read(buffer);
+                fin.read(buffer);
                 fin.close();
                 return new String(buffer);
             } catch (IOException e) {

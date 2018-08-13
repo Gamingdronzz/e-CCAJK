@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setViewElevation(Gravity.START, 30);
         actionBarDrawerToggle.syncState();
 
-        staffModel = Preferences.getInstance().getStaffPref(this, Preferences.PREF_STAFF_DATA);
+        staffModel = Preferences.getInstance().getStaffPref(this);
         if (staffModel != null) {
             if (staffModel.getType() == TYPE_ADMIN)
                 ManageNavigationView(true, true);
