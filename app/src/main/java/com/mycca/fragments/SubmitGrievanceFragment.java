@@ -13,7 +13,6 @@ import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,11 +52,12 @@ import com.mycca.models.GrievanceModel;
 import com.mycca.models.GrievanceType;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.State;
+import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -72,11 +72,11 @@ import java.util.Map;
 
 public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    View view, menuClearForm;
-    TextInputEditText inputPensionerCode, inputEmail, inputMobile, inputDetails;
+    View view;
+    TextInputEditText editTextPensionerIdentifier, editTextEmail, editTextMobile, editTextDetails;
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
-    Spinner spinnerInputType, spinnerInputSubmittedBy, spinnerCircle;
+    Spinner spinnerGrievance, spinnerSubmittedBy, spinnerCircle;
     Button submit;
     FloatingActionButton buttonChooseFile;
     TextView textViewSelectedFileCount;
@@ -89,8 +89,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     int counterServerImages = 0;
     int counterFirebaseImages;
     String TAG = "Grievance";
-    String hint = "Pensioner Code";
-    String code, type, email, refNo, prefix;
+    String identifierHint = "Pensioner Code";
+    String code, mobile, email, details, type, submittedBy, refNo, prefix;
 
     MainActivity mainActivity;
     GrievanceType grievanceType;
@@ -123,107 +123,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         return view;
     }
 
-
-    private void bindViews() {
-
-        volleyHelper = new VolleyHelper(this, getContext());
-        recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
-
-        radioLayout = view.findViewById(R.id.layout_radio);
-        textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
-        inputPensionerCode = view.findViewById(R.id.et_grievance_pcode);
-        inputMobile = view.findViewById(R.id.et_grievance_mobile);
-        inputEmail = view.findViewById(R.id.et_grievance_email);
-        spinnerCircle = view.findViewById(R.id.spinner_grievance_circle);
-        spinnerInputType = view.findViewById(R.id.spinner_type);
-        inputDetails = view.findViewById(R.id.et_grievance_details);
-        spinnerInputSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
-        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_file_count_grievance);
-
-        radioGroup = view.findViewById(R.id.groupNumberType);
-        buttonChooseFile = view.findViewById(R.id.button_attach);
-        submit = view.findViewById(R.id.button_submit);
-    }
-
-    private void init() {
-
-        mainActivity = (MainActivity) getActivity();
-        progressDialog = Helper.getInstance().getProgressWindow(mainActivity, getString(R.string.please_wait));
-        initItems();
-
-        inputPensionerCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
-        inputEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
-        inputMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
-        inputDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
-
-        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(), Helper.getInstance().getStateListJK());
-        spinnerCircle.setAdapter(statesAdapter);
-
-        if (type.equals(getString(R.string.pension))) {
-            list = Helper.getInstance().getPensionGrievanceTypeList();
-            radioLayout.setVisibility(View.GONE);
-            prefix = "PEN";
-        } else {
-            radioLayout.setVisibility(View.VISIBLE);
-            list = Helper.getInstance().getGPFGrievanceTypeList();
-            prefix = "GPF";
-        }
-        GenericSpinnerAdapter<GrievanceType> adapter = new GenericSpinnerAdapter<>(getContext(), list);
-        spinnerInputType.setAdapter(adapter);
-
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.radioButtonPensioner:
-                    hint = getString(R.string.p_code);
-                    inputPensionerCode.setFilters(Helper.getInstance().limitInputLength(15));
-                    break;
-                case R.id.radioButtonHR:
-                    hint = getString(R.string.hr_num);
-                    inputPensionerCode.setFilters(new InputFilter[]{});
-                    break;
-                case R.id.radioButtonStaff:
-                    hint = getString(R.string.staff_num);
-                    inputPensionerCode.setFilters(new InputFilter[]{});
-            }
-            inputPensionerCode.setText("");
-            inputPensionerCode.setError(null);
-            textInputIdentifier.setHint(hint);
-        });
-
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mainActivity, R.layout.simple_spinner, submittedByList(type));
-        spinnerInputSubmittedBy.setAdapter(arrayAdapter1);
-
-
-        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_submit_grievance);
-        try {
-            if (buttonChooseFile != null && fabMenu != null) {
-                //attach menu to fab
-                mainActivity.setFabRevealMenu(fabMenu);
-                //set menu items from arraylist
-                fabMenu.setMenuItems(items);
-                //attach menu to fab
-                fabMenu.bindAnchorView(buttonChooseFile);
-                //set menu item selection
-                fabMenu.setOnFABMenuSelectedListener(this);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        submit.setOnClickListener(v -> {
-            if (checkInputBeforeSubmission())
-                showConfirmSubmissionDialog();
-        });
-
-        selectedImageModelArrayList = new ArrayList<>();
-        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
-        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        firebaseImageURLs = new ArrayList<>();
-        setSelectedFileCount(0);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -241,16 +140,422 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_form, menu);
-        //        new Handler().post(() -> {
-//
-//            menuClearForm = view.findViewById(R.id.action_clear_form_data);
-//            // SOME OF YOUR TASK AFTER GETTING VIEW REFERENCE
-//            if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE)) {
-//                showTutorial();
-//                Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_GRIEVANCE, false);
-//            }
-//        });
+    }
 
+    private void bindViews() {
+
+        volleyHelper = new VolleyHelper(this, getContext());
+        recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images);
+        radioLayout = view.findViewById(R.id.layout_radio);
+        textInputIdentifier = view.findViewById(R.id.text_input_pensioner_code);
+        editTextPensionerIdentifier = view.findViewById(R.id.et_grievance_pcode);
+        editTextMobile = view.findViewById(R.id.et_grievance_mobile);
+        editTextEmail = view.findViewById(R.id.et_grievance_email);
+        spinnerCircle = view.findViewById(R.id.spinner_grievance_circle);
+        spinnerGrievance = view.findViewById(R.id.spinner_type);
+        editTextDetails = view.findViewById(R.id.et_grievance_details);
+        spinnerSubmittedBy = view.findViewById(R.id.spinner_submitted_by);
+        textViewSelectedFileCount = view.findViewById(R.id.textview_selected_file_count_grievance);
+        radioGroup = view.findViewById(R.id.radio_group_identifier_type);
+        buttonChooseFile = view.findViewById(R.id.button_attach);
+        submit = view.findViewById(R.id.button_submit);
+    }
+
+    private void init() {
+
+        mainActivity = (MainActivity) getActivity();
+        progressDialog = new ProgressDialog(mainActivity != null ? mainActivity : getActivity());
+        initItems();
+
+        editTextPensionerIdentifier.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
+        editTextEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_black_24dp, 0, 0, 0);
+        editTextMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
+        editTextDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
+
+        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(),
+                CircleDataProvider.getInstance().getActiveCircleData());
+        spinnerCircle.setAdapter(statesAdapter);
+
+        if (type.equals(getString(R.string.pension))) {
+            list = Helper.getInstance().getPensionGrievanceTypeList();
+            radioLayout.setVisibility(View.GONE);
+            prefix = "PEN";
+        } else {
+            radioLayout.setVisibility(View.VISIBLE);
+            list = Helper.getInstance().getGPFGrievanceTypeList();
+            prefix = "GPF";
+        }
+        GenericSpinnerAdapter<GrievanceType> adapter = new GenericSpinnerAdapter<>(getContext(), list);
+        spinnerGrievance.setAdapter(adapter);
+
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radioButtonPensioner:
+                    identifierHint = getString(R.string.p_code);
+                    editTextPensionerIdentifier.setFilters(Helper.getInstance().limitInputLength(15));
+                    break;
+                case R.id.radioButtonHR:
+                    identifierHint = getString(R.string.hr_num);
+                    editTextPensionerIdentifier.setFilters(new InputFilter[]{});
+                    break;
+                case R.id.radioButtonStaff:
+                    identifierHint = getString(R.string.staff_num);
+                    editTextPensionerIdentifier.setFilters(new InputFilter[]{});
+            }
+            editTextPensionerIdentifier.setText("");
+            editTextPensionerIdentifier.setError(null);
+            textInputIdentifier.setHint(identifierHint);
+        });
+
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mainActivity, R.layout.simple_spinner, submittedByList(type));
+        spinnerSubmittedBy.setAdapter(arrayAdapter1);
+
+
+        final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_submit_grievance);
+        try {
+            if (buttonChooseFile != null && fabMenu != null) {
+                mainActivity.setFabRevealMenu(fabMenu);
+                fabMenu.setMenuItems(items);   //set menu items from arraylist
+                fabMenu.bindAnchorView(buttonChooseFile);//attach menu to fab
+                fabMenu.setOnFABMenuSelectedListener(this); //set menu item selection
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        submit.setOnClickListener(v -> {
+            if(isUploadedToFirebase || isUploadedToServer)
+                doSubmission();
+            else if (checkInputBeforeSubmission())
+                showConfirmSubmissionDialog();
+        });
+
+        selectedImageModelArrayList = new ArrayList<>();
+        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
+        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
+        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        firebaseImageURLs = new ArrayList<>();
+        setSelectedFileCount(0);
+    }
+
+    private void initItems() {
+        items = new ArrayList<>();
+        items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem(1, getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+    }
+
+    private String[] submittedByList(String type) {
+        String first;
+        if (type.equals(getString(R.string.pension)))
+            first = getString(R.string.pensioner);
+        else
+            first = getString(R.string.gpf_benificiary);
+        return new String[]{first, getString(R.string.other)};
+    }
+
+    public void setSelectedFileCount(int count) {
+        textViewSelectedFileCount.setText(String.format(getString(R.string.files_selected), String.valueOf(count)));
+    }
+
+    private void removeAllSelectedImages() {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+        setSelectedFileCount(0);
+    }
+
+    private boolean checkInputBeforeSubmission() {
+        code = editTextPensionerIdentifier.getText().toString();
+        mobile = editTextMobile.getText().toString();
+        email = editTextEmail.getText().toString();
+        details = editTextDetails.getText().toString();
+        submittedBy = (String) spinnerSubmittedBy.getSelectedItem();
+        state = (State) spinnerCircle.getSelectedItem();
+        grievanceType = (GrievanceType) spinnerGrievance.getSelectedItem();
+
+        if (code.length() != 15 && identifierHint.equals(getString(R.string.p_code))) {
+            editTextPensionerIdentifier.setError(getString(R.string.invalid_p_code));
+            editTextPensionerIdentifier.requestFocus();
+            return false;
+        } else if (code.trim().isEmpty() && identifierHint.equals(getString(R.string.hr_num))) {
+            editTextPensionerIdentifier.setError(getString(R.string.invalid_hr_num));
+            editTextPensionerIdentifier.requestFocus();
+            return false;
+        } else if (code.trim().isEmpty() && identifierHint.equals(getString(R.string.staff_num))) {
+            editTextPensionerIdentifier.setError(getString(R.string.invalid_staff_num));
+            editTextPensionerIdentifier.requestFocus();
+            return false;
+        } else if (mobile.length() < 10) {
+            editTextMobile.setError(getString(R.string.invalid_mobile));
+            editTextMobile.requestFocus();
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError(getString(R.string.invalid_email));
+            editTextEmail.requestFocus();
+            return false;
+        } else if (details.trim().isEmpty()) {
+            editTextDetails.setError(getString(R.string.empty_detail));
+            editTextDetails.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private void showConfirmSubmissionDialog() {
+        Helper.getInstance().hideKeyboardFrom(mainActivity);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
+        loadValues(v);
+        Helper.getInstance().getConfirmationDialog(mainActivity, v,
+                (dialog, which) -> doSubmission());
+    }
+
+    private void loadValues(View v) {
+        TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
+        TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
+        TextView mobNo = v.findViewById(R.id.textview_confirm2_value);
+        TextView emailValue = v.findViewById(R.id.textview_confirm3_value);
+        TextView circle = v.findViewById(R.id.textview_confirm4_value);
+        TextView grievance = v.findViewById(R.id.textview_confirm5_value);
+        TextView gr_by = v.findViewById(R.id.textview_confirm6_value);
+        TextView grievanceDetails = v.findViewById(R.id.textview_confirm7_value);
+
+        pensionerHeading.setText(identifierHint);
+        pensionerValue.setText(code);
+        mobNo.setText(mobile);
+        emailValue.setText(email);
+        grievanceDetails.setText(details.trim());
+        grievance.setText(grievanceType.getName());
+        gr_by.setText(spinnerSubmittedBy.getSelectedItem().toString());
+        circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
+                .equals("hi") ? state.getHi() : state.getEn());
+    }
+
+    private void doSubmission() {
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked);
+                if (Helper.versionChecked) {
+                    doSubmissionOnInternetAvailable();
+                } else {
+                    ValueEventListener valueEventListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
+                                doSubmissionOnInternetAvailable();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Helper.getInstance().showMaintenanceDialog(mainActivity);
+                        }
+                    };
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                }
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
+                Helper.getInstance().noInternetDialog(mainActivity);
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void doSubmissionOnInternetAvailable() {
+        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+                "Server = " + isUploadedToServer);
+        if (isUploadedToFirebase) {
+            if (isUploadedToServer) {
+                sendFinalMail();
+            } else {
+                uploadImagesToServer();
+            }
+        } else {
+            uploadDataToFirebase();
+        }
+    }
+
+    private void uploadDataToFirebase() {
+
+        Transaction.Handler handler = new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                CustomLogger.getInstance().logDebug("doTransaction: " + mutableData.getValue());
+                long count = 0;
+                if (mutableData.getValue() != null) {
+                    count = (long) mutableData.getValue();
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(++count);
+                CustomLogger.getInstance().logDebug("count= " + count);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                if (b) {
+                    refNo = prefix + "-" + state.getCode() + "-" + dataSnapshot.getValue();
+                    uploadData();
+                } else {
+                    progressDialog.dismiss();
+                    CustomLogger.getInstance().logDebug("database error: " +
+                            "Details" + databaseError.getDetails() +
+                            "Message = " + databaseError.getMessage() +
+                            "Code = " + databaseError.getCode() +
+                            "Snapshot = " + dataSnapshot.toString());
+                    Helper.getInstance().showMaintenanceDialog(mainActivity);
+                }
+            }
+
+        };
+        NewFireBaseHelper.getInstance().getReferenceNumber(handler, state.getCode());
+    }
+
+    private void uploadData() {
+        grievanceModel = new GrievanceModel(identifierHint, code, email, mobile, details, submittedBy,
+                NewFireBaseHelper.getInstance().getAuth().getUid(),
+                refNo, new Date(), 0,
+                grievanceType.getId(),
+                selectedImageModelArrayList.size());
+
+        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(),
+                grievanceModel,
+                NewFireBaseHelper.ROOT_GRIEVANCES,
+                code, String.valueOf(grievanceType.getId()));
+
+        task.addOnCompleteListener(task1 -> {
+            if (task1.isSuccessful()) {
+                uploadAllImagesToFirebase();
+            } else {
+                progressDialog.dismiss();
+                Helper.getInstance().showMaintenanceDialog(mainActivity);
+                CustomLogger.getInstance().logDebug("uploadData: Failed Message= " + task1.getException().getMessage());
+                CustomLogger.getInstance().logDebug("uploadData: Failed Cause= " + task1.getException().getCause());
+                CustomLogger.getInstance().logDebug("uploadData: Failed Stack= " + task1.getException().getStackTrace());
+                CustomLogger.getInstance().logDebug("uploadData: Failed Result= " + task1.getResult());
+            }
+        });
+
+    }
+
+    private void uploadAllImagesToFirebase() {
+        if (selectedImageModelArrayList.size() > 0) {
+
+            progressDialog.setMessage(getString(R.string.uploading_files));
+            counterFirebaseImages = 0;
+            counterUpload = 0;
+
+            for (SelectedImageModel imageModel : selectedImageModelArrayList) {
+                final UploadTask uploadTask = NewFireBaseHelper.getInstance().uploadFiles(state.getCode(),
+                        imageModel,
+                        true,
+                        counterFirebaseImages++,
+                        NewFireBaseHelper.ROOT_GRIEVANCES,
+                        code,
+                        String.valueOf(grievanceType.getId()),
+                        NewFireBaseHelper.ROOT_BY_USER);
+
+                if (uploadTask != null) {
+                    uploadTask.addOnFailureListener(
+                            exception -> {
+                                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
+                                showError(getString(R.string.file_upload_error), getString(R.string.file_not_uploaded));
+                            })
+                            .addOnSuccessListener(
+                                    taskSnapshot -> {
+                                        // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                                            firebaseImageURLs.add(uri);
+                                            progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(selectedImageModelArrayList.size())));
+                                            CustomLogger.getInstance().logDebug("onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
+                                            if (counterUpload == selectedImageModelArrayList.size()) {
+                                                isUploadedToFirebase = true;
+                                                doSubmission();
+                                            }
+                                        });
+                                    });
+                }
+            }
+        } else {
+            isUploadedToFirebase = true;
+            doSubmission();
+        }
+    }
+
+    public void showError(String title, String message) {
+        progressDialog.dismiss();
+        Helper.getInstance().showErrorDialog(message, title, mainActivity);
+    }
+
+    private void uploadImagesToServer() {
+
+        counterServerImages = 0;
+        progressDialog.setMessage(getString(R.string.processing));
+        int totalFilesToAttach = selectedImageModelArrayList.size();
+
+        if (totalFilesToAttach != 0) {
+            DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                    code,
+                    DataSubmissionAndMail.SUBMIT,
+                    volleyHelper);
+        } else {
+            isUploadedToServer = true;
+            doSubmission();
+        }
+    }
+
+    private void sendFinalMail() {
+
+        progressDialog.setMessage(getString(R.string.almost_done));
+        String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php/";
+        Map<String, String> params = new HashMap<>();
+
+        params.put("pensionerCode", code);
+        params.put("personType", identifierHint);
+        params.put("refNo", refNo);
+        params.put("folder", DataSubmissionAndMail.SUBMIT);
+        params.put("pensionerMobileNumber", mobile);
+        params.put("pensionerEmail", email);
+        params.put("grievanceType", type);
+        params.put("grievanceSubType", grievanceType.getName());
+        params.put("grievanceDetails", details);
+        params.put("grievanceSubmittedBy", submittedBy);
+        params.put("fileCount", selectedImageModelArrayList.size() + "");
+
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + code, volleyHelper, url);
+    }
+
+    private void setSubmissionSuccessForGrievance() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("submissionSuccess", true);
+        NewFireBaseHelper.getInstance().updateData(state.getCode(),
+                String.valueOf(grievanceType.getId()),
+                hashMap,
+                NewFireBaseHelper.ROOT_GRIEVANCES,
+                code
+        );
+
+        NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), code, NewFireBaseHelper.ROOT_REF_NUMBERS, refNo);
+    }
+
+    private void clearFormData() {
+        editTextPensionerIdentifier.setText("");
+        editTextMobile.setText("");
+        editTextEmail.setText("");
+        spinnerGrievance.setSelection(0);
+        spinnerSubmittedBy.setSelection(0);
+        spinnerCircle.setSelection(0);
+        editTextDetails.setText("");
+        removeAllSelectedImages();
     }
 
     private void showImageChooser() {
@@ -291,336 +596,16 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     }
 
-    private String[] submittedByList(String type) {
-        String first;
-        if (type.equals(getString(R.string.pension)))
-            first = getString(R.string.pensioner);
-        else
-            first = getString(R.string.gpf_benificiary);
-        return new String[]{first, getString(R.string.other)};
-    }
-
-    public void setSelectedFileCount(int count) {
-        textViewSelectedFileCount.setText(String.format(getString(R.string.files_selected), String.valueOf(count)));
-    }
-
-    private void removeAllSelectedImages() {
-        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
-            return;
+    @Override
+    public void onMenuItemSelected(View view, int id) {
+        switch (items.get(id).getId()) {
+            case 0:
+                showImageChooser();
+                break;
+            case 1:
+                removeAllSelectedImages();
+                break;
         }
-        selectedImageModelArrayList.clear();
-        adapterSelectedImages.notifyDataSetChanged();
-        setSelectedFileCount(0);
-    }
-
-    private boolean checkInputBeforeSubmission() {
-        code = inputPensionerCode.getText().toString();
-        email = inputEmail.getText().toString();
-        state = (State) spinnerCircle.getSelectedItem();
-        grievanceType = (GrievanceType) spinnerInputType.getSelectedItem();
-
-        if (code.length() != 15 && hint.equals(getString(R.string.p_code))) {
-            inputPensionerCode.setError(getString(R.string.invalid_p_code));
-            inputPensionerCode.requestFocus();
-            return false;
-        } else if (code.trim().isEmpty() && hint.equals(getString(R.string.hr_num))) {
-            inputPensionerCode.setError(getString(R.string.invalid_hr_num));
-            inputPensionerCode.requestFocus();
-            return false;
-        } else if (code.trim().isEmpty() && hint.equals(getString(R.string.staff_num))) {
-            inputPensionerCode.setError(getString(R.string.invalid_staff_num));
-            inputPensionerCode.requestFocus();
-            return false;
-        } else if (inputMobile.getText().toString().length() < 10) {
-            inputMobile.setError(getString(R.string.invalid_mobile));
-            inputMobile.requestFocus();
-            return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            inputEmail.setError(getString(R.string.invalid_email));
-            inputEmail.requestFocus();
-            return false;
-        } else if (inputDetails.getText().toString().trim().isEmpty()) {
-            inputDetails.setError(getString(R.string.empty_detail));
-            inputDetails.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private void showConfirmSubmissionDialog() {
-        Helper.getInstance().hideKeyboardFrom(mainActivity);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
-        loadValues(v);
-        Helper.getInstance().getConfirmationDialog(mainActivity, v,
-                (dialog, which) -> doSubmission());
-    }
-
-    private void loadValues(View v) {
-        TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
-        pensionerHeading.setText(hint);
-
-        TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
-        pensionerValue.setText(code);
-
-        TextView mobNo = v.findViewById(R.id.textview_confirm2_value);
-        mobNo.setText(inputMobile.getText());
-        TextView emailValue = v.findViewById(R.id.textview_confirm3_value);
-        emailValue.setText(email);
-        TextView circle = v.findViewById(R.id.textview_confirm4_value);
-        circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
-                .equals("hi") ? state.getHi() : state.getEn());
-        TextView grievance = v.findViewById(R.id.textview_confirm5_value);
-        grievance.setText(grievanceType.getName());
-        TextView gr_by = v.findViewById(R.id.textview_confirm6_value);
-        gr_by.setText(spinnerInputSubmittedBy.getSelectedItem().toString());
-        TextView details = v.findViewById(R.id.textview_confirm7_value);
-        details.setText(inputDetails.getText().toString().trim());
-    }
-
-    private void doSubmission() {
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.show();
-        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-            @Override
-            public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked);
-                if (!Helper.versionChecked) {
-                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
-                                doSubmissionOnInternetAvailable();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(mainActivity);
-                        }
-                    });
-                } else
-                    doSubmissionOnInternetAvailable();
-            }
-
-            @Override
-            public void OnConnectionNotAvailable() {
-                progressDialog.dismiss();
-                Helper.getInstance().showErrorDialog(
-                        getString(R.string.connect_to_internet),
-                        getString(R.string.no_internet),
-                        mainActivity);
-            }
-        });
-        connectionUtility.checkConnectionAvailability();
-    }
-
-    private void doSubmissionOnInternetAvailable() {
-        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer);
-        if (isUploadedToFirebase) {
-            if (isUploadedToServer) {
-                sendFinalMail();
-            } else {
-                uploadImagesToServer();
-            }
-        } else {
-            uploadDataToFirebase();
-        }
-    }
-
-    private void uploadDataToFirebase() {
-        progressDialog.setMessage(getString(R.string.processing));
-
-        Transaction.Handler handler = new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                CustomLogger.getInstance().logDebug("doTransaction: " + mutableData.getValue());
-                long count = 0;
-                if (mutableData.getValue() != null) {
-                    count = (long) mutableData.getValue();
-                }
-
-                // Set value and report transaction success
-                mutableData.setValue(++count);
-                CustomLogger.getInstance().logDebug("count= " + count);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                if (b) {
-                    refNo = prefix + "-" + state.getCode() + "-" + dataSnapshot.getValue();
-                    uploadData();
-                } else {
-                    progressDialog.dismiss();
-                    CustomLogger.getInstance().logDebug("database error: " +
-                            "Details" + databaseError.getDetails() +
-                            "Message = " + databaseError.getMessage() +
-                            "Code = " + databaseError.getCode() +
-                            "Snapshot = " + dataSnapshot.toString());
-                    Helper.getInstance().showMaintenanceDialog(mainActivity);
-                }
-            }
-
-        };
-        FireBaseHelper.getInstance(mainActivity).getReferenceNumber(handler, state.getCode());
-    }
-
-    private void uploadData() {
-        grievanceModel = new GrievanceModel(code,
-                grievanceType.getId(),
-                refNo,
-                inputDetails.getText().toString().trim(),
-                email,
-                inputMobile.getText().toString(),
-                spinnerInputSubmittedBy.getSelectedItem().toString(),
-                0, state.getCode(),
-                FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser().getUid(),
-                new Date());
-
-        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                grievanceModel,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                grievanceModel.getState(),
-                grievanceModel.getIdentifierNumber(),
-                String.valueOf(grievanceType.getId()));
-
-        task.addOnCompleteListener(task1 -> {
-            if (task1.isSuccessful()) {
-                uploadAllImagesToFirebase();
-            } else {
-                progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(mainActivity);
-                Log.d(TAG, "uploadData: Failed Message= " + task1.getException().getMessage());
-                Log.d(TAG, "uploadData: Failed Cause= " + task1.getException().getCause());
-                Log.d(TAG, "uploadData: Failed Stack= " + task1.getException().getStackTrace());
-                Log.d(TAG, "uploadData: Failed Result= " + task1.getResult());
-            }
-        });
-
-    }
-
-    private void uploadAllImagesToFirebase() {
-        if (selectedImageModelArrayList.size() > 0) {
-
-            progressDialog.setMessage(getString(R.string.uploading_files));
-            counterFirebaseImages = 0;
-            counterUpload = 0;
-
-            for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-                final UploadTask uploadTask = FireBaseHelper.getInstance(getContext()).uploadFiles(
-                        imageModel,
-                        true,
-                        counterFirebaseImages++,
-                        FireBaseHelper.ROOT_GRIEVANCES,
-                        code,
-                        String.valueOf(grievanceType.getId()),
-                        FireBaseHelper.ROOT_BY_USER);
-
-                if (uploadTask != null) {
-                    uploadTask.addOnFailureListener(
-                            exception -> {
-                                Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), type, mainActivity);
-                                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
-                                progressDialog.dismiss();
-                            })
-                            .addOnSuccessListener(
-                                    taskSnapshot -> {
-                                        // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-                                            firebaseImageURLs.add(uri);
-                                            progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(selectedImageModelArrayList.size())));
-                                            CustomLogger.getInstance().logDebug("onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
-                                            if (counterUpload == selectedImageModelArrayList.size()) {
-                                                isUploadedToFirebase = true;
-                                                doSubmission();
-                                            }
-                                        });
-                                    });
-                }
-            }
-        } else {
-            isUploadedToFirebase = true;
-            doSubmission();
-        }
-    }
-
-    private void uploadImagesToServer() {
-
-        counterServerImages = 0;
-        progressDialog.setMessage(getString(R.string.processing));
-        int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
-
-        if (totalFilesToAttach != 0) {
-            try {
-                DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
-                        firebaseImageURLs,
-                        code,
-                        DataSubmissionAndMail.SUBMIT,
-                        volleyHelper);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
-            }
-        } else {
-            isUploadedToServer = true;
-            doSubmission();
-        }
-    }
-
-    private void sendFinalMail() {
-
-        progressDialog.setMessage(getString(R.string.almost_done));
-        String url = Helper.getInstance().getAPIUrl() + "sendGrievanceEmail.php/";
-        Map<String, String> params = new HashMap<>();
-        String pensionerCode = inputPensionerCode.getText().toString();
-
-        params.put("pensionerCode", pensionerCode);
-        params.put("personType", hint);
-        params.put("folder", DataSubmissionAndMail.SUBMIT);
-        params.put("pensionerMobileNumber", inputMobile.getText().toString());
-        params.put("pensionerEmail", inputEmail.getText().toString());
-        params.put("grievanceType", type);
-        params.put("refNo", refNo);
-        params.put("grievanceSubType", ((GrievanceType) spinnerInputType.getSelectedItem()).getName());
-        params.put("grievanceDetails", inputDetails.getText().toString());
-        params.put("grievanceSubmittedBy", spinnerInputSubmittedBy.getSelectedItem().toString());
-        params.put("fileCount", selectedImageModelArrayList.size() + "");
-
-        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
-    }
-
-    private void setSubmissionSuccessForGrievance() {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("submissionSuccess", true);
-        FireBaseHelper.getInstance(mainActivity).updateData(
-                String.valueOf(grievanceType.getId()),
-                hashMap,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                grievanceModel.getState(),
-                grievanceModel.getIdentifierNumber()
-        );
-
-        FireBaseHelper.getInstance(mainActivity).uploadDataToFirebase(grievanceModel.getIdentifierNumber(),
-                FireBaseHelper.ROOT_REF_NUMBERS,
-                refNo);
-    }
-
-    private void clearFormData() {
-        inputPensionerCode.setText("");
-        inputMobile.setText("");
-        inputEmail.setText("");
-        spinnerInputType.setSelection(0);
-        spinnerInputSubmittedBy.setSelection(0);
-        inputDetails.setText("");
-        removeAllSelectedImages();
-    }
-
-    private void initItems() {
-        items = new ArrayList<>();
-        items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem(1, getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
     @Override
@@ -637,33 +622,26 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                         doSubmission();
                     }
                 } else {
-                    progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), type, mainActivity);
+                    showError(getString(R.string.file_upload_error), getString(R.string.file_not_uploaded));
                     CustomLogger.getInstance().logDebug("onResponse: Image = " + counterServerImages + " failed");
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
 
                     progressDialog.dismiss();
-                    Helper.getInstance().showFancyAlertDialog(mainActivity,
+                    Helper.getInstance().showMessage(mainActivity,
                             String.format(getString(R.string.grievance_submission_success), type, grievanceType.getName(), refNo),
-                            type,
-                            getString(R.string.ok), () -> {
-                            },
-                            null, null,
+                            getString(R.string.success),
                             FancyAlertDialogType.SUCCESS);
                     isUploadedToServer = isUploadedToFirebase = false;
                     setSubmissionSuccessForGrievance();
                 } else {
-                    progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog(getString(R.string.grievance_submission_fail), type, mainActivity);
-
+                    showError(getString(R.string.failure), getString(R.string.grievance_submission_fail));
                 }
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
-            Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
-            progressDialog.dismiss();
+            showError(getString(R.string.some_error), getString(R.string.try_again));
         }
     }
 
@@ -694,22 +672,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     @Override
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
-        progressDialog.dismiss();
-        Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
+        showError(getString(R.string.some_error), getString(R.string.try_again));
     }
 
 
-    @Override
-    public void onMenuItemSelected(View view, int id) {
-        switch (items.get(id).getId()) {
-            case 0:
-                showImageChooser();
-                break;
-            case 1:
-                removeAllSelectedImages();
-                break;
-        }
-    }
 }
 
 //    private void showTutorial() {

@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mycca.R;
 import com.mycca.models.NewsModel;
@@ -29,7 +28,7 @@ public class NewsActivity extends AppCompatActivity {
         String json = getIntent().getStringExtra("News");
         try {
 
-            NewsModel newsModel = new Gson().fromJson(json, NewsModel.class);
+            NewsModel newsModel = (NewsModel) Helper.getInstance().getObjectFromJson(json, NewsModel.class);
             CustomLogger.getInstance().logDebug(json);
 
             headline.setText(newsModel.getHeadline());

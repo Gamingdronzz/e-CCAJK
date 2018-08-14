@@ -15,11 +15,10 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.DatabaseReference;
+import com.mycca.R;
 import com.mycca.adapter.RecyclerViewAdapterNews;
 import com.mycca.models.NewsModel;
-import com.mycca.R;
-import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.NewFireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -62,9 +61,8 @@ public class LatestNewsFragment extends Fragment {
     }
 
     private void getNews() {
-        DatabaseReference dbref = FireBaseHelper.getInstance(getContext()).versionedDbRef;
-        dbref.child(FireBaseHelper.ROOT_NEWS)
-                .addChildEventListener(new ChildEventListener() {
+
+        NewFireBaseHelper.getInstance().getDataFromFireBase(null,new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
@@ -118,6 +116,6 @@ public class LatestNewsFragment extends Fragment {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
+                },NewFireBaseHelper.ROOT_NEWS);
     }
 }

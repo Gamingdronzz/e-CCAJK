@@ -47,7 +47,7 @@ import com.mycca.custom.FancyAlertDialog.Icon;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.models.GrievanceType;
-import com.mycca.models.State;
+import com.mycca.models.StaffModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +56,7 @@ import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class Helper {
@@ -65,13 +66,6 @@ public class Helper {
     private String hint = "Pensioner Code";
     public static boolean versionChecked = false;
     public static boolean dataChecked = false;
-
-    private State stateList[] = {
-            new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true),
-            new State("100", "Haryana", "Haryana", null, false)
-    };
-
-    private State stateListJK[] = {new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true)};
 
     private GrievanceType pensionGrievanceTypes[] = {
             new GrievanceType(AppController.getResourses().getString(R.string.change_of_pda), 0),
@@ -126,25 +120,6 @@ public class Helper {
             return "http://jknccdirectorate.com/api/cca/release/v1/";
         }
 
-    }
-
-    public State[] getStateList() {
-        return stateList;
-    }
-
-    public State[] getStateListJK() {
-        return stateListJK;
-    }
-
-    public String getStateName(String stateId, Context context) {
-        for (State s : stateList) {
-            if (s.getCode().equals(stateId))
-                if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
-                    return s.getHi();
-                else
-                    return s.getEn();
-        }
-        return null;
     }
 
     public GrievanceType[] getPensionGrievanceTypeList() {
@@ -391,7 +366,7 @@ public class Helper {
                     showGooglePlayStore(activity);
                     activity.finish();
                 },
-                AppController.getResourses().getString(android.R.string.cancel),
+                AppController.getResourses().getString(R.string.cancel),
                 activity::finish,
                 FancyAlertDialogType.WARNING);
 
@@ -448,7 +423,7 @@ public class Helper {
                 AppController.getResourses().getString(R.string.reload_app),
                 AppController.getResourses().getString(R.string.reload),
                 positiveButtonOnClickListener,
-                AppController.getResourses().getString(android.R.string.cancel),
+                AppController.getResourses().getString(R.string.cancel),
                 () -> {
                 },
                 FancyAlertDialogType.WARNING);
@@ -470,7 +445,7 @@ public class Helper {
         editText = popupView.findViewById(R.id.edittext_pcode);
         textInputLayout = popupView.findViewById(R.id.text_input_layout);
 
-        RadioGroup radioGroup = popupView.findViewById(R.id.groupNumberType);
+        RadioGroup radioGroup = popupView.findViewById(R.id.radio_group_identifier_type);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioButtonPensioner:
@@ -540,7 +515,7 @@ public class Helper {
                 Toast.makeText(context, AppController.getResourses().getString(R.string.empty_new), Toast.LENGTH_LONG).show();
             } else if (!confirmPwd.equals(newPwd)) {
                 Toast.makeText(context, AppController.getResourses().getString(R.string.new_not_matching), Toast.LENGTH_LONG).show();
-            } else if (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)
+            } else if (NewFireBaseHelper.getInstance().getAuth().getCurrentUser() == null)
                 showErrorDialog(AppController.getResourses().getString(R.string.try_after_signin),
                         AppController.getResourses().getString(R.string.google_signin_first), context);
             else {
@@ -561,14 +536,19 @@ public class Helper {
 
         ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, AppController.getResourses().getString(R.string.please_wait));
         progressDialog.show();
-        String staffId = Preferences.getInstance().getStaffPref(context).getId();
+        StaffModel staff = Preferences.getInstance().getStaffPref(context);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 CustomLogger.getInstance().logDebug("onDataChange: " + dataSnapshot.getValue());
                 if (dataSnapshot.getValue() != null && dataSnapshot.getValue().equals(oldPwd)) {
-                    Task<Void> task = FireBaseHelper.getInstance(context).updatePassword(newPwd, staffId);
+                    HashMap<String,Object> hashMap=new HashMap<>();
+                    hashMap.put(NewFireBaseHelper.ROOT_PASSWORD,newPwd);
+                    Task<Void> task = NewFireBaseHelper.getInstance().updateData(null,
+                            staff.getId(),
+                            hashMap,
+                            NewFireBaseHelper.ROOT_STAFF);
                     task.addOnCompleteListener(task1 -> {
                         progressDialog.dismiss();
                         if (task1.isSuccessful()) {
@@ -593,9 +573,8 @@ public class Helper {
                 showMaintenanceDialog(context);
             }
         };
-        FireBaseHelper.getInstance(context).getDataFromFirebase(valueEventListener,
-                FireBaseHelper.NONVERSIONED, true,
-                FireBaseHelper.ROOT_STAFF, staffId, FireBaseHelper.ROOT_PASSWORD);
+        NewFireBaseHelper.getInstance().getDataFromFireBase(staff.getState(),valueEventListener,
+                 true, NewFireBaseHelper.ROOT_STAFF, staff.getId(), NewFireBaseHelper.ROOT_PASSWORD);
     }
 
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {

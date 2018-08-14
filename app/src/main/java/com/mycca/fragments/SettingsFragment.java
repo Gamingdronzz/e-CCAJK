@@ -16,13 +16,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.mycca.R;
 import com.mycca.activity.IntroActivity;
 import com.mycca.activity.MainActivity;
 import com.mycca.activity.StateSettingActivity;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.R;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.Locale;
@@ -49,7 +49,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        mAuth = FireBaseHelper.getInstance(getContext()).mAuth;
+        mAuth = NewFireBaseHelper.getInstance().getAuth();
         bindViews(view);
         init();
         return view;
@@ -99,12 +99,12 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        String lang;
+        String stateName;
         if(Preferences.getInstance().getStringPref(activity,Preferences.PREF_LANGUAGE).equals("hi"))
-            lang= Preferences.getInstance().getStatePref(activity).getHi();
+            stateName= Preferences.getInstance().getStatePref(activity).getHi();
         else
-            lang=Preferences.getInstance().getStatePref(activity).getEn();
-        tvCurrentState.setText(String.format(getString(R.string.current_state), lang));
+            stateName=Preferences.getInstance().getStatePref(activity).getEn();
+        tvCurrentState.setText(String.format(getString(R.string.current_state), stateName));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);
@@ -132,7 +132,7 @@ public class SettingsFragment extends Fragment {
                             }, null, null, FancyAlertDialogType.SUCCESS);
                             manageSignOut();
                         },
-                        getString(android.R.string.cancel),
+                        getString(R.string.cancel),
                         () -> {
                         },
                         FancyAlertDialogType.WARNING);
@@ -152,7 +152,7 @@ public class SettingsFragment extends Fragment {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.dialog_select_language, (ViewGroup) getView(), false);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setView(v)
-                .setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> {
+                .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.select), (dialog, which) -> {
                     final RadioGroup rg = v.findViewById(R.id.radio_group_language);

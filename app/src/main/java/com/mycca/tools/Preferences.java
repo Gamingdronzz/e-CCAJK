@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
 import com.mycca.models.StaffModel;
 import com.mycca.models.State;
 
@@ -94,25 +93,21 @@ public class Preferences {
 
     public void setModelPref(Context context, String key, Object value) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(value);
-        editor.putString(key, json);
+        editor.putString(key, Helper.getInstance().getJsonFromObject(value));
         editor.apply();
     }
 
     public StaffModel getStaffPref(Context context) {
-        Gson gson = new Gson();
         String json = getSharedPreferences(context).getString(PREF_STAFF_DATA, null);
-        return gson.fromJson(json, StaffModel.class);
+        return (StaffModel) Helper.getInstance().getObjectFromJson(json, StaffModel.class);
     }
 
     public State getStatePref(Context context) {
-        Gson gson = new Gson();
         String json = getSharedPreferences(context).getString(PREF_STATE_DATA, null);
         if (json == null) {
             return new State("05", "Jammu & Kashmir", "Jammu & Kashmir",  "ccajk@nic.in", true);
         }
-        return gson.fromJson(json, State.class);
+        return (State) Helper.getInstance().getObjectFromJson(json, State.class);
     }
 
     public void clearStaffPrefs(Context context) {

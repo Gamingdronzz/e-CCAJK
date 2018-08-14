@@ -14,15 +14,6 @@ public class InspectionModel {
 
     public InspectionModel() { }
 
-    public InspectionModel(String staffId, String locationName, double latitude, double longitude, Date date) {
-
-        this.staffId = staffId;
-        this.locationName = locationName;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.date = date;
-    }
-
     public InspectionModel(String staffId, String staffEmail, String locationName, double latitude, double longitude, Date date) {
         this.staffId = staffId;
         this.staffEmail = staffEmail;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mycca.R;
-import com.mycca.tools.Helper;
+import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Preferences;
 
 
@@ -30,14 +30,14 @@ public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(@NonNull StatesViewHolder holder, int position) {
         if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
-            holder.textView.setText(Helper.getInstance().getStateList()[position].getHi());
+            holder.textView.setText(CircleDataProvider.getInstance().getCircleData()[position].getHi());
         else
-            holder.textView.setText(Helper.getInstance().getStateList()[position].getEn());
+            holder.textView.setText(CircleDataProvider.getInstance().getCircleData()[position].getEn());
     }
 
     @Override
     public int getItemCount() {
-        return Helper.getInstance().getStateList().length;
+        return CircleDataProvider.getInstance().getCircleData().length;
     }
 
     class StatesViewHolder extends RecyclerView.ViewHolder {

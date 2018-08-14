@@ -87,7 +87,7 @@ public class NewFireBaseHelper {
         return FirebaseAuth.getInstance();
     }
 
-    public DatabaseReference getDatabaseReference(String stateCode) {
+    private DatabaseReference getDatabaseReference(String stateCode) {
         DatabaseReference databaseReference;
         if (stateCode != null) {
             String url = "https://cca-" + stateCode + ".firebaseio.com/";
@@ -98,7 +98,7 @@ public class NewFireBaseHelper {
         return databaseReference;
     }
 
-    public StorageReference getStorageReference(String stateCode) {
+    private StorageReference getStorageReference(String stateCode) {
         StorageReference storageReference;
         if (stateCode != null) {
             String url = "gs://cca-" + stateCode;
@@ -171,6 +171,16 @@ public class NewFireBaseHelper {
             databaseReference = databaseReference.child(param);
         }
         task = databaseReference.child(key).updateChildren(hashMap);
+        return task;
+    }
+
+    public Task<Void> removeData(String stateCode, String... params){
+        DatabaseReference databaseReference = getDatabaseReference(stateCode);
+        Task<Void> task;
+        for (String param : params) {
+            databaseReference = databaseReference.child(param);
+        }
+        task = databaseReference.removeValue();
         return task;
     }
 
@@ -285,4 +295,5 @@ public class NewFireBaseHelper {
 
         NewFireBaseHelper.getInstance().getDataFromFireBase(state.getCode(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
     }
+
 }

@@ -21,8 +21,8 @@ import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.NewsModel;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.Date;
@@ -93,8 +93,10 @@ public class AddNewsFragment extends Fragment {
             @Override
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked= " + Helper.versionChecked);
-                if (!Helper.versionChecked) {
-                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                if (Helper.versionChecked) {
+                    addNewsToFireBase();
+                } else{
+                    ValueEventListener valueEventListener= new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
@@ -105,15 +107,17 @@ public class AddNewsFragment extends Fragment {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Helper.getInstance().showMaintenanceDialog(getActivity());
                         }
-                    });
-                } else
-                    addNewsToFireBase();
+                    };
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(null,valueEventListener,true,NewFireBaseHelper.ROOT_APP_VERSION);
+                }
+
+
             }
 
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showFancyAlertDialog(getActivity(), getString(R.string.connect_to_internet), getString(R.string.no_internet), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
+                Helper.getInstance().noInternetDialog(getActivity());
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -133,9 +137,8 @@ public class AddNewsFragment extends Fragment {
                     null,
                     Preferences.getInstance().getStaffPref(getContext()).getId(),
                     Preferences.getInstance().getStaffPref(getContext()).getId());
-            task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
-                    newsModel,
-                    FireBaseHelper.ROOT_NEWS);
+            task = NewFireBaseHelper.getInstance().pushOnFireBase(newsModel,
+                    NewFireBaseHelper.ROOT_NEWS);
         } else {
             newsModel.setHeadline(textTitle.getText().toString());
             newsModel.setDescription(textDescription.getText().toString());
@@ -144,18 +147,17 @@ public class AddNewsFragment extends Fragment {
             result.put("description", newsModel.getDescription().trim());
             result.put("updatedBy",Preferences.getInstance().getStaffPref(getContext()).getId());
             result.put("dateUpdated",new Date());
-            task = FireBaseHelper.getInstance(getContext()).updateData(newsModel.getKey(), result, FireBaseHelper.ROOT_NEWS);
+            task = NewFireBaseHelper.getInstance().updateData(null,newsModel.getKey(), result, NewFireBaseHelper.ROOT_NEWS);
 
         }
 
         task.addOnCompleteListener(task1 -> {
             progressDialog.dismiss();
             if (task1.isSuccessful()) {
-                Helper.getInstance().showFancyAlertDialog(getActivity(), "", getString(R.string.news_added), getString(R.string.ok), null, null, null, FancyAlertDialogType.SUCCESS);
+                Helper.getInstance().showMessage(getActivity(), "", getString(R.string.news_added),FancyAlertDialogType.SUCCESS);
                 if (json != null) json = null;
             } else {
                 Helper.getInstance().showMaintenanceDialog(getActivity());
-
             }
         });
     }

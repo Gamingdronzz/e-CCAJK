@@ -52,9 +52,9 @@ import com.mycca.models.StaffModel;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.MyLocationManager;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -95,6 +95,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     LocationCallback mLocationCallback;
     VolleyHelper volleyHelper;
     StaffModel staffModel;
+    InspectionModel inspectionModel;
 
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     ArrayList<Uri> firebaseImageURLs;
@@ -174,8 +175,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void initItems() {
         items = new ArrayList<>();
-        items.add(new FABMenuItem(0,getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem(1,getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+        items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem(1, getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -190,18 +191,18 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         if (task != null) {
             task.addOnCompleteListener(task1 -> {
                 if (task1.isSuccessful()) {
-                    CustomLogger.getInstance().logDebug( "Task is Successful\nRequesting Location Update");
+                    CustomLogger.getInstance().logDebug("Task is Successful\nRequesting Location Update");
                     myLocationManager.requestLocationUpdates();
 
                 } else {
-                    CustomLogger.getInstance().logDebug( "Task UnSuccessful");
+                    CustomLogger.getInstance().logDebug("Task UnSuccessful");
                     circularProgressButton.setProgress(0);
                 }
             });
-            task.addOnSuccessListener(mainActivity, locationSettingsResponse -> CustomLogger.getInstance().logDebug( "On Task Success"));
+            task.addOnSuccessListener(mainActivity, locationSettingsResponse -> CustomLogger.getInstance().logDebug("On Task Success"));
 
             task.addOnFailureListener(mainActivity, e -> {
-                CustomLogger.getInstance().logDebug( "On Task Failed");
+                CustomLogger.getInstance().logDebug("On Task Failed");
                 circularProgressButton.setProgress(0);
                 circularProgressButton.setIdleText(getString(R.string.location_not_found));
                 if (e instanceof ResolvableApiException) {
@@ -218,55 +219,9 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         longitude = location.getLongitude();
         myLocationManager.cleanUp();
 
-        CustomLogger.getInstance().logDebug( "getLocationCoordinates: " + latitude + "," + longitude);
+        CustomLogger.getInstance().logDebug("getLocationCoordinates: " + latitude + "," + longitude);
         circularProgressButton.setProgress(0);
         circularProgressButton.setIdleText(String.format(getString(R.string.current_location), String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude())));
-    }
-
-    private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, mainActivity, true, new ImagePicker.Callback() {
-            @Override
-            public void onPickImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug( "onPickImage: " + imageUri.getPath());
-            }
-
-            @Override
-            public void onCropImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug( "onCropImage: " + imageUri.getPath());
-                int currentPosition = selectedImageModelArrayList.size();
-                selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
-                adapterSelectedImages.notifyItemInserted(currentPosition);
-                adapterSelectedImages.notifyDataSetChanged();
-                setSelectedFileCount(currentPosition + 1);
-                CustomLogger.getInstance().logDebug( "onCropImage: Item inserted at " + currentPosition);
-
-            }
-
-            @Override
-            public void cropConfig(CropImage.ActivityBuilder builder) {
-                builder
-                        .setMultiTouchEnabled(false)
-                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(720, 1280);
-            }
-
-            @Override
-            public void onPermissionDenied(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-                CustomLogger.getInstance().logDebug( "onPermissionDenied: Permission not given to choose textViewMessage");
-            }
-        });
-
-    }
-
-    private void removeAllSelectedImages() {
-        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
-            return;
-        }
-        selectedImageModelArrayList.clear();
-        adapterSelectedImages.notifyDataSetChanged();
-        textViewSelectedFileCount.setText(getResources().getString(R.string.no_image));
     }
 
     private void doSubmission() {
@@ -281,12 +236,16 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             return;
         }
 
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug( "version checked =" + Helper.versionChecked);
-                if (!Helper.versionChecked) {
-                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked);
+                if (Helper.versionChecked) {
+                    doSubmissionOnInternetAvailable();
+                } else {
+                    ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
@@ -297,24 +256,24 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Helper.getInstance().showMaintenanceDialog(mainActivity);
                         }
-                    });
-                } else
-                    doSubmissionOnInternetAvailable();
+                    };
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                }
+
             }
 
             @Override
             public void OnConnectionNotAvailable() {
                 progressDialog.dismiss();
-                Helper.getInstance().showErrorDialog(getString(R.string.no_internet), getString(R.string.inspection), mainActivity);
+                Helper.getInstance().noInternetDialog(mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.show();
+
     }
 
     private void doSubmissionOnInternetAvailable() {
-        CustomLogger.getInstance().logDebug( "doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
         if (isUploadedToFirebase) {
             if (isUploadedToServer) {
@@ -335,12 +294,12 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 Helper.getInstance().formatDate(date, Helper.DateFormat.DD_MM_YYYY);
 
         staffModel = Preferences.getInstance().getStaffPref(getContext());
-        InspectionModel inspectionModel = new InspectionModel(staffModel.getId(), locName, latitude, longitude, new Date());
+        inspectionModel = new InspectionModel(staffModel.getId(),
+                staffModel.getEmail(), locName, latitude, longitude, new Date());
 
-        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(staffModel.getState(),
                 inspectionModel,
-                FireBaseHelper.ROOT_INSPECTION,
-                staffModel.getState(),
+                NewFireBaseHelper.ROOT_INSPECTION,
                 key);
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
@@ -359,23 +318,22 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         counterFirebaseImages = 0;
         counterUpload = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance(getContext()).uploadFiles(
+            uploadTask = NewFireBaseHelper.getInstance().uploadFiles(staffModel.getState(),
                     imageModel,
                     true,
                     counterFirebaseImages++,
-                    FireBaseHelper.ROOT_INSPECTION,
-                    staffModel.getState(),
+                    NewFireBaseHelper.ROOT_INSPECTION,
                     key);
 
             if (uploadTask != null) {
                 uploadTask.addOnFailureListener(exception -> {
-                    Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.inspection), mainActivity);
-                    CustomLogger.getInstance().logDebug( "onFailure: " + exception.getMessage());
-                    progressDialog.dismiss();
+                    showError(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error));
+                    CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
+
                 }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                     downloadUrl = uri;
                     firebaseImageURLs.add(downloadUrl);
-                    progressDialog.setMessage(String.format(getString(R.string.uploaded_file),String.valueOf(++counterUpload),String.valueOf(selectedImageModelArrayList.size())));
+                    progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(selectedImageModelArrayList.size())));
                     if (counterUpload == selectedImageModelArrayList.size()) {
                         isUploadedToFirebase = true;
                         doSubmission();
@@ -385,24 +343,22 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         }
     }
 
+    private void showError(String message, String title) {
+        progressDialog.dismiss();
+        Helper.getInstance().showErrorDialog(message, title, mainActivity);
+
+    }
+
     private void uploadImagesToServer() {
 
         counterServerImages = 0;
         progressDialog.setMessage(getString(R.string.processing));
         int totalFilesToAttach = selectedImageModelArrayList.size();
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
-
         if (totalFilesToAttach != 0) {
-            try {
-                DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
-                        firebaseImageURLs,
-                        editTextLocationName.getText().toString(),
-                        DataSubmissionAndMail.SUBMIT,
-                        volleyHelper);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Helper.getInstance().showErrorDialog(getString(R.string.some_error), getString(R.string.inspection), mainActivity);
-            }
+            DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                    editTextLocationName.getText().toString(),
+                    DataSubmissionAndMail.SUBMIT,
+                    volleyHelper);
         } else {
             isUploadedToServer = true;
             doSubmission();
@@ -411,13 +367,10 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void sendFinalMail() {
         progressDialog.setMessage(getString(R.string.almost_done));
-        String url;
-
-        url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php/";
+        String url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php/";
 
         Map<String, String> params = new HashMap<>();
-
-        params.put("locationName", editTextLocationName.getText().toString());
+        params.put("locationName", inspectionModel.getLocationName());
         params.put("staffID", staffModel.getId());
         params.put("folder", DataSubmissionAndMail.SUBMIT);
         params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
@@ -430,116 +383,51 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         textViewSelectedFileCount.setText(String.format(getString(R.string.files_selected), String.valueOf(count)));
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CustomLogger.getInstance().logDebug( "onActivityResult: " + requestCode + " ," + resultCode);
-        super.onActivityResult(requestCode, resultCode, data);
-        if (imagePicker != null)
-            imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
-
-        switch (requestCode) {
-
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST: {
-                switch (resultCode) {
-                    case Activity.RESULT_OK: {
-                        CustomLogger.getInstance().logDebug( "Resolution success");
-                        myLocationManager.requestLocationUpdates();
-                        break;
-                    }
-                    case Activity.RESULT_CANCELED: {
-                        CustomLogger.getInstance().logDebug( "Resolution denied");
-                        myLocationManager.ShowDialogOnLocationOff(getString(R.string.msg_no_location));
-                        break;
-                    }
-                    default: {
-                        CustomLogger.getInstance().logDebug( "User unable to do anything");
-                        progressDialog.dismiss();
-                        break;
-                    }
-                }
-                break;
+    private void showImageChooser() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, mainActivity, true, new ImagePicker.Callback() {
+            @Override
+            public void onPickImage(Uri imageUri) {
+                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath());
             }
+
+            @Override
+            public void onCropImage(Uri imageUri) {
+                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath());
+                int currentPosition = selectedImageModelArrayList.size();
+                selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
+                adapterSelectedImages.notifyItemInserted(currentPosition);
+                adapterSelectedImages.notifyDataSetChanged();
+                setSelectedFileCount(currentPosition + 1);
+                CustomLogger.getInstance().logDebug("onCropImage: Item inserted at " + currentPosition);
+
+            }
+
+            @Override
+            public void cropConfig(CropImage.ActivityBuilder builder) {
+                builder
+                        .setMultiTouchEnabled(false)
+                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setRequestedSize(720, 1280);
+            }
+
+            @Override
+            public void onPermissionDenied(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
+            }
+        });
+
+    }
+
+    private void removeAllSelectedImages() {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
         }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+        textViewSelectedFileCount.setText(getResources().getString(R.string.no_image));
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + "Inspection");
-
-        switch (requestCode) {
-
-            case LOCATION_REQUEST_CODE: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLocationCoordinates();
-
-                } else {
-                    myLocationManager.ShowDialogOnPermissionDenied(getString(R.string.msg_no_location));
-                    progressDialog.dismiss();
-                }
-                break;
-            }
-            default: {
-                if (imagePicker != null)
-                    imagePicker.onRequestPermissionsResult(mainActivity, requestCode, permissions, grantResults);
-            }
-
-        }
-
-    }
-
-    @Override
-    public void onError(VolleyError volleyError) {
-        volleyError.printStackTrace();
-        progressDialog.dismiss();
-        Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
-    }
-
-    @Override
-    public void onResponse(String str) {
-        JSONObject jsonObject = Helper.getInstance().getJson(str);
-        CustomLogger.getInstance().logDebug( jsonObject.toString());
-        try {
-            if (jsonObject.get("action").equals("Creating Image")) {
-                counterServerImages++;
-                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
-                    if (counterServerImages == selectedImageModelArrayList.size()) {
-                        CustomLogger.getInstance().logDebug( "onResponse: Files uploaded");
-                        isUploadedToServer = true;
-                        doSubmission();
-                    }
-                } else {
-                    CustomLogger.getInstance().logDebug( "onResponse: Image = " + counterServerImages + " failed");
-                    Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.inspection), mainActivity);
-                    progressDialog.dismiss();
-                }
-            } else if (jsonObject.getString("action").equals("Sending Mail")) {
-
-                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
-
-                    progressDialog.dismiss();
-                    String alertMessage = String.format(getString(R.string.inspection_success),
-                            editTextLocationName.getText());
-
-                    Helper.getInstance().showFancyAlertDialog(mainActivity, alertMessage, getString(R.string.inspection),
-                            getString(R.string.ok), () -> {
-                            }, null, null, FancyAlertDialogType.SUCCESS);
-                    isUploadedToServer = isUploadedToFirebase = false;
-
-                } else {
-                    progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog(getString(R.string.inspection_success), getString(R.string.inspection), mainActivity);
-                }
-            }
-        } catch (JSONException jse) {
-            jse.printStackTrace();
-            Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
-            progressDialog.dismiss();
-        }
-    }
-
 
     @Override
     public void onMenuItemSelected(View view, int id) {
@@ -552,6 +440,109 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 break;
         }
     }
+
+    @Override
+    public void onError(VolleyError volleyError) {
+        volleyError.printStackTrace();
+        showError(getString(R.string.try_again), getString(R.string.some_error));
+    }
+
+    @Override
+    public void onResponse(String str) {
+        JSONObject jsonObject = Helper.getInstance().getJson(str);
+        CustomLogger.getInstance().logDebug(jsonObject.toString());
+        try {
+            if (jsonObject.get("action").equals("Creating Image")) {
+                counterServerImages++;
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
+                    if (counterServerImages == selectedImageModelArrayList.size()) {
+                        CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
+                        isUploadedToServer = true;
+                        doSubmission();
+                    }
+                } else {
+                    CustomLogger.getInstance().logDebug("onResponse: Image = " + counterServerImages + " failed");
+                    showError(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error));
+                }
+            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
+
+                    progressDialog.dismiss();
+                    String alertMessage = String.format(getString(R.string.inspection_success),
+                            inspectionModel.getLocationName());
+                    Helper.getInstance().showMessage(mainActivity, alertMessage, getString(R.string.success),
+                            FancyAlertDialogType.SUCCESS);
+                    isUploadedToServer = isUploadedToFirebase = false;
+
+                } else {
+                    showError(getString(R.string.inspection_failed), getString(R.string.failure));
+                }
+            }
+        } catch (JSONException jse) {
+            jse.printStackTrace();
+            showError(getString(R.string.try_again), getString(R.string.some_error));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (imagePicker != null)
+            imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case CONNECTION_FAILURE_RESOLUTION_REQUEST: {
+                switch (resultCode) {
+                    case Activity.RESULT_OK: {
+                        CustomLogger.getInstance().logDebug("Resolution success");
+                        myLocationManager.requestLocationUpdates();
+                        break;
+                    }
+                    case Activity.RESULT_CANCELED: {
+                        CustomLogger.getInstance().logDebug("Resolution denied");
+                        myLocationManager.ShowDialogOnLocationOff(getString(R.string.msg_no_location));
+                        break;
+                    }
+                    default: {
+                        CustomLogger.getInstance().logDebug("User unable to do anything");
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + "Inspection");
+
+        switch (requestCode) {
+
+            case LOCATION_REQUEST_CODE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocationCoordinates();
+
+                } else {
+                    myLocationManager.ShowDialogOnPermissionDenied(getString(R.string.msg_no_location));
+                }
+                break;
+            }
+            default: {
+                if (imagePicker != null)
+                    imagePicker.onRequestPermissionsResult(mainActivity, requestCode, permissions, grantResults);
+            }
+
+        }
+
+    }
+
+
 }
 
 

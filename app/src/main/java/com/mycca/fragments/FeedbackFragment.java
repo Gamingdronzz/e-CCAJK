@@ -23,8 +23,8 @@ import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 
 public class FeedbackFragment extends Fragment {
 
@@ -81,8 +81,10 @@ public class FeedbackFragment extends Fragment {
             @Override
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug( "version checked= " + Helper.versionChecked);
-                if (!Helper.versionChecked) {
-                    FireBaseHelper.getInstance(getContext()).checkForUpdate(new ValueEventListener() {
+                if (Helper.versionChecked) {
+                    submit();
+                } else{
+                    NewFireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, activity))
@@ -93,44 +95,37 @@ public class FeedbackFragment extends Fragment {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Helper.getInstance().showMaintenanceDialog(activity);
                         }
-                    });
-                } else
-                    submit();
+                    },true,NewFireBaseHelper.ROOT_APP_VERSION);
+                }
+
             }
 
             @Override
             public void OnConnectionNotAvailable() {
-                Helper.getInstance().showFancyAlertDialog(getActivity(),
-                        getString(R.string.connect_to_internet),
-                        getString(R.string.no_internet),
-                        getString(R.string.ok),
-                        null,
-                        null,
-                        null,
-                        FancyAlertDialogType.ERROR);
+                Helper.getInstance().noInternetDialog(activity);
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
     private void submit() {
-        Task<Void> task = FireBaseHelper.getInstance(getContext()).uploadDataToFirebase(
+        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(null,
                 etSuggestion.getText().toString().trim(),
-                FireBaseHelper.ROOT_SUGGESTIONS);
+                NewFireBaseHelper.ROOT_SUGGESTIONS);
 
         task.addOnCompleteListener((Task<Void> task1) -> {
 
             if (task1.isSuccessful()) {
-                Helper.getInstance().showFancyAlertDialog(getActivity(), "", getString(R.string.thanks_for_feedback), getString(R.string.ok), () -> {
-                        },
-                        null, null, FancyAlertDialogType.SUCCESS);
+                Helper.getInstance().showMessage(getActivity(), "",
+                        getString(R.string.thanks_for_feedback),
+                      FancyAlertDialogType.SUCCESS);
             } else {
-                if (FireBaseHelper.getInstance(getContext()).mAuth.getCurrentUser() == null) {
+                if (NewFireBaseHelper.getInstance().getAuth().getCurrentUser() == null) {
                     Helper.getInstance().showFancyAlertDialog(activity, getString(R.string.suggestion_sign_in),
                             getString(R.string.sign_in_with_google),
                             getString(R.string.sign_in),
                             () -> ((MainActivity) activity).signInWithGoogle(),
-                            getString(android.R.string.cancel),
+                            getString(R.string.cancel),
                             () -> {
 
                             },

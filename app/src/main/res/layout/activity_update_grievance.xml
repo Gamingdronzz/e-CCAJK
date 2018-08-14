@@ -37,6 +37,7 @@
                     android:padding="@dimen/padding_min">
 
                     <TextView
+                        android:id="@+id/textview_number_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/pensioner_hr_staff_code"

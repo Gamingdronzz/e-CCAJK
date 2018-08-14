@@ -11,6 +11,7 @@ import com.mycca.listeners.ClickListener;
 import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.State;
 import com.mycca.R;
+import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
 
@@ -44,7 +45,7 @@ public class StateSettingActivity extends AppCompatActivity {
     }
 
     public void changeState(int position) {
-        State state = Helper.getInstance().getStateList()[position];
+        State state = CircleDataProvider.getInstance().getCircleData()[position];
         Preferences.getInstance().setModelPref(this, Preferences.PREF_STATE_DATA, state);
         Preferences.getInstance().clearOtherStateDataPrefs(this);
         Helper.getInstance().reloadApp(this);

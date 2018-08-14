@@ -25,8 +25,8 @@ import com.mycca.adapter.RecyclerViewAdapterGrievanceUpdate;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.models.GrievanceModel;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -154,15 +154,10 @@ public class TabSubmitted extends Fragment {
             }
         };
 
-        FireBaseHelper.getInstance(getActivity()).getDataFromFirebase(childEventListener,
-                FireBaseHelper.VERSIONED,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(getContext()).getState());
-        FireBaseHelper.getInstance(getActivity()).getDataFromFirebase(valueEventListener,
-                FireBaseHelper.VERSIONED,
-                false,
-                FireBaseHelper.ROOT_GRIEVANCES,
-                Preferences.getInstance().getStaffPref(getContext()).getState());
+        String state=Preferences.getInstance().getStaffPref(getContext()).getState();
+        NewFireBaseHelper.getInstance().getDataFromFireBase(state,childEventListener, NewFireBaseHelper.ROOT_GRIEVANCES);
+        NewFireBaseHelper.getInstance().getDataFromFireBase(state,valueEventListener, false, NewFireBaseHelper.ROOT_GRIEVANCES);
+
     }
 
     @Override

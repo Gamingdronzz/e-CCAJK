@@ -12,14 +12,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
+import com.google.android.gms.tasks.Task;
+import com.mycca.R;
 import com.mycca.activity.NewsActivity;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.fragments.AddNewsFragment;
 import com.mycca.models.NewsModel;
-import com.mycca.R;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.NewFireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
                 edit.setOnClickListener(this.editNewsListener);
 
                 if ((Preferences.getInstance().getStaffPref(context) == null)
-                        || (FireBaseHelper.getInstance(context).mAuth.getCurrentUser() == null)) {
+                        || (NewFireBaseHelper.getInstance().getAuth().getCurrentUser() == null)) {
                     edit.setVisibility(View.GONE);
                     delete.setVisibility(View.GONE);
                 }
@@ -165,16 +165,16 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
                 Helper.getInstance().showFancyAlertDialog(context, context.getString(R.string.delete_news), "",
                         context.getString(R.string.delete), () -> {
                             NewsModel newsModel = newsModelArrayList.get(position);
-                            DatabaseReference dbref = FireBaseHelper.getInstance(context).versionedDbRef
-                                    .child(FireBaseHelper.ROOT_NEWS).child(newsModel.getKey());
-                            dbref.removeValue().addOnCompleteListener(task -> {
+                            Task<Void> t = NewFireBaseHelper.getInstance().removeData(null, NewFireBaseHelper.ROOT_NEWS, newsModel.getKey());
+                            t.addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(context, context.getString(R.string.news_deleted),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getString(R.string.news_deleted), Toast.LENGTH_SHORT).show();
                                 }
+                                else
+                                    Toast.makeText(context, context.getString(R.string.news_not_deleted), Toast.LENGTH_SHORT).show();
                             });
                         },
-                        context.getString(android.R.string.cancel), () -> {
-
+                        context.getString(R.string.cancel), () -> {
                         },
                         FancyAlertDialogType.WARNING);
 

@@ -161,8 +161,8 @@
     <string name="invalid_name">Invalid Name</string>
     <string name="re_marriage">Re-Marriage Certificate</string>
     <string name="re_employment">Re-Employment Certificate</string>
-    <string name="updation_success">update request for %1$s has been submitted successfully</string>
-    <string name="updation_failed">Request for Updation Failed\nTry Again</string>
+    <string name="updation_success">Update request for %1$s has been submitted successfully</string>
+    <string name="updation_failed">Request for Updloading Information Failed\nTry Again</string>
 
     <!--kyp-->
     <string name="download_kyp_form">Download KYP Form</string>
@@ -224,6 +224,7 @@
     <string name="delete_news">Delete this News?</string>
     <string name="delete">Delete</string>
     <string name="news_deleted">News Deleted</string>
+    <string name="news_not_deleted">News could not be deleted\nTry Again Later</string>
 
     <!--About-->
     <string name="about_us_string">This application is  developed and maintained by GAMING DRONZZ, Jammu.</string>
@@ -287,7 +288,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="getting_coordinates">Getting Current Location Coordinates</string>
 
     <!--others-->
-    <string name="no_internet">Internet Connection Not Available</string>
+    <string name="no_internet">Connection Not Available</string>
     <string name="connect_to_internet">Please connect to internet first.</string>
     <string name="refresh">Turn On Internet and Refresh</string>
     <string name="no_grievance">No Grievances Registered</string>
@@ -304,6 +305,8 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="try_again">"Please try Again"</string>
     <string name="try_again_different_account">"Unable to authenticate with this account.\nPlease try Again with a different account"</string>
     <string name="some_error">Some Error Occurred</string>
+    <string name="success">Data Submitted Successfully</string>
+    <string name="failure">Data Submission Failed</string>
     <string name="confirm_input">PLEASE CONFIRM YOUR INPUT</string>
     <string name="auth_message1">Please Sign in with google to access this app feature.</string>
     <string name="auth_message2">Most App functions require you to authenticate yourself with google. Please Sign in to access all app features.</string>
@@ -312,6 +315,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="exit">Do you want to exit?</string>
     <string name="staff_login_success">Staff Successfully Logged In</string>
     <string name="skip_tutorial">Skip CCA Tutorial Messages?</string>
+    <string name="file_upload_error">File Upload Error</string>
     <string name="file_not_uploaded">Files could not be uploaded\nTry Again</string>
     <string name="loading">Loading…</string>
     <string name="file">File-</string>

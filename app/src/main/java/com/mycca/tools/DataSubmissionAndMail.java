@@ -25,15 +25,16 @@ public class DataSubmissionAndMail {
         }
     }
 
-    public void uploadImagesToServer(String url,ArrayList<Uri> firebaseImageURLs, String folderName, String uploadType,VolleyHelper volleyHelper) {
+    public void uploadImagesToServer(ArrayList<Uri> firebaseImageURLs, String code, String uploadType,VolleyHelper volleyHelper) {
         CustomLogger.getInstance().logDebug("uploadImagesToServer: Starting Upload");
+        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
         for (int i = 0; i < firebaseImageURLs.size(); i++) {
 
             CustomLogger.getInstance().logDebug("uploadAllImagesToServer: Current = " + i);
 
             Map<String, String> params = new HashMap<>();
             params.put("folder",uploadType);
-            params.put("pensionerCode", folderName);
+            params.put("pensionerCode", code);
             params.put("image", firebaseImageURLs.get(i).toString());
             params.put("imageName", "image-" + i);
             params.put("imageCount", i + "");

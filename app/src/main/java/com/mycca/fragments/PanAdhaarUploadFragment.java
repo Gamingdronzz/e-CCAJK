@@ -117,7 +117,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void bindViews(View view) {
         linearLayout = view.findViewById(R.id.layout_radio_group);
-        radioGroup = view.findViewById(R.id.groupNumberType);
+        radioGroup = view.findViewById(R.id.radio_group_identifier_type);
         textInputLayoutIdentifier = view.findViewById(R.id.text_input_pensioner_code);
         textInputLayoutCardNumber = view.findViewById(R.id.text_number);
         editTextIdentifier = view.findViewById(R.id.et_pan_adhaar_pcode);
@@ -131,7 +131,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private void init(View view) {
         mainActivity = (MainActivity) getActivity();
-        progressDialog = Helper.getInstance().getProgressWindow(getActivity(), getString(R.string.please_wait));
+        progressDialog = new ProgressDialog(mainActivity != null ? mainActivity : getActivity());
         volleyHelper = new VolleyHelper(this, getContext());
         initItems();
 
@@ -154,13 +154,12 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         switch (root) {
             case NewFireBaseHelper.ROOT_ADHAAR:
-
                 editTextCardNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editTextCardNumber.setFilters(Helper.getInstance().limitInputLength(12));
                 field2Hint = getString(R.string.aadhaar_no);
                 break;
-            case NewFireBaseHelper.ROOT_PAN:
 
+            case NewFireBaseHelper.ROOT_PAN:
                 editTextCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), (source, start, end, dest, dstart, dend) -> {
                     if (source.equals("")) { // for backspace
                         return source;
@@ -172,6 +171,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 }});
                 field2Hint = getString(R.string.pan_no);
                 break;
+
             default:
                 linearLayout.setVisibility(View.GONE);
                 field2Hint = getString(R.string.applicant_name);
@@ -201,41 +201,10 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         spinnerCircle.setAdapter(statesAdapter);
 
         buttonUpload.setOnClickListener(v -> {
-            if (checkInputBeforeSubmission())
+            if(isUploadedToFirebase || isUploadedToServer)
+                doSubmission();
+            else if (checkInputBeforeSubmission())
                 showConfirmSubmissionDialog();
-        });
-    }
-
-    private void showImageChooser() {
-        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
-            @Override
-            public void onPickImage(Uri imageUri) {
-
-            }
-
-            @Override
-            public void onCropImage(Uri imageUri) {
-                Glide.with(mainActivity).load(imageUri).into(imageviewSelectedImage);
-                imageModel = new SelectedImageModel(imageUri);
-                textViewFileName.setError(null);
-                String text = root + ".jpg";
-                textViewFileName.setText(text);
-            }
-
-            @Override
-            public void cropConfig(CropImage.ActivityBuilder builder) {
-                builder
-                        .setMultiTouchEnabled(false)
-                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setRequestedSize(720, 1280);
-            }
-
-            @Override
-            public void onPermissionDenied(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
-            }
         });
     }
 
@@ -296,7 +265,34 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 (dialog, which) -> doSubmission());
     }
 
+    private void loadValues(View v) {
+
+        TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
+        TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
+        TextView heading = v.findViewById(R.id.textview_confirm2);
+        TextView value = v.findViewById(R.id.textview_confirm2_value);
+        TextView circle = v.findViewById(R.id.textview_confirm4_value);
+
+        pensionerHeading.setText(identifierHint);
+        pensionerValue.setText(pensionerIdentifier);
+        heading.setText(field2Hint);
+        value.setText(cardNumber);
+        circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
+                .equals("hi") ? state.getHi() : state.getEn());
+
+        v.findViewById(R.id.textview_confirm3).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm3_value).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm5).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm5_value).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm6).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm6_value).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm7).setVisibility(View.GONE);
+        v.findViewById(R.id.textview_confirm7_value).setVisibility(View.GONE);
+    }
+
     private void doSubmission() {
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
@@ -324,6 +320,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void OnConnectionNotAvailable() {
+                progressDialog.dismiss();
                 Helper.getInstance().noInternetDialog(mainActivity);
             }
         });
@@ -344,39 +341,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         }
     }
 
-    private void loadValues(View v) {
-
-        TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
-        TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
-        TextView heading = v.findViewById(R.id.textview_confirm2);
-        TextView value = v.findViewById(R.id.textview_confirm2_value);
-        TextView circle = v.findViewById(R.id.textview_confirm4_value);
-
-        pensionerHeading.setText(identifierHint);
-        pensionerValue.setText(pensionerIdentifier);
-        heading.setText(field2Hint);
-        value.setText(cardNumber);
-        circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
-                .equals("hi") ? state.getHi() : state.getEn());
-
-        v.findViewById(R.id.textview_confirm3).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm3_value).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm5).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm5_value).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm6).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm6_value).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm7).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm7_value).setVisibility(View.GONE);
-    }
-
     private void uploadDataToFirebase() {
-        progressDialog.show();
+        CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber);
         PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
 
         Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), panAadharModel,
                 root,
                 pensionerIdentifier);
-
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
                 uploadAllImagesToFirebase();
@@ -397,9 +368,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(exception -> {
-                Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.update_information), getActivity());
+                showError(getString(R.string.file_upload_error), getString(R.string.file_not_uploaded));
                 CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
-                progressDialog.dismiss();
             }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                 downloadUrl = uri;
                 CustomLogger.getInstance().logDebug("onSuccess: " + downloadUrl);
@@ -410,21 +380,19 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         }
     }
 
+    public void showError(String title, String message) {
+        progressDialog.dismiss();
+        Helper.getInstance().showErrorDialog(message, title, mainActivity);
+    }
+
     private void uploadImagesToServer() {
 
         progressDialog.setMessage(getString(R.string.processing));
-        String url = Helper.getInstance().getAPIUrl() + "uploadImage.php/";
+        DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
+                pensionerIdentifier,
+                DataSubmissionAndMail.SUBMIT,
+                volleyHelper);
 
-        try {
-            DataSubmissionAndMail.getInstance().uploadImagesToServer(url,
-                    firebaseImageURLs,
-                    pensionerIdentifier,
-                    DataSubmissionAndMail.SUBMIT,
-                    volleyHelper);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), getActivity());
-        }
     }
 
     private void sendFinalMail() {
@@ -437,8 +405,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         params.put("folder", DataSubmissionAndMail.SUBMIT);
         params.put("personType", identifierHint);
         params.put("updateType", root);
-        params.put("fieldName", textInputLayoutCardNumber.getHint().toString());
-        params.put("value", editTextCardNumber.getText().toString());
+        params.put("fieldName", field2Hint);
+        params.put("value", cardNumber);
 
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerIdentifier, volleyHelper, url);
     }
@@ -446,18 +414,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     public void scanNow() {
 
         CustomLogger.getInstance().logDebug("scanNow: ");
-        //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
-//                == PackageManager.PERMISSION_DENIED) {
-//            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-//            return;
-//        }
-//        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-//        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-//        integrator.setPrompt("Scan Aadhar card QR Code");
-//        integrator.setResultDisplayDuration(500);
-//        integrator.setCameraId(0);  // Use a specific camera of the device
-//        integrator.initiateScan();
-
         Intent intent = new Intent(mainActivity, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
         intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
@@ -498,6 +454,94 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     }
 
+    private void showImageChooser() {
+        imagePicker = Helper.getInstance().showImageChooser(imagePicker, getActivity(), true, new ImagePicker.Callback() {
+            @Override
+            public void onPickImage(Uri imageUri) {
+
+            }
+
+            @Override
+            public void onCropImage(Uri imageUri) {
+                Glide.with(mainActivity).load(imageUri).into(imageviewSelectedImage);
+                imageModel = new SelectedImageModel(imageUri);
+                textViewFileName.setError(null);
+                String text = root + ".jpg";
+                textViewFileName.setText(text);
+            }
+
+            @Override
+            public void cropConfig(CropImage.ActivityBuilder builder) {
+                builder
+                        .setMultiTouchEnabled(false)
+                        .setGuidelines(CropImageView.Guidelines.ON_TOUCH)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setRequestedSize(720, 1280);
+            }
+
+            @Override
+            public void onPermissionDenied(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
+            }
+        });
+    }
+
+    @Override
+    public void onMenuItemSelected(View view, int id) {
+        switch (items.get(id).getId()) {
+            case 0:
+                showImageChooser();
+                break;
+            case 1:
+                imageviewSelectedImage.setImageResource(0);
+                textViewFileName.setText(getResources().getString(R.string.no_image));
+                break;
+            case 2:
+                scanNow();
+                break;
+        }
+    }
+
+    @Override
+    public void onResponse(String str) {
+        JSONObject jsonObject = Helper.getInstance().getJson(str);
+        CustomLogger.getInstance().logDebug(jsonObject.toString());
+        try {
+            if (jsonObject.get("action").equals("Creating Image")) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
+                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
+                    isUploadedToServer = true;
+                    doSubmission();
+                } else {
+                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
+                    showError(getString(R.string.file_upload_error), getString(R.string.file_not_uploaded));
+                }
+            } else if (jsonObject.getString("action").equals("Sending Mail")) {
+                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
+                    progressDialog.dismiss();
+                    isUploadedToServer = isUploadedToFirebase = false;
+                    Helper.getInstance().showMessage(getActivity(),
+                            String.format(getString(R.string.updation_success), pensionerIdentifier),
+                            getString(R.string.success),
+                            FancyAlertDialogType.SUCCESS);
+
+                } else {
+                    showError(getString(R.string.failure),
+                            getString(R.string.updation_failed));
+                }
+            }
+        } catch (JSONException jse) {
+            jse.printStackTrace();
+            showError(getString(R.string.some_error), getString(R.string.try_again));
+        }
+    }
+
+    @Override
+    public void onError(VolleyError volleyError) {
+        showError(getString(R.string.some_error), getString(R.string.try_again));
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode);
@@ -518,26 +562,6 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         } else if (imagePicker != null)
             imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
 
-        //        //retrieve QR Code scan result
-//        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-//
-//        if (scanningResult != null) {
-//            //we have a result
-//            String scanContent = scanningResult.getContents();
-//            String scanFormat = scanningResult.getFormatName();
-//
-//            // process received data
-//            if (scanContent != null && !scanContent.isEmpty()) {
-//                processScannedData(scanContent);
-//            } else {
-//                Toast toast = Toast.makeText(getContext(), "Scan Cancelled", Toast.LENGTH_SHORT);
-//                toast.show();
-//            }
-//
-//        } else {
-//            Toast toast = Toast.makeText(getContext(), "No scan data received!", Toast.LENGTH_SHORT);
-//            toast.show();
-//        }
     }
 
     @Override
@@ -564,66 +588,5 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     }
 
-    @Override
-    public void onError(VolleyError volleyError) {
-        progressDialog.dismiss();
-        Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
-    }
 
-    @Override
-    public void onResponse(String str) {
-        JSONObject jsonObject = Helper.getInstance().getJson(str);
-        CustomLogger.getInstance().logDebug(jsonObject.toString());
-        try {
-            if (jsonObject.get("action").equals("Creating Image")) {
-                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
-                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
-                    isUploadedToServer = true;
-                    doSubmission();
-                } else {
-                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
-                    Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.update_information), getActivity());
-                    progressDialog.dismiss();
-                }
-            } else if (jsonObject.getString("action").equals("Sending Mail")) {
-                if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
-                    progressDialog.dismiss();
-                    isUploadedToServer = isUploadedToFirebase = false;
-
-                    Helper.getInstance().showFancyAlertDialog(getActivity(),
-                            String.format(getString(R.string.updation_success), pensionerIdentifier),
-                            getString(R.string.update_information),
-                            getString(R.string.ok), () -> {
-                            },
-                            null, null, FancyAlertDialogType.SUCCESS);
-
-                } else {
-                    progressDialog.dismiss();
-                    Helper.getInstance().showErrorDialog(getString(R.string.updation_failed),
-                            getString(R.string.update_information),
-                            getActivity());
-                }
-            }
-        } catch (JSONException jse) {
-            jse.printStackTrace();
-            Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), mainActivity);
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onMenuItemSelected(View view, int id) {
-        switch (items.get(id).getId()) {
-            case 0:
-                showImageChooser();
-                break;
-            case 1:
-                imageviewSelectedImage.setImageResource(0);
-                textViewFileName.setText(getResources().getString(R.string.no_image));
-                break;
-            case 2:
-                scanNow();
-                break;
-        }
-    }
 }

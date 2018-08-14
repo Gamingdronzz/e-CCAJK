@@ -26,22 +26,6 @@ public class GrievanceModel {
 
     }
 
-    public GrievanceModel(String pensionerIdentifier, long grievanceType, String referenceNo,
-                          String details, String email, String mobile, String submittedBy,
-                          long grievanceStatus, String state, String uid, Date date) {
-        this.details = details;
-        this.email = email;
-        this.mobile = mobile;
-        this.identifierNumber = pensionerIdentifier;
-        this.state = state;
-        this.submittedBy = submittedBy;
-        this.uid = uid;
-        this.referenceNo = referenceNo;
-        this.date = date;
-        this.grievanceStatus = grievanceStatus;
-        this.grievanceType = grievanceType;
-    }
-
     public GrievanceModel(String identifierType, String identifierNumber, String email, String mobile, String details, String submittedBy, String uid, String referenceNo, Date date, long grievanceStatus, long grievanceType, long fileCount) {
         this.identifierType = identifierType;
         this.identifierNumber = identifierNumber;
