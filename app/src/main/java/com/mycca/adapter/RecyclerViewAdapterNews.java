@@ -19,7 +19,7 @@ import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.fragments.AddNewsFragment;
 import com.mycca.models.NewsModel;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
                 edit.setOnClickListener(this.editNewsListener);
 
                 if ((Preferences.getInstance().getStaffPref(context) == null)
-                        || (NewFireBaseHelper.getInstance().getAuth().getCurrentUser() == null)) {
+                        || (FireBaseHelper.getInstance().getAuth().getCurrentUser() == null)) {
                     edit.setVisibility(View.GONE);
                     delete.setVisibility(View.GONE);
                 }
@@ -165,7 +165,7 @@ public class RecyclerViewAdapterNews extends RecyclerView.Adapter<RecyclerViewAd
                 Helper.getInstance().showFancyAlertDialog(context, context.getString(R.string.delete_news), "",
                         context.getString(R.string.delete), () -> {
                             NewsModel newsModel = newsModelArrayList.get(position);
-                            Task<Void> t = NewFireBaseHelper.getInstance().removeData(null, NewFireBaseHelper.ROOT_NEWS, newsModel.getKey());
+                            Task<Void> t = FireBaseHelper.getInstance().removeData(null, FireBaseHelper.ROOT_NEWS, newsModel.getKey());
                             t.addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(context, context.getString(R.string.news_deleted), Toast.LENGTH_SHORT).show();

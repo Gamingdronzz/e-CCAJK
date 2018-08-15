@@ -59,7 +59,7 @@ import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", NewFireBaseHelper.ROOT_ADHAAR);
+                bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
                 title = getString(R.string.upload_aadhaar);
                 if (checkCircleDataAvailable()) {
                     if (checkUserAuthenticated()) {
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_pan:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", NewFireBaseHelper.ROOT_PAN);
+                bundle.putString("Root", FireBaseHelper.ROOT_PAN);
                 title = getString(R.string.upload_pan);
                 if (checkCircleDataAvailable()) {
                     if (checkUserAuthenticated()) {
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_life_certificate:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", NewFireBaseHelper.ROOT_LIFE);
+                bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
                 title = getString(R.string.upload_life_certificate);
                 if (checkCircleDataAvailable()) {
                     if (checkUserAuthenticated()) {
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_remarriage_certificate:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", NewFireBaseHelper.ROOT_RE_MARRIAGE);
+                bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
                 title = getString(R.string.upload_re_marriage_certificate);
                 if (checkCircleDataAvailable()) {
                     if (checkUserAuthenticated()) {
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_reemployment:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
-                bundle.putString("Root", NewFireBaseHelper.ROOT_RE_EMPLOYMENT);
+                bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
                 title = getString(R.string.upload_re_employment_certificate);
                 if (checkCircleDataAvailable()) {
                     if (checkUserAuthenticated()) {
@@ -238,12 +238,12 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_hotspot_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", NewFireBaseHelper.ROOT_WIFI);
+                bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
                 showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_gp_locator:
                 bundle = new Bundle();
-                bundle.putString("Locator", NewFireBaseHelper.ROOT_GP);
+                bundle.putString("Locator", FireBaseHelper.ROOT_GP);
                 showFragment(getString(R.string.gp), new LocatorFragment(), bundle);
                 break;
             case R.id.navmenu_login:
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity
     public void ShowHotSpotLocations() {
         CustomLogger.getInstance().logDebug("ShowHotSpotLocations");
         Bundle bundle = new Bundle();
-        bundle.putString("Locator", NewFireBaseHelper.ROOT_WIFI);
+        bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
         showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
     }
 
@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
 
-        mAuth = NewFireBaseHelper.getInstance().getAuth();
+        mAuth = FireBaseHelper.getInstance().getAuth();
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity
                     public void onDownloadSuccess() {
 
                       if(Preferences.getInstance().getStringPref(MainActivity.this,Preferences.PREF_OFFICE_LABEL)==null){
-                          NewFireBaseHelper.getInstance().getOtherStateData(MainActivity.this, new DownloadCompleteListener() {
+                          FireBaseHelper.getInstance().getOtherStateData(MainActivity.this, new DownloadCompleteListener() {
                               @Override
                               public void onDownloadSuccess() {
                                   downloadComplete();
@@ -424,7 +424,7 @@ public class MainActivity extends AppCompatActivity
     private void downloadComplete(){
         progressDialog.dismiss();
         Helper.getInstance().showMessage(MainActivity.this, getString(R.string.download_success_message),
-                getString(R.string.download_success_title), FancyAlertDialogType.ERROR);
+                getString(R.string.download_success_title), FancyAlertDialogType.SUCCESS);
     }
 
     public void showAuthDialog(boolean skipped) {
@@ -476,7 +476,7 @@ public class MainActivity extends AppCompatActivity
                     if (task.isSuccessful()) {
 
                         CustomLogger.getInstance().logDebug("signInWithCredential:success");
-                        NewFireBaseHelper.getInstance().addTokenOnFireBase();
+                        FireBaseHelper.getInstance().addTokenOnFireBase();
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
                                 getString(R.string.sign_in_success),
                                 getString(R.string.ok),

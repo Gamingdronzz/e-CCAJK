@@ -35,9 +35,9 @@ import com.mycca.tabs.locator.TabAllLocations;
 import com.mycca.tabs.locator.TabNearby;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.lang.reflect.Type;
@@ -50,11 +50,10 @@ public class LocatorFragment extends Fragment {
     public ViewPager viewPager;
     ProgressDialog progressDialog;
     public ArrayList<LocationModel> locationModelArrayList = new ArrayList<>();
-
     public final static int INT_LOCATOR_TAB_ITEMS = 2;
-    String TAG = "locator";
+    int prefCount;
+    String pref,locatorType;
     TextView textViewLocatorInfo;
-    String locatorType;
     RelativeLayout relativeLayoutNoInternet;
     LinearLayout linearLayoutTab;
     ImageButton imageButtonRefresh;
@@ -91,50 +90,21 @@ public class LocatorFragment extends Fragment {
         manageNoLocationLayout(true);
 
         progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
-        imageButtonRefresh.setOnClickListener(v -> checkConnection(false));
+        imageButtonRefresh.setOnClickListener(v -> checkConnection());
         String noInternet = textViewLocatorInfo.getText() + "\n" + getString(R.string.refresh);
         textViewLocatorInfo.setText(noInternet);
 
-        //fetch from local storage
-        getLocationsFromLocalStorage();
+        if (locatorType.equals(FireBaseHelper.ROOT_GP))
+            pref = Preferences.PREF_GP;
+        else
+            pref = Preferences.PREF_WIFI;
 
-    }
-
-    private void setTabLayout() {
-        setData();
-        manageNoLocationLayout(false);
-        final MyAdapter adapter = new MyAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                CustomLogger.getInstance().logDebug( "onPageSelected: selected = " + position);
-
-                Fragment fragment = adapter.getCurrentFragment();
-                if (fragment instanceof TabNearby) {
-                    ((TabNearby) fragment).startLocationProcess();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        progressDialog.dismiss();
-    }
-
-    public void setData() {
-        LocationDataProvider.getInstance().setLocationModelArrayList(locatorType, locationModelArrayList);
+        checkConnection();
     }
 
     private void manageNoLocationLayout(boolean show) {
+        if(progressDialog!=null && progressDialog.isShowing())
+            progressDialog.dismiss();
         if (show) {
             relativeLayoutNoInternet.setVisibility(View.VISIBLE);
             linearLayoutTab.setVisibility(View.GONE);
@@ -144,109 +114,87 @@ public class LocatorFragment extends Fragment {
         }
     }
 
-    private void getLocationsFromLocalStorage() {
-
-        IOHelper.getInstance().readFromFile(activity, locatorType,
-                Preferences.getInstance().getStatePref(activity).getCode(),
-                jsonObject -> {
-            String json = String.valueOf(jsonObject);
-            try {
-                Gson gson = new Gson();
-                Type collectionType = new TypeToken<ArrayList<LocationModel>>() {
-                }.getType();
-                locationModelArrayList = gson.fromJson(json, collectionType);
-                if (locationModelArrayList == null) {
-                    checkConnection(false);
-                } else {
-                    checkConnection(true);
-                }
-            } catch (JsonParseException jpe) {
-                jpe.printStackTrace();
-                checkConnection(false);
-            }
-        });
-
-    }
-
-    private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
-        try {
-            String jsonObject = Helper.getInstance().getJsonFromObject(locationModels);
-            CustomLogger.getInstance().logDebug( "Json: " + jsonObject);
-            CustomLogger.getInstance().logDebug( "adding LocationsToLocalStorage: ");
-            IOHelper.getInstance().writeToFile(activity,jsonObject, locatorType,
-                    Preferences.getInstance().getStatePref(activity).getCode(),
-                    success -> {});
-        } catch (JsonParseException jpe) {
-            jpe.printStackTrace();
-        }
-    }
-
-    private void checkConnection(boolean checkNetwork) {
+    private void checkConnection() {
         progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                if (locationModelArrayList == null) {
-                    CustomLogger.getInstance().logDebug( "init: No Locations in Local Storage");
+                if (Preferences.getInstance().getIntPref(activity, pref) == -1) {
                     fetchLocationsFromFirebase();
                 } else {
-                    CustomLogger.getInstance().logDebug( "init: Locations found in local storage");
-                    checkNewLocationsInFirebase();
+                    String networkClass = ConnectionUtility.getNetworkClass(activity);
+                    if (networkClass.equals(ConnectionUtility._2G)) {
+                        getLocationsFromLocalStorage();
+                    } else {
+                        checkNewLocationsInFirebase();
+                    }
                 }
             }
 
             @Override
             public void OnConnectionNotAvailable() {
-                if (locationModelArrayList == null) {
+                if (Preferences.getInstance().getIntPref(activity, pref) == -1) {
                     manageNoLocationLayout(true);
-                    progressDialog.dismiss();
                 } else {
-                    setTabLayout();
+                    getLocationsFromLocalStorage();
                 }
+
             }
         });
+        connectionUtility.checkConnectionAvailability();
+    }
 
-        if (!checkNetwork) {
-            connectionUtility.checkConnectionAvailability();
-        } else {
-            String networkClass = connectionUtility.getNetworkClass(getContext());
-            if (networkClass.equals(connectionUtility._2G)) {
-                setTabLayout();
-            } else {
-                connectionUtility.checkConnectionAvailability();
-            }
-        }
+    private void getLocationsFromLocalStorage() {
+
+        IOHelper.getInstance().readFromFile(activity, locatorType,
+                Preferences.getInstance().getStatePref(activity).getCode(),
+                jsonObject -> {
+                    String json = String.valueOf(jsonObject);
+                    try {
+                        Gson gson = new Gson();
+                        Type collectionType = new TypeToken<ArrayList<LocationModel>>() {
+                        }.getType();
+                        locationModelArrayList = gson.fromJson(json, collectionType);
+                        setTabLayout();
+                    } catch (JsonParseException jpe) {
+                        locationModelArrayList = null;
+                        setTabLayout();
+                    }
+                });
 
     }
 
     private void checkNewLocationsInFirebase() {
+        String node;
+        if (locatorType.equals(FireBaseHelper.ROOT_GP))
+            node = FireBaseHelper.ROOT_GP_COUNT;
+        else node = FireBaseHelper.ROOT_WIFI_COUNT;
 
         ValueEventListener vel = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    if (locationModelArrayList.size() == dataSnapshot.getChildrenCount()) {
-                        CustomLogger.getInstance().logDebug( "init: same amount of locations in firebase");
-                        setTabLayout();
+                    long firebaseCount = (long) dataSnapshot.getValue();
+                    if (prefCount == firebaseCount) {
+                        getLocationsFromLocalStorage();
                     } else {
-                        CustomLogger.getInstance().logDebug( "init: new locations in firebase");
+                        CustomLogger.getInstance().logDebug("init: new locations in firebase");
                         fetchLocationsFromFirebase();
                     }
                 } catch (DatabaseException dbe) {
                     dbe.printStackTrace();
-                    setTabLayout();
+                    getLocationsFromLocalStorage();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                CustomLogger.getInstance().logDebug( "onCancelled: " + databaseError.getMessage());
+                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
+                getLocationsFromLocalStorage();
             }
         };
-        FireBaseHelper.getInstance(activity).getDataFromFirebase(vel,
-                FireBaseHelper.NONVERSIONED_STATEWISE, false,
-                Preferences.getInstance().getStatePref(activity).getCode(),
-                locatorType);
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+                vel, false, node);
     }
 
     private void fetchLocationsFromFirebase() {
@@ -257,7 +205,7 @@ public class LocatorFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue() != null) {
                     try {
-                        CustomLogger.getInstance().logDebug( "onChildAdded: " + dataSnapshot.getKey());
+                        CustomLogger.getInstance().logDebug("onChildAdded: " + dataSnapshot.getKey());
                         LocationModel location = dataSnapshot.getValue(LocationModel.class);
                         locationModelArrayList.add(location);
                     } catch (DatabaseException dbe) {
@@ -289,7 +237,7 @@ public class LocatorFragment extends Fragment {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CustomLogger.getInstance().logDebug( "onDataChange: got locations from firebase");
+                CustomLogger.getInstance().logDebug("onDataChange: got locations from firebase");
                 setTabLayout();
                 if (locationModelArrayList.size() > 0)
                     addLocationsToLocalStorage(locationModelArrayList);
@@ -300,14 +248,57 @@ public class LocatorFragment extends Fragment {
 
             }
         };
-        FireBaseHelper.getInstance(activity).getDataFromFirebase(childEventListener,
-                FireBaseHelper.NONVERSIONED_STATEWISE,
-                Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+                childEventListener,
                 locatorType);
-        FireBaseHelper.getInstance(activity).getDataFromFirebase(valueEventListener,
-                FireBaseHelper.NONVERSIONED_STATEWISE, true,
-                Preferences.getInstance().getStatePref(activity).getCode(),
-                locatorType);
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+                valueEventListener, true, locatorType);
+    }
+
+    private void addLocationsToLocalStorage(ArrayList<LocationModel> locationModels) {
+        try {
+            String jsonObject = Helper.getInstance().getJsonFromObject(locationModels);
+            CustomLogger.getInstance().logDebug("Json: " + jsonObject);
+            CustomLogger.getInstance().logDebug("adding LocationsToLocalStorage: ");
+            IOHelper.getInstance().writeToFile(activity, jsonObject, locatorType,
+                    Preferences.getInstance().getStatePref(activity).getCode(),
+                    success -> Preferences.getInstance().setIntPref(activity, pref, locationModels.size()));
+        } catch (JsonParseException jpe) {
+            jpe.printStackTrace();
+        }
+    }
+
+    private void setTabLayout() {
+        setData();
+        manageNoLocationLayout(false);
+        final MyAdapter adapter = new MyAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                CustomLogger.getInstance().logDebug("onPageSelected: selected = " + position);
+
+                Fragment fragment = adapter.getCurrentFragment();
+                if (fragment instanceof TabNearby) {
+                    ((TabNearby) fragment).startLocationProcess();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    public void setData() {
+        LocationDataProvider.getInstance().setLocationModelArrayList(locatorType, locationModelArrayList);
     }
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -387,7 +378,7 @@ public class LocatorFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString());
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
@@ -398,10 +389,11 @@ public class LocatorFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug( "onActivityResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onActivityResult: " + frag.toString());
             frag.onActivityResult(requestCode, resultCode, data);
         }
 
 
     }
+
 }

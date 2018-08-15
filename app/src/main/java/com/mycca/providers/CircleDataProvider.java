@@ -14,7 +14,7 @@ import com.mycca.models.State;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.lang.reflect.Type;
@@ -128,7 +128,7 @@ public class CircleDataProvider {
             }
         };
 
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, false, NewFireBaseHelper.ROOT_CIRCLE_DATA);
+        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, false, FireBaseHelper.ROOT_CIRCLE_DATA);
 
     }
 

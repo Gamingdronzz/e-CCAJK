@@ -22,7 +22,7 @@ import com.mycca.activity.MainActivity;
 import com.mycca.activity.StateSettingActivity;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.Locale;
@@ -49,7 +49,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        mAuth = NewFireBaseHelper.getInstance().getAuth();
+        mAuth = FireBaseHelper.getInstance().getAuth();
         bindViews(view);
         init();
         return view;

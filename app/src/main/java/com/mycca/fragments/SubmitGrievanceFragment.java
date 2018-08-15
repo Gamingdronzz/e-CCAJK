@@ -57,7 +57,7 @@ import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -356,7 +356,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             Helper.getInstance().showMaintenanceDialog(mainActivity);
                         }
                     };
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
                 }
             }
 
@@ -417,19 +417,19 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             }
 
         };
-        NewFireBaseHelper.getInstance().getReferenceNumber(handler, state.getCode());
+        FireBaseHelper.getInstance().getReferenceNumber(handler, state.getCode());
     }
 
     private void uploadData() {
         grievanceModel = new GrievanceModel(identifierHint, code, email, mobile, details, submittedBy,
-                NewFireBaseHelper.getInstance().getAuth().getUid(),
+                FireBaseHelper.getInstance().getAuth().getUid(),
                 refNo, new Date(), 0,
                 grievanceType.getId(),
                 selectedImageModelArrayList.size());
 
-        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(),
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(),
                 grievanceModel,
-                NewFireBaseHelper.ROOT_GRIEVANCES,
+                FireBaseHelper.ROOT_GRIEVANCES,
                 code, String.valueOf(grievanceType.getId()));
 
         task.addOnCompleteListener(task1 -> {
@@ -455,14 +455,14 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             counterUpload = 0;
 
             for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-                final UploadTask uploadTask = NewFireBaseHelper.getInstance().uploadFiles(state.getCode(),
+                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(state.getCode(),
                         imageModel,
                         true,
                         counterFirebaseImages++,
-                        NewFireBaseHelper.ROOT_GRIEVANCES,
+                        FireBaseHelper.ROOT_GRIEVANCES,
                         code,
                         String.valueOf(grievanceType.getId()),
-                        NewFireBaseHelper.ROOT_BY_USER);
+                        FireBaseHelper.ROOT_BY_USER);
 
                 if (uploadTask != null) {
                     uploadTask.addOnFailureListener(
@@ -537,14 +537,14 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void setSubmissionSuccessForGrievance() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("submissionSuccess", true);
-        NewFireBaseHelper.getInstance().updateData(state.getCode(),
+        FireBaseHelper.getInstance().updateData(state.getCode(),
                 String.valueOf(grievanceType.getId()),
                 hashMap,
-                NewFireBaseHelper.ROOT_GRIEVANCES,
+                FireBaseHelper.ROOT_GRIEVANCES,
                 code
         );
 
-        NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), code, NewFireBaseHelper.ROOT_REF_NUMBERS, refNo);
+        FireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), code, FireBaseHelper.ROOT_REF_NUMBERS, refNo);
     }
 
     private void clearFormData() {

@@ -54,7 +54,7 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.Helper;
 import com.mycca.tools.MyLocationManager;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -257,7 +257,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                             Helper.getInstance().showMaintenanceDialog(mainActivity);
                         }
                     };
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
@@ -297,9 +297,9 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         inspectionModel = new InspectionModel(staffModel.getId(),
                 staffModel.getEmail(), locName, latitude, longitude, new Date());
 
-        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(staffModel.getState(),
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(staffModel.getState(),
                 inspectionModel,
-                NewFireBaseHelper.ROOT_INSPECTION,
+                FireBaseHelper.ROOT_INSPECTION,
                 key);
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
@@ -318,11 +318,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         counterFirebaseImages = 0;
         counterUpload = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = NewFireBaseHelper.getInstance().uploadFiles(staffModel.getState(),
+            uploadTask = FireBaseHelper.getInstance().uploadFiles(staffModel.getState(),
                     imageModel,
                     true,
                     counterFirebaseImages++,
-                    NewFireBaseHelper.ROOT_INSPECTION,
+                    FireBaseHelper.ROOT_INSPECTION,
                     key);
 
             if (uploadTask != null) {

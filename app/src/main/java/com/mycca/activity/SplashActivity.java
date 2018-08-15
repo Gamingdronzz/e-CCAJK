@@ -21,7 +21,7 @@ import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 public class SplashActivity extends AppCompatActivity {
@@ -151,7 +151,7 @@ public class SplashActivity extends AppCompatActivity {
                 checkOtherStateData();
             }
         };
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
     }
 
     public void checkCircles() {
@@ -180,7 +180,7 @@ public class SplashActivity extends AppCompatActivity {
                 checkOtherStateData();
             }
         };
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_CIRCLE_COUNT);
+        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_CIRCLE_COUNT);
     }
 
     private void checkActiveCircles() {
@@ -210,7 +210,7 @@ public class SplashActivity extends AppCompatActivity {
                 checkOtherStateData();
             }
         };
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_ACTIVE_COUNT);
+        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_ACTIVE_COUNT);
 
     }
 
@@ -228,7 +228,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void getOtherData() {
-        NewFireBaseHelper.getInstance().getOtherStateData(this, new DownloadCompleteListener() {
+        FireBaseHelper.getInstance().getOtherStateData(this, new DownloadCompleteListener() {
             @Override
             public void onDownloadSuccess() {
                 LoadNextActivity();

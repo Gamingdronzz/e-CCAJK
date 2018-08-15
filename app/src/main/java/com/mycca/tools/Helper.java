@@ -23,12 +23,14 @@ import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
@@ -39,6 +41,7 @@ import com.google.gson.Gson;
 import com.mycca.R;
 import com.mycca.activity.SplashActivity;
 import com.mycca.activity.TrackGrievanceResultActivity;
+import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.app.AppController;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialog;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
@@ -48,6 +51,8 @@ import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.models.GrievanceType;
 import com.mycca.models.StaffModel;
+import com.mycca.models.State;
+import com.mycca.providers.CircleDataProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -212,7 +217,7 @@ public class Helper {
 
         try {
             newVersion = (long) dataSnapshot.getValue();
-            CustomLogger.getInstance().logDebug("Version: "+ newVersion);
+            CustomLogger.getInstance().logDebug("Version: " + newVersion);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -268,7 +273,7 @@ public class Helper {
     public void setLocale(Context context) {
 
         String lang = Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE);
-        Locale locale=new Locale(lang);
+        Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Resources resources = context.getApplicationContext().getResources();
         Configuration configuration = resources.getConfiguration();
@@ -391,14 +396,14 @@ public class Helper {
                 FancyAlertDialogType.WARNING);
     }
 
-    public void showMessage(Activity activity,String message,String title, FancyAlertDialogType dialogType){
+    public void showMessage(Activity activity, String message, String title, FancyAlertDialogType dialogType) {
         showFancyAlertDialog(activity, message, title,
                 activity.getString(R.string.ok), () -> {
                 }, null, null, dialogType);
 
     }
 
-    public void noInternetDialog(Activity activity){
+    public void noInternetDialog(Activity activity) {
         Helper.getInstance().showFancyAlertDialog(activity,
                 activity.getString(R.string.connect_to_internet),
                 activity.getString(R.string.no_internet),
@@ -439,11 +444,16 @@ public class Helper {
     public void showTrackWindow(final Activity context, View parent) {
         final EditText editText;
         final TextInputLayout textInputLayout;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, null);
+        final Spinner spinner;
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, (ViewGroup) parent,false);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         editText = popupView.findViewById(R.id.edittext_pcode);
         textInputLayout = popupView.findViewById(R.id.text_input_layout);
+        spinner = popupView.findViewById(R.id.spinner_track_circle);
+        GenericSpinnerAdapter<State> circleAdapter = new GenericSpinnerAdapter<>(context,
+                CircleDataProvider.getInstance().getActiveCircleData());
+        spinner.setAdapter(circleAdapter);
 
         RadioGroup radioGroup = popupView.findViewById(R.id.radio_group_identifier_type);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -482,6 +492,7 @@ public class Helper {
             } else {
                 Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
                 intent.putExtra("Code", editText.getText().toString());
+                intent.putExtra("State",((State)spinner.getSelectedItem()).getCode());
                 context.startActivity(intent);
             }
             editText.requestFocus();
@@ -515,7 +526,7 @@ public class Helper {
                 Toast.makeText(context, AppController.getResourses().getString(R.string.empty_new), Toast.LENGTH_LONG).show();
             } else if (!confirmPwd.equals(newPwd)) {
                 Toast.makeText(context, AppController.getResourses().getString(R.string.new_not_matching), Toast.LENGTH_LONG).show();
-            } else if (NewFireBaseHelper.getInstance().getAuth().getCurrentUser() == null)
+            } else if (FireBaseHelper.getInstance().getAuth().getCurrentUser() == null)
                 showErrorDialog(AppController.getResourses().getString(R.string.try_after_signin),
                         AppController.getResourses().getString(R.string.google_signin_first), context);
             else {
@@ -543,12 +554,12 @@ public class Helper {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 CustomLogger.getInstance().logDebug("onDataChange: " + dataSnapshot.getValue());
                 if (dataSnapshot.getValue() != null && dataSnapshot.getValue().equals(oldPwd)) {
-                    HashMap<String,Object> hashMap=new HashMap<>();
-                    hashMap.put(NewFireBaseHelper.ROOT_PASSWORD,newPwd);
-                    Task<Void> task = NewFireBaseHelper.getInstance().updateData(null,
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put(FireBaseHelper.ROOT_PASSWORD, newPwd);
+                    Task<Void> task = FireBaseHelper.getInstance().updateData(null,
                             staff.getId(),
                             hashMap,
-                            NewFireBaseHelper.ROOT_STAFF);
+                            FireBaseHelper.ROOT_STAFF);
                     task.addOnCompleteListener(task1 -> {
                         progressDialog.dismiss();
                         if (task1.isSuccessful()) {
@@ -573,8 +584,8 @@ public class Helper {
                 showMaintenanceDialog(context);
             }
         };
-        NewFireBaseHelper.getInstance().getDataFromFireBase(staff.getState(),valueEventListener,
-                 true, NewFireBaseHelper.ROOT_STAFF, staff.getId(), NewFireBaseHelper.ROOT_PASSWORD);
+        FireBaseHelper.getInstance().getDataFromFireBase(staff.getState(), valueEventListener,
+                true, FireBaseHelper.ROOT_STAFF, staff.getId(), FireBaseHelper.ROOT_PASSWORD);
     }
 
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {

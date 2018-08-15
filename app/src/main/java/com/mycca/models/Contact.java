@@ -7,6 +7,9 @@ public class Contact {
     private String mobileContact;
     private String email;
 
+    public Contact() {
+    }
+
     public boolean isExpanded() {
         return isExpanded;
     }

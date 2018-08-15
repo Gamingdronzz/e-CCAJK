@@ -17,10 +17,10 @@ public class ConnectionUtility implements IConnectivityProcessor {
 
 
     final String TAG = "ConnectionUtility";
-    public final String _2G = "2G";
-    public final String _3G = "3G";
-    public final String _4G = "4G";
-    public final String _UNKNOWN = "Unknown";
+    public final static String _2G = "2G";
+    public final static String _3G = "3G";
+    public final static String _4G = "4G";
+    public final static String _UNKNOWN = "Unknown";
 
     public ConnectionUtility(OnConnectionAvailableListener onConnectionAvailableListener) {
         this.onConnectionAvailableListener = onConnectionAvailableListener;
@@ -33,7 +33,7 @@ public class ConnectionUtility implements IConnectivityProcessor {
         task.execute(customURL);
     }
 
-    public String getNetworkClass(Context context) {
+    public static String getNetworkClass(Context context) {
         TelephonyManager mTelephonyManager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
         int networkType;

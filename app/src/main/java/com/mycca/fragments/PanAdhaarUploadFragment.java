@@ -54,7 +54,7 @@ import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -153,13 +153,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         });
 
         switch (root) {
-            case NewFireBaseHelper.ROOT_ADHAAR:
+            case FireBaseHelper.ROOT_ADHAAR:
                 editTextCardNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editTextCardNumber.setFilters(Helper.getInstance().limitInputLength(12));
                 field2Hint = getString(R.string.aadhaar_no);
                 break;
 
-            case NewFireBaseHelper.ROOT_PAN:
+            case FireBaseHelper.ROOT_PAN:
                 editTextCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), (source, start, end, dest, dstart, dend) -> {
                     if (source.equals("")) { // for backspace
                         return source;
@@ -212,7 +212,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         items = new ArrayList<>();
         items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
         items.add(new FABMenuItem(1, getString(R.string.remove_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
-        if (root.equals(NewFireBaseHelper.ROOT_ADHAAR))
+        if (root.equals(FireBaseHelper.ROOT_ADHAAR))
             items.add(new FABMenuItem(2, getString(R.string.scan_adhaar), AppCompatResources.getDrawable(mainActivity, R.drawable.aadhaar_logo)));
 
     }
@@ -232,13 +232,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             return false;
         }
         //If Aadhar Number is not complete
-        else if ((root.equals(NewFireBaseHelper.ROOT_ADHAAR)) && (cardNumber.length() != 12)) {
+        else if ((root.equals(FireBaseHelper.ROOT_ADHAAR)) && (cardNumber.length() != 12)) {
             editTextCardNumber.setError(getString(R.string.invalid_aadhaar));
             editTextCardNumber.requestFocus();
             return false;
         }
         //If PAN Number is not complete
-        else if ((root.equals(NewFireBaseHelper.ROOT_PAN)) && (cardNumber.length() != 10)) {
+        else if ((root.equals(FireBaseHelper.ROOT_PAN)) && (cardNumber.length() != 10)) {
             editTextCardNumber.setError(getString(R.string.invalid_pan));
             editTextCardNumber.requestFocus();
             return false;
@@ -312,8 +312,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                             Helper.getInstance().showMaintenanceDialog(getActivity());
                         }
                     };
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(null,
-                            valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null,
+                            valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
@@ -345,7 +345,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber);
         PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
 
-        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), panAadharModel,
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), panAadharModel,
                 root,
                 pensionerIdentifier);
         task.addOnCompleteListener(task1 -> {
@@ -359,7 +359,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void uploadAllImagesToFirebase() {
-        UploadTask uploadTask = NewFireBaseHelper.getInstance().uploadFiles(state.getCode(),
+        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(state.getCode(),
                 imageModel,
                 false,
                 0,

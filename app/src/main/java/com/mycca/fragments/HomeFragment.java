@@ -32,7 +32,7 @@ import com.mycca.models.NewsModel;
 import com.mycca.models.SliderImageModel;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -185,11 +185,11 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             }
         };
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, childEventListener, NewFireBaseHelper.ROOT_NEWS);
+        FireBaseHelper.getInstance().getDataFromFireBase(null, childEventListener, FireBaseHelper.ROOT_NEWS);
     }
 
     public void setupWelcomeBar() {
-        FirebaseUser user = NewFireBaseHelper.getInstance().getAuth().getCurrentUser();
+        FirebaseUser user = FireBaseHelper.getInstance().getAuth().getCurrentUser();
         if (user != null) {
             tvUserName.setVisibility(View.VISIBLE);
             String username = getString(R.string.hello) + " " + user.getDisplayName();
@@ -232,7 +232,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             }
         };
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null, childEventListener, NewFireBaseHelper.ROOT_SLIDER);
+        FireBaseHelper.getInstance().getDataFromFireBase(null, childEventListener, FireBaseHelper.ROOT_SLIDER);
     }
 
     private void addImageToSlider(SliderImageModel sliderImageModel) {

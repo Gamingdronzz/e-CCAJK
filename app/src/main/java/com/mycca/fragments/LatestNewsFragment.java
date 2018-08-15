@@ -18,7 +18,7 @@ import com.google.firebase.database.DatabaseException;
 import com.mycca.R;
 import com.mycca.adapter.RecyclerViewAdapterNews;
 import com.mycca.models.NewsModel;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -62,7 +62,7 @@ public class LatestNewsFragment extends Fragment {
 
     private void getNews() {
 
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null,new ChildEventListener() {
+        FireBaseHelper.getInstance().getDataFromFireBase(null,new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                         if (dataSnapshot.getValue() != null) {
@@ -116,6 +116,6 @@ public class LatestNewsFragment extends Fragment {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                },NewFireBaseHelper.ROOT_NEWS);
+                }, FireBaseHelper.ROOT_NEWS);
     }
 }

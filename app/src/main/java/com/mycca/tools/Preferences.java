@@ -122,6 +122,9 @@ public class Preferences {
         editor.remove(PREF_OFFICE_LABEL);
         editor.remove(PREF_OFFICE_COORDINATES);
         editor.remove(PREF_WEBSITE);
+        editor.remove(PREF_CONTACTS);
+        editor.remove(PREF_GP);
+        editor.remove(PREF_WIFI);
         editor.apply();
     }
 

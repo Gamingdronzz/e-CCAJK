@@ -22,7 +22,7 @@ import com.mycca.models.NewsModel;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.Date;
@@ -108,7 +108,7 @@ public class AddNewsFragment extends Fragment {
                             Helper.getInstance().showMaintenanceDialog(getActivity());
                         }
                     };
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(null,valueEventListener,true,NewFireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null,valueEventListener,true, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
 
@@ -137,8 +137,8 @@ public class AddNewsFragment extends Fragment {
                     null,
                     Preferences.getInstance().getStaffPref(getContext()).getId(),
                     Preferences.getInstance().getStaffPref(getContext()).getId());
-            task = NewFireBaseHelper.getInstance().pushOnFireBase(newsModel,
-                    NewFireBaseHelper.ROOT_NEWS);
+            task = FireBaseHelper.getInstance().pushOnFireBase(newsModel,
+                    FireBaseHelper.ROOT_NEWS);
         } else {
             newsModel.setHeadline(textTitle.getText().toString());
             newsModel.setDescription(textDescription.getText().toString());
@@ -147,7 +147,7 @@ public class AddNewsFragment extends Fragment {
             result.put("description", newsModel.getDescription().trim());
             result.put("updatedBy",Preferences.getInstance().getStaffPref(getContext()).getId());
             result.put("dateUpdated",new Date());
-            task = NewFireBaseHelper.getInstance().updateData(null,newsModel.getKey(), result, NewFireBaseHelper.ROOT_NEWS);
+            task = FireBaseHelper.getInstance().updateData(null,newsModel.getKey(), result, FireBaseHelper.ROOT_NEWS);
 
         }
 

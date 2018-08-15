@@ -44,7 +44,7 @@ import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
@@ -173,7 +173,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                             Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this);
                         }
                     };
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, NewFireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
                 }
             }
 
@@ -211,10 +211,10 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         hashMap.put("grievanceStatus", status);
         hashMap.put("message", message);
 
-        Task<Void> task = NewFireBaseHelper.getInstance().updateData(grievanceModel.getState(),
+        Task<Void> task = FireBaseHelper.getInstance().updateData(grievanceModel.getState(),
                 String.valueOf(grievanceModel.getGrievanceType()),
                 hashMap,
-                NewFireBaseHelper.ROOT_GRIEVANCES,
+                FireBaseHelper.ROOT_GRIEVANCES,
                 grievanceModel.getIdentifierNumber());
         task.addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
@@ -235,14 +235,14 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             counterUpload = 0;
 
             for (int i = 0; i < attachmentModelArrayList.size(); i++) {
-                final UploadTask uploadTask = NewFireBaseHelper.getInstance().uploadFiles(grievanceModel.getState(),
+                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(grievanceModel.getState(),
                         attachmentModelArrayList.get(i),
                         true,
                         i,
-                        NewFireBaseHelper.ROOT_GRIEVANCES,
+                        FireBaseHelper.ROOT_GRIEVANCES,
                         grievanceModel.getIdentifierNumber(),
                         String.valueOf(grievanceModel.getGrievanceType()),
-                        NewFireBaseHelper.ROOT_BY_STAFF);
+                        FireBaseHelper.ROOT_BY_STAFF);
 
                 if (uploadTask != null) {
                     uploadTask.addOnFailureListener(exception -> onFailure(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error)))
@@ -303,16 +303,16 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         hashMap.put("grievanceStatus", grievanceModel.getGrievanceStatus());
         hashMap.put("message", grievanceModel.getMessage());
 
-         NewFireBaseHelper.getInstance().updateData(grievanceModel.getState(),
+         FireBaseHelper.getInstance().updateData(grievanceModel.getState(),
                 String.valueOf(grievanceModel.getGrievanceType()),
                 hashMap,
-                NewFireBaseHelper.ROOT_GRIEVANCES,
+                FireBaseHelper.ROOT_GRIEVANCES,
                 grievanceModel.getIdentifierNumber());
     }
 
     private void notifyPensioner() {
 
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
+        FireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
@@ -330,7 +330,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     }
 
     private void getTokenAndSendNotification(final String fcmKey) {
-        NewFireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
+        FireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
@@ -344,7 +344,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        },true,NewFireBaseHelper.ROOT_TOKEN,grievanceModel.getUid());
+        },true, FireBaseHelper.ROOT_TOKEN,grievanceModel.getUid());
 
     }
 

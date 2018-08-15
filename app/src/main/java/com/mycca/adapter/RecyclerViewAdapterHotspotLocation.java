@@ -43,7 +43,10 @@ public class RecyclerViewAdapterHotspotLocation extends RecyclerView.Adapter<Rec
 
     @Override
     public int getItemCount() {
-        return locationArray.size();
+        if (locationArray == null)
+            return 0;
+        else
+            return locationArray.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

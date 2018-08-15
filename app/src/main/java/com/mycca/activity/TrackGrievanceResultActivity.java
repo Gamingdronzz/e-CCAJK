@@ -12,7 +12,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mycca.R;
 import com.mycca.adapter.RecyclerViewAdapterTracking;
@@ -24,8 +23,8 @@ import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.GrievanceModel;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.FireBaseHelper;
 
 import java.util.ArrayList;
 
@@ -35,8 +34,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     TextView textView;
     ArrayList<GrievanceModel> grievanceModelArrayList;
     RecyclerViewAdapterTracking adapterTracking;
-    DatabaseReference dbref;
-    String pensionerCode;
+    String pensionerCode, state;
     ProgressDialog progressDialog;
     final String TAG = "Track";
     long grievanceType = -1;
@@ -67,7 +65,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                CustomLogger.getInstance().logDebug( "onClick: " + position);
+                CustomLogger.getInstance().logDebug("onClick: " + position);
                 grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
                 if (grievanceModelArrayList.get(position).isHighlighted())
                     grievanceModelArrayList.get(position).setHighlighted(false);
@@ -99,6 +97,16 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         connectionUtility.checkConnectionAvailability();
     }
 
+    private void ManageNoGrievanceLayout(boolean show) {
+        if (show) {
+            recyclerViewTrack.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerViewTrack.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.GONE);
+        }
+    }
+
     private void onConnectionNotAvailable() {
         progressDialog.dismiss();
         Helper.getInstance().showFancyAlertDialog(this,
@@ -113,8 +121,8 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
     private void getGrievancesOnConnectionAvailable() {
 
-        dbref = FireBaseHelper.getInstance(this).versionedDbRef;
         pensionerCode = getIntent().getStringExtra("Code");
+        state = getIntent().getStringExtra("State");
         try {
             grievanceType = getIntent().getLongExtra("grievanceType", -1);
         } catch (Exception e) {
@@ -124,38 +132,52 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     }
 
     private void getGrievances() {
-        CustomLogger.getInstance().logDebug( "getGrievances for: " + pensionerCode);
+        CustomLogger.getInstance().logDebug("getGrievances for: " + pensionerCode);
 
-        dbref.child(FireBaseHelper.ROOT_GRIEVANCES).addChildEventListener(new ChildEventListener() {
+        FireBaseHelper.getInstance().getDataFromFireBase(state, new ChildEventListener() {
+            int i = 0;
             @Override
-            public void onChildAdded(@NonNull final DataSnapshot dataSnapshot1, String s) {
+            public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, String s) {
+                CustomLogger.getInstance().logDebug("grievance key:" + dataSnapshot.getKey());
                 try {
-                    CustomLogger.getInstance().logDebug( "state key:" + dataSnapshot1.getKey());
-                    dbref.child(FireBaseHelper.ROOT_GRIEVANCES).child(dataSnapshot1.getKey()).child(pensionerCode)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getValue() != null) {
-                                        CustomLogger.getInstance().logDebug( "Datasnapshot: " + dataSnapshot);
-                                        ManageNoGrievanceLayout(false);
-                                        progressDialog.dismiss();
-                                        getGrievanceOfPensioner(dataSnapshot1.getKey());
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                } catch (Exception e) {
+                    GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
+                    if (model != null) {
+                        if (grievanceType != -1) {
+                            if (model.getGrievanceType() == grievanceType) {
+                                model.setExpanded(true);
+                                model.setHighlighted(true);
+                            }
+                        }
+                        if (model.isSubmissionSuccess()) {
+                            grievanceModelArrayList.add(i, model);
+                            CustomLogger.getInstance().logDebug("arraylist size:" + grievanceModelArrayList.size());
+                            adapterTracking.notifyItemInserted(i);
+                            i++;
+                        }
+                    }
+                } catch (DatabaseException e) {
                     e.printStackTrace();
-                    ManageNoGrievanceLayout(true);
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+                CustomLogger.getInstance().logDebug("ChildChanged\n" + dataSnapshot);
+                GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
+                int counter = 0;
+                if (model != null) {
+                    for (GrievanceModel gm : grievanceModelArrayList) {
+                        if (gm.getGrievanceType() == model.getGrievanceType()) {
+                            grievanceModelArrayList.remove(gm);
+                            model.setExpanded(true);
+                            model.setHighlighted(true);
+                            grievanceModelArrayList.add(counter, model);
+                            break;
+                        }
+                        counter++;
+                    }
+                    adapterTracking.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -168,84 +190,25 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
+                progressDialog.dismiss();
             }
-        });
+        }, FireBaseHelper.ROOT_GRIEVANCES, pensionerCode);
+
+        FireBaseHelper.getInstance().getDataFromFireBase(state, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                if (grievanceModelArrayList.size() > 0)
+                    ManageNoGrievanceLayout(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                progressDialog.dismiss();
+            }
+        }, true, FireBaseHelper.ROOT_GRIEVANCES, pensionerCode);
     }
 
-    private void getGrievanceOfPensioner(String key) {
-
-        dbref.child(FireBaseHelper.ROOT_GRIEVANCES)
-                .child(key)
-                .child(pensionerCode)
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                        CustomLogger.getInstance().logDebug( "grievance key:" + dataSnapshot.getKey());
-                        try {
-
-                            GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
-                            if (model != null) {
-                                if (grievanceType != -1) {
-                                    if (model.getGrievanceType() == grievanceType) {
-                                        model.setExpanded(true);
-                                        model.setHighlighted(true);
-                                    }
-                                }
-                                if (model.isSubmissionSuccess()) {
-                                    grievanceModelArrayList.add(model);
-                                    CustomLogger.getInstance().logDebug( "arraylist size:" + grievanceModelArrayList.size());
-                                    adapterTracking.notifyDataSetChanged();
-                                }
-                            }
-                        } catch (DatabaseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-                        CustomLogger.getInstance().logDebug( "ChildChanged\n" + dataSnapshot);
-                        GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
-                        int counter = 0;
-                        if (model != null) {
-                            for (GrievanceModel gm : grievanceModelArrayList) {
-                                if (gm.getGrievanceType() == model.getGrievanceType()) {
-                                    grievanceModelArrayList.remove(gm);
-                                    model.setExpanded(true);
-                                    model.setHighlighted(true);
-                                    grievanceModelArrayList.add(counter, model);
-                                    break;
-                                }
-                                counter++;
-                            }
-                            adapterTracking.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        CustomLogger.getInstance().logDebug( "onCancelled: " + databaseError.getMessage());
-                        progressDialog.dismiss();
-                    }
-                });
-    }
-
-    private void ManageNoGrievanceLayout(boolean show) {
-        if (show) {
-            recyclerViewTrack.setVisibility(View.GONE);
-            textView.setVisibility(View.VISIBLE);
-        } else {
-            recyclerViewTrack.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.GONE);
-        }
-    }
 }
 

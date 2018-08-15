@@ -16,13 +16,28 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterContacts;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Contact;
-import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.ConnectionUtility;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
+import com.mycca.tools.IOHelper;
+import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Preferences;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class ContactUsFragment extends Fragment {
@@ -33,6 +48,7 @@ public class ContactUsFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
+    //ProgressDialog progressDialog;
     boolean isTab;
     MainActivity activity;
 
@@ -65,7 +81,6 @@ public class ContactUsFragment extends Fragment {
         textviewHeadingOfficeAddress = view.findViewById(R.id.textview_heading_office_address);
         textviewContactPersonHeading = view.findViewById(R.id.textview_contact_person_heading);
         textviewContactPersonHeading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
-        textViewOfficeAddress.setText(getGeneralText());
         compatButtonLocateOnMap = view.findViewById(R.id.button_locate_on_map);
         compatButtonLocateOnMap.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_drawable_location, 0, 0, 0);
 
@@ -74,19 +89,29 @@ public class ContactUsFragment extends Fragment {
     private void init(boolean isMultiColumn) {
 
         activity = (MainActivity) getActivity();
-        contactArrayList = FireBaseHelper.getInstance(getContext()).getContactsList();
+        //progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
+        textViewOfficeAddress.setText(getGeneralText());
+
+        getContactArrayList();
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, activity);
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         compatButtonLocateOnMap.setOnClickListener(v -> {
-            String location = "32.707500,74.874217";
-            Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location + "(Office of CCA, JK)");
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
-                startActivity(mapIntent);
+            String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
+            if (location != null) {
+                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location +
+                        Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL));
+
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.no_map_app), Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(activity, "No Map Application Installed", Toast.LENGTH_SHORT).show();
+                Helper.getInstance().showMessage(activity, getString(R.string.office_location_n_a),
+                        getString(R.string.app_name), FancyAlertDialogType.WARNING);
             }
 
         });
@@ -108,11 +133,158 @@ public class ContactUsFragment extends Fragment {
         }
     }
 
-
-
     private String getGeneralText() {
-        return getResources().getString(R.string.contact_info);
+        return Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_ADDRESS);
     }
+
+    private void getContactArrayList() {
+
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                if (Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS) == -1) {
+                    getContactsFromFirebase();
+                } else {
+                    String networkClass = ConnectionUtility.getNetworkClass(activity);
+                    if (networkClass.equals(ConnectionUtility._2G)) {
+                        getContactsFromLocalStorage();
+                    } else {
+                        checkNewContactsInFirebase();
+                    }
+                }
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                if (Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS) != -1) {
+                    getContactsFromLocalStorage();
+                }
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void getContactsFromLocalStorage() {
+        contactArrayList = new ArrayList<>();
+        IOHelper.getInstance().readFromFile(activity, "Contact Persons",
+                Preferences.getInstance().getStatePref(activity).getCode(),
+                jsonObject -> {
+                    String json = String.valueOf(jsonObject);
+                    try {
+                        Gson gson = new Gson();
+                        Type collectionType = new TypeToken<ArrayList<Contact>>() {
+                        }.getType();
+                        contactArrayList = gson.fromJson(json, collectionType);
+                        adapterContacts.notifyDataSetChanged();
+                    } catch (JsonParseException jpe) {
+                        jpe.printStackTrace();
+                    }
+                });
+    }
+
+    private void getContactsFromFirebase() {
+        contactArrayList = new ArrayList<>();
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getValue() != null) {
+                    try {
+                        CustomLogger.getInstance().logDebug("onChildAdded: " + dataSnapshot.getKey());
+                        Contact contact = dataSnapshot.getValue(Contact.class);
+                        contactArrayList.add(contact);
+                    } catch (DatabaseException dbe) {
+                        dbe.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                CustomLogger.getInstance().logDebug("onDataChange: got locations from firebase");
+                if (contactArrayList.size() > 0) {
+                    adapterContacts.notifyDataSetChanged();
+                    addContactsToLocalStorage(contactArrayList);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+                childEventListener,
+                FireBaseHelper.ROOT_CONTACTS);
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+                valueEventListener, true, FireBaseHelper.ROOT_CONTACTS);
+
+    }
+
+    private void addContactsToLocalStorage(ArrayList<Contact> contactArrayList) {
+        try {
+            String jsonObject = Helper.getInstance().getJsonFromObject(contactArrayList);
+            CustomLogger.getInstance().logDebug("Json: " + jsonObject);
+            CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: ");
+            IOHelper.getInstance().writeToFile(activity, jsonObject, "Contact Persons",
+                    Preferences.getInstance().getStatePref(activity).getCode(),
+                    success -> Preferences.getInstance().setIntPref(activity,
+                            Preferences.PREF_CONTACTS,
+                            contactArrayList.size()));
+        } catch (JsonParseException jpe) {
+            jpe.printStackTrace();
+        }
+    }
+
+    private void checkNewContactsInFirebase() {
+        ValueEventListener vel = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    long firebaseCount = (long) dataSnapshot.getValue();
+                    if (Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS) == firebaseCount) {
+                        getContactsFromLocalStorage();
+                    } else {
+                        CustomLogger.getInstance().logDebug("init: new locations in firebase");
+                        getContactsFromFirebase();
+                    }
+                } catch (DatabaseException dbe) {
+                    dbe.printStackTrace();
+                    getContactsFromLocalStorage();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
+                getContactsFromLocalStorage();
+            }
+        };
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+                vel, false, FireBaseHelper.ROOT_CONTACTS_COUNT);
+
+    }
+
 
 }
 

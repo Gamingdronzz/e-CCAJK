@@ -24,7 +24,7 @@ import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
-import com.mycca.tools.NewFireBaseHelper;
+import com.mycca.tools.FireBaseHelper;
 
 public class FeedbackFragment extends Fragment {
 
@@ -84,7 +84,7 @@ public class FeedbackFragment extends Fragment {
                 if (Helper.versionChecked) {
                     submit();
                 } else{
-                    NewFireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
+                    FireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, activity))
@@ -95,7 +95,7 @@ public class FeedbackFragment extends Fragment {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Helper.getInstance().showMaintenanceDialog(activity);
                         }
-                    },true,NewFireBaseHelper.ROOT_APP_VERSION);
+                    },true, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
@@ -109,9 +109,9 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void submit() {
-        Task<Void> task = NewFireBaseHelper.getInstance().uploadDataToFireBase(null,
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(null,
                 etSuggestion.getText().toString().trim(),
-                NewFireBaseHelper.ROOT_SUGGESTIONS);
+                FireBaseHelper.ROOT_SUGGESTIONS);
 
         task.addOnCompleteListener((Task<Void> task1) -> {
 
@@ -120,7 +120,7 @@ public class FeedbackFragment extends Fragment {
                         getString(R.string.thanks_for_feedback),
                       FancyAlertDialogType.SUCCESS);
             } else {
-                if (NewFireBaseHelper.getInstance().getAuth().getCurrentUser() == null) {
+                if (FireBaseHelper.getInstance().getAuth().getCurrentUser() == null) {
                     Helper.getInstance().showFancyAlertDialog(activity, getString(R.string.suggestion_sign_in),
                             getString(R.string.sign_in_with_google),
                             getString(R.string.sign_in),
