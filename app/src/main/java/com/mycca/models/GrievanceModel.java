@@ -14,6 +14,7 @@ public class GrievanceModel {
     private String message;
     private String uid;
     private String referenceNo;
+    private String filePathList;
     private Date date;
     private long grievanceStatus;
     private long grievanceType;
@@ -41,6 +42,18 @@ public class GrievanceModel {
         this.fileCount = fileCount;
     }
 
+    public GrievanceModel(long grievanceType,String identifierType, String identifierNumber, String email, String mobile, String details, String state, String submittedBy, String filePathList) {
+        this.identifierType = identifierType;
+        this.identifierNumber = identifierNumber;
+        this.email = email;
+        this.mobile = mobile;
+        this.details = details;
+        this.state = state;
+        this.submittedBy = submittedBy;
+        this.filePathList = filePathList;
+        this.grievanceType = grievanceType;
+    }
+
     public String getUid() {
         return uid;
     }
@@ -59,6 +72,14 @@ public class GrievanceModel {
 
     public boolean isExpanded() {
         return expanded;
+    }
+
+    public String getFilePathList() {
+        return filePathList;
+    }
+
+    public void setFilePathList(String filePathList) {
+        this.filePathList = filePathList;
     }
 
     public void setExpanded(boolean expanded) {

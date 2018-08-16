@@ -40,8 +40,8 @@ public class CircleDataProvider {
         }
     }
 
-    public void setCircleData(Boolean checkForNew, Context context, DownloadCompleteListener downloadCompleteListener) {
-        if (checkForNew) {
+    public void setCircleData(Boolean fromFirebase, Context context, DownloadCompleteListener downloadCompleteListener) {
+        if (fromFirebase) {
             getCircleDataFromFireBase(context, downloadCompleteListener);
         } else {
             IOHelper.getInstance().readFromFile(context, "Circle Data", null,
@@ -76,6 +76,13 @@ public class CircleDataProvider {
 
     public State[] getCircleData() {
         return states;
+    }
+
+    public State getStateFromCode(String code){
+        for(State state : activeStates)
+            if(state.getCode().equals(code))
+                return state;
+        return null;
     }
 
     public void getCircleDataFromFireBase(Context context, DownloadCompleteListener downloadCompleteListener) {

@@ -130,6 +130,16 @@ public class Helper {
         return gpfGrievanceTypes;
     }
 
+    public GrievanceType getGrievanceFromId(long id) {
+        for (GrievanceType grievanceType : pensionGrievanceTypes)
+            if (grievanceType.getId() == id)
+                return grievanceType;
+        for (GrievanceType grievanceType : gpfGrievanceTypes)
+            if (grievanceType.getId() == id)
+                return grievanceType;
+        return null;
+    }
+
     public String getGrievanceString(long id) {
         switch ((int) id) {
             case 0:
@@ -259,9 +269,27 @@ public class Helper {
         return gson.fromJson(json, type);
     }
 
-    public ArrayList getCollectionFromJson(String json, Type collectionType){
+    public ArrayList getCollectionFromJson(String json, Type collectionType) {
         Gson gson = new Gson();
-        return  gson.fromJson(json,collectionType);
+        return gson.fromJson(json, collectionType);
+    }
+
+    public void saveModelOffline(Activity context, Object model, Type collectionType, String filename) {
+        IOHelper.getInstance().readFromFile(context, filename, null, jsonObject -> {
+            ArrayList arrayList = new ArrayList();
+            if (jsonObject != null)
+                arrayList = getCollectionFromJson(jsonObject.toString(), collectionType);
+            CustomLogger.getInstance().logDebug("\nJson array = " + arrayList);
+            arrayList.add(model);
+            CustomLogger.getInstance().logDebug("\nJson array after addition = " + arrayList);
+            String newJson = getJsonFromObject(arrayList);
+            IOHelper.getInstance().writeToFile(context, newJson, filename, null, success -> {
+                if (success)
+                    showMessage(context, "", context.getString(R.string.data_save_success), FancyAlertDialogType.SUCCESS);
+                else
+                    showErrorDialog(context.getString(R.string.try_again), context.getString(R.string.data_save_fail), context);
+            });
+        });
     }
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
@@ -445,7 +473,7 @@ public class Helper {
         final EditText editText;
         final TextInputLayout textInputLayout;
         final Spinner spinner;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, (ViewGroup) parent,false);
+        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, (ViewGroup) parent, false);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         editText = popupView.findViewById(R.id.edittext_pcode);
@@ -492,7 +520,7 @@ public class Helper {
             } else {
                 Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
                 intent.putExtra("Code", editText.getText().toString());
-                intent.putExtra("State",((State)spinner.getSelectedItem()).getCode());
+                intent.putExtra("State", ((State) spinner.getSelectedItem()).getCode());
                 context.startActivity(intent);
             }
             editText.requestFocus();

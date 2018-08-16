@@ -83,6 +83,8 @@
     <string name="update">UPDATE</string>
     <string name="track">TRACK</string>
     <string name="submit">SUBMIT</string>
+    <string name="submit_now">SUBMIT NOW</string>
+    <string name="save">SAVE FOR LATER</string>
 
     <!--tutorial Strings-->
     <string name="tutorial_title0">Welcome</string>
@@ -287,6 +289,30 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="almost_done">Almost Done…</string>
     <string name="getting_coordinates">Getting Current Location Coordinates</string>
 
+    <!--invitation-->
+    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
+    <string name="invitation_message">Official Android Application of CCA</string>
+    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
+
+    <!-- CropView -->
+    <string name="crop_image_activity_title">Crop</string>
+    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">Crop</string>
+    <string name="pick_image_intent_chooser_title">Select source</string>
+
+    <!--barcode-->
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
+    <string name="read_barcode">Read Barcode</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="barcode_success">Barcode read successfully</string>
+    <string name="barcode_failure">No barcode captured</string>
+    <string name="barcode_error">"Error reading barcode: %1$s"</string>
+
     <!--others-->
     <string name="no_internet">Connection Not Available</string>
     <string name="connect_to_internet">Please connect to internet first.</string>
@@ -334,41 +360,8 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="download_success_title">Data Downloaded Successfully</string>
     <string name="download_success_message">You can continue using the app features.</string>
     <string name="download_fail_title">Data downloading failed</string>
-
-    <!--invitation-->
-    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>
-    <string name="invitation_message">Official Android Application of CCA</string>
-    <string name="invitation_message_heading">Official Android Application of CCA JK has been launched. Check it out here..</string>
-
-    <!-- CropView -->
-    <string name="crop_image_activity_title">Crop</string>
-    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
-    <string name="crop_image_menu_rotate_right">Rotate</string>
-    <string name="crop_image_menu_crop">Crop</string>
-    <string name="pick_image_intent_chooser_title">Select source</string>
-
-    <!--barcode-->
-    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
-    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
-    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
-    <string name="read_barcode">Read Barcode</string>
-    <string name="auto_focus">Auto Focus</string>
-    <string name="use_flash">Use Flash</string>
-    <string name="barcode_success">Barcode read successfully</string>
-    <string name="barcode_failure">No barcode captured</string>
-    <string name="barcode_error">"Error reading barcode: %1$s"</string>
-
-
-    <string name="contact_info"><b>Govt. of India
-\nMinistry of Communication &amp; IT Department of Telecom
-\nController of Communication Accounts, J&amp;K
-\nHUDCO Bhawan, Rail Head Complex
-\nJammu (J&amp;K)-180012
-\n\nToll Free No. 18001807036
-\nFAX - 0191-2477296, 2475251
-\nSTD CODE -0191</b></string>
-
+    <string name="data_save_success">Data Saved Successfully</string>
+    <string name="data_save_fail">Error while saving data</string>
 
 
 </resources>

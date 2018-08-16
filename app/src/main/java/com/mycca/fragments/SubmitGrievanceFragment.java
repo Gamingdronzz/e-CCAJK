@@ -35,6 +35,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.reflect.TypeToken;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
@@ -56,14 +57,15 @@ import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,7 +79,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     TextInputLayout textInputIdentifier;
     RadioGroup radioGroup;
     Spinner spinnerGrievance, spinnerSubmittedBy, spinnerCircle;
-    Button submit;
+    Button submit, save;
     FloatingActionButton buttonChooseFile;
     TextView textViewSelectedFileCount;
     LinearLayout radioLayout;
@@ -159,6 +161,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         radioGroup = view.findViewById(R.id.radio_group_identifier_type);
         buttonChooseFile = view.findViewById(R.id.button_attach);
         submit = view.findViewById(R.id.button_submit);
+        save = view.findViewById(R.id.button_save);
     }
 
     private void init() {
@@ -224,10 +227,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         }
 
         submit.setOnClickListener(v -> {
-            if(isUploadedToFirebase || isUploadedToServer)
+            if (isUploadedToFirebase || isUploadedToServer)
                 doSubmission();
             else if (checkInputBeforeSubmission())
                 showConfirmSubmissionDialog();
+        });
+
+        save.setOnClickListener(v -> {
+            if (checkInputBeforeSubmission())
+                saveGrievanceOffline();
         });
 
         selectedImageModelArrayList = new ArrayList<>();
@@ -239,32 +247,22 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         setSelectedFileCount(0);
     }
 
-    private void initItems() {
-        items = new ArrayList<>();
-        items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
-        items.add(new FABMenuItem(1, getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
-    }
-
-    private String[] submittedByList(String type) {
-        String first;
-        if (type.equals(getString(R.string.pension)))
-            first = getString(R.string.pensioner);
-        else
-            first = getString(R.string.gpf_benificiary);
-        return new String[]{first, getString(R.string.other)};
-    }
-
-    public void setSelectedFileCount(int count) {
-        textViewSelectedFileCount.setText(String.format(getString(R.string.files_selected), String.valueOf(count)));
-    }
-
-    private void removeAllSelectedImages() {
-        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
-            return;
+    private void saveGrievanceOffline() {
+        StringBuffer fileList = new StringBuffer();
+        if (selectedImageModelArrayList.size() > 0) {
+            for (SelectedImageModel imageModel : selectedImageModelArrayList) {
+                fileList = fileList.append(imageModel.getImageURI()).append(",");
+            }
         }
-        selectedImageModelArrayList.clear();
-        adapterSelectedImages.notifyDataSetChanged();
-        setSelectedFileCount(0);
+        CustomLogger.getInstance().logDebug(fileList.toString());
+        GrievanceModel grievanceModel = new GrievanceModel(grievanceType.getId(),
+                identifierHint, code, email, mobile, details,
+                state.getCode(), submittedBy,
+                fileList.toString());
+
+        Type collectionTye = new TypeToken<ArrayList<GrievanceModel>>() {
+        }.getType();
+        Helper.getInstance().saveModelOffline(mainActivity, grievanceModel, collectionTye,"Saved Grievances");
     }
 
     private boolean checkInputBeforeSubmission() {
@@ -302,6 +300,34 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             return false;
         }
         return true;
+    }
+
+    private void initItems() {
+        items = new ArrayList<>();
+        items.add(new FABMenuItem(0, getString(R.string.add_image), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_attach_file_white_24dp)));
+        items.add(new FABMenuItem(1, getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
+    }
+
+    private String[] submittedByList(String type) {
+        String first;
+        if (type.equals(getString(R.string.pension)))
+            first = getString(R.string.pensioner);
+        else
+            first = getString(R.string.gpf_benificiary);
+        return new String[]{first, getString(R.string.other)};
+    }
+
+    public void setSelectedFileCount(int count) {
+        textViewSelectedFileCount.setText(String.format(getString(R.string.files_selected), String.valueOf(count)));
+    }
+
+    private void removeAllSelectedImages() {
+        if (selectedImageModelArrayList == null || adapterSelectedImages == null) {
+            return;
+        }
+        selectedImageModelArrayList.clear();
+        adapterSelectedImages.notifyDataSetChanged();
+        setSelectedFileCount(0);
     }
 
     private void showConfirmSubmissionDialog() {

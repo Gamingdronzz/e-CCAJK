@@ -327,18 +327,40 @@
         app:showTitle="true"
         tools:targetApi="lollipop" />
 
-    <Button
-        android:id="@+id/button_submit"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/custom_button"
-        android:text="@string/submit"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_18"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/button_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:background="@drawable/custom_button"
+            android:text="@string/submit_now"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_18" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".01" />
+
+        <Button
+            android:id="@+id/button_save"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:background="@drawable/custom_button"
+            android:text="@string/save"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_18" />
+
+    </LinearLayout>
 
 </com.mycca.custom.CircularReveal.Widget.RevealRelativeLayout>
 
