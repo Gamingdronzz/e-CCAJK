@@ -21,20 +21,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterContacts;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Contact;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
+import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
-import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Preferences;
 
 import java.lang.reflect.Type;
@@ -48,8 +48,9 @@ public class ContactUsFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
-    //ProgressDialog progressDialog;
+    ProgressDialog progressDialog;
     boolean isTab;
+    int prefContactCount;
     MainActivity activity;
 
     public ContactUsFragment() {
@@ -89,20 +90,19 @@ public class ContactUsFragment extends Fragment {
     private void init(boolean isMultiColumn) {
 
         activity = (MainActivity) getActivity();
-        //progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
+        prefContactCount = Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS);
+        CustomLogger.getInstance().logDebug("pref count =" + prefContactCount);
+
+        progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
         textViewOfficeAddress.setText(getGeneralText());
 
-        getContactArrayList();
-        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, activity);
-        recyclerView.setAdapter(adapterContacts);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         compatButtonLocateOnMap.setOnClickListener(v -> {
-            String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
-            if (location != null) {
-                Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?q=" + location +
-                        Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL));
 
+            String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
+            String label = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL);
+            CustomLogger.getInstance().logDebug("location: " + location + " label: " + label);
+            if (location != null) {
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location + label);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
                     startActivity(mapIntent);
@@ -121,6 +121,9 @@ public class ContactUsFragment extends Fragment {
         }
         ManageOfficeAddress();
 
+        contactArrayList = new ArrayList<>();
+        getContactArrayList();
+
     }
 
     private void ManageOfficeAddress() {
@@ -137,12 +140,22 @@ public class ContactUsFragment extends Fragment {
         return Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_ADDRESS);
     }
 
+    private void setAdapter() {
+        progressDialog.dismiss();
+        CustomLogger.getInstance().logDebug("Setting Adapter");
+        adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, activity);
+        recyclerView.setAdapter(adapterContacts);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+    }
+
     private void getContactArrayList() {
 
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                if (Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS) == -1) {
+                progressDialog.show();
+                if (prefContactCount == -1) {
                     getContactsFromFirebase();
                 } else {
                     String networkClass = ConnectionUtility.getNetworkClass(activity);
@@ -156,7 +169,7 @@ public class ContactUsFragment extends Fragment {
 
             @Override
             public void OnConnectionNotAvailable() {
-                if (Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS) != -1) {
+                if (prefContactCount != -1) {
                     getContactsFromLocalStorage();
                 }
             }
@@ -165,17 +178,17 @@ public class ContactUsFragment extends Fragment {
     }
 
     private void getContactsFromLocalStorage() {
-        contactArrayList = new ArrayList<>();
         IOHelper.getInstance().readFromFile(activity, "Contact Persons",
                 Preferences.getInstance().getStatePref(activity).getCode(),
                 jsonObject -> {
                     String json = String.valueOf(jsonObject);
                     try {
-                        Gson gson = new Gson();
+                        CustomLogger.getInstance().logDebug(json);
                         Type collectionType = new TypeToken<ArrayList<Contact>>() {
                         }.getType();
-                        contactArrayList = gson.fromJson(json, collectionType);
-                        adapterContacts.notifyDataSetChanged();
+                        contactArrayList = (ArrayList<Contact>) Helper.getInstance().getCollectionFromJson(json, collectionType);
+                        CustomLogger.getInstance().logDebug(contactArrayList.toString());
+                        setAdapter();
                     } catch (JsonParseException jpe) {
                         jpe.printStackTrace();
                     }
@@ -183,7 +196,6 @@ public class ContactUsFragment extends Fragment {
     }
 
     private void getContactsFromFirebase() {
-        contactArrayList = new ArrayList<>();
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -221,9 +233,9 @@ public class ContactUsFragment extends Fragment {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CustomLogger.getInstance().logDebug("onDataChange: got locations from firebase");
+                CustomLogger.getInstance().logDebug("got contacts from firebase");
                 if (contactArrayList.size() > 0) {
-                    adapterContacts.notifyDataSetChanged();
+                    setAdapter();
                     addContactsToLocalStorage(contactArrayList);
                 }
             }
@@ -245,7 +257,7 @@ public class ContactUsFragment extends Fragment {
         try {
             String jsonObject = Helper.getInstance().getJsonFromObject(contactArrayList);
             CustomLogger.getInstance().logDebug("Json: " + jsonObject);
-            CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: ");
+            CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: " + contactArrayList.size());
             IOHelper.getInstance().writeToFile(activity, jsonObject, "Contact Persons",
                     Preferences.getInstance().getStatePref(activity).getCode(),
                     success -> Preferences.getInstance().setIntPref(activity,
@@ -262,10 +274,11 @@ public class ContactUsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     long firebaseCount = (long) dataSnapshot.getValue();
-                    if (Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS) == firebaseCount) {
+                    if (prefContactCount == firebaseCount) {
+                        CustomLogger.getInstance().logDebug("no new contcts");
                         getContactsFromLocalStorage();
                     } else {
-                        CustomLogger.getInstance().logDebug("init: new locations in firebase");
+                        CustomLogger.getInstance().logDebug("new contacts found");
                         getContactsFromFirebase();
                     }
                 } catch (DatabaseException dbe) {

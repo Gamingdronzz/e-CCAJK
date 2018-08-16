@@ -1,46 +1,47 @@
 ﻿<resources>
 
-   <string name="app_name">मेरा सीसीए</string>
+    <string name="app_name">मेरा सीसीए</string>
 
-   <!--Action bar titles -->
-   <string name="home">होम</string>
+    <!--Action bar titles -->
+    <string name="home">होम</string>
 
-   <!--Nav menu -->
+    <!--Nav menu -->
 
-   <!--OPtions Menu-->
+    <!--OPtions Menu-->
 
-   <!--Floating menu-->
+    <!--Floating menu-->
 
-   <!--Form fields-->
+    <!--Form fields-->
 
-   <!--tutorial Strings-->
+    <!--tutorial Strings-->
 
-   <!--splash -->
-   <string name="splash_text">संचार लेखा नियंत्रक\nजम्मू-कश्मीर</string>
+    <!--splash -->
+    <string name="splash_text">संचार लेखा नियंत्रक\nजम्मू-कश्मीर\nदूरसंचार विभाग</string>
+    <string name="version">संस्करण %1$s</string>
 
-   <!--home-->
+    <!--home-->
 
-   <!--browser-->
-
-
-   <!--contact us-->
-
-   <!-- hotspots -->
+    <!--browser-->
 
 
-   <!--inspection-->
+    <!--contact us-->
 
-   <!--update grievance-->
+    <!-- hotspots -->
 
-   <!--About-->
 
-   <!--settings-->
+    <!--inspection-->
 
-   <!--others-->
+    <!--update grievance-->
 
-   <!--invitation-->
+    <!--About-->
 
-   <!-- CropView -->
+    <!--settings-->
+
+    <!--others-->
+
+    <!--invitation-->
+
+    <!-- CropView -->
 
 
 </resources>

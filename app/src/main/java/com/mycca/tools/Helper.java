@@ -14,7 +14,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -33,10 +32,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mycca.R;
 import com.mycca.activity.SplashActivity;
@@ -50,7 +46,6 @@ import com.mycca.custom.FancyAlertDialog.Icon;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.models.GrievanceType;
-import com.mycca.models.StaffModel;
 import com.mycca.models.State;
 import com.mycca.providers.CircleDataProvider;
 
@@ -60,8 +55,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 public class Helper {
@@ -262,6 +257,11 @@ public class Helper {
     public Object getObjectFromJson(String json, Type type) {
         Gson gson = new Gson();
         return gson.fromJson(json, type);
+    }
+
+    public ArrayList getCollectionFromJson(String json, Type collectionType){
+        Gson gson = new Gson();
+        return  gson.fromJson(json,collectionType);
     }
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
@@ -503,89 +503,6 @@ public class Helper {
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.update();
         popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
-    }
-
-    public void showChangePasswordWindow(final Activity context, View parent) {
-
-        final EditText editTextOld, editTextNew, editTextConfirm;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_change_password, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
-        editTextOld = popupView.findViewById(R.id.edittext_old_pwd);
-        editTextNew = popupView.findViewById(R.id.edittext_new_pwd);
-        editTextConfirm = popupView.findViewById(R.id.edittext_confirm_new_pwd);
-
-        Button change = popupView.findViewById(R.id.btn_change_pwd);
-        change.setOnClickListener(v -> {
-            String oldPwd = editTextOld.getText().toString();
-            String newPwd = editTextNew.getText().toString();
-            String confirmPwd = editTextConfirm.getText().toString();
-            if (oldPwd.isEmpty()) {
-                Toast.makeText(context, AppController.getResourses().getString(R.string.empty_old), Toast.LENGTH_LONG).show();
-            } else if (newPwd.isEmpty()) {
-                Toast.makeText(context, AppController.getResourses().getString(R.string.empty_new), Toast.LENGTH_LONG).show();
-            } else if (!confirmPwd.equals(newPwd)) {
-                Toast.makeText(context, AppController.getResourses().getString(R.string.new_not_matching), Toast.LENGTH_LONG).show();
-            } else if (FireBaseHelper.getInstance().getAuth().getCurrentUser() == null)
-                showErrorDialog(AppController.getResourses().getString(R.string.try_after_signin),
-                        AppController.getResourses().getString(R.string.google_signin_first), context);
-            else {
-                changePassword(oldPwd, newPwd, context);
-                popupWindow.dismiss();
-            }
-
-        });
-
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        popupWindow.update();
-        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
-    }
-
-    private void changePassword(String oldPwd, String newPwd, Activity context) {
-
-        ProgressDialog progressDialog = Helper.getInstance().getProgressWindow(context, AppController.getResourses().getString(R.string.please_wait));
-        progressDialog.show();
-        StaffModel staff = Preferences.getInstance().getStaffPref(context);
-
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                CustomLogger.getInstance().logDebug("onDataChange: " + dataSnapshot.getValue());
-                if (dataSnapshot.getValue() != null && dataSnapshot.getValue().equals(oldPwd)) {
-                    HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put(FireBaseHelper.ROOT_PASSWORD, newPwd);
-                    Task<Void> task = FireBaseHelper.getInstance().updateData(null,
-                            staff.getId(),
-                            hashMap,
-                            FireBaseHelper.ROOT_STAFF);
-                    task.addOnCompleteListener(task1 -> {
-                        progressDialog.dismiss();
-                        if (task1.isSuccessful()) {
-                            showFancyAlertDialog(context,
-                                    "", AppController.getResourses().getString(R.string.password_change_success),
-                                    AppController.getResourses().getString(R.string.ok), () -> {
-                                    }, null, null, FancyAlertDialogType.SUCCESS);
-                        } else {
-                            showErrorDialog(AppController.getResourses().getString(R.string.try_again),
-                                    AppController.getResourses().getString(R.string.password_change_fail), context);
-                        }
-                    });
-                } else {
-                    progressDialog.dismiss();
-                    showErrorDialog(AppController.getResourses().getString(R.string.incorrect_old),
-                            AppController.getResourses().getString(R.string.password_change_fail), context);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showMaintenanceDialog(context);
-            }
-        };
-        FireBaseHelper.getInstance().getDataFromFireBase(staff.getState(), valueEventListener,
-                true, FireBaseHelper.ROOT_STAFF, staff.getId(), FireBaseHelper.ROOT_PASSWORD);
     }
 
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
