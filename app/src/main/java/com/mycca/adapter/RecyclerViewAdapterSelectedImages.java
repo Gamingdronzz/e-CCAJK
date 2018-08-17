@@ -64,7 +64,7 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
     @Override
     public int getItemCount() {
-        return selectedImageModelArrayList.size();
+        return selectedImageModelArrayList != null ? selectedImageModelArrayList.size() : 0;
     }
 
     class SelectedImageViewHolder extends RecyclerView.ViewHolder {

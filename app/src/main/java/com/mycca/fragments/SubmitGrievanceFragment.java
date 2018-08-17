@@ -59,6 +59,7 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.IOHelper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -90,9 +91,10 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     int counterUpload = 0;
     int counterServerImages = 0;
     int counterFirebaseImages;
+    int identifierHint;
     String TAG = "Grievance";
-    String identifierHint = "Pensioner Code";
-    String code, mobile, email, details, type, submittedBy, refNo, prefix;
+    String hint;
+    String code, mobile, email, details, type, submittedBy, refNo, prefix, savedModel;
 
     MainActivity mainActivity;
     GrievanceType grievanceType;
@@ -105,6 +107,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
+    GenericSpinnerAdapter<State> statesAdapter;
+    GenericSpinnerAdapter<GrievanceType> adapter;
+    ArrayAdapter<String> arrayAdapter1;
 
     public SubmitGrievanceFragment() {
 
@@ -118,6 +123,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             type = bundle.getString("Type");
+            savedModel = bundle.getString("SavedModel", null);
         }
         bindViews();
         setHasOptionsMenu(true);
@@ -168,6 +174,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         mainActivity = (MainActivity) getActivity();
         progressDialog = new ProgressDialog(mainActivity != null ? mainActivity : getActivity());
+        hint = getString(R.string.p_code);
         initItems();
 
         editTextPensionerIdentifier.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
@@ -175,8 +182,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         editTextMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
         editTextDetails.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_detail, 0, 0, 0);
 
-        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(),
-                CircleDataProvider.getInstance().getActiveCircleData());
+        statesAdapter = new GenericSpinnerAdapter<>(getContext(), CircleDataProvider.getInstance().getActiveCircleData());
         spinnerCircle.setAdapter(statesAdapter);
 
         if (type.equals(getString(R.string.pension))) {
@@ -188,31 +194,33 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             list = Helper.getInstance().getGPFGrievanceTypeList();
             prefix = "GPF";
         }
-        GenericSpinnerAdapter<GrievanceType> adapter = new GenericSpinnerAdapter<>(getContext(), list);
+        adapter = new GenericSpinnerAdapter<>(getContext(), list);
         spinnerGrievance.setAdapter(adapter);
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioButtonPensioner:
-                    identifierHint = getString(R.string.p_code);
+                    identifierHint = GrievanceModel.PEN_NO;
+                    hint = getString(R.string.p_code);
                     editTextPensionerIdentifier.setFilters(Helper.getInstance().limitInputLength(15));
                     break;
                 case R.id.radioButtonHR:
-                    identifierHint = getString(R.string.hr_num);
+                    identifierHint = GrievanceModel.HR_NO;
+                    hint = getString(R.string.hr_num);
                     editTextPensionerIdentifier.setFilters(new InputFilter[]{});
                     break;
                 case R.id.radioButtonStaff:
-                    identifierHint = getString(R.string.staff_num);
+                    identifierHint = GrievanceModel.STAFF_NO;
+                    hint = getString(R.string.staff_num);
                     editTextPensionerIdentifier.setFilters(new InputFilter[]{});
             }
             editTextPensionerIdentifier.setText("");
             editTextPensionerIdentifier.setError(null);
-            textInputIdentifier.setHint(identifierHint);
+            textInputIdentifier.setHint(hint);
         });
 
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(mainActivity, R.layout.simple_spinner, submittedByList(type));
+        arrayAdapter1 = new ArrayAdapter<>(mainActivity, R.layout.simple_spinner, submittedByList(type));
         spinnerSubmittedBy.setAdapter(arrayAdapter1);
-
 
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_submit_grievance);
         try {
@@ -239,6 +247,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         });
 
         selectedImageModelArrayList = new ArrayList<>();
+        if (savedModel != null) {
+            loadModelValues();
+        }
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -247,22 +258,53 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         setSelectedFileCount(0);
     }
 
-    private void saveGrievanceOffline() {
-        StringBuffer fileList = new StringBuffer();
-        if (selectedImageModelArrayList.size() > 0) {
-            for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-                fileList = fileList.append(imageModel.getImageURI()).append(",");
+
+    private void loadModelValues() {
+        GrievanceModel model = (GrievanceModel) Helper.getInstance().getObjectFromJson(savedModel, GrievanceModel.class);
+        if (model.getGrievanceType() >= 100) {
+            switch (model.getIdentifierType()) {
+                case GrievanceModel.HR_NO:
+                    radioGroup.check(R.id.radioButtonHR);
+                    hint = getString(R.string.hr_num);
+                    break;
+                case GrievanceModel.STAFF_NO:
+                    radioGroup.check(R.id.radioButtonStaff);
+                    hint = getString(R.string.staff_num);
+                    break;
+                default:
+                    radioGroup.check(R.id.radioButtonPensioner);
             }
         }
-        CustomLogger.getInstance().logDebug(fileList.toString());
-        GrievanceModel grievanceModel = new GrievanceModel(grievanceType.getId(),
-                identifierHint, code, email, mobile, details,
-                state.getCode(), submittedBy,
-                fileList.toString());
+        textInputIdentifier.setHint(hint);
+        editTextPensionerIdentifier.setText(model.getIdentifierNumber());
+        editTextMobile.setText(model.getMobile());
+        editTextEmail.setText(model.getEmail());
+        editTextDetails.setText(model.getDetails());
+        spinnerSubmittedBy.setSelection(arrayAdapter1.getPosition(model.getSubmittedBy()));
+        spinnerGrievance.setSelection(adapter.getPosition(
+                Helper.getInstance().getGrievanceFromId(model.getGrievanceType())));
+        spinnerCircle.setSelection(statesAdapter.getPosition(
+                CircleDataProvider.getInstance().getStateFromCode(model.getState())));
+        selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
+        if (selectedImageModelArrayList != null)
+            setSelectedFileCount(selectedImageModelArrayList.size());
+    }
 
-        Type collectionTye = new TypeToken<ArrayList<GrievanceModel>>() {
+    private void saveGrievanceOffline() {
+        String fileList;
+        if (selectedImageModelArrayList != null)
+            fileList = Helper.getInstance().getStringFromList(selectedImageModelArrayList);
+        else
+            fileList = null;
+        CustomLogger.getInstance().logDebug(fileList);
+        GrievanceModel model = new GrievanceModel(identifierHint, code, email, mobile, details,
+                state.getCode(),
+                grievanceType.getId(),
+                submittedBy, fileList);
+
+        Type collectionType = new TypeToken<ArrayList<GrievanceModel>>() {
         }.getType();
-        Helper.getInstance().saveModelOffline(mainActivity, grievanceModel, collectionTye,"Saved Grievances");
+        Helper.getInstance().saveModelOffline(mainActivity, model, collectionType, IOHelper.GRIEVANCES);
     }
 
     private boolean checkInputBeforeSubmission() {
@@ -274,15 +316,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         state = (State) spinnerCircle.getSelectedItem();
         grievanceType = (GrievanceType) spinnerGrievance.getSelectedItem();
 
-        if (code.length() != 15 && identifierHint.equals(getString(R.string.p_code))) {
+        if (code.length() != 15 && identifierHint == GrievanceModel.PEN_NO) {
             editTextPensionerIdentifier.setError(getString(R.string.invalid_p_code));
             editTextPensionerIdentifier.requestFocus();
             return false;
-        } else if (code.trim().isEmpty() && identifierHint.equals(getString(R.string.hr_num))) {
+        } else if (code.trim().isEmpty() && identifierHint == GrievanceModel.HR_NO) {
             editTextPensionerIdentifier.setError(getString(R.string.invalid_hr_num));
             editTextPensionerIdentifier.requestFocus();
             return false;
-        } else if (code.trim().isEmpty() && identifierHint.equals(getString(R.string.staff_num))) {
+        } else if (code.trim().isEmpty() && identifierHint == GrievanceModel.STAFF_NO) {
             editTextPensionerIdentifier.setError(getString(R.string.invalid_staff_num));
             editTextPensionerIdentifier.requestFocus();
             return false;
@@ -546,7 +588,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         Map<String, String> params = new HashMap<>();
 
         params.put("pensionerCode", code);
-        params.put("personType", identifierHint);
+        params.put("personType", hint);
         params.put("refNo", refNo);
         params.put("folder", DataSubmissionAndMail.SUBMIT);
         params.put("pensionerMobileNumber", mobile);

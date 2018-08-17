@@ -44,7 +44,7 @@ public class CircleDataProvider {
         if (fromFirebase) {
             getCircleDataFromFireBase(context, downloadCompleteListener);
         } else {
-            IOHelper.getInstance().readFromFile(context, "Circle Data", null,
+            IOHelper.getInstance().readFromFile(context, IOHelper.CIRCLES, null,
                     jsonObject -> {
                         Gson gson = new Gson();
                         Type collectionType = new TypeToken<ArrayList<State>>() {
@@ -78,11 +78,12 @@ public class CircleDataProvider {
         return states;
     }
 
-    public State getStateFromCode(String code){
-        for(State state : activeStates)
-            if(state.getCode().equals(code))
-                return state;
-        return null;
+    public State getStateFromCode(String code) {
+        for (int i = 0; i < activeStates.length; i++) {
+            if (activeStates[i].getCode().equals(code))
+                return activeStates[i];
+        }
+        return activeStates[0];
     }
 
     public void getCircleDataFromFireBase(Context context, DownloadCompleteListener downloadCompleteListener) {
@@ -112,7 +113,7 @@ public class CircleDataProvider {
                 Helper.dataChecked = true;
 
                 IOHelper.getInstance().writeToFile(context, new Gson().toJson(stateArrayList),
-                        "Circle Data", null,
+                        IOHelper.CIRCLES, null,
                         success -> {
                             if (success) {
                                 CustomLogger.getInstance().logDebug("Write circle Success..Setting Preferences = " + stateCount + "," + activeCount);

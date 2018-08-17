@@ -46,6 +46,13 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
         return position;
     }
 
+    public int getPosition(Object item) {
+        for (int i = 0; i < items.length; i++)
+            if (items[i] == item)
+                return i;
+        return 0;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

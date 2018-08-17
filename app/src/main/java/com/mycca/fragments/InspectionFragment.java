@@ -33,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.reflect.TypeToken;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.RecyclerViewAdapterSelectedImages;
@@ -46,21 +47,24 @@ import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.GrievanceModel;
 import com.mycca.models.InspectionModel;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.StaffModel;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.Helper;
-import com.mycca.tools.MyLocationManager;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
+import com.mycca.tools.IOHelper;
+import com.mycca.tools.MyLocationManager;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,6 +76,7 @@ import static com.mycca.tools.MyLocationManager.LOCATION_REQUEST_CODE;
 public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
     private static final String TAG = "Inspection";
+    String savedModel;
     boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;
     Double latitude, longitude;
     int counterFirebaseImages;
@@ -81,7 +86,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     AppCompatTextView textViewSelectedFileCount;
     CircularProgressButton circularProgressButton;
     EditText editTextLocationName;
-    Button upload;
+    Button upload, save;
     FloatingActionButton fab;
     ImagePicker imagePicker;
     ProgressDialog progressDialog;
@@ -90,7 +95,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
 
     MainActivity mainActivity;
-    Location mLastLocation;
     MyLocationManager myLocationManager;
     LocationCallback mLocationCallback;
     VolleyHelper volleyHelper;
@@ -111,6 +115,9 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
+        if (getArguments() != null) {
+            savedModel = getArguments().getString("SavedModel", null);
+        }
         bindViews(view);
         init(view);
 
@@ -118,7 +125,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 //            showTutorial();
 //            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION, false);
 //        } else
-        getLocationCoordinates();
+        if (savedModel == null)
+            getLocationCoordinates();
         return view;
     }
 
@@ -129,6 +137,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         circularProgressButton = view.findViewById(R.id.textview_current_location_coordinates);
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
         upload = view.findViewById(R.id.button_upload);
+        save = view.findViewById(R.id.button_save_inspection);
         textViewSelectedFileCount = view.findViewById(R.id.textview_selected_image_count_inspection);
     }
 
@@ -139,23 +148,22 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
-                    showCoordinates(location);
+                    showCoordinates(location.getLatitude(), location.getLongitude());
                 }
             }
         };
 
         myLocationManager = new MyLocationManager(this, mLocationCallback);
         volleyHelper = new VolleyHelper(this, getContext());
-        selectedImageModelArrayList = new ArrayList<>();
-        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
-        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
-        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         progressDialog = Helper.getInstance().getProgressWindow(mainActivity, getString(R.string.please_wait));
 
-        getCoordinatesListener = v -> getLocationCoordinates();
+        getCoordinatesListener = v -> {
+            getLocationCoordinates();
+            circularProgressButton.setIndeterminateProgressMode(true);
+        };
 
         circularProgressButton.setOnClickListener(getCoordinatesListener);
-        circularProgressButton.setIndeterminateProgressMode(true);
+        circularProgressButton.setIdleText(getString(R.string.location_not_found));
 
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_inspection);
         try {
@@ -169,7 +177,30 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             e.printStackTrace();
         }
 
-        upload.setOnClickListener(v -> doSubmission());
+        upload.setOnClickListener(v -> {
+            if (checkInput())
+                doSubmission();
+        });
+
+        save.setOnClickListener(v -> {
+            if (checkInput())
+                saveInspection();
+        });
+
+        selectedImageModelArrayList = new ArrayList<>();
+        if (savedModel != null) {
+            InspectionModel model = (InspectionModel) Helper.getInstance().getObjectFromJson(savedModel, InspectionModel.class);
+            circularProgressButton.setOnClickListener(null);
+            showCoordinates(model.getLatitude(), model.getLongitude());
+            editTextLocationName.setText(model.getLocationName());
+            selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
+            if (selectedImageModelArrayList != null)
+                setSelectedFileCount(selectedImageModelArrayList.size());
+        }
+
+        adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
+        recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
+        recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
     }
 
@@ -181,7 +212,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
-        mLastLocation = null;
+        latitude = null;
+        longitude = null;
         circularProgressButton.setProgress(1);
         getLocation();
     }
@@ -212,29 +244,48 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         }
     }
 
-    private void showCoordinates(final Location location) {
+    private void showCoordinates(double latitude, double longitude) {
         isCurrentLocationFound = true;
-        mLastLocation = location;
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+        this.latitude = latitude;
+        this.longitude = longitude;
         myLocationManager.cleanUp();
 
         CustomLogger.getInstance().logDebug("getLocationCoordinates: " + latitude + "," + longitude);
         circularProgressButton.setProgress(0);
-        circularProgressButton.setIdleText(String.format(getString(R.string.current_location), String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude())));
+        circularProgressButton.setIdleText(String.format(getString(R.string.current_location), String.valueOf(latitude), String.valueOf(longitude)));
+    }
+
+    private boolean checkInput() {
+        if (editTextLocationName.getText().toString().trim().isEmpty()) {
+            editTextLocationName.setError(getString(R.string.location_req));
+            return false;
+        } else if (!isCurrentLocationFound) {
+            Toast.makeText(getContext(), getString(R.string.coordinates_req), Toast.LENGTH_LONG).show();
+            return false;
+        } else if (selectedImageModelArrayList.size() == 0) {
+            Toast.makeText(getContext(), getString(R.string.image_req), Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void saveInspection() {
+        String fileList;
+        if (selectedImageModelArrayList != null)
+            fileList = Helper.getInstance().getStringFromList(selectedImageModelArrayList);
+        else
+            fileList = null;
+        CustomLogger.getInstance().logDebug(fileList);
+        InspectionModel model = new InspectionModel(editTextLocationName.getText().toString(),
+                fileList, latitude, longitude, new Date());
+
+        Type collectionType = new TypeToken<ArrayList<GrievanceModel>>() {
+        }.getType();
+        Helper.getInstance().saveModelOffline(mainActivity, model, collectionType, IOHelper.INSPECTIONS);
+
     }
 
     private void doSubmission() {
-        if (editTextLocationName.getText().toString().trim().isEmpty()) {
-            editTextLocationName.setError(getString(R.string.location_req));
-            return;
-        } else if (!isCurrentLocationFound) {
-            Toast.makeText(getContext(), getString(R.string.coordinates_req), Toast.LENGTH_LONG).show();
-            return;
-        } else if (selectedImageModelArrayList.size() == 0) {
-            Toast.makeText(getContext(), getString(R.string.image_req), Toast.LENGTH_LONG).show();
-            return;
-        }
 
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
@@ -373,7 +424,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         params.put("locationName", inspectionModel.getLocationName());
         params.put("staffID", staffModel.getId());
         params.put("folder", DataSubmissionAndMail.SUBMIT);
-        params.put("location", mLastLocation.getLatitude() + "," + mLastLocation.getLongitude());
+        params.put("location", latitude + "," + longitude);
         params.put("fileCount", selectedImageModelArrayList.size() + "");
 
         DataSubmissionAndMail.getInstance().sendMail(params, "send_inspection_mail-" + staffModel.getId(), volleyHelper, url);

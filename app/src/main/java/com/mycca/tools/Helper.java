@@ -46,17 +46,22 @@ import com.mycca.custom.FancyAlertDialog.Icon;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.models.GrievanceType;
+import com.mycca.models.SelectedImageModel;
 import com.mycca.models.State;
 import com.mycca.providers.CircleDataProvider;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Helper {
@@ -274,9 +279,32 @@ public class Helper {
         return gson.fromJson(json, collectionType);
     }
 
+    public String getStringFromList(ArrayList<SelectedImageModel> list) {
+        StringBuffer fileList = new StringBuffer();
+        if (list.size() > 0) {
+            for (SelectedImageModel imageModel : list) {
+                fileList = fileList.append(imageModel.getImageURI()).append(",");
+            }
+            fileList.deleteCharAt(fileList.length() - 1);
+        }
+        return fileList.toString();
+    }
+
+    public List<SelectedImageModel> getImagesFromString(String string) {
+        if (string.isEmpty())
+            return null;
+        ArrayList<SelectedImageModel> arrayList = new ArrayList<>();
+        String[] intermediate = string.split(",");
+        for (String path : intermediate) {
+            SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(path));
+            arrayList.add(imageModel);
+        }
+        return arrayList;
+    }
+
     public void saveModelOffline(Activity context, Object model, Type collectionType, String filename) {
         IOHelper.getInstance().readFromFile(context, filename, null, jsonObject -> {
-            ArrayList arrayList = new ArrayList();
+            ArrayList arrayList = new ArrayList<>();
             if (jsonObject != null)
                 arrayList = getCollectionFromJson(jsonObject.toString(), collectionType);
             CustomLogger.getInstance().logDebug("\nJson array = " + arrayList);
@@ -565,13 +593,13 @@ public class Helper {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public byte[] getByteArrayFromFile(Bitmap image) {
-        if (image == null) {
-            return null;
+    public byte[] getByteArrayFromFile(File file) {
+        try {
+            return FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
+        return null;
     }
 
     public Bitmap getBitmapFromString(String value) {

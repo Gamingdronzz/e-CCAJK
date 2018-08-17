@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class GrievanceModel {
 
-    private String identifierType;
+    private int identifierType;
     private String identifierNumber;
     private String email;
     private String mobile;
@@ -19,15 +19,19 @@ public class GrievanceModel {
     private long grievanceStatus;
     private long grievanceType;
     private long fileCount;
-    private boolean expanded;
+     private boolean expanded;
     private boolean highlighted = false;
     private boolean submissionSuccess;
+
+    public static final int PEN_NO = 0;
+    public static final int HR_NO = 1;
+    public static final int STAFF_NO = 2;
 
     public GrievanceModel() {
 
     }
 
-    public GrievanceModel(String identifierType, String identifierNumber, String email, String mobile, String details, String submittedBy, String uid, String referenceNo, Date date, long grievanceStatus, long grievanceType, long fileCount) {
+    public GrievanceModel(int identifierType, String identifierNumber, String email, String mobile, String details, String submittedBy, String uid, String referenceNo, Date date, long grievanceStatus, long grievanceType, long fileCount) {
         this.identifierType = identifierType;
         this.identifierNumber = identifierNumber;
         this.email = email;
@@ -42,7 +46,7 @@ public class GrievanceModel {
         this.fileCount = fileCount;
     }
 
-    public GrievanceModel(long grievanceType,String identifierType, String identifierNumber, String email, String mobile, String details, String state, String submittedBy, String filePathList) {
+    public GrievanceModel(int identifierType, String identifierNumber, String email, String mobile, String details, String state, long grievanceType, String submittedBy, String filePathList) {
         this.identifierType = identifierType;
         this.identifierNumber = identifierNumber;
         this.email = email;
@@ -182,11 +186,11 @@ public class GrievanceModel {
         this.submissionSuccess = submissionSuccess;
     }
 
-    public String getIdentifierType() {
+    public int getIdentifierType() {
         return identifierType;
     }
 
-    public void setIdentifierType(String identifierType) {
+    public void setIdentifierType(int identifierType) {
         this.identifierType = identifierType;
     }
 

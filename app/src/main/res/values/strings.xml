@@ -8,6 +8,7 @@
     <string name="cca_jk">CCA JK</string>
     <string name="pension_grievance">Pension Grievance</string>
     <string name="gpf_grievance">GPF Grievance</string>
+    <string name="view_saved_grievance">Saved Grievances</string>
     <string name="upload_aadhaar">Upload AADHAAR</string>
     <string name="upload_pan">Upload PAN</string>
     <string name="upload_life_certificate">Upload Life Certificate</string>
@@ -19,6 +20,7 @@
     <string name="wifi">Wifi Hotspot Locations</string>
     <string name="gp">Gram Panchayat Locations</string>
     <string name="inspection">Inspection</string>
+    <string name="saved_inspections">Saved Inspections</string>
     <string name="update_grievances">Update Grievances</string>
     <string name="add_news">Add News</string>
     <string name="feedback">Feedback</string>
@@ -362,6 +364,10 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="download_fail_title">Data downloading failed</string>
     <string name="data_save_success">Data Saved Successfully</string>
     <string name="data_save_fail">Error while saving data</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 
 </resources>

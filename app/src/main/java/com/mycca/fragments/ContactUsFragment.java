@@ -178,7 +178,7 @@ public class ContactUsFragment extends Fragment {
     }
 
     private void getContactsFromLocalStorage() {
-        IOHelper.getInstance().readFromFile(activity, "Contact Persons",
+        IOHelper.getInstance().readFromFile(activity, IOHelper.CONTACTS,
                 Preferences.getInstance().getStatePref(activity).getCode(),
                 jsonObject -> {
                     String json = String.valueOf(jsonObject);
@@ -186,7 +186,7 @@ public class ContactUsFragment extends Fragment {
                         CustomLogger.getInstance().logDebug(json);
                         Type collectionType = new TypeToken<ArrayList<Contact>>() {
                         }.getType();
-                        contactArrayList = (ArrayList<Contact>) Helper.getInstance().getCollectionFromJson(json, collectionType);
+                        contactArrayList = (ArrayList<Contact>) Helper.getInstance().getCollectionFromJson(json,collectionType);
                         CustomLogger.getInstance().logDebug(contactArrayList.toString());
                         setAdapter();
                     } catch (JsonParseException jpe) {
@@ -258,7 +258,7 @@ public class ContactUsFragment extends Fragment {
             String jsonObject = Helper.getInstance().getJsonFromObject(contactArrayList);
             CustomLogger.getInstance().logDebug("Json: " + jsonObject);
             CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: " + contactArrayList.size());
-            IOHelper.getInstance().writeToFile(activity, jsonObject, "Contact Persons",
+            IOHelper.getInstance().writeToFile(activity, jsonObject, IOHelper.CONTACTS,
                     Preferences.getInstance().getStatePref(activity).getCode(),
                     success -> Preferences.getInstance().setIntPref(activity,
                             Preferences.PREF_CONTACTS,

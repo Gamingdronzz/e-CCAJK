@@ -16,6 +16,11 @@ public class IOHelper {
     private static IOHelper _instance;
     private String TAG = "iohelper";
 
+    public static final String CIRCLES = "Circle Data";
+    public static final String CONTACTS = "Contact Persons";
+    public static final String GRIEVANCES = "Grievances";
+    public static final String INSPECTIONS = "Inspections";
+
     private IOHelper() {
         _instance = this;
     }
@@ -64,6 +69,7 @@ public class IOHelper {
                 FileOutputStream outputStream = new FileOutputStream(file);
                 outputStream.write(jsonObject.getBytes());
                 CustomLogger.getInstance().logDebug("WRITING TO FILE: " + file.getCanonicalPath());
+                CustomLogger.getInstance().logDebug("\nContents: " + jsonObject);
                 outputStream.close();
             } catch (IOException e) {
                 CustomLogger.getInstance().logDebug("Could not write");

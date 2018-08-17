@@ -20,16 +20,18 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/navmenu_pension"
-                    android:checkable="true"
                     android:icon="@drawable/ic_pension"
                     android:title="@string/pension_grievance" />
 
                 <item
                     android:id="@+id/navmenu_gpf"
-                    android:checkable="true"
                     android:icon="@drawable/ic_drawable_gpf"
                     android:title="@string/gpf_grievance" />
 
+                <item
+                    android:id="@+id/navmenu_saved_grievances"
+                    android:icon="@drawable/ic_sd_storage_black_24dp"
+                    android:title="@string/view_saved_grievance" />
             </group>
 
         </menu>
@@ -141,7 +143,12 @@
                     android:icon="@drawable/ic_inspection"
                     android:title="@string/inspection"
                     android:visible="false" />
-
+                <item
+                    android:id="@+id/navmenu_saved_inspections"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_inspection"
+                    android:title="@string/saved_inspections"
+                    android:visible="false" />
                 <item
                     android:id="@+id/navmenu_update_grievances"
                     android:checkable="true"

@@ -49,6 +49,7 @@ import com.mycca.fragments.LatestNewsFragment;
 import com.mycca.fragments.LocatorFragment;
 import com.mycca.fragments.LoginFragment;
 import com.mycca.fragments.PanAdhaarUploadFragment;
+import com.mycca.fragments.SavedModelsListFragment;
 import com.mycca.fragments.SettingsFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
 import com.mycca.fragments.UpdateGrievanceFragment;
@@ -60,6 +61,7 @@ import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.IOHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -169,6 +171,15 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 break;
+            case R.id.navmenu_saved_grievances:
+                fragment = new SavedModelsListFragment<>();
+                bundle = new Bundle();
+                bundle.putString("FileName", IOHelper.GRIEVANCES);
+                title = getString(R.string.view_saved_grievance);
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
+                }
+                break;
             case R.id.navmenu_aadhaar:
                 fragment = new PanAdhaarUploadFragment();
                 bundle = new Bundle();
@@ -265,6 +276,15 @@ public class MainActivity extends AppCompatActivity
                 title = getString(R.string.inspection);
                 if (checkUserAuthenticated()) {
                     showFragment(title, fragment, null);
+                }
+                break;
+            case R.id.navmenu_saved_inspections:
+                fragment = new SavedModelsListFragment<>();
+                bundle = new Bundle();
+                bundle.putString("FileName", IOHelper.INSPECTIONS);
+                title = getString(R.string.saved_inspections);
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_add_news:
@@ -387,21 +407,20 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onDownloadSuccess() {
 
-                      if(Preferences.getInstance().getStringPref(MainActivity.this,Preferences.PREF_OFFICE_LABEL)==null){
-                          FireBaseHelper.getInstance().getOtherStateData(MainActivity.this, new DownloadCompleteListener() {
-                              @Override
-                              public void onDownloadSuccess() {
-                                  downloadComplete();
-                              }
+                        if (Preferences.getInstance().getStringPref(MainActivity.this, Preferences.PREF_OFFICE_LABEL) == null) {
+                            FireBaseHelper.getInstance().getOtherStateData(MainActivity.this, new DownloadCompleteListener() {
+                                @Override
+                                public void onDownloadSuccess() {
+                                    downloadComplete();
+                                }
 
-                              @Override
-                              public void onDownloadFailure() {
-                                  downloadComplete();
-                              }
-                          });
-                      }
-                      else
-                          downloadComplete();
+                                @Override
+                                public void onDownloadFailure() {
+                                    downloadComplete();
+                                }
+                            });
+                        } else
+                            downloadComplete();
                     }
 
                     @Override
@@ -421,7 +440,7 @@ public class MainActivity extends AppCompatActivity
         connectionUtility.checkConnectionAvailability();
     }
 
-    private void downloadComplete(){
+    private void downloadComplete() {
         progressDialog.dismiss();
         Helper.getInstance().showMessage(MainActivity.this, getString(R.string.download_success_message),
                 getString(R.string.download_success_title), FancyAlertDialogType.SUCCESS);
@@ -565,8 +584,10 @@ public class MainActivity extends AppCompatActivity
             menuItem.setVisible(true);
             if (admin) {
                 menuItem.getSubMenu().findItem(R.id.navmenu_inspection).setVisible(true);
+                menuItem.getSubMenu().findItem(R.id.navmenu_saved_inspections).setVisible(true);
             } else {
                 menuItem.getSubMenu().findItem(R.id.navmenu_inspection).setVisible(false);
+                menuItem.getSubMenu().findItem(R.id.navmenu_saved_inspections).setVisible(false);
             }
         } else {
             navigationView.getMenu().findItem(R.id.staff_login).setVisible(true);

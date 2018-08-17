@@ -8,11 +8,13 @@ public class InspectionModel {
     private String staffEmail;
     private String locationName;
     private String state;
+    private String filePathList;
     private double latitude;
     private double longitude;
     private Date date;
 
-    public InspectionModel() { }
+    public InspectionModel() {
+    }
 
     public InspectionModel(String staffId, String staffEmail, String locationName, double latitude, double longitude, Date date) {
         this.staffId = staffId;
@@ -21,6 +23,18 @@ public class InspectionModel {
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
+    }
+
+    public InspectionModel(String locationName, String filePathList, double latitude, double longitude, Date date) {
+        this.locationName = locationName;
+        this.filePathList = filePathList;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.date = date;
+    }
+
+    public String getFilePathList() {
+        return filePathList;
     }
 
     public String getStaffId() {
