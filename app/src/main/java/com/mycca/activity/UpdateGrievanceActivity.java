@@ -170,7 +170,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this);
+                            Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this,null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
@@ -221,7 +221,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this);
+                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this,grievanceModel.getState());
                 CustomLogger.getInstance().logDebug("onComplete: " + task1.toString());
             }
         });
@@ -325,7 +325,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        },true,"FCMServerKey");
+        },true,FireBaseHelper.ROOT_FCM_KEY);
 
     }
 

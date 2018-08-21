@@ -71,6 +71,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
@@ -375,7 +376,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void showConfirmSubmissionDialog() {
         Helper.getInstance().hideKeyboardFrom(mainActivity);
         LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
+        View v = inflater.inflate(R.layout.dialog_confirm_submission, (ViewGroup) this.getView(),false);
         loadValues(v);
         Helper.getInstance().getConfirmationDialog(mainActivity, v,
                 (dialog, which) -> doSubmission());
@@ -421,7 +422,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(mainActivity);
+                            Helper.getInstance().showMaintenanceDialog(mainActivity, null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
@@ -480,7 +481,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             "Message = " + databaseError.getMessage() +
                             "Code = " + databaseError.getCode() +
                             "Snapshot = " + dataSnapshot.toString());
-                    Helper.getInstance().showMaintenanceDialog(mainActivity);
+                    Helper.getInstance().showMaintenanceDialog(mainActivity, state.getCode());
                 }
             }
 
@@ -505,10 +506,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(mainActivity);
-                CustomLogger.getInstance().logDebug("uploadData: Failed Message= " + task1.getException().getMessage());
+                Helper.getInstance().showMaintenanceDialog(mainActivity, state.getCode());
+                CustomLogger.getInstance().logDebug("uploadData: Failed Message= " + Objects.requireNonNull(task1.getException()).getMessage());
                 CustomLogger.getInstance().logDebug("uploadData: Failed Cause= " + task1.getException().getCause());
-                CustomLogger.getInstance().logDebug("uploadData: Failed Stack= " + task1.getException().getStackTrace());
                 CustomLogger.getInstance().logDebug("uploadData: Failed Result= " + task1.getResult());
             }
         });

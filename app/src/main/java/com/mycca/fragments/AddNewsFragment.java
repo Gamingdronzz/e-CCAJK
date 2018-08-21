@@ -105,7 +105,7 @@ public class AddNewsFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(getActivity());
+                            Helper.getInstance().showMaintenanceDialog(getActivity(),null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null,valueEventListener,true, FireBaseHelper.ROOT_APP_VERSION);
@@ -157,7 +157,7 @@ public class AddNewsFragment extends Fragment {
                 Helper.getInstance().showMessage(getActivity(), "", getString(R.string.news_added),FancyAlertDialogType.SUCCESS);
                 if (json != null) json = null;
             } else {
-                Helper.getInstance().showMaintenanceDialog(getActivity());
+                Helper.getInstance().showMaintenanceDialog(getActivity(),null);
             }
         });
     }

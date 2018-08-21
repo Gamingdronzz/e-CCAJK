@@ -259,7 +259,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private void showConfirmSubmissionDialog() {
         Helper.getInstance().hideKeyboardFrom(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.dialog_confirm_submission, null);
+        View v = inflater.inflate(R.layout.dialog_confirm_submission, (ViewGroup) this.getView(),false);
         loadValues(v);
         Helper.getInstance().getConfirmationDialog(getActivity(), v,
                 (dialog, which) -> doSubmission());
@@ -309,7 +309,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(getActivity());
+                            Helper.getInstance().showMaintenanceDialog(getActivity(),null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null,
@@ -353,7 +353,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(getActivity());
+                Helper.getInstance().showMaintenanceDialog(getActivity(),state.getCode());
             }
         });
     }

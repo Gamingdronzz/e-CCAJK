@@ -93,7 +93,7 @@ public class FeedbackFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(activity);
+                            Helper.getInstance().showMaintenanceDialog(activity,null);
                         }
                     },true, FireBaseHelper.ROOT_APP_VERSION);
                 }
@@ -131,7 +131,7 @@ public class FeedbackFragment extends Fragment {
                             },
                             FancyAlertDialogType.ERROR);
                 } else {
-                    Helper.getInstance().showMaintenanceDialog(activity);
+                    Helper.getInstance().showMaintenanceDialog(activity,null);
                 }
 
             }

@@ -364,10 +364,8 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="download_fail_title">Data downloading failed</string>
     <string name="data_save_success">Data Saved Successfully</string>
     <string name="data_save_fail">Error while saving data</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
+    <string name="data_deleted">Data deleted</string>
+    <string name="data_not_deleted">Data could not be deleted</string>
+    <string name="state_n_a">The state you are trying to access is no longer supported.\nPlease update app data.</string>
 
 </resources>

@@ -19,9 +19,6 @@ public class Preferences {
     public static final String PREF_HELP_ONBOARDER = "onBoarder";
     public static final String PREF_CIRCLES = "circles";
     public static final String PREF_ACTIVE_CIRCLES = "activeCircles";
-    public static final String PREF_WIFI = "wifi";
-    public static final String PREF_GP = "gp";
-    public static final String PREF_CONTACTS = "contacts";
     public static final String PREF_OFFICE_ADDRESS = "officeAddress";
     public static final String PREF_OFFICE_LABEL = "officeLabel";
     public static final String PREF_OFFICE_COORDINATES = "coordinates";
@@ -105,7 +102,7 @@ public class Preferences {
     public State getStatePref(Context context) {
         String json = getSharedPreferences(context).getString(PREF_STATE_DATA, null);
         if (json == null) {
-            return new State("05", "Jammu & Kashmir", "Jammu & Kashmir",  "ccajk@nic.in", true);
+            return new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true);
         }
         return (State) Helper.getInstance().getObjectFromJson(json, State.class);
     }
@@ -122,9 +119,6 @@ public class Preferences {
         editor.remove(PREF_OFFICE_LABEL);
         editor.remove(PREF_OFFICE_COORDINATES);
         editor.remove(PREF_WEBSITE);
-        editor.remove(PREF_CONTACTS);
-        editor.remove(PREF_GP);
-        editor.remove(PREF_WIFI);
         editor.apply();
     }
 

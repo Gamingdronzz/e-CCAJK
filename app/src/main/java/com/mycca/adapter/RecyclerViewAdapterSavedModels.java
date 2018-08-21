@@ -12,11 +12,13 @@ import android.widget.TextView;
 
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
+import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
 import com.mycca.fragments.InspectionFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
 import com.mycca.models.GrievanceModel;
 import com.mycca.models.InspectionModel;
 import com.mycca.tools.Helper;
+import com.mycca.tools.IOHelper;
 
 import java.util.ArrayList;
 
@@ -35,7 +37,7 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_saved_model_item, parent, false),
-                new CustomClickListener());
+                new CustomClickListener(), new DeleteClickListener());
     }
 
     @Override
@@ -43,6 +45,7 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
 
         Object item = items.get(position);
         holder.customClickListener.setPosition(position);
+        holder.deleteClickListener.setPosition(position);
         if (item instanceof InspectionModel) {
             InspectionModel model = (InspectionModel) item;
             holder.textView1.setText(model.getLocationName());
@@ -64,12 +67,15 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
         TextView textView1, textView2;
         ImageButton imageButton;
         CustomClickListener customClickListener;
+        DeleteClickListener deleteClickListener;
 
-        MyViewHolder(View itemView, CustomClickListener clickListener) {
+        MyViewHolder(View itemView, CustomClickListener clickListener, DeleteClickListener deleteClickListener) {
             super(itemView);
             textView1 = itemView.findViewById(R.id.textview_value1);
             textView2 = itemView.findViewById(R.id.textview_value2);
-            imageButton=itemView.findViewById(R.id.delete_saved_item);
+            imageButton = itemView.findViewById(R.id.delete_saved_item);
+            this.deleteClickListener = deleteClickListener;
+            imageButton.setOnClickListener(deleteClickListener);
             customClickListener = clickListener;
             itemView.setOnClickListener(customClickListener);
         }
@@ -104,6 +110,38 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
             }
             bundle.putString("SavedModel", Helper.getInstance().getJsonFromObject(item));
             ((MainActivity) appCompatActivity).showFragment(title, fragment, bundle);
+        }
+    }
+
+    class DeleteClickListener implements View.OnClickListener {
+
+        private int position;
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Object item = items.get(position);
+            String filename = "";
+            if (item instanceof InspectionModel) {
+                filename = IOHelper.INSPECTIONS;
+            } else if (item instanceof GrievanceModel) {
+                filename = IOHelper.GRIEVANCES;
+            }
+            Helper.getInstance().deleteOfflineModel(appCompatActivity, position, items, filename, success -> {
+                if (success) {
+                    notifyItemRemoved(position);
+                    Helper.getInstance().showMessage(appCompatActivity, "",
+                            appCompatActivity.getString(R.string.data_deleted), FancyAlertDialogType.SUCCESS);
+                } else {
+                    Helper.getInstance().showErrorDialog(appCompatActivity.getString(R.string.try_again),
+                            appCompatActivity.getString(R.string.data_not_deleted), appCompatActivity);
+
+                }
+
+            });
         }
     }
 }

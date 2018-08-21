@@ -52,8 +52,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void init() {
         Helper.versionChecked = false;
-        Helper.dataChecked = false;
-
+        
         currentAppVersion = Helper.getInstance().getAppVersion(this);
         if (currentAppVersion == -1)
             currentAppVersion = 6;
@@ -193,7 +192,6 @@ public class SplashActivity extends AppCompatActivity {
                     long activeCount = (long) dataSnapshot.getValue();
                     if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
                         CustomLogger.getInstance().logDebug("No new data");
-                        Helper.dataChecked = true;
                         CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(),null);
                     } else {
                         CustomLogger.getInstance().logDebug("New data available");

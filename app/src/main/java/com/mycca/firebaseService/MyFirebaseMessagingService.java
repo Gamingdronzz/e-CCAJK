@@ -38,7 +38,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        //startService(new Intent(getBaseContext(), MyIntentService.class));
         if (remoteMessage.getData().size() > 0) {
             CustomLogger.getInstance().logDebug( "data: " + remoteMessage.getData());
             String title = remoteMessage.getData().get(Constants.KEY_TITLE);

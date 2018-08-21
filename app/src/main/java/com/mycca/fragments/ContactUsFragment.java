@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.mycca.R;
@@ -49,8 +50,7 @@ public class ContactUsFragment extends Fragment {
     RecyclerViewAdapterContacts adapterContacts;
     ArrayList<Contact> contactArrayList;
     ProgressDialog progressDialog;
-    boolean isTab;
-    int prefContactCount;
+    boolean isTab, fileExists = false;
     MainActivity activity;
 
     public ContactUsFragment() {
@@ -90,9 +90,6 @@ public class ContactUsFragment extends Fragment {
     private void init(boolean isMultiColumn) {
 
         activity = (MainActivity) getActivity();
-        prefContactCount = Preferences.getInstance().getIntPref(activity, Preferences.PREF_CONTACTS);
-        CustomLogger.getInstance().logDebug("pref count =" + prefContactCount);
-
         progressDialog = Helper.getInstance().getProgressWindow(activity, getString(R.string.please_wait));
         textViewOfficeAddress.setText(getGeneralText());
 
@@ -151,16 +148,17 @@ public class ContactUsFragment extends Fragment {
 
     private void getContactArrayList() {
 
+        getContactsFromLocalStorage();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
                 progressDialog.show();
-                if (prefContactCount == -1) {
+                if (!fileExists) {
                     getContactsFromFirebase();
                 } else {
                     String networkClass = ConnectionUtility.getNetworkClass(activity);
                     if (networkClass.equals(ConnectionUtility._2G)) {
-                        getContactsFromLocalStorage();
+                        setAdapter();
                     } else {
                         checkNewContactsInFirebase();
                     }
@@ -169,9 +167,7 @@ public class ContactUsFragment extends Fragment {
 
             @Override
             public void OnConnectionNotAvailable() {
-                if (prefContactCount != -1) {
-                    getContactsFromLocalStorage();
-                }
+                setAdapter();
             }
         });
         connectionUtility.checkConnectionAvailability();
@@ -181,16 +177,22 @@ public class ContactUsFragment extends Fragment {
         IOHelper.getInstance().readFromFile(activity, IOHelper.CONTACTS,
                 Preferences.getInstance().getStatePref(activity).getCode(),
                 jsonObject -> {
-                    String json = String.valueOf(jsonObject);
-                    try {
-                        CustomLogger.getInstance().logDebug(json);
-                        Type collectionType = new TypeToken<ArrayList<Contact>>() {
-                        }.getType();
-                        contactArrayList = (ArrayList<Contact>) Helper.getInstance().getCollectionFromJson(json,collectionType);
-                        CustomLogger.getInstance().logDebug(contactArrayList.toString());
-                        setAdapter();
-                    } catch (JsonParseException jpe) {
-                        jpe.printStackTrace();
+                    if (jsonObject == null)
+                        fileExists = false;
+                    else {
+                        fileExists = true;
+                        String json = String.valueOf(jsonObject);
+                        try {
+                            CustomLogger.getInstance().logDebug(json);
+                            Type collectionType = new TypeToken<ArrayList<Contact>>() {
+                            }.getType();
+                            contactArrayList = new Gson().fromJson(json, collectionType);
+                            CustomLogger.getInstance().logDebug(contactArrayList.toString());
+
+                        } catch (JsonParseException jpe) {
+                            jpe.printStackTrace();
+                            contactArrayList = null;
+                        }
                     }
                 });
     }
@@ -260,9 +262,8 @@ public class ContactUsFragment extends Fragment {
             CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: " + contactArrayList.size());
             IOHelper.getInstance().writeToFile(activity, jsonObject, IOHelper.CONTACTS,
                     Preferences.getInstance().getStatePref(activity).getCode(),
-                    success -> Preferences.getInstance().setIntPref(activity,
-                            Preferences.PREF_CONTACTS,
-                            contactArrayList.size()));
+                    success -> {
+                    });
         } catch (JsonParseException jpe) {
             jpe.printStackTrace();
         }
@@ -274,23 +275,23 @@ public class ContactUsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     long firebaseCount = (long) dataSnapshot.getValue();
-                    if (prefContactCount == firebaseCount) {
+                    if (contactArrayList.size() == firebaseCount) {
                         CustomLogger.getInstance().logDebug("no new contcts");
-                        getContactsFromLocalStorage();
+                        setAdapter();
                     } else {
                         CustomLogger.getInstance().logDebug("new contacts found");
                         getContactsFromFirebase();
                     }
                 } catch (DatabaseException dbe) {
                     dbe.printStackTrace();
-                    getContactsFromLocalStorage();
+                    setAdapter();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
-                getContactsFromLocalStorage();
+                setAdapter();
             }
         };
         FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),

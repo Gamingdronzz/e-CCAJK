@@ -125,7 +125,7 @@ public class TabAllLocations extends Fragment {
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_sort_locations, (ViewGroup) getView(), false);
         final RadioGroup radioGroupSort = viewInflated.findViewById(R.id.radio_group_sort);
         builder.setView(viewInflated);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             if (radioGroupSort.getCheckedRadioButtonId() == R.id.rBName) {
                 LocationDataProvider.getInstance().sortByName(stateLocations);
                 //adapter.notifyDataSetChanged();
@@ -138,7 +138,7 @@ public class TabAllLocations extends Fragment {
             recyclerView.setAdapter(adapter);
             dialog.dismiss();
         });
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
@@ -155,12 +155,12 @@ public class TabAllLocations extends Fragment {
         input.setAdapter(actAdapter);
 
         builder.setView(viewInflated);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             String name = input.getText().toString();
             FilterLocationsByName(name);
             dialog.dismiss();
         });
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
@@ -259,14 +259,14 @@ public class TabAllLocations extends Fragment {
         });
 
         builder.setView(viewInflated);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 FilterLocationsByState(stateSpinner.getSelectedItem(), districtSpinner.getSelectedItem());
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

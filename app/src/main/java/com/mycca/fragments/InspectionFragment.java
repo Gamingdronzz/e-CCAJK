@@ -47,7 +47,6 @@ import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
-import com.mycca.models.GrievanceModel;
 import com.mycca.models.InspectionModel;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.StaffModel;
@@ -163,7 +162,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         };
 
         circularProgressButton.setOnClickListener(getCoordinatesListener);
-        circularProgressButton.setIdleText(getString(R.string.location_not_found));
+        //circularProgressButton.setIdleText(getString(R.string.location_not_found));
 
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_inspection);
         try {
@@ -190,7 +189,6 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         selectedImageModelArrayList = new ArrayList<>();
         if (savedModel != null) {
             InspectionModel model = (InspectionModel) Helper.getInstance().getObjectFromJson(savedModel, InspectionModel.class);
-            circularProgressButton.setOnClickListener(null);
             showCoordinates(model.getLatitude(), model.getLongitude());
             editTextLocationName.setText(model.getLocationName());
             selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
@@ -278,8 +276,9 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         CustomLogger.getInstance().logDebug(fileList);
         InspectionModel model = new InspectionModel(editTextLocationName.getText().toString(),
                 fileList, latitude, longitude, new Date());
-
-        Type collectionType = new TypeToken<ArrayList<GrievanceModel>>() {
+        CustomLogger.getInstance().logDebug("Saving inspection data: " + model.getLocationName() + "," + model.getLatitude() + "," +
+                +model.getLongitude() + "," + model.getDate());
+        Type collectionType = new TypeToken<ArrayList<InspectionModel>>() {
         }.getType();
         Helper.getInstance().saveModelOffline(mainActivity, model, collectionType, IOHelper.INSPECTIONS);
 
@@ -305,7 +304,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(mainActivity);
+                            Helper.getInstance().showMaintenanceDialog(mainActivity,null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
@@ -359,7 +358,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         });
         task.addOnFailureListener(e -> {
             progressDialog.dismiss();
-            Helper.getInstance().showMaintenanceDialog(mainActivity);
+            Helper.getInstance().showMaintenanceDialog(mainActivity,staffModel.getState());
         });
     }
 

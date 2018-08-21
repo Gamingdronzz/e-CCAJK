@@ -52,6 +52,7 @@ import com.mycca.fragments.PanAdhaarUploadFragment;
 import com.mycca.fragments.SavedModelsListFragment;
 import com.mycca.fragments.SettingsFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
+import com.mycca.fragments.TrackGrievanceFragment;
 import com.mycca.fragments.UpdateGrievanceFragment;
 import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.listeners.OnConnectionAvailableListener;
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                             getString(R.string.app_name), FancyAlertDialogType.WARNING);
                 else {
                     bundle.putString("url", url);
-                    showFragment(getString(R.string.cca_jk), fragment, bundle);
+                    showFragment(getString(R.string.app_name), fragment, bundle);
                 }
                 break;
             case R.id.navmenu_pension:
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_tracking:
                 if (checkCircleDataAvailable()) {
-                    Helper.getInstance().showTrackWindow(this, frameLayout);
+                    showFragment(getString(R.string.track_grievances), new TrackGrievanceFragment(), null);
                 }
                 break;
             case R.id.navmenu_contact_us:
@@ -387,7 +388,7 @@ public class MainActivity extends AppCompatActivity
                     getString(R.string.data_missing_message),
                     getString(R.string.data_missing_title),
                     getString(R.string.download), this::downloadData,
-                    getString(android.R.string.cancel), () -> {
+                    getString(R.string.cancel), () -> {
                     },
                     FancyAlertDialogType.WARNING);
             return false;
@@ -453,7 +454,7 @@ public class MainActivity extends AppCompatActivity
                     getString(R.string.sign_in_with_google),
                     getString(R.string.sign_in),
                     this::signInWithGoogle,
-                    getString(android.R.string.cancel),
+                    getString(R.string.cancel),
                     () -> {
 
                     },
@@ -528,7 +529,7 @@ public class MainActivity extends AppCompatActivity
         Helper.getInstance().showFancyAlertDialog(this,
                 "",
                 getString(R.string.logout),
-                getString(android.R.string.yes),
+                getString(R.string.ok),
                 () -> {
                     showFragment(getString(R.string.home), new HomeFragment(), null);
                     Preferences.getInstance().clearStaffPrefs(MainActivity.this);
@@ -537,7 +538,7 @@ public class MainActivity extends AppCompatActivity
                     }, null, null, FancyAlertDialogType.SUCCESS);
 
                 },
-                getString(android.R.string.no),
+                getString(R.string.cancel),
                 () -> {
 
                 },
@@ -677,7 +678,7 @@ public class MainActivity extends AppCompatActivity
                             mQueue.cancel(true);
                             Preferences.getInstance().setTutorialPrefs(MainActivity.this);
                         },
-                        getString(android.R.string.cancel), () -> {
+                        getString(R.string.cancel), () -> {
 
                         },
                         FancyAlertDialogType.WARNING);

@@ -12,32 +12,21 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.util.Base64;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.PopupWindow;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mycca.R;
 import com.mycca.activity.SplashActivity;
-import com.mycca.activity.TrackGrievanceResultActivity;
-import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.app.AppController;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialog;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
@@ -45,10 +34,9 @@ import com.mycca.custom.FancyAlertDialog.IFancyAlertDialogListener;
 import com.mycca.custom.FancyAlertDialog.Icon;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
+import com.mycca.listeners.WriteFileCompletionListener;
 import com.mycca.models.GrievanceType;
 import com.mycca.models.SelectedImageModel;
-import com.mycca.models.State;
-import com.mycca.providers.CircleDataProvider;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
@@ -70,7 +58,6 @@ public class Helper {
 
     private String hint = "Pensioner Code";
     public static boolean versionChecked = false;
-    public static boolean dataChecked = false;
 
     private GrievanceType pensionGrievanceTypes[] = {
             new GrievanceType(AppController.getResourses().getString(R.string.change_of_pda), 0),
@@ -234,7 +221,7 @@ public class Helper {
             if (activity instanceof SplashActivity)
                 ((SplashActivity) activity).checkCircles();
             else
-                showMaintenanceDialog(activity);
+                showMaintenanceDialog(activity,null);
             return false;
         }
 
@@ -318,6 +305,14 @@ public class Helper {
                     showErrorDialog(context.getString(R.string.try_again), context.getString(R.string.data_save_fail), context);
             });
         });
+    }
+
+    public void deleteOfflineModel(Activity context, int pos, ArrayList arrayList,
+                                   String filename, WriteFileCompletionListener writeFileCompletionListener) {
+        arrayList.remove(pos);
+        CustomLogger.getInstance().logDebug("\narrayList after deletion = " + arrayList);
+        String newJson = getJsonFromObject(arrayList);
+        IOHelper.getInstance().writeToFile(context, newJson, filename, null, writeFileCompletionListener);
     }
 
     public ProgressDialog getProgressWindow(final Activity context, String message) {
@@ -433,22 +428,36 @@ public class Helper {
 
     }
 
-    public void showMaintenanceDialog(Activity activity) {
+    public void showMaintenanceDialog(Activity activity, String state) {
+        if (state == null)
+            showDialog(activity, AppController.getResourses().getString(R.string.app_maintenance));
+        else {
+            FireBaseHelper.getInstance().getDataFromFireBase(state, new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String string;
+                    if ((boolean) dataSnapshot.getValue())
+                        string = AppController.getResourses().getString(R.string.app_maintenance);
+                    else
+                        string = AppController.getResourses().getString(R.string.state_n_a);
+                    showDialog(activity, string);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            }, true, FireBaseHelper.ROOT_ACTIVE);
+        }
+    }
+
+    private void showDialog(Activity activity, String string) {
         showFancyAlertDialog(activity,
-                AppController.getResourses().getString(R.string.app_maintenance),
+                string,
                 AppController.getResourses().getString(R.string.app_name),
                 AppController.getResourses().getString(R.string.ok),
                 () -> {
                 }, null, null,
-                FancyAlertDialogType.WARNING);
-    }
-
-    public void showMaintenanceDialog(Activity activity, String message, IFancyAlertDialogListener dialogListener) {
-        showFancyAlertDialog(activity,
-                message,
-                AppController.getResourses().getString(R.string.app_name),
-                AppController.getResourses().getString(R.string.ok),
-                dialogListener, null, null,
                 FancyAlertDialogType.WARNING);
     }
 
@@ -497,75 +506,11 @@ public class Helper {
         activity.finish();
     }
 
-    public void showTrackWindow(final Activity context, View parent) {
-        final EditText editText;
-        final TextInputLayout textInputLayout;
-        final Spinner spinner;
-        View popupView = LayoutInflater.from(context).inflate(R.layout.dialog_track_grievance, (ViewGroup) parent, false);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
-        editText = popupView.findViewById(R.id.edittext_pcode);
-        textInputLayout = popupView.findViewById(R.id.text_input_layout);
-        spinner = popupView.findViewById(R.id.spinner_track_circle);
-        GenericSpinnerAdapter<State> circleAdapter = new GenericSpinnerAdapter<>(context,
-                CircleDataProvider.getInstance().getActiveCircleData());
-        spinner.setAdapter(circleAdapter);
-
-        RadioGroup radioGroup = popupView.findViewById(R.id.radio_group_identifier_type);
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.radioButtonPensioner:
-                    hint = AppController.getResourses().getString(R.string.p_code);
-                    editText.setFilters(Helper.getInstance().limitInputLength(15));
-                    break;
-                case R.id.radioButtonHR:
-                    hint = AppController.getResourses().getString(R.string.hr_num);
-                    editText.setFilters(new InputFilter[]{});
-                    break;
-                case R.id.radioButtonStaff:
-                    hint = AppController.getResourses().getString(R.string.staff_num);
-                    editText.setFilters(new InputFilter[]{});
-            }
-            editText.setText("");
-            textInputLayout.setHint(hint);
-        });
-
-        Button track = popupView.findViewById(R.id.btn_check_status);
-        track.setOnClickListener(v -> {
-            String code = editText.getText().toString().trim();
-            if (code.length() != 15 && hint.equals(AppController.getResourses().getString(R.string.p_code))) {
-                Toast.makeText(context,
-                        AppController.getResourses().getString(R.string.invalid_p_code),
-                        Toast.LENGTH_LONG).show();
-            } else if (code.trim().isEmpty() && hint.equals(AppController.getResourses().getString(R.string.hr_num))) {
-                Toast.makeText(context,
-                        AppController.getResourses().getString(R.string.invalid_hr_num),
-                        Toast.LENGTH_LONG).show();
-            } else if (code.trim().isEmpty() && hint.equals(AppController.getResourses().getString(R.string.staff_num))) {
-                Toast.makeText(context,
-                        AppController.getResourses().getString(R.string.invalid_staff_num),
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Intent intent = new Intent(context, TrackGrievanceResultActivity.class);
-                intent.putExtra("Code", editText.getText().toString());
-                intent.putExtra("State", ((State) spinner.getSelectedItem()).getCode());
-                context.startActivity(intent);
-            }
-            editText.requestFocus();
-        });
-
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        popupWindow.update();
-        popupWindow.showAtLocation(parent, Gravity.CENTER, 0, 0);
-    }
-
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
         confirmDialog.setView(view);
         confirmDialog.setPositiveButton(AppController.getResourses().getString(R.string.confirm), yes);
-        confirmDialog.setNegativeButton(AppController.getResourses().getString(android.R.string.cancel), (dialog, which) -> dialog.dismiss());
+        confirmDialog.setNegativeButton(AppController.getResourses().getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
         confirmDialog.show();
     }
 

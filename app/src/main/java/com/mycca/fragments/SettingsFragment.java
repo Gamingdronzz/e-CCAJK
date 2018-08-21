@@ -200,7 +200,7 @@ public class SettingsFragment extends Fragment {
     public void showChangePasswordWindow() {
 
         final EditText editTextOld, editTextNew, editTextConfirm;
-        View popupView = LayoutInflater.from(activity).inflate(R.layout.dialog_change_password, null);
+        View popupView = LayoutInflater.from(activity).inflate(R.layout.dialog_change_password, (ViewGroup) this.getView(),false);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         editTextOld = popupView.findViewById(R.id.edittext_old_pwd);
@@ -248,7 +248,7 @@ public class SettingsFragment extends Fragment {
                 if (dataSnapshot.getValue() != null && dataSnapshot.getValue().equals(oldPwd)) {
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put(FireBaseHelper.ROOT_PASSWORD, newPwd);
-                    Task<Void> task = FireBaseHelper.getInstance().updateData(null,
+                    Task<Void> task = FireBaseHelper.getInstance().updateData(staff.getState(),
                             staff.getId(),
                             hashMap,
                             FireBaseHelper.ROOT_STAFF);
@@ -273,7 +273,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Helper.getInstance().showMaintenanceDialog(activity);
+                Helper.getInstance().showMaintenanceDialog(activity,staff.getState());
             }
         };
         FireBaseHelper.getInstance().getDataFromFireBase(staff.getState(), valueEventListener,

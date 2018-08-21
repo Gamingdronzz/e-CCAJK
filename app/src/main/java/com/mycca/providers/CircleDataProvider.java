@@ -12,9 +12,8 @@ import com.google.gson.reflect.TypeToken;
 import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.models.State;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.Helper;
-import com.mycca.tools.IOHelper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.IOHelper;
 import com.mycca.tools.Preferences;
 
 import java.lang.reflect.Type;
@@ -79,9 +78,9 @@ public class CircleDataProvider {
     }
 
     public State getStateFromCode(String code) {
-        for (int i = 0; i < activeStates.length; i++) {
-            if (activeStates[i].getCode().equals(code))
-                return activeStates[i];
+        for (State activeState : activeStates) {
+            if (activeState.getCode().equals(code))
+                return activeState;
         }
         return activeStates[0];
     }
@@ -101,7 +100,7 @@ public class CircleDataProvider {
                         State state = ds.getValue(State.class);
                         stateArrayList.add(state);
                         stateCount++;
-                        if (state.isActive()) {
+                        if (state != null && state.isActive()) {
                             activeCount++;
                         }
                     } catch (DatabaseException | NullPointerException e) {
@@ -110,7 +109,6 @@ public class CircleDataProvider {
                 }
 
                 setArrayLists(stateArrayList, activeCount);
-                Helper.dataChecked = true;
 
                 IOHelper.getInstance().writeToFile(context, new Gson().toJson(stateArrayList),
                         IOHelper.CIRCLES, null,

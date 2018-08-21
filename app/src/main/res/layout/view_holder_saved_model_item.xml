@@ -31,15 +31,19 @@
         android:paddingRight="@dimen/padding_medium"
         android:paddingTop="@dimen/padding_small"
         android:textColor="@color/colorBlack"
+        android:textStyle="bold"
         android:textSize="@dimen/text_18" />
 
     <ImageButton
         android:id="@+id/delete_saved_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_large"
         android:layout_gravity="end"
         android:background="@null"
         android:tint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_delete_black_24dp" />
+        app:srcCompat="@drawable/ic_delete_black_24dp"
+        tools:ignore="ContentDescription,RtlSymmetry" />
 
 </LinearLayout>

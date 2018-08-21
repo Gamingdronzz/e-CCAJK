@@ -30,6 +30,7 @@ public class FireBaseHelper {
     private static FireBaseHelper mInstance;
 
     public final static String ROOT_FCM_KEY = "FCMServerKey";
+    public final static String ROOT_ACTIVE = "Active";
     public final static String ROOT_SLIDER = "Slider Data";
     public final static String ROOT_CIRCLE_DATA = "Circle Data";
     public final static String ROOT_CIRCLE_COUNT = "Circle Data Count";
@@ -37,9 +38,6 @@ public class FireBaseHelper {
     public final static String ROOT_TOKEN = "Tokens";
     public final static String ROOT_STAFF = "Staff Data";
     public final static String ROOT_PASSWORD = "password";
-    public final static String ROOT_WEBSITE = "Website";
-    public final static String ROOT_OFFICE_ADDRESS = "Office Address";
-    public final static String ROOT_OFFICE_COORDINATES = "Office Coordinates";
     public final static String ROOT_CONTACTS = "Contact Persons";
     public final static String ROOT_CONTACTS_COUNT = "Contact Persons Count";
     public final static String ROOT_WIFI = "Wifi Locations";
@@ -55,13 +53,16 @@ public class FireBaseHelper {
     public final static String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
     public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
     public final static String ROOT_INSPECTION = "Inspection";
+    private final static String ROOT_WEBSITE = "Website";
+    private final static String ROOT_OFFICE_ADDRESS = "Office Address";
+    private final static String ROOT_OFFICE_COORDINATES = "Office Coordinates";
 
     /*Release*/
     public final static String ROOT_APP_VERSION = "Latest Version";
     public final static String ROOT_NEWS = "Latest News";
     public final static String ROOT_GRIEVANCES = "Grievances";
-    public final static String ROOT_REF_COUNT = "Reference Number Count";
     public final static String ROOT_REF_NUMBERS = "Reference Numbers";
+    private final static String ROOT_REF_COUNT = "Reference Number Count";
 
     /*Debug*/
     //    public final static String ROOT_APP_VERSION = "Debug Latest Version";
@@ -174,7 +175,7 @@ public class FireBaseHelper {
         return task;
     }
 
-    public Task<Void> removeData(String stateCode, String... params){
+    public Task<Void> removeData(String stateCode, String... params) {
         DatabaseReference databaseReference = getDatabaseReference(stateCode);
         Task<Void> task;
         for (String param : params) {
