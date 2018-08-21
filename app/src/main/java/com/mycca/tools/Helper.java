@@ -56,7 +56,6 @@ public class Helper {
 
     private static Helper _instance;
 
-    private String hint = "Pensioner Code";
     public static boolean versionChecked = false;
 
     private GrievanceType pensionGrievanceTypes[] = {

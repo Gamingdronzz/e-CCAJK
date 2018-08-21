@@ -27,13 +27,13 @@ import com.mycca.tools.Helper;
 
 public class TrackGrievanceFragment extends Fragment {
 
-    EditText editText;
-    TextInputLayout textInputLayout;
-    Spinner spinner;
-    RadioGroup radioGroup;
-    Button track;
-    Activity activity;
-    String hint;
+    private EditText editText;
+    private TextInputLayout textInputLayout;
+    private Spinner spinner;
+    private RadioGroup radioGroup;
+    private Button track;
+    private Activity activity;
+    private String hint = "Pensioner Code";
 
     @Nullable
     @Override

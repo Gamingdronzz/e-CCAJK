@@ -104,7 +104,8 @@ public class IOHelper {
                 FileInputStream fin = new FileInputStream(file);
                 int size = fin.available();
                 byte[] buffer = new byte[size];
-                fin.read(buffer);
+                int i = fin.read(buffer);
+                CustomLogger.getInstance().logDebug("Bytes read = " + i);
                 fin.close();
                 return new String(buffer);
             } catch (IOException e) {

@@ -134,6 +134,8 @@ public class LocatorFragment extends Fragment {
     }
 
     private void checkConnection() {
+        if (progressDialog != null && !progressDialog.isShowing())
+            progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {

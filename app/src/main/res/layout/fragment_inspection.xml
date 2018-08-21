@@ -59,20 +59,6 @@
 
     </LinearLayout>
 
-    <!--<android.support.v7.widget.AppCompatTextView-->
-    <!--android:id="@+id/textview_current_location_coordinates"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_above="@+id/buttons_inspection"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:layout_marginLeft="@dimen/margin_medium"-->
-    <!--android:layout_marginRight="@dimen/margin_medium"-->
-    <!--android:drawablePadding="@dimen/padding_medium"-->
-    <!--android:foregroundGravity="center_vertical"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:padding="@dimen/padding_medium"-->
-    <!--android:text="Location Coordinates" />-->
-
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textview_selected_image_count_inspection"
         android:layout_width="match_parent"
@@ -99,10 +85,10 @@
         android:id="@+id/fab_inspection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/button_upload"
+        android:layout_above="@id/layout_buttons"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/margin_large"
-        android:backgroundTint="@color/colorAccentLight"
+        android:backgroundTint="@color/colorPrimaryLight"
         android:tint="@color/colorWhite"
         app:srcCompat="@drawable/ic_view_menu_black_24dp"
         tools:targetApi="m" />
@@ -124,6 +110,7 @@
         tools:targetApi="lollipop" />
 
     <LinearLayout
+        android:id="@+id/layout_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

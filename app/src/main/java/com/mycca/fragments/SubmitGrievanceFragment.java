@@ -92,7 +92,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     int counterUpload = 0;
     int counterServerImages = 0;
     int counterFirebaseImages;
-    int identifierHint;
+    int identifierHint=0;
     String TAG = "Grievance";
     String hint;
     String code, mobile, email, details, type, submittedBy, refNo, prefix, savedModel;
@@ -249,7 +249,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
         selectedImageModelArrayList = new ArrayList<>();
         if (savedModel != null) {
-            loadModelValues();
+            loadOfflineModelValues();
         }
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
@@ -260,7 +260,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
 
-    private void loadModelValues() {
+    private void loadOfflineModelValues() {
         GrievanceModel model = (GrievanceModel) Helper.getInstance().getObjectFromJson(savedModel, GrievanceModel.class);
         if (model.getGrievanceType() >= 100) {
             switch (model.getIdentifierType()) {
@@ -392,7 +392,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         TextView gr_by = v.findViewById(R.id.textview_confirm6_value);
         TextView grievanceDetails = v.findViewById(R.id.textview_confirm7_value);
 
-        pensionerHeading.setText(identifierHint);
+        pensionerHeading.setText(hint);
         pensionerValue.setText(code);
         mobNo.setText(mobile);
         emailValue.setText(email);

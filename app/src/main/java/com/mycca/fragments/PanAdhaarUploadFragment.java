@@ -428,7 +428,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(new StringReader("Scanned data: " + scanData));
+            parser.setInput(new StringReader(scanData));
 
             int eventType = parser.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {

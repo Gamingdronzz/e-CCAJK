@@ -146,7 +146,18 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     }
 
     private void setLayoutData() {
-        tvNumberType.setText(grievanceModel.getIdentifierType());
+        String identifierType;
+        switch (grievanceModel.getIdentifierType()) {
+            case GrievanceModel.HR_NO:
+                identifierType = getString(R.string.hr_num);
+                break;
+            case GrievanceModel.STAFF_NO:
+                identifierType = getString(R.string.staff_num);
+                break;
+            default:
+                identifierType = getString(R.string.p_code);
+        }
+        tvNumberType.setText(identifierType);
         textViewPensionerCode.setText(grievanceModel.getIdentifierNumber());
         textViewRefNo.setText(grievanceModel.getReferenceNo());
         textViewGrievanceString.setText(grievanceString);
@@ -170,7 +181,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this,null);
+                            Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
@@ -221,7 +232,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this,grievanceModel.getState());
+                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, grievanceModel.getState());
                 CustomLogger.getInstance().logDebug("onComplete: " + task1.toString());
             }
         });
@@ -303,7 +314,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         hashMap.put("grievanceStatus", grievanceModel.getGrievanceStatus());
         hashMap.put("message", grievanceModel.getMessage());
 
-         FireBaseHelper.getInstance().updateData(grievanceModel.getState(),
+        FireBaseHelper.getInstance().updateData(grievanceModel.getState(),
                 String.valueOf(grievanceModel.getGrievanceType()),
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,
@@ -312,7 +323,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void notifyPensioner() {
 
-        FireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
+        FireBaseHelper.getInstance().getDataFromFireBase(null, new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
@@ -325,12 +336,12 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        },true,FireBaseHelper.ROOT_FCM_KEY);
+        }, true, FireBaseHelper.ROOT_FCM_KEY);
 
     }
 
     private void getTokenAndSendNotification(final String fcmKey) {
-        FireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
+        FireBaseHelper.getInstance().getDataFromFireBase(null, new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
@@ -344,7 +355,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        },true, FireBaseHelper.ROOT_TOKEN,grievanceModel.getUid());
+        }, true, FireBaseHelper.ROOT_TOKEN, grievanceModel.getUid());
 
     }
 
@@ -494,25 +505,25 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                         doUpdateOnInternetAvailable();
                     }
                 } else {
-                    onFailure(getString(R.string.file_not_uploaded),getString(R.string.file_upload_error));
+                    onFailure(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error));
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail to user")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     showSuccessDialog();
                 } else {
-                    onFailure(getString(R.string.grievance_updation_fail),getString(R.string.failure));
+                    onFailure(getString(R.string.grievance_updation_fail), getString(R.string.failure));
                 }
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
-            onFailure(getString(R.string.grievance_updation_fail),getString(R.string.failure));
+            onFailure(getString(R.string.grievance_updation_fail), getString(R.string.failure));
         }
     }
 
     @Override
     public void onError(VolleyError volleyError) {
         volleyError.printStackTrace();
-        onFailure(getString(R.string.grievance_updation_fail),getString(R.string.failure));
+        onFailure(getString(R.string.grievance_updation_fail), getString(R.string.failure));
     }
 
     @Override
