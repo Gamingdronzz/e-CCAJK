@@ -54,7 +54,7 @@ public class LoginFragment extends Fragment {
         mAuth = FireBaseHelper.getInstance().getAuth();
 
         circle = view.findViewById(R.id.spinner_login_circle);
-        GenericSpinnerAdapter<State> circleAdapter=new GenericSpinnerAdapter<>(mainActivity,
+        GenericSpinnerAdapter<State> circleAdapter = new GenericSpinnerAdapter<>(mainActivity,
                 CircleDataProvider.getInstance().getActiveCircleData());
         circle.setAdapter(circleAdapter);
         editTextUsername = view.findViewById(R.id.edittext_username);
@@ -108,7 +108,8 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressDialog.dismiss();
+                CustomLogger.getInstance().logDebug(databaseError.getMessage());
             }
         }, true, FireBaseHelper.ROOT_STAFF, username);
 

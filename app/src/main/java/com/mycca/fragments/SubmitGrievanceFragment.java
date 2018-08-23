@@ -259,7 +259,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         setSelectedFileCount(0);
     }
 
-
     private void loadOfflineModelValues() {
         GrievanceModel model = (GrievanceModel) Helper.getInstance().getObjectFromJson(savedModel, GrievanceModel.class);
         if (model.getGrievanceType() >= 100) {
@@ -286,7 +285,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 Helper.getInstance().getGrievanceFromId(model.getGrievanceType())));
         spinnerCircle.setSelection(statesAdapter.getPosition(
                 CircleDataProvider.getInstance().getStateFromCode(model.getState())));
-        selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
+            selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
         if (selectedImageModelArrayList != null)
             setSelectedFileCount(selectedImageModelArrayList.size());
     }

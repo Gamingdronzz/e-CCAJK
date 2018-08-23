@@ -262,38 +262,31 @@ public class MainActivity extends AppCompatActivity
                 fragment = new LoginFragment();
                 title = getString(R.string.cca_jk);
                 if (checkCircleDataAvailable()) {
-                    showFragment(title, fragment, null);
+                    if (checkUserAuthenticated())
+                        showFragment(title, fragment, null);
                 }
                 break;
             case R.id.navmenu_update_grievances:
                 fragment = new UpdateGrievanceFragment();
                 title = getString(R.string.update_grievances);
-                if (checkUserAuthenticated()) {
-                    showFragment(title, fragment, null);
-                }
+                showFragment(title, fragment, null);
                 break;
             case R.id.navmenu_inspection:
                 fragment = new InspectionFragment();
                 title = getString(R.string.inspection);
-                if (checkUserAuthenticated()) {
-                    showFragment(title, fragment, null);
-                }
+                showFragment(title, fragment, null);
                 break;
             case R.id.navmenu_saved_inspections:
                 fragment = new SavedModelsListFragment<>();
                 bundle = new Bundle();
                 bundle.putString("FileName", IOHelper.INSPECTIONS);
                 title = getString(R.string.saved_inspections);
-                if (checkUserAuthenticated()) {
-                    showFragment(title, fragment, bundle);
-                }
+                showFragment(title, fragment, bundle);
                 break;
             case R.id.navmenu_add_news:
                 fragment = new AddNewsFragment();
                 title = getString(R.string.add_news);
-                if (checkUserAuthenticated()) {
-                    showFragment(title, fragment, null);
-                }
+                showFragment(title, fragment, null);
                 break;
             case R.id.navmenu_logout:
                 logout();
@@ -481,10 +474,10 @@ public class MainActivity extends AppCompatActivity
         mAuth.signOut();
         mGoogleSignInClient.signOut();
 
-        //        if (staffModel != null) {
-//            Preferences.getInstance().clearStaffPrefs(MainActivity.this);
-//            ManageNavigationView(false, false);
-//        }
+        if (staffModel != null) {
+            Preferences.getInstance().clearStaffPrefs(MainActivity.this);
+            ManageNavigationView(false, false);
+        }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {

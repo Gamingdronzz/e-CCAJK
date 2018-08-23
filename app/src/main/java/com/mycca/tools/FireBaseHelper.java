@@ -52,10 +52,13 @@ public class FireBaseHelper {
     public final static String ROOT_LIFE = "Life Certificate";
     public final static String ROOT_RE_MARRIAGE = "Re-Marriage Certificate";
     public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
+    public final static String ROOT_KYP = "KYP";
     public final static String ROOT_INSPECTION = "Inspection";
     private final static String ROOT_WEBSITE = "Website";
     private final static String ROOT_OFFICE_ADDRESS = "Office Address";
     private final static String ROOT_OFFICE_COORDINATES = "Office Coordinates";
+    private final static String ROOT_GENERAL = "General";
+
 
     /*Release*/
     public final static String ROOT_APP_VERSION = "Latest Version";
@@ -129,7 +132,7 @@ public class FireBaseHelper {
     public void getReferenceNumber(Transaction.Handler handler, String stateCode) {
         CustomLogger.getInstance().logDebug("getReferenceNumber: ");
         DatabaseReference dbref = getDatabaseReference(stateCode);
-        dbref = dbref.child(ROOT_REF_COUNT);
+        dbref = dbref.child(ROOT_GENERAL).child(ROOT_REF_COUNT);
         dbref.runTransaction(handler);
     }
 
@@ -137,6 +140,8 @@ public class FireBaseHelper {
         Task<Void> task;
         DatabaseReference databaseReference = getDatabaseReference(stateCode);
 
+        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+            databaseReference = databaseReference.child(ROOT_GENERAL);
         for (String key : params) {
             CustomLogger.getInstance().logDebug("\nkey" + key);
             databaseReference = databaseReference.child(key);
@@ -167,6 +172,9 @@ public class FireBaseHelper {
 
     public Task<Void> updateData(String stateCode, String key, HashMap<String, Object> hashMap, String... params) {
         DatabaseReference databaseReference = getDatabaseReference(stateCode);
+        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+            databaseReference = databaseReference.child(ROOT_GENERAL);
+
         Task<Void> task;
         for (String param : params) {
             databaseReference = databaseReference.child(param);
@@ -177,6 +185,9 @@ public class FireBaseHelper {
 
     public Task<Void> removeData(String stateCode, String... params) {
         DatabaseReference databaseReference = getDatabaseReference(stateCode);
+        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+            databaseReference = databaseReference.child(ROOT_GENERAL);
+
         Task<Void> task;
         for (String param : params) {
             databaseReference = databaseReference.child(param);
@@ -188,6 +199,8 @@ public class FireBaseHelper {
     public void getDataFromFireBase(String stateCode, ChildEventListener childEventListener, String... params) {
 
         DatabaseReference dbref = getDatabaseReference(stateCode);
+        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+            dbref = dbref.child(ROOT_GENERAL);
         for (String key : params) {
             CustomLogger.getInstance().logDebug("\nkey : " + key);
             dbref = dbref.child(key);
@@ -198,6 +211,8 @@ public class FireBaseHelper {
     public void getDataFromFireBase(String stateCode, ValueEventListener valueEventListener, boolean singleValueEvent, String... params) {
 
         DatabaseReference dbref = getDatabaseReference(stateCode);
+        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+            dbref = dbref.child(ROOT_GENERAL);
         for (String key : params) {
             CustomLogger.getInstance().logDebug("\nkey : " + key);
             dbref = dbref.child(key);
@@ -206,14 +221,6 @@ public class FireBaseHelper {
             dbref.addListenerForSingleValueEvent(valueEventListener);
         else
             dbref.addValueEventListener(valueEventListener);
-    }
-
-    public void removeListener(String stateCode, ChildEventListener childEventListener) {
-        getDatabaseReference(stateCode).removeEventListener(childEventListener);
-    }
-
-    public void removeListener(String stateCode, ValueEventListener valueEventListener) {
-        getDatabaseReference(stateCode).removeEventListener(valueEventListener);
     }
 
     public UploadTask uploadFiles(String stateCode, SelectedImageModel imageFile, boolean multiple, int count, String... params) {
@@ -264,7 +271,7 @@ public class FireBaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    FireBaseHelper.getInstance().getDataFromFireBase(state.getCode(), valueEventListener3, true, ROOT_OFFICE_COORDINATES);
+                    getDataFromFireBase(state.getCode(), valueEventListener3, true, ROOT_OFFICE_COORDINATES);
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_WEBSITE, (String) dataSnapshot.getValue());
                 } catch (DatabaseException | NullPointerException e) {
                     CustomLogger.getInstance().logDebug(e.getMessage());
@@ -281,7 +288,7 @@ public class FireBaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    FireBaseHelper.getInstance().getDataFromFireBase(state.getCode(), valueEventListener2, true, ROOT_WEBSITE);
+                    getDataFromFireBase(state.getCode(), valueEventListener2, true, ROOT_WEBSITE);
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_ADDRESS, (String) dataSnapshot.getValue());
                 } catch (DatabaseException | NullPointerException e) {
                     CustomLogger.getInstance().logDebug(e.getMessage());
@@ -294,7 +301,7 @@ public class FireBaseHelper {
             }
         };
 
-        FireBaseHelper.getInstance().getDataFromFireBase(state.getCode(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
+        getDataFromFireBase(state.getCode(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
     }
 
 }

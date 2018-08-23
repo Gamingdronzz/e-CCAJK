@@ -133,6 +133,7 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
             Helper.getInstance().deleteOfflineModel(appCompatActivity, position, items, filename, success -> {
                 if (success) {
                     notifyItemRemoved(position);
+                    notifyDataSetChanged();
                     Helper.getInstance().showMessage(appCompatActivity, "",
                             appCompatActivity.getString(R.string.data_deleted), FancyAlertDialogType.SUCCESS);
                 } else {

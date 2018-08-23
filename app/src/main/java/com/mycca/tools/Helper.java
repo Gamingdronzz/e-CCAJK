@@ -220,7 +220,7 @@ public class Helper {
             if (activity instanceof SplashActivity)
                 ((SplashActivity) activity).checkCircles();
             else
-                showMaintenanceDialog(activity,null);
+                showMaintenanceDialog(activity, null);
             return false;
         }
 
@@ -284,6 +284,46 @@ public class Helper {
         for (String path : intermediate) {
             SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(path));
             arrayList.add(imageModel);
+        }
+        return arrayList;
+    }
+
+    public String getByteArraysFromList(ArrayList<SelectedImageModel> list) {
+        StringBuffer fileList = new StringBuffer();
+        if (list.size() > 0) {
+            for (SelectedImageModel imageModel : list) {
+                try {
+                    byte[] bytes = FileUtils.readFileToByteArray(imageModel.getFile());
+                    CustomLogger.getInstance().logDebug("byte array = " + bytes);
+                    fileList = fileList.append(bytes).append(",");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            fileList.deleteCharAt(fileList.length() - 1);
+            CustomLogger.getInstance().logDebug("final  array = " + fileList);
+        }
+        return fileList.toString();
+    }
+
+    public List<SelectedImageModel> getImagesFromByteArrays(String string,Context context) {
+        if (string.isEmpty())
+            return null;
+        int i = 0;
+        ArrayList<SelectedImageModel> arrayList = new ArrayList<>();
+        String[] intermediate = string.split(",");
+        for (String byteArray : intermediate) {
+            try {
+                byte[] inter = Base64.decode(byteArray, Base64.DEFAULT);
+                File temp = new File(context.getCacheDir(),"File" + i);
+                FileUtils.writeByteArrayToFile(temp, inter);
+                SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(temp.getPath()));
+                arrayList.add(imageModel);
+                i++;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return arrayList;
     }

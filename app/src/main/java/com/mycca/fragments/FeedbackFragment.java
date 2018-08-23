@@ -109,8 +109,7 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void submit() {
-        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(null,
-                etSuggestion.getText().toString().trim(),
+        Task<Void> task = FireBaseHelper.getInstance().pushOnFireBase(etSuggestion.getText().toString().trim(),
                 FireBaseHelper.ROOT_SUGGESTIONS);
 
         task.addOnCompleteListener((Task<Void> task1) -> {

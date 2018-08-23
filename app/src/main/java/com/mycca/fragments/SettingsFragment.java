@@ -188,6 +188,7 @@ public class SettingsFragment extends Fragment {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawbale_login_24dp, 0, 0, 0);
             tvSignOut.setText(getString(R.string.sign_in));
             tvAccount.setVisibility(View.INVISIBLE);
+            layoutChangePwd.setVisibility(View.GONE);
         } else {
             tvSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_logout, 0, 0, 0);
             tvSignOut.setText(getString(R.string.sign_out));

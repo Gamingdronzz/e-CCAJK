@@ -171,6 +171,8 @@
     <!--kyp-->
     <string name="download_kyp_form">Download KYP Form</string>
     <string name="submit_kyp_form">Submit KYP Form</string>
+    <string name="kyp_upload_success">Your KYP Form is successfully uploaded</string>
+    <string name="kyp_upload_fail">KYP form could not be uploaded</string>
 
     <!--contact us-->
     <string name="office_address">Office Address</string>

@@ -17,9 +17,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
-        android:name="com.mycca.app.AppController"
+        android:name=".app.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_cca_new"
         android:label="@string/app_name"
@@ -79,11 +78,9 @@
         <activity
             android:name=".activity.StateSettingActivity"
             android:screenOrientation="portrait" />
-
         <activity android:name=".activity.NewsActivity" />
-
         <activity android:name=".activity.IntroActivity" />
-
+        <activity android:name=".activity.KypUploadActivity"/>
         <activity
             android:name=".custom.barCode.BarcodeCaptureActivity"
             android:label="Read Barcode"
