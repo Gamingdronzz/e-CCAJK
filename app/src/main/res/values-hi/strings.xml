@@ -4,14 +4,88 @@
 
     <!--Action bar titles -->
     <string name="home">होम</string>
+    <string name="pension_grievance">पेंशन शिकायत</string>
+    <string name="gpf_grievance">जीपीएफ शिकायत</string>
+    <string name="view_saved_grievance">सहेजी गई शिकायत</string>
+    <string name="upload_aadhaar">आधार अपलोड करें</string>
+    <string name="upload_pan">पैन अपलोड करें</string>
+    <string name="upload_life_certificate">जीवन प्रमाण पत्र </string>
+    <string name="upload_re_marriage_certificate">पुन: विवाह प्रमाण पत्र</string>
+    <string name="upload_re_employment_certificate">पुन: रोजगार प्रमाणपत्र </string>
+    <string name="kyp">के वाई पी</string>
+    <string name="track_grievances">शिकायतें पता करें</string>
+    <string name="contact_us">हमसे संपर्क करें</string>
+    <string name="latest_news">ताज़ा खबर</string>
+    <string name="wifi">वाईफ़ाई हॉटस्पॉट स्थान</string>
+    <string name="gp">ग्राम पंचायत स्थान</string>
+    <string name="inspection">निरीक्षण</string>
+    <string name="saved_inspections">सहेजे गए निरीक्षण</string>
+    <string name="update_grievances">शिकायतें अपडेट करें</string>
+    <string name="add_news">समाचार जोड़ें</string>
+    <string name="feedback">प्रतिक्रिया</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="about_us">हमारे बारे में</string>
 
     <!--Nav menu -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="visit_cca_jk_website">वेबसाइट देखें</string>
+    <string name="functions">कार्य</string>
+    <string name="update_information">जानकारी अपडेट करें</string>
+    <string name="tracking">पता</string>
+    <string name="others">अन्य</string>
+    <string name="wifi_hotspot_locator">वाईफ़ाई हॉटस्पॉट लोकेटर</string>
+    <string name="gp_lit_locator">जीपी एलआईटी लोकेटर</string>
+    <string name="staff_corner">कर्मचारी कॉर्नर</string>
+    <string name="log_out">लोग आउट</string>
 
     <!--OPtions Menu-->
+    <string name="invite">आमंत्रण</string>
+    <string name="about">विषय में</string>
+    <string name="action_refresh">पुनः लोड करें</string>
+    <string name="action_clear_all">फॉर्म डेटा साफ़ करें</string>
+    <string name="clear">सब साफ़ करें </string>
 
     <!--Floating menu-->
+    <string name="add_image">छवि फ़ाइल जोड़ें</string>
+    <string name="remove_all">सभी हटाएं</string>
+    <string name="remove_image">छवि फ़ाइल निकालें</string>
+    <string name="scan_adhaar">आधार कार्ड स्कैन करें</string>
 
     <!--Form fields-->
+    <string name="no_image">कोई छवि चयनित नहीं है</string>
+    <string name="files_selected">%1$s छवि चयनित</string>
+    <string name="circle">क्षेत्र</string>
+    <string name="g_type">शिकायत का प्रकार</string>
+    <string name="submitted_by">शिकायत प्रस्तुत द्वारा</string>
+    <string name="g_details">शिकायत विवरण</string>
+    <string name="upload_using">निम्नलिखित का उपयोग कर अपलोड करें</string>
+    <string name="p_code">पेंशनर कोड</string>
+    <string name="hr_num">एच आर संख्या</string>
+    <string name="staff_num">स्टाफ संख्या</string>
+    <string name="mobile_num">मोबाइल नंबर</string>
+    <string name="email">ईमेल</string>
+    <string name="applicant_name">आवेदक का नाम</string>
+    <string name="aadhaar_no">आधार संख्या</string>
+    <string name="pan_no">पैन संख्या</string>
+    <string name="grievances_registered_using">शिकायत निम्नलिखित का उपयोग कर पंजीकृत हैं</string>
+    <string name="location">स्थान समन्वय</string>
+    <string name="location_hint">स्थान का नाम दर्ज करें</string>
+    <string name="pensioner_hr_staff_code">Pensioner/HR/Staff Code</string>
+    <string name="grievance">शिकायत</string>
+    <string name="grievance_application_date">शिकायत आवेदन दिनांक</string>
+    <string name="reference_number">संदर्भ संख्या</string>
+    <string name="update_status">स्थिति अपडेट करें:</string>
+    <string name="message">संदेश:</string>
+    <string name="headline">शीर्षक</string>
+    <string name="details">विवरण</string>
+    <string name="login">लॉग इन </string>
+    <string name="change">परिवर्तन करें</string>
+    <string name="update">अद्यतन करें</string>
+    <string name="track">पता करें</string>
+    <string name="submit">जमा करें</string>
+    <string name="submit_now">अभी जमा करे</string>
+    <string name="save">भविष्य के लिए सहेजें </string>
 
     <!--tutorial Strings-->
 

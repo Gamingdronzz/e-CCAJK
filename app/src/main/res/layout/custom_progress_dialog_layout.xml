@@ -30,7 +30,7 @@
                 android:background="@color/colorPrimary"
                 android:elevation="@dimen/elevation_small"
                 android:padding="@dimen/padding_large"
-                android:text="@string/cca_jk"
+                android:text="@string/app_name"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_20"

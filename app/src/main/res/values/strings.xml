@@ -5,7 +5,6 @@
 
     <!--Action bar titles -->
     <string name="home">Home</string>
-    <string name="cca_jk">CCA JK</string>
     <string name="pension_grievance">Pension Grievance</string>
     <string name="gpf_grievance">GPF Grievance</string>
     <string name="view_saved_grievance">Saved Grievances</string>
@@ -14,6 +13,7 @@
     <string name="upload_life_certificate">Upload Life Certificate</string>
     <string name="upload_re_marriage_certificate">Upload Re-Marriage Certificate</string>
     <string name="upload_re_employment_certificate">Upload Re-Employment Certificate</string>
+    <string name="kyp">KYP</string>
     <string name="track_grievances">Track Grievances</string>
     <string name="contact_us">Contact Us</string>
     <string name="latest_news">Latest News</string>
@@ -173,6 +173,7 @@
     <string name="submit_kyp_form">Submit KYP Form</string>
     <string name="kyp_upload_success">Your KYP Form is successfully uploaded</string>
     <string name="kyp_upload_fail">KYP form could not be uploaded</string>
+    <string name="add_kyp_image">Please attach the image of your duly filled KYP form</string>
 
     <!--contact us-->
     <string name="office_address">Office Address</string>

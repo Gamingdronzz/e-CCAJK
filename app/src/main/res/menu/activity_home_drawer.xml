@@ -44,32 +44,32 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/navmenu_aadhaar"
-                    android:checkable="true"
                     android:icon="@drawable/ic_drawable_aadhaar"
                     android:title="@string/upload_aadhaar" />
 
                 <item
                     android:id="@+id/navmenu_pan"
-                    android:checkable="true"
                     android:icon="@drawable/ic_drawable_pancard"
                     android:title="@string/upload_pan" />
                 <item
                     android:id="@+id/navmenu_life_certificate"
-                    android:checkable="true"
                     android:icon="@drawable/ic_life"
                     android:title="@string/upload_life_certificate" />
 
                 <item
                     android:id="@+id/navmenu_remarriage_certificate"
-                    android:checkable="true"
                     android:icon="@drawable/ic_marriage"
                     android:title="@string/upload_re_marriage_certificate" />
 
                 <item
                     android:id="@+id/navmenu_reemployment"
-                    android:checkable="true"
                     android:icon="@drawable/ic_employment"
                     android:title="@string/upload_re_employment_certificate" />
+                <item
+                    android:id="@+id/navmenu_kyp"
+                    android:icon="@drawable/ic_kyp_black_24dp"
+                    android:title="@string/kyp" />
+
             </group>
 
         </menu>

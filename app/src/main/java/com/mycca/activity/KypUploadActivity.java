@@ -1,11 +1,14 @@
 package com.mycca.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
@@ -70,6 +73,8 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         submit.setOnClickListener(v -> {
             if (imageModel != null)
                 uploadImageOnFirebase();
+            else
+                Toast.makeText(this, getString(R.string.add_kyp_image), Toast.LENGTH_LONG).show();
         });
     }
 
@@ -97,6 +102,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
     }
 
     private void uploadImageToServer(Uri uri) {
+
         firebaseImageURLs.add(uri);
         DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
                 FireBaseHelper.getInstance().getAuth().getUid(),
@@ -181,4 +187,18 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (imagePicker != null)
+            imagePicker.onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (imagePicker != null)
+            imagePicker.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+
+    }
 }

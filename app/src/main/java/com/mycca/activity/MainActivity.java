@@ -45,6 +45,7 @@ import com.mycca.fragments.ContactUsFragment;
 import com.mycca.fragments.FeedbackFragment;
 import com.mycca.fragments.HomeFragment;
 import com.mycca.fragments.InspectionFragment;
+import com.mycca.fragments.KYPFragment;
 import com.mycca.fragments.LatestNewsFragment;
 import com.mycca.fragments.LocatorFragment;
 import com.mycca.fragments.LoginFragment;
@@ -236,6 +237,15 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 break;
+            case R.id.navmenu_kyp:
+                fragment = new KYPFragment();
+                title = getString(R.string.kyp);
+                if (checkCircleDataAvailable()) {
+                    if (checkUserAuthenticated()) {
+                        showFragment(title, fragment, null);
+                    }
+                }
+                break;
             case R.id.navmenu_tracking:
                 if (checkCircleDataAvailable()) {
                     showFragment(getString(R.string.track_grievances), new TrackGrievanceFragment(), null);
@@ -260,7 +270,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.navmenu_login:
                 fragment = new LoginFragment();
-                title = getString(R.string.cca_jk);
+                title = getString(R.string.app_name);
                 if (checkCircleDataAvailable()) {
                     if (checkUserAuthenticated())
                         showFragment(title, fragment, null);
