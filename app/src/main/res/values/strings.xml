@@ -163,8 +163,6 @@
     <string name="invalid_aadhaar">Invalid Aadhaar Number</string>
     <string name="invalid_pan">Invalid Pan Number</string>
     <string name="invalid_name">Invalid Name</string>
-    <string name="re_marriage">Re-Marriage Certificate</string>
-    <string name="re_employment">Re-Employment Certificate</string>
     <string name="updation_success">Update request for %1$s has been submitted successfully</string>
     <string name="updation_failed">Request for Updloading Information Failed\nTry Again</string>
 
@@ -179,7 +177,7 @@
     <string name="office_address">Office Address</string>
     <string name="locate_on_map">Locate on Map</string>
     <string name="contact_persons">Contact Persons</string>
-    <string name="contact_na">Contact details not available for this person</string>
+    <string name="contact_na">Contact details of this person not available </string>
     <string name="email_na">Email not available</string>
 
     <!-- hotspots -->
@@ -188,7 +186,7 @@
     <string name="search_locations">Search Locations</string>
     <string name="select_state">Select State</string>
     <string name="select_district">Select District</string>
-    <string name="sort_locations">Sort Locations</string>
+    <string name="sort_locations">Sort locations by</string>
     <string name="name">Name</string>
     <string name="district">District</string>
     <string name="msg_no_location">This feature requires Location.\nTurn On Location and Refresh</string>
@@ -250,7 +248,7 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="submit_advice">Submit Advice</string>
     <string name="thanks_for_feedback">Your suggestion means a lot to us!\n<b>Thank you</b></string>
     <string name="no_suggestion">No suggestion!</string>
-    <string name="suggestion_sign_in">You cannot submit suggestion without signing in</string>
+    <string name="suggestion_sign_in">You cannot submit suggestion without google sign in</string>
 
 
     <!--settings-->
@@ -287,12 +285,12 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="signing_in">Signing In…</string>
     <string name="please_wait">Please Wait…</string>
     <string name="checking_grievance">Checking for Applied Grievances\n\nPlease Wait…</string>
-    <string name="fetching_grievance">"Fetching Grievance Details"</string>
+    <string name="fetching_grievance">Fetching Grievance Details…</string>
     <string name="processing">Processing…</string>
     <string name="uploading_files">Uploading Files…\nPlease Wait</string>
     <string name="uploaded_file">Uploaded File %1$s / %2$s</string>
     <string name="almost_done">Almost Done…</string>
-    <string name="getting_coordinates">Getting Current Location Coordinates</string>
+    <string name="getting_coordinates">Getting current location coordinates…</string>
 
     <!--invitation-->
     <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.mycca</string>

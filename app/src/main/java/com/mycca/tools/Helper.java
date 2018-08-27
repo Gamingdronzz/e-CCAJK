@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -358,17 +357,6 @@ public class Helper {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
         return progressDialog;
-    }
-
-    public void setLocale(Context context) {
-
-        String lang = Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE);
-        Locale locale = new Locale(lang);
-        Locale.setDefault(locale);
-        Resources resources = context.getApplicationContext().getResources();
-        Configuration configuration = resources.getConfiguration();
-        configuration.locale = locale;
-        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
     public boolean checkEmptyInput(String input) {

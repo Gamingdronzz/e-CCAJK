@@ -3,6 +3,8 @@ package com.mycca.activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,9 +22,11 @@ import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
+
+import java.util.Locale;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -38,11 +42,22 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Helper.getInstance().setLocale(this);
+        setLocale();
         setContentView(R.layout.activity_splash);
         bindViews();
         init();
         StartAnimations();
+    }
+
+    public void setLocale() {
+
+        String lang = Preferences.getInstance().getStringPref(this, Preferences.PREF_LANGUAGE);
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Resources resources = getApplicationContext().getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
     private void bindViews() {
@@ -52,7 +67,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void init() {
         Helper.versionChecked = false;
-        
+
         currentAppVersion = Helper.getInstance().getAppVersion(this);
         if (currentAppVersion == -1)
             currentAppVersion = 6;
@@ -98,7 +113,7 @@ public class SplashActivity extends AppCompatActivity {
                     public void OnConnectionNotAvailable() {
                         CustomLogger.getInstance().logDebug(TAG + " Connection Not Available");
                         if (Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES) != -1)
-                            CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(),null);
+                            CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
                         else
                             CustomLogger.getInstance().logDebug("Circle data not available");
                         LoadNextActivity();
@@ -165,7 +180,7 @@ public class SplashActivity extends AppCompatActivity {
                         checkActiveCircles();
                     } else {
                         CustomLogger.getInstance().logDebug("New data available");
-                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(),null);
+                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
                         checkOtherStateData();
                     }
                 } else {
@@ -192,10 +207,10 @@ public class SplashActivity extends AppCompatActivity {
                     long activeCount = (long) dataSnapshot.getValue();
                     if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
                         CustomLogger.getInstance().logDebug("No new data");
-                        CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(),null);
+                        CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
                     } else {
                         CustomLogger.getInstance().logDebug("New data available");
-                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(),null);
+                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
                     }
                 } else {
                     CustomLogger.getInstance().logDebug("Data null...checking other state data");
