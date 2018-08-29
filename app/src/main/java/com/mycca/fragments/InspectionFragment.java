@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -84,6 +86,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     AppCompatTextView textViewSelectedFileCount;
     CircularProgressButton circularProgressButton;
+    TextView coordinates;
+    ProgressBar progressBar;
     EditText editTextLocationName;
     Button upload, save;
     FloatingActionButton fab;
@@ -119,13 +123,14 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         }
         bindViews(view);
         init(view);
-
-        //        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION)) {
+//        if (Preferences.getInstance().getBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION)) {
 //            showTutorial();
 //            Preferences.getInstance().setBooleanPref(getContext(), Preferences.PREF_HELP_INSPECTION, false);
 //        } else
         if (savedModel == null)
             getLocationCoordinates();
+        else
+            coordinates.setOnClickListener(null);
         return view;
     }
 
@@ -133,7 +138,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
         fab = view.findViewById(R.id.fab_inspection);
         editTextLocationName = view.findViewById(R.id.edittext_current_location_name);
-        circularProgressButton = view.findViewById(R.id.textview_current_location_coordinates);
+        coordinates = view.findViewById(R.id.textview_current_location_coordinates);
+        progressBar = view.findViewById(R.id.progressBar);
         recyclerViewSelectedImages = view.findViewById(R.id.recycler_view_selected_images_inspection);
         upload = view.findViewById(R.id.button_upload);
         save = view.findViewById(R.id.button_save_inspection);
@@ -156,12 +162,12 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         volleyHelper = new VolleyHelper(this, getContext());
         progressDialog = Helper.getInstance().getProgressWindow(mainActivity, getString(R.string.please_wait));
 
-        getCoordinatesListener = v -> {
-            getLocationCoordinates();
-            circularProgressButton.setIndeterminateProgressMode(true);
-        };
+        getCoordinatesListener = v -> getLocationCoordinates();
 
-        circularProgressButton.setOnClickListener(getCoordinatesListener);
+        coordinates.setOnClickListener(getCoordinatesListener);
+        coordinates.setText(R.string.location_not_found);
+        //circularProgressButton.setIndeterminateProgressMode(true);
+        //circularProgressButton.setOnClickListener(getCoordinatesListener);
         //circularProgressButton.setIdleText(getString(R.string.location_not_found));
 
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_inspection);
@@ -208,11 +214,35 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         items.add(new FABMenuItem(1, getString(R.string.remove_all), AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_24dp)));
     }
 
+    private void showCoordinates(double latitude, double longitude) {
+        isCurrentLocationFound = true;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        myLocationManager.cleanUp();
+
+        CustomLogger.getInstance().logDebug("getLocationCoordinates: " + latitude + "," + longitude);
+        //circularProgressButton.setProgress(0);
+        //circularProgressButton.setIdleText(String.format(getString(R.string.current_location), String.valueOf(latitude), String.valueOf(longitude)));
+        manageVisibility(true);
+        coordinates.setText(String.format(getString(R.string.current_location), String.valueOf(latitude), String.valueOf(longitude)));
+    }
+
+    private void manageVisibility(boolean showTextview) {
+        if (showTextview) {
+            coordinates.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        } else {
+            coordinates.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     private void getLocationCoordinates() {
         latitude = null;
         longitude = null;
-        circularProgressButton.setProgress(1);
+        manageVisibility(false);//circularProgressButton.setProgress(1);
         getLocation();
     }
 
@@ -226,31 +256,21 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
                 } else {
                     CustomLogger.getInstance().logDebug("Task UnSuccessful");
-                    circularProgressButton.setProgress(0);
+                    manageVisibility(true);
+                    //circularProgressButton.setProgress(0);
                 }
             });
             task.addOnSuccessListener(mainActivity, locationSettingsResponse -> CustomLogger.getInstance().logDebug("On Task Success"));
 
             task.addOnFailureListener(mainActivity, e -> {
                 CustomLogger.getInstance().logDebug("On Task Failed");
-                circularProgressButton.setProgress(0);
-                circularProgressButton.setIdleText(getString(R.string.location_not_found));
+                // circularProgressButton.setProgress(0);
+                // circularProgressButton.setIdleText(getString(R.string.location_not_found));
                 if (e instanceof ResolvableApiException) {
                     myLocationManager.onLocationAcccessRequestFailure(e);
                 }
             });
         }
-    }
-
-    private void showCoordinates(double latitude, double longitude) {
-        isCurrentLocationFound = true;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        myLocationManager.cleanUp();
-
-        CustomLogger.getInstance().logDebug("getLocationCoordinates: " + latitude + "," + longitude);
-        circularProgressButton.setProgress(0);
-        circularProgressButton.setIdleText(String.format(getString(R.string.current_location), String.valueOf(latitude), String.valueOf(longitude)));
     }
 
     private boolean checkInput() {
@@ -304,7 +324,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(mainActivity,null);
+                            Helper.getInstance().showMaintenanceDialog(mainActivity, null);
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
@@ -347,7 +367,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         inspectionModel = new InspectionModel(staffModel.getId(),
                 staffModel.getEmail(), locName, latitude, longitude, new Date());
 
-        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(staffModel.getState(),
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(staffModel.getCircle(),
                 inspectionModel,
                 FireBaseHelper.ROOT_INSPECTION,
                 key);
@@ -358,7 +378,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         });
         task.addOnFailureListener(e -> {
             progressDialog.dismiss();
-            Helper.getInstance().showMaintenanceDialog(mainActivity,staffModel.getState());
+            Helper.getInstance().showMaintenanceDialog(mainActivity, staffModel.getCircle());
         });
     }
 
@@ -368,7 +388,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         counterFirebaseImages = 0;
         counterUpload = 0;
         for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-            uploadTask = FireBaseHelper.getInstance().uploadFiles(staffModel.getState(),
+            uploadTask = FireBaseHelper.getInstance().uploadFiles(staffModel.getCircle(),
                     imageModel,
                     true,
                     counterFirebaseImages++,

@@ -20,8 +20,8 @@ import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.models.Circle;
 import com.mycca.models.SelectedImageModel;
-import com.mycca.models.State;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
@@ -64,7 +64,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         progressDialog = new ProgressDialog(this);
         volleyHelper = new VolleyHelper(this, this);
 
-        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(this,
+        GenericSpinnerAdapter<Circle> statesAdapter = new GenericSpinnerAdapter<>(this,
                 CircleDataProvider.getInstance().getActiveCircleData());
         circles.setAdapter(statesAdapter);
 
@@ -78,11 +78,16 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         });
     }
 
+    public void otp() {
+       // OTPManager otpManager = new OTPManager(mainActivity, mobile, this::doSubmissionOnInternetAvailable);
+        //otpManager.sendSMS();
+    }
+
     private void uploadImageOnFirebase() {
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
-        State state = (State) circles.getSelectedItem();
-        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(state.getCode(),
+        Circle circle = (Circle) circles.getSelectedItem();
+        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(circle.getCode(),
                 imageModel,
                 false,
                 0,
@@ -95,9 +100,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
                 Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error), this);
                 CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
             }).addOnSuccessListener(taskSnapshot ->
-                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-                        uploadImageToServer(uri);
-                    }));
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(this::uploadImageToServer));
         }
     }
 

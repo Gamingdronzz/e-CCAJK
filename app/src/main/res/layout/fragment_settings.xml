@@ -48,7 +48,7 @@
                 android:paddingLeft="@dimen/padding_medium"
                 android:paddingRight="@dimen/padding_medium"
                 android:paddingTop="@dimen/padding_medium"
-                android:text="@string/change_state"
+                android:text="@string/change_circle"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/text_20"
                 tools:targetApi="m" />
@@ -58,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/padding_xxxlarge"
-                android:text="@string/current_state"
+                android:text="@string/current_circle"
                 android:textSize="@dimen/text_18"
                 android:textStyle="italic"
                 tools:ignore="RtlSymmetry" />
@@ -97,7 +97,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/padding_xxxlarge"
-                android:text="Language: "
                 android:textSize="@dimen/text_18"
                 android:textStyle="italic"
                 tools:ignore="RtlSymmetry" />

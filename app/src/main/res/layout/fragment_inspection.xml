@@ -46,16 +46,37 @@
             app:srcCompat="@drawable/ic_drawable_location"
             tools:ignore="ContentDescription" />
 
-        <com.mycca.custom.CustomProgressButton.CircularProgressButton
+        <!--<com.mycca.custom.CustomProgressButton.CircularProgressButton-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/margin_medium"-->
+        <!--android:layout_marginRight="@dimen/margin_medium"-->
+        <!--android:padding="@dimen/padding_medium"-->
+        <!--android:text="@string/location"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textSize="15sp" />-->
+
+        <TextView
             android:id="@+id/textview_current_location_coordinates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_medium"
             android:layout_marginRight="@dimen/margin_medium"
+            android:background="@color/colorAccent"
             android:padding="@dimen/padding_medium"
             android:text="@string/location"
-            android:textAllCaps="false"
-            android:textSize="15sp" />
+            android:textAlignment="center"
+            android:textSize="@dimen/text_15"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:progressTint="@color/colorAccent"
+            android:layout_gravity="center_horizontal"
+            tools:targetApi="lollipop" />
 
     </LinearLayout>
 

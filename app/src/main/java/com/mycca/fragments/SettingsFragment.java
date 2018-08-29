@@ -114,12 +114,12 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        String stateName;
+        String circleName;
         if (Preferences.getInstance().getStringPref(activity, Preferences.PREF_LANGUAGE).equals("hi"))
-            stateName = Preferences.getInstance().getStatePref(activity).getHi();
+            circleName = Preferences.getInstance().getCirclePref(activity).getHi();
         else
-            stateName = Preferences.getInstance().getStatePref(activity).getEn();
-        tvCurrentState.setText(String.format(getString(R.string.current_state), stateName));
+            circleName = Preferences.getInstance().getCirclePref(activity).getEn();
+        tvCurrentState.setText(String.format(getString(R.string.current_circle), circleName));
         layoutChangeState.setOnClickListener(v -> {
             Intent intent = new Intent(activity, StateSettingActivity.class);
             startActivity(intent);
@@ -249,7 +249,7 @@ public class SettingsFragment extends Fragment {
                 if (dataSnapshot.getValue() != null && dataSnapshot.getValue().equals(oldPwd)) {
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put(FireBaseHelper.ROOT_PASSWORD, newPwd);
-                    Task<Void> task = FireBaseHelper.getInstance().updateData(staff.getState(),
+                    Task<Void> task = FireBaseHelper.getInstance().updateData(staff.getCircle(),
                             staff.getId(),
                             hashMap,
                             FireBaseHelper.ROOT_STAFF);
@@ -274,10 +274,10 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Helper.getInstance().showMaintenanceDialog(activity,staff.getState());
+                Helper.getInstance().showMaintenanceDialog(activity,staff.getCircle());
             }
         };
-        FireBaseHelper.getInstance().getDataFromFireBase(staff.getState(), valueEventListener,
+        FireBaseHelper.getInstance().getDataFromFireBase(staff.getCircle(), valueEventListener,
                 true, FireBaseHelper.ROOT_STAFF, staff.getId(), FireBaseHelper.ROOT_PASSWORD);
     }
 

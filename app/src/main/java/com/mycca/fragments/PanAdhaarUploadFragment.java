@@ -46,15 +46,15 @@ import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.Circle;
 import com.mycca.models.PanAdhaar;
 import com.mycca.models.SelectedImageModel;
-import com.mycca.models.State;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -95,7 +95,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     ArrayList<Uri> firebaseImageURLs;
     Uri downloadUrl;
     VolleyHelper volleyHelper;
-    State state;
+    Circle circle;
     MainActivity mainActivity;
     private static final int MY_CAMERA_REQUEST_CODE = 300;
 
@@ -197,7 +197,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         firebaseImageURLs = new ArrayList<>();
 
-        GenericSpinnerAdapter<State> statesAdapter = new GenericSpinnerAdapter<>(getContext(),
+        GenericSpinnerAdapter<Circle> statesAdapter = new GenericSpinnerAdapter<>(getContext(),
                 CircleDataProvider.getInstance().getActiveCircleData());
         spinnerCircle.setAdapter(statesAdapter);
 
@@ -221,7 +221,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private boolean checkInputBeforeSubmission() {
         pensionerIdentifier = editTextIdentifier.getText().toString();
         cardNumber = editTextCardNumber.getText().toString();
-        state = (State) spinnerCircle.getSelectedItem();
+        circle = (Circle) spinnerCircle.getSelectedItem();
         //If Pensioner code is empty
         if (pensionerIdentifier.trim().length() != 15 && identifierHint.equals(getString(R.string.p_code))) {
             editTextIdentifier.setError(getString(R.string.invalid_p_code));
@@ -279,7 +279,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         heading.setText(field2Hint);
         value.setText(cardNumber);
         circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
-                .equals("hi") ? state.getHi() : state.getEn());
+                .equals("hi") ? this.circle.getHi() : this.circle.getEn());
 
         v.findViewById(R.id.textview_confirm3).setVisibility(View.GONE);
         v.findViewById(R.id.textview_confirm3_value).setVisibility(View.GONE);
@@ -299,13 +299,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
                 if (Helper.versionChecked) {
-                    doSubmissionOnInternetAvailable();
+                    otp();
                 } else {
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
-                                doSubmissionOnInternetAvailable();
+                                otp();
                         }
 
                         @Override
@@ -328,6 +328,11 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         connectionUtility.checkConnectionAvailability();
     }
 
+    public void otp() {
+        //OTPManager otpManager = new OTPManager(mainActivity, mobile, this::doSubmissionOnInternetAvailable);
+        //otpManager.sendSMS();
+    }
+
     private void doSubmissionOnInternetAvailable() {
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
@@ -346,7 +351,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber);
         PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
 
-        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), panAadharModel,
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(circle.getCode(), panAadharModel,
                 root,
                 pensionerIdentifier);
         task.addOnCompleteListener(task1 -> {
@@ -354,13 +359,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(getActivity(), state.getCode());
+                Helper.getInstance().showMaintenanceDialog(getActivity(), circle.getCode());
             }
         });
     }
 
     private void uploadAllImagesToFirebase() {
-        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(state.getCode(),
+        UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(circle.getCode(),
                 imageModel,
                 false,
                 0,

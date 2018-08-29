@@ -155,7 +155,7 @@ public class TabResolved extends Fragment {
             }
         };
 
-        String state=Preferences.getInstance().getStaffPref(getContext()).getState();
+        String state=Preferences.getInstance().getStaffPref(getContext()).getCircle();
         FireBaseHelper.getInstance().getDataFromFireBase(state,childEventListener, FireBaseHelper.ROOT_GRIEVANCES);
         FireBaseHelper.getInstance().getDataFromFireBase(state,valueEventListener, false, FireBaseHelper.ROOT_GRIEVANCES);
     }

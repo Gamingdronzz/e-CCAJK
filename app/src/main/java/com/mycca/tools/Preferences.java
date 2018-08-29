@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.mycca.models.Circle;
 import com.mycca.models.StaffModel;
-import com.mycca.models.State;
 
 
 public class Preferences {
@@ -13,7 +13,7 @@ public class Preferences {
     private static Preferences _instance;
 
     public static final String PREF_STAFF_DATA = "staffData";
-    public static final String PREF_STATE_DATA = "stateData";
+    public static final String PREF_CIRCLE_DATA = "stateData";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receiveNotifications";
     public static final String PREF_LANGUAGE = "language";
     public static final String PREF_HELP_ONBOARDER = "onBoarder";
@@ -23,6 +23,7 @@ public class Preferences {
     public static final String PREF_OFFICE_LABEL = "officeLabel";
     public static final String PREF_OFFICE_COORDINATES = "coordinates";
     public static final String PREF_WEBSITE = "website";
+    public static final String PREF_GEN_OTP = "otp";
 
     //    public static final String PREF_HELP_HOME = "home";
 //    public static final String PREF_HELP_CONTACT = "contact";
@@ -99,12 +100,12 @@ public class Preferences {
         return (StaffModel) Helper.getInstance().getObjectFromJson(json, StaffModel.class);
     }
 
-    public State getStatePref(Context context) {
-        String json = getSharedPreferences(context).getString(PREF_STATE_DATA, null);
+    public Circle getCirclePref(Context context) {
+        String json = getSharedPreferences(context).getString(PREF_CIRCLE_DATA, null);
         if (json == null) {
-            return new State("05", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true);
+            return new Circle("77144", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true);
         }
-        return (State) Helper.getInstance().getObjectFromJson(json, State.class);
+        return (Circle) Helper.getInstance().getObjectFromJson(json, Circle.class);
     }
 
     public void clearStaffPrefs(Context context) {

@@ -252,8 +252,8 @@
 
     <!--settings-->
     <string name="notifications">सूचनाएं:</string>
-    <string name="change_state">राज्य बदलें</string>
-    <string name="current_state">मौजूदा राज्य: %1$s</string>
+    <string name="change_circle">क्षेत्र बदलें</string>
+    <string name="current_circle">मौजूदा क्षेत्र: %1$s</string>
     <string name="language">भाषा: %1$s</string>
     <string name="change_language">भाषा बदलें</string>
     <string name="choose_language">भाषा चुनें:</string>
@@ -304,16 +304,15 @@
     <string name="pick_image_intent_chooser_title">स्रोत चुनें</string>
 
     <!--barcode-->
-    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
-    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
-    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
-    <string name="read_barcode">Read Barcode</string>
-    <string name="auto_focus">Auto Focus</string>
-    <string name="use_flash">Use Flash</string>
-    <string name="barcode_success">Barcode read successfully</string>
-    <string name="barcode_failure">No barcode captured</string>
-    <string name="barcode_error">"Error reading barcode: %1$s"</string>
+    <string name="permission_camera_rationale">पहचान के लिए कैमरे की आवश्यकता है</string>
+    <string name="no_camera_permission">कैमरा की अनुमति नहीं दी गई। बारकोड नहीं पढ़ा जा सकता|</string>
+    <string name="low_storage_error">कम डिवाइस भंडारण के कारण फेस डिटेक्टर निर्भरता डाउनलोड नहीं की जा सकती है</string>
+
+    <!--otp-->
+    <string name="sent_otp">एक चार अंक ओ.टी.पी आपके मोबाइल नंबर पर भेजा गया है। सबमिशन जारी रखने के लिए, कृपया ओ.टी.पी सत्यापित करें।</string>
+    <string name="otp_hint">ओ.टी.पी दर्ज करें</string>
+    <string name="enter_correct">सही ओ.टी.पी फिर से दर्ज करें</string>
+    <string name="wrong_otp">आपने गलत ओ.टी.पी दर्ज किया है</string>
 
     <!--others-->
     <string name="no_internet">कनेक्शन उपलब्ध नहीं है</string>
@@ -366,7 +365,7 @@
     <string name="data_save_fail">डेटा सहेजते समय त्रुटि</string>
     <string name="data_deleted">डेटा हटा दिया गया है</string>
     <string name="data_not_deleted">डेटा हटाया नहीं जा सका</string>
-    <string name="state_n_a">जिस राज्य को आप प्रयोग करने का प्रयास कर रहे हैं वह अब उपलब्ध नहीं है। \nकृपया ऐप डेटा अपडेट करें।</string>
+    <string name="state_n_a">जिस क्षेत्र को आप प्रयोग करने का प्रयास कर रहे हैं वह अब उपलब्ध नहीं है। \nकृपया ऐप डेटा अपडेट करें।</string>
 
 
 

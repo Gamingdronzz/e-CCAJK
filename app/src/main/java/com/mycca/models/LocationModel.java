@@ -3,7 +3,6 @@ package com.mycca.models;
 public class LocationModel {
 
     private String LocationName;
-    private String StateID;
     private String District;
     private String Block;
     private String SSA;
@@ -19,7 +18,6 @@ public class LocationModel {
         LocationName = locationName;
         Latitude = latitude;
         Longitude = longitude;
-        StateID = stateID;
         District = district;
         Block = block;
         this.SSA = SSA;
@@ -63,14 +61,6 @@ public class LocationModel {
 
     public void setLocationName(String locationName) {
         this.LocationName = locationName;
-    }
-
-    public String getStateID() {
-        return StateID;
-    }
-
-    public void setStateID(String state) {
-        this.StateID = state;
     }
 
     public String getDistrict() {

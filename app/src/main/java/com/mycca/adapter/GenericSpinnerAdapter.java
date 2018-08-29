@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.mycca.models.Circle;
 import com.mycca.models.GrievanceType;
-import com.mycca.models.State;
 import com.mycca.models.StatusModel;
 import com.mycca.R;
 import com.mycca.tools.Preferences;
@@ -63,12 +63,12 @@ public class GenericSpinnerAdapter<T> extends BaseAdapter {
             if (item instanceof GrievanceType) {
                 GrievanceType type = (GrievanceType) item;
                 textView.setText(type.getName());
-            } else if (item instanceof State) {
-                State state = (State) item;
+            } else if (item instanceof Circle) {
+                Circle circle = (Circle) item;
                 if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
-                    textView.setText(state.getHi());
+                    textView.setText(circle.getHi());
                 else
-                    textView.setText(state.getEn());
+                    textView.setText(circle.getEn());
             } else if (item instanceof StatusModel) {
                 StatusModel status = (StatusModel) item;
                 textView.setText(status.getStatusString());

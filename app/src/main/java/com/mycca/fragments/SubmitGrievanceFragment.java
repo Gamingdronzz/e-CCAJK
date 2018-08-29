@@ -49,10 +49,10 @@ import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.Circle;
 import com.mycca.models.GrievanceModel;
 import com.mycca.models.GrievanceType;
 import com.mycca.models.SelectedImageModel;
-import com.mycca.models.State;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
@@ -60,6 +60,7 @@ import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
+import com.mycca.tools.OTPManager;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -92,7 +93,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     int counterUpload = 0;
     int counterServerImages = 0;
     int counterFirebaseImages;
-    int identifierHint=0;
+    int identifierHint = 0;
     String TAG = "Grievance";
     String hint;
     String code, mobile, email, details, type, submittedBy, refNo, prefix, savedModel;
@@ -100,7 +101,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     MainActivity mainActivity;
     GrievanceType grievanceType;
     GrievanceModel grievanceModel;
-    State state;
+    Circle circle;
     VolleyHelper volleyHelper;
     GrievanceType[] list;
     ArrayList<Uri> firebaseImageURLs;
@@ -108,7 +109,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     ArrayList<SelectedImageModel> selectedImageModelArrayList;
     RecyclerView recyclerViewSelectedImages;
     RecyclerViewAdapterSelectedImages adapterSelectedImages;
-    GenericSpinnerAdapter<State> statesAdapter;
+    GenericSpinnerAdapter<Circle> statesAdapter;
     GenericSpinnerAdapter<GrievanceType> adapter;
     ArrayAdapter<String> arrayAdapter1;
 
@@ -246,8 +247,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             if (checkInputBeforeSubmission())
                 saveGrievanceOffline();
         });
-
+        setSelectedFileCount(0);
         selectedImageModelArrayList = new ArrayList<>();
+
         if (savedModel != null) {
             loadOfflineModelValues();
         }
@@ -255,8 +257,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         recyclerViewSelectedImages.setAdapter(adapterSelectedImages);
         recyclerViewSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+
         firebaseImageURLs = new ArrayList<>();
-        setSelectedFileCount(0);
+
     }
 
     private void loadOfflineModelValues() {
@@ -284,10 +287,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         spinnerGrievance.setSelection(adapter.getPosition(
                 Helper.getInstance().getGrievanceFromId(model.getGrievanceType())));
         spinnerCircle.setSelection(statesAdapter.getPosition(
-                CircleDataProvider.getInstance().getStateFromCode(model.getState())));
-            selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
-        if (selectedImageModelArrayList != null)
+                CircleDataProvider.getInstance().getCircleFromCode(model.getCircle())));
+        selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
+
+        if (selectedImageModelArrayList != null) {
             setSelectedFileCount(selectedImageModelArrayList.size());
+            CustomLogger.getInstance().logDebug("Files found = " + selectedImageModelArrayList.size());
+        } else {
+            CustomLogger.getInstance().logDebug("No File found");
+        }
     }
 
     private void saveGrievanceOffline() {
@@ -298,7 +306,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             fileList = null;
         CustomLogger.getInstance().logDebug(fileList);
         GrievanceModel model = new GrievanceModel(identifierHint, code, email, mobile, details,
-                state.getCode(),
+                circle.getCode(),
                 grievanceType.getId(),
                 submittedBy, fileList);
 
@@ -313,7 +321,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         email = editTextEmail.getText().toString();
         details = editTextDetails.getText().toString();
         submittedBy = (String) spinnerSubmittedBy.getSelectedItem();
-        state = (State) spinnerCircle.getSelectedItem();
+        circle = (Circle) spinnerCircle.getSelectedItem();
         grievanceType = (GrievanceType) spinnerGrievance.getSelectedItem();
 
         if (code.length() != 15 && identifierHint == GrievanceModel.PEN_NO) {
@@ -375,7 +383,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void showConfirmSubmissionDialog() {
         Helper.getInstance().hideKeyboardFrom(mainActivity);
         LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.dialog_confirm_submission, (ViewGroup) this.getView(),false);
+        View v = inflater.inflate(R.layout.dialog_confirm_submission, (ViewGroup) this.getView(), false);
         loadValues(v);
         Helper.getInstance().getConfirmationDialog(mainActivity, v,
                 (dialog, which) -> doSubmission());
@@ -399,24 +407,22 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         grievance.setText(grievanceType.getName());
         gr_by.setText(spinnerSubmittedBy.getSelectedItem().toString());
         circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
-                .equals("hi") ? state.getHi() : state.getEn());
+                .equals("hi") ? this.circle.getHi() : this.circle.getEn());
     }
 
     private void doSubmission() {
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked);
                 if (Helper.versionChecked) {
-                    doSubmissionOnInternetAvailable();
+                    otp();
                 } else {
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
-                                doSubmissionOnInternetAvailable();
+                                otp();
                         }
 
                         @Override
@@ -430,14 +436,20 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void OnConnectionNotAvailable() {
-                progressDialog.dismiss();
                 Helper.getInstance().noInternetDialog(mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
+    public void otp() {
+        OTPManager otpManager = new OTPManager(mainActivity, mobile, this::doSubmissionOnInternetAvailable);
+        otpManager.sendSMS();
+    }
+
     private void doSubmissionOnInternetAvailable() {
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
         if (isUploadedToFirebase) {
@@ -471,7 +483,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
                 if (b) {
-                    refNo = prefix + "-" + state.getCode() + "-" + dataSnapshot.getValue();
+                    refNo = prefix + "-" + circle.getCode() + "-" + dataSnapshot.getValue();
                     uploadData();
                 } else {
                     progressDialog.dismiss();
@@ -480,12 +492,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             "Message = " + databaseError.getMessage() +
                             "Code = " + databaseError.getCode() +
                             "Snapshot = " + dataSnapshot.toString());
-                    Helper.getInstance().showMaintenanceDialog(mainActivity, state.getCode());
+                    Helper.getInstance().showMaintenanceDialog(mainActivity, circle.getCode());
                 }
             }
 
         };
-        FireBaseHelper.getInstance().getReferenceNumber(handler, state.getCode());
+        FireBaseHelper.getInstance().getReferenceNumber(handler, circle.getCode());
     }
 
     private void uploadData() {
@@ -495,7 +507,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 grievanceType.getId(),
                 selectedImageModelArrayList.size());
 
-        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(),
+        Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(circle.getCode(),
                 grievanceModel,
                 FireBaseHelper.ROOT_GRIEVANCES,
                 code, String.valueOf(grievanceType.getId()));
@@ -505,7 +517,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(mainActivity, state.getCode());
+                Helper.getInstance().showMaintenanceDialog(mainActivity, circle.getCode());
                 CustomLogger.getInstance().logDebug("uploadData: Failed Message= " + Objects.requireNonNull(task1.getException()).getMessage());
                 CustomLogger.getInstance().logDebug("uploadData: Failed Cause= " + task1.getException().getCause());
                 CustomLogger.getInstance().logDebug("uploadData: Failed Result= " + task1.getResult());
@@ -522,7 +534,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             counterUpload = 0;
 
             for (SelectedImageModel imageModel : selectedImageModelArrayList) {
-                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(state.getCode(),
+                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(circle.getCode(),
                         imageModel,
                         true,
                         counterFirebaseImages++,
@@ -604,14 +616,14 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     private void setSubmissionSuccessForGrievance() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("submissionSuccess", true);
-        FireBaseHelper.getInstance().updateData(state.getCode(),
+        FireBaseHelper.getInstance().updateData(circle.getCode(),
                 String.valueOf(grievanceType.getId()),
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,
                 code
         );
 
-        FireBaseHelper.getInstance().uploadDataToFireBase(state.getCode(), code, FireBaseHelper.ROOT_REF_NUMBERS, refNo);
+        FireBaseHelper.getInstance().uploadDataToFireBase(circle.getCode(), code, FireBaseHelper.ROOT_REF_NUMBERS, refNo);
     }
 
     private void clearFormData() {

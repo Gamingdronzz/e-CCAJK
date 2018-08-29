@@ -248,7 +248,7 @@ public class TabAllLocations extends Fragment {
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                State state = FireBaseHelper.getInstance().statelist.get(position);
+                Circle state = FireBaseHelper.getInstance().statelist.get(position);
                 populateSpinnerDistrict(viewInflated, state.getId());
             }
 
@@ -295,7 +295,7 @@ public class TabAllLocations extends Fragment {
     private void FilterLocationsByState(Object selectedItem, Object selectedItem1) {
         filteredLocations = new ArrayList<>();
         for (LocationModel locationModel : stateLocations) {
-            if (locationModel.getStateID().equals(((State) selectedItem).getId())) {
+            if (locationModel.getStateID().equals(((Circle) selectedItem).getId())) {
                 if (locationModel.getDistrict().equals(selectedItem1))
                     filteredLocations.add(locationModel);
             }

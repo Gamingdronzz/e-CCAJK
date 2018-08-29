@@ -122,7 +122,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     private void getGrievancesOnConnectionAvailable() {
 
         pensionerCode = getIntent().getStringExtra("Code");
-        state = getIntent().getStringExtra("State");
+        state = getIntent().getStringExtra("Circle");
         try {
             grievanceType = getIntent().getLongExtra("grievanceType", -1);
         } catch (Exception e) {

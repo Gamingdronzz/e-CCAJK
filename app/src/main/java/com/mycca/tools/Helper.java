@@ -94,6 +94,10 @@ public class Helper {
         }
     }
 
+    private static void resetInstance() {
+        _instance = null;
+    }
+
     public String getPlayStoreURL() {
         return "market://details?id=com.mycca";
     }
@@ -275,11 +279,11 @@ public class Helper {
         return fileList.toString();
     }
 
-    public List<SelectedImageModel> getImagesFromString(String string) {
-        if (string.isEmpty())
+    public List<SelectedImageModel> getImagesFromString(String cachedPath) {
+        if (cachedPath.isEmpty())
             return null;
         ArrayList<SelectedImageModel> arrayList = new ArrayList<>();
-        String[] intermediate = string.split(",");
+        String[] intermediate = cachedPath.split(",");
         for (String path : intermediate) {
             SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(path));
             arrayList.add(imageModel);
@@ -287,7 +291,7 @@ public class Helper {
         return arrayList;
     }
 
-    public String getByteArraysFromList(ArrayList<SelectedImageModel> list) {
+    /*public String getByteArraysFromList(ArrayList<SelectedImageModel> list) {
         StringBuffer fileList = new StringBuffer();
         if (list.size() > 0) {
             for (SelectedImageModel imageModel : list) {
@@ -317,8 +321,9 @@ public class Helper {
                 byte[] inter = Base64.decode(byteArray, Base64.DEFAULT);
                 File temp = new File(context.getCacheDir(),"File" + i);
                 FileUtils.writeByteArrayToFile(temp, inter);
-                SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(temp.getPath()));
+                SelectedImageModel imageModel = new SelectedImageModel(temp);
                 arrayList.add(imageModel);
+                CustomLogger.getInstance().logDebug("current file = " ,byteArray);
                 i++;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -326,6 +331,7 @@ public class Helper {
         }
         return arrayList;
     }
+*/
 
     public void saveModelOffline(Activity context, Object model, Type collectionType, String filename) {
         IOHelper.getInstance().readFromFile(context, filename, null, jsonObject -> {
@@ -531,6 +537,7 @@ public class Helper {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         activity.finish();
+        resetInstance();
     }
 
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {

@@ -11,6 +11,16 @@ public class SelectedImageModel {
     private File file;
     private String selectedImageName;
 
+    public SelectedImageModel(Uri imageURI) {
+        this.imageURI = imageURI;
+        file = new File(imageURI.getPath());
+        Log.d("IMage", "SelectedImageModel: " + file.length() / 1024.0f);
+    }
+
+    public SelectedImageModel(File file) {
+        this.file = file;
+    }
+
     public File getFile() {
         return file;
     }
@@ -35,10 +45,4 @@ public class SelectedImageModel {
         this.imageURI = imageURI;
     }
 
-    public SelectedImageModel(Uri imageURI) {
-        this.imageURI = imageURI;
-        file = new File(imageURI.getPath());
-        Log.d("IMage", "SelectedImageModel: "+file.length()/1024.0f);
-        //this.selectedImageName = file.getName();
-    }
 }

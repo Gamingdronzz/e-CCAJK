@@ -7,7 +7,7 @@ public class InspectionModel {
     private String staffId;
     private String staffEmail;
     private String locationName;
-    private String state;
+    private String circle;
     private String filePathList;
     private double latitude;
     private double longitude;

@@ -10,7 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mycca.listeners.DownloadCompleteListener;
-import com.mycca.models.State;
+import com.mycca.models.Circle;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.IOHelper;
@@ -22,10 +22,10 @@ import java.util.ArrayList;
 public class CircleDataProvider {
 
     private static CircleDataProvider _instance;
-    private State[] states;
-    private State[] activeStates;
+    private Circle[] circles;
+    private Circle[] activeCircles;
     private int activeCount;
-    private int stateCount;
+    private int circleCount;
 
     private CircleDataProvider() {
         _instance = this;
@@ -46,61 +46,61 @@ public class CircleDataProvider {
             IOHelper.getInstance().readFromFile(context, IOHelper.CIRCLES, null,
                     jsonObject -> {
                         Gson gson = new Gson();
-                        Type collectionType = new TypeToken<ArrayList<State>>() {
+                        Type collectionType = new TypeToken<ArrayList<Circle>>() {
                         }.getType();
-                        ArrayList<State> stateArrayList = gson.fromJson(jsonObject.toString(), collectionType);
-                        setArrayLists(stateArrayList,
+                        ArrayList<Circle> circleArrayList = gson.fromJson(jsonObject.toString(), collectionType);
+                        setArrayLists(circleArrayList,
                                 Preferences.getInstance().getIntPref(context, Preferences.PREF_ACTIVE_CIRCLES));
                     });
         }
     }
 
-    private void setArrayLists(ArrayList<State> arrayList, int activeCount) {
+    private void setArrayLists(ArrayList<Circle> arrayList, int activeCount) {
         int i = 0, j = 0;
         if (arrayList != null) {
-            states = new State[arrayList.size()];
-            activeStates = new State[activeCount];
+            circles = new Circle[arrayList.size()];
+            activeCircles = new Circle[activeCount];
 
-            for (State state : arrayList) {
-                states[i++] = state;
-                if (state.isActive())
-                    activeStates[j++] = state;
+            for (Circle circle : arrayList) {
+                circles[i++] = circle;
+                if (circle.isActive())
+                    activeCircles[j++] = circle;
             }
         }
     }
 
-    public State[] getActiveCircleData() {
-        return activeStates;
+    public Circle[] getActiveCircleData() {
+        return activeCircles;
     }
 
-    public State[] getCircleData() {
-        return states;
+    public Circle[] getCircleData() {
+        return circles;
     }
 
-    public State getStateFromCode(String code) {
-        for (State activeState : activeStates) {
-            if (activeState.getCode().equals(code))
-                return activeState;
+    public Circle getCircleFromCode(String code) {
+        for (Circle activeCircle : activeCircles) {
+            if (activeCircle.getCode().equals(code))
+                return activeCircle;
         }
-        return activeStates[0];
+        return activeCircles[0];
     }
 
     public void getCircleDataFromFireBase(Context context, DownloadCompleteListener downloadCompleteListener) {
 
-        ArrayList<State> stateArrayList = new ArrayList<>();
+        ArrayList<Circle> circleArrayList = new ArrayList<>();
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CustomLogger.getInstance().logDebug("Got circle data from firebase");
                 activeCount = 0;
-                stateCount = 0;
+                circleCount = 0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     try {
-                        State state = ds.getValue(State.class);
-                        stateArrayList.add(state);
-                        stateCount++;
-                        if (state != null && state.isActive()) {
+                        Circle circle = ds.getValue(Circle.class);
+                        circleArrayList.add(circle);
+                        circleCount++;
+                        if (circle != null && circle.isActive()) {
                             activeCount++;
                         }
                     } catch (DatabaseException | NullPointerException e) {
@@ -108,14 +108,14 @@ public class CircleDataProvider {
                     }
                 }
 
-                setArrayLists(stateArrayList, activeCount);
+                setArrayLists(circleArrayList, activeCount);
 
-                IOHelper.getInstance().writeToFile(context, new Gson().toJson(stateArrayList),
+                IOHelper.getInstance().writeToFile(context, new Gson().toJson(circleArrayList),
                         IOHelper.CIRCLES, null,
                         success -> {
                             if (success) {
-                                CustomLogger.getInstance().logDebug("Write circle Success..Setting Preferences = " + stateCount + "," + activeCount);
-                                Preferences.getInstance().setIntPref(context, Preferences.PREF_CIRCLES, stateCount);
+                                CustomLogger.getInstance().logDebug("Write circle Success..Setting Preferences = " + circleCount + "," + activeCount);
+                                Preferences.getInstance().setIntPref(context, Preferences.PREF_CIRCLES, circleCount);
                                 Preferences.getInstance().setIntPref(context, Preferences.PREF_ACTIVE_CIRCLES, activeCount);
                                 if (downloadCompleteListener != null)
                                     downloadCompleteListener.onDownloadSuccess();

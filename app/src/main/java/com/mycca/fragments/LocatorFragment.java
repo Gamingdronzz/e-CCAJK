@@ -113,7 +113,7 @@ public class LocatorFragment extends Fragment {
 
         progressDialog.show();
         IOHelper.getInstance().readFromFile(activity, locatorType,
-                Preferences.getInstance().getStatePref(activity).getCode(),
+                Preferences.getInstance().getCirclePref(activity).getCode(),
                 jsonObject -> {
                     if (jsonObject == null)
                         fileExists = false;
@@ -174,7 +174,7 @@ public class LocatorFragment extends Fragment {
         ValueEventListener vel = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
+                if (dataSnapshot.getValue() != null) {
                     long firebaseCount = (long) dataSnapshot.getValue();
                     if (locationModelArrayList.size() == firebaseCount) {
                         setTabLayout();
@@ -182,8 +182,7 @@ public class LocatorFragment extends Fragment {
                         CustomLogger.getInstance().logDebug("init: new locations in firebase");
                         fetchLocationsFromFirebase();
                     }
-                } catch (DatabaseException dbe) {
-                    dbe.printStackTrace();
+                } else {
                     setTabLayout();
                 }
             }
@@ -194,7 +193,7 @@ public class LocatorFragment extends Fragment {
                 setTabLayout();
             }
         };
-        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getCirclePref(activity).getCode(),
                 vel, false, node);
     }
 
@@ -249,10 +248,10 @@ public class LocatorFragment extends Fragment {
 
             }
         };
-        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getCirclePref(activity).getCode(),
                 childEventListener,
                 locatorType);
-        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getCirclePref(activity).getCode(),
                 valueEventListener, true, locatorType);
     }
 
@@ -262,7 +261,7 @@ public class LocatorFragment extends Fragment {
             CustomLogger.getInstance().logDebug("Json: " + jsonObject);
             CustomLogger.getInstance().logDebug("adding LocationsToLocalStorage: ");
             IOHelper.getInstance().writeToFile(activity, jsonObject, locatorType,
-                    Preferences.getInstance().getStatePref(activity).getCode(),
+                    Preferences.getInstance().getCirclePref(activity).getCode(),
                     success -> {
                     });
         } catch (JsonParseException jpe) {

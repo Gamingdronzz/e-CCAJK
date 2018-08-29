@@ -1,16 +1,16 @@
 package com.mycca.models;
 
-public class State {
+public class Circle {
     private String code;
     private String en;
     private String hi;
     private String mails;
     private boolean active;
 
-    public State() {
+    public Circle() {
     }
 
-    public State(String code, String en, String hi, String mails, boolean active) {
+    public Circle(String code, String en, String hi, String mails, boolean active) {
         this.code = code;
         this.en = en;
         this.hi = hi;

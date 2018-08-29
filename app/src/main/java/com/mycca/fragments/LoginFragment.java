@@ -21,8 +21,8 @@ import com.mycca.R;
 import com.mycca.activity.MainActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.custom.Progress.ProgressDialog;
+import com.mycca.models.Circle;
 import com.mycca.models.StaffModel;
-import com.mycca.models.State;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
@@ -54,7 +54,7 @@ public class LoginFragment extends Fragment {
         mAuth = FireBaseHelper.getInstance().getAuth();
 
         circle = view.findViewById(R.id.spinner_login_circle);
-        GenericSpinnerAdapter<State> circleAdapter = new GenericSpinnerAdapter<>(mainActivity,
+        GenericSpinnerAdapter<Circle> circleAdapter = new GenericSpinnerAdapter<>(mainActivity,
                 CircleDataProvider.getInstance().getActiveCircleData());
         circle.setAdapter(circleAdapter);
         editTextUsername = view.findViewById(R.id.edittext_username);
@@ -68,7 +68,7 @@ public class LoginFragment extends Fragment {
     private void tryLogin() {
         Helper.getInstance().hideKeyboardFrom(getActivity());
 
-        String state = ((State) circle.getSelectedItem()).getCode();
+        String state = ((Circle) circle.getSelectedItem()).getCode();
         String username = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
 

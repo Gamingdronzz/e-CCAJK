@@ -98,7 +98,7 @@ public class ContactUsFragment extends Fragment {
             String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
             String label = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL);
             CustomLogger.getInstance().logDebug("location: " + location + " label: " + label);
-            if (location != null) {
+            if (label != null) {
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location + label);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
@@ -175,7 +175,7 @@ public class ContactUsFragment extends Fragment {
 
     private void getContactsFromLocalStorage() {
         IOHelper.getInstance().readFromFile(activity, IOHelper.CONTACTS,
-                Preferences.getInstance().getStatePref(activity).getCode(),
+                Preferences.getInstance().getCirclePref(activity).getCode(),
                 jsonObject -> {
                     if (jsonObject == null)
                         fileExists = false;
@@ -236,8 +236,8 @@ public class ContactUsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CustomLogger.getInstance().logDebug("got contacts from firebase");
+                setAdapter();
                 if (contactArrayList.size() > 0) {
-                    setAdapter();
                     addContactsToLocalStorage(contactArrayList);
                 }
             }
@@ -247,10 +247,10 @@ public class ContactUsFragment extends Fragment {
 
             }
         };
-        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getCirclePref(activity).getCode(),
                 childEventListener,
                 FireBaseHelper.ROOT_CONTACTS);
-        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getCirclePref(activity).getCode(),
                 valueEventListener, true, FireBaseHelper.ROOT_CONTACTS);
 
     }
@@ -261,7 +261,7 @@ public class ContactUsFragment extends Fragment {
             CustomLogger.getInstance().logDebug("Json: " + jsonObject);
             CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: " + contactArrayList.size());
             IOHelper.getInstance().writeToFile(activity, jsonObject, IOHelper.CONTACTS,
-                    Preferences.getInstance().getStatePref(activity).getCode(),
+                    Preferences.getInstance().getCirclePref(activity).getCode(),
                     success -> {
                     });
         } catch (JsonParseException jpe) {
@@ -276,7 +276,7 @@ public class ContactUsFragment extends Fragment {
                 try {
                     long firebaseCount = (long) dataSnapshot.getValue();
                     if (contactArrayList.size() == firebaseCount) {
-                        CustomLogger.getInstance().logDebug("no new contcts");
+                        CustomLogger.getInstance().logDebug("no new contacts");
                         setAdapter();
                     } else {
                         CustomLogger.getInstance().logDebug("new contacts found");
@@ -294,7 +294,7 @@ public class ContactUsFragment extends Fragment {
                 setAdapter();
             }
         };
-        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getStatePref(activity).getCode(),
+        FireBaseHelper.getInstance().getDataFromFireBase(Preferences.getInstance().getCirclePref(activity).getCode(),
                 vel, false, FireBaseHelper.ROOT_CONTACTS_COUNT);
 
     }

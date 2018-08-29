@@ -9,7 +9,7 @@ import android.view.View;
 import com.mycca.adapter.RecyclerViewAdapterStates;
 import com.mycca.listeners.ClickListener;
 import com.mycca.listeners.RecyclerViewTouchListeners;
-import com.mycca.models.State;
+import com.mycca.models.Circle;
 import com.mycca.R;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Helper;
@@ -45,8 +45,8 @@ public class StateSettingActivity extends AppCompatActivity {
     }
 
     public void changeState(int position) {
-        State state = CircleDataProvider.getInstance().getCircleData()[position];
-        Preferences.getInstance().setModelPref(this, Preferences.PREF_STATE_DATA, state);
+        Circle circle = CircleDataProvider.getInstance().getCircleData()[position];
+        Preferences.getInstance().setModelPref(this, Preferences.PREF_CIRCLE_DATA, circle);
         Preferences.getInstance().clearOtherStateDataPrefs(this);
         Helper.getInstance().reloadApp(this);
     }

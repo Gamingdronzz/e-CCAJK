@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         tvVisit.setOnClickListener(v -> {
             String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
             String label = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL);
-            if (location != null) {
+            if (label != null) {
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location + label);
 
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);

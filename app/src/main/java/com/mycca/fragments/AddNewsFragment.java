@@ -133,7 +133,7 @@ public class AddNewsFragment extends Fragment {
                     new Date(),
                     textTitle.getText().toString(),
                     textDescription.getText().toString(),
-                    Preferences.getInstance().getStaffPref(getContext()).getState(),
+                    Preferences.getInstance().getStaffPref(getContext()).getCircle(),
                     null,
                     Preferences.getInstance().getStaffPref(getContext()).getId(),
                     Preferences.getInstance().getStaffPref(getContext()).getId());

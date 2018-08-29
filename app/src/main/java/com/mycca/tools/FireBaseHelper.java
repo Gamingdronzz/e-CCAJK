@@ -19,9 +19,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.listeners.DownloadCompleteListener;
+import com.mycca.models.Circle;
 import com.mycca.models.NewsModel;
 import com.mycca.models.SelectedImageModel;
-import com.mycca.models.State;
 
 import java.util.HashMap;
 
@@ -91,10 +91,10 @@ public class FireBaseHelper {
         return FirebaseAuth.getInstance();
     }
 
-    private DatabaseReference getDatabaseReference(String stateCode) {
+    private DatabaseReference getDatabaseReference(String circleCode) {
         DatabaseReference databaseReference;
-        if (stateCode != null) {
-            String url = "https://cca-" + stateCode + ".firebaseio.com/";
+        if (circleCode != null) {
+            String url = "https://cca-" + circleCode + ".firebaseio.com/";
             databaseReference = FirebaseDatabase.getInstance(url).getReference();
 
         } else
@@ -102,10 +102,10 @@ public class FireBaseHelper {
         return databaseReference;
     }
 
-    private StorageReference getStorageReference(String stateCode) {
+    private StorageReference getStorageReference(String circleCode) {
         StorageReference storageReference;
-        if (stateCode != null) {
-            String url = "gs://cca-" + stateCode;
+        if (circleCode != null) {
+            String url = "gs://cca-" + circleCode;
             storageReference = FirebaseStorage.getInstance(url).getReference();
         } else
             storageReference = FirebaseStorage.getInstance().getReference();
@@ -129,18 +129,18 @@ public class FireBaseHelper {
         });
     }
 
-    public void getReferenceNumber(Transaction.Handler handler, String stateCode) {
+    public void getReferenceNumber(Transaction.Handler handler, String circleCode) {
         CustomLogger.getInstance().logDebug("getReferenceNumber: ");
-        DatabaseReference dbref = getDatabaseReference(stateCode);
+        DatabaseReference dbref = getDatabaseReference(circleCode);
         dbref = dbref.child(ROOT_GENERAL).child(ROOT_REF_COUNT);
         dbref.runTransaction(handler);
     }
 
-    public Task<Void> uploadDataToFireBase(String stateCode, Object model, String... params) {
+    public Task<Void> uploadDataToFireBase(String circleCode, Object model, String... params) {
         Task<Void> task;
-        DatabaseReference databaseReference = getDatabaseReference(stateCode);
+        DatabaseReference databaseReference = getDatabaseReference(circleCode);
 
-        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+        if (!params[0].equals(ROOT_STAFF) && circleCode != null)
             databaseReference = databaseReference.child(ROOT_GENERAL);
         for (String key : params) {
             CustomLogger.getInstance().logDebug("\nkey" + key);
@@ -170,9 +170,9 @@ public class FireBaseHelper {
         return task;
     }
 
-    public Task<Void> updateData(String stateCode, String key, HashMap<String, Object> hashMap, String... params) {
-        DatabaseReference databaseReference = getDatabaseReference(stateCode);
-        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+    public Task<Void> updateData(String circleCode, String key, HashMap<String, Object> hashMap, String... params) {
+        DatabaseReference databaseReference = getDatabaseReference(circleCode);
+        if (!params[0].equals(ROOT_STAFF) && circleCode != null)
             databaseReference = databaseReference.child(ROOT_GENERAL);
 
         Task<Void> task;
@@ -183,9 +183,9 @@ public class FireBaseHelper {
         return task;
     }
 
-    public Task<Void> removeData(String stateCode, String... params) {
-        DatabaseReference databaseReference = getDatabaseReference(stateCode);
-        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+    public Task<Void> removeData(String circleCode, String... params) {
+        DatabaseReference databaseReference = getDatabaseReference(circleCode);
+        if (!params[0].equals(ROOT_STAFF) && circleCode != null)
             databaseReference = databaseReference.child(ROOT_GENERAL);
 
         Task<Void> task;
@@ -196,10 +196,10 @@ public class FireBaseHelper {
         return task;
     }
 
-    public void getDataFromFireBase(String stateCode, ChildEventListener childEventListener, String... params) {
+    public void getDataFromFireBase(String circleCode, ChildEventListener childEventListener, String... params) {
 
-        DatabaseReference dbref = getDatabaseReference(stateCode);
-        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+        DatabaseReference dbref = getDatabaseReference(circleCode);
+        if (!params[0].equals(ROOT_STAFF) && circleCode != null)
             dbref = dbref.child(ROOT_GENERAL);
         for (String key : params) {
             CustomLogger.getInstance().logDebug("\nkey : " + key);
@@ -208,10 +208,10 @@ public class FireBaseHelper {
         dbref.addChildEventListener(childEventListener);
     }
 
-    public void getDataFromFireBase(String stateCode, ValueEventListener valueEventListener, boolean singleValueEvent, String... params) {
+    public void getDataFromFireBase(String circleCode, ValueEventListener valueEventListener, boolean singleValueEvent, String... params) {
 
-        DatabaseReference dbref = getDatabaseReference(stateCode);
-        if (!params[0].equals(ROOT_STAFF) && stateCode != null)
+        DatabaseReference dbref = getDatabaseReference(circleCode);
+        if (!params[0].equals(ROOT_STAFF) && circleCode != null)
             dbref = dbref.child(ROOT_GENERAL);
         for (String key : params) {
             CustomLogger.getInstance().logDebug("\nkey : " + key);
@@ -223,26 +223,26 @@ public class FireBaseHelper {
             dbref.addValueEventListener(valueEventListener);
     }
 
-    public UploadTask uploadFiles(String stateCode, SelectedImageModel imageFile, boolean multiple, int count, String... params) {
+    public UploadTask uploadFiles(String circleCode, SelectedImageModel imageFile, boolean multiple, int count, String... params) {
         StorageReference sRef;
         StringBuilder sb = new StringBuilder();
         for (String param : params)
             sb.append(param).append("/");
         if (multiple) {
-            sRef = getStorageReference(stateCode).child(sb + "File" + count);
+            sRef = getStorageReference(circleCode).child(sb + "File" + count);
         } else {
-            sRef = getStorageReference(stateCode).child(sb.toString());
+            sRef = getStorageReference(circleCode).child(sb.toString());
         }
         return sRef.putFile(imageFile.getImageURI());
     }
 
-    public Task<Uri> getFileFromStorage(String stateCode, String path) {
-        return getStorageReference(stateCode).child(path).getDownloadUrl();
+    public Task<Uri> getFileFromStorage(String circleCode, String path) {
+        return getStorageReference(circleCode).child(path).getDownloadUrl();
     }
 
     public void getOtherStateData(Context context, DownloadCompleteListener downloadCompleteListener) {
 
-        State state = Preferences.getInstance().getStatePref(context);
+        Circle circle = Preferences.getInstance().getCirclePref(context);
         CustomLogger.getInstance().logDebug("Getting other data");
 
         ValueEventListener valueEventListener3 = new ValueEventListener() {
@@ -271,7 +271,7 @@ public class FireBaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    getDataFromFireBase(state.getCode(), valueEventListener3, true, ROOT_OFFICE_COORDINATES);
+                    getDataFromFireBase(circle.getCode(), valueEventListener3, true, ROOT_OFFICE_COORDINATES);
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_WEBSITE, (String) dataSnapshot.getValue());
                 } catch (DatabaseException | NullPointerException e) {
                     CustomLogger.getInstance().logDebug(e.getMessage());
@@ -288,7 +288,7 @@ public class FireBaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    getDataFromFireBase(state.getCode(), valueEventListener2, true, ROOT_WEBSITE);
+                    getDataFromFireBase(circle.getCode(), valueEventListener2, true, ROOT_WEBSITE);
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_ADDRESS, (String) dataSnapshot.getValue());
                 } catch (DatabaseException | NullPointerException e) {
                     CustomLogger.getInstance().logDebug(e.getMessage());
@@ -301,7 +301,7 @@ public class FireBaseHelper {
             }
         };
 
-        getDataFromFireBase(state.getCode(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
+        getDataFromFireBase(circle.getCode(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
     }
 
 }

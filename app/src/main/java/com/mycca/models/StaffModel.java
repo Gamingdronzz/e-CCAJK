@@ -3,7 +3,7 @@ package com.mycca.models;
 public class StaffModel {
 
     private String id;
-    private String state;
+    private String circle;
     private String name;
     private String email;
     private long type;
@@ -35,12 +35,12 @@ public class StaffModel {
         this.type = type;
     }
 
-    public String getState() {
-        return state;
+    public String getCircle() {
+        return circle;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setCircle(String circle) {
+        this.circle = circle;
     }
 
     public String getEmail() {

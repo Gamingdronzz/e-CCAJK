@@ -9,7 +9,7 @@ public class GrievanceModel {
     private String email;
     private String mobile;
     private String details;
-    private String state;
+    private String circle;
     private String submittedBy;
     private String message;
     private String uid;
@@ -19,7 +19,7 @@ public class GrievanceModel {
     private long grievanceStatus;
     private long grievanceType;
     private long fileCount;
-     private boolean expanded;
+    private boolean expanded;
     private boolean highlighted = false;
     private boolean submissionSuccess;
 
@@ -46,13 +46,13 @@ public class GrievanceModel {
         this.fileCount = fileCount;
     }
 
-    public GrievanceModel(int identifierType, String identifierNumber, String email, String mobile, String details, String state, long grievanceType, String submittedBy, String filePathList) {
+    public GrievanceModel(int identifierType, String identifierNumber, String email, String mobile, String details, String circle, long grievanceType, String submittedBy, String filePathList) {
         this.identifierType = identifierType;
         this.identifierNumber = identifierNumber;
         this.email = email;
         this.mobile = mobile;
         this.details = details;
-        this.state = state;
+        this.circle = circle;
         this.submittedBy = submittedBy;
         this.filePathList = filePathList;
         this.grievanceType = grievanceType;
@@ -146,12 +146,12 @@ public class GrievanceModel {
         this.message = message;
     }
 
-    public String getState() {
-        return state;
+    public String getCircle() {
+        return circle;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setCircle(String circle) {
+        this.circle = circle;
     }
 
     public long getGrievanceStatus() {

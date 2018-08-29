@@ -50,7 +50,7 @@ public class CropImageActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crop_image_activity);
 
-        mCropImageView = (CropImageView) findViewById(R.id.cropImageView);
+        mCropImageView = findViewById(R.id.cropImageView);
 
         Intent intent = getIntent();
         mCropImageUri = intent.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_SOURCE);
@@ -115,6 +115,7 @@ public class CropImageActivity extends AppCompatActivity
                 menu.findItem(R.id.crop_image_menu_crop).setIcon(cropIcon);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (mOptions.activityMenuIconColor != 0) {
@@ -256,7 +257,7 @@ public class CropImageActivity extends AppCompatActivity
             try {
                 String ext = mOptions.outputCompressFormat == Bitmap.CompressFormat.JPEG ? ".jpg" :
                         mOptions.outputCompressFormat == Bitmap.CompressFormat.PNG ? ".png" : ".webp";
-                outputUri = Uri.fromFile(File.createTempFile("cropped", ext, getCacheDir()));
+                outputUri = Uri.fromFile(File.createTempFile("cropped", ext, getFilesDir()));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to create temp file for output image", e);
             }
@@ -310,6 +311,7 @@ public class CropImageActivity extends AppCompatActivity
                     menuItemIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                     menuItem.setIcon(menuItemIcon);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

@@ -55,19 +55,14 @@ public class KYPFragment extends Fragment {
 
     private void downloadForm() {
         if (Build.VERSION.SDK_INT >= 23) {
-
             if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 startDowlnoad();
             } else
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-
         } else {
             startDowlnoad();
-
         }
-
-
     }
 
     private void startDowlnoad() {

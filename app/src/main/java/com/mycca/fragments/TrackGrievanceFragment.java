@@ -21,7 +21,7 @@ import com.mycca.R;
 import com.mycca.activity.TrackGrievanceResultActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.app.AppController;
-import com.mycca.models.State;
+import com.mycca.models.Circle;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Helper;
 
@@ -55,7 +55,7 @@ public class TrackGrievanceFragment extends Fragment {
 
     private void init() {
         activity = getActivity();
-        GenericSpinnerAdapter<State> circleAdapter = new GenericSpinnerAdapter<>(activity,
+        GenericSpinnerAdapter<Circle> circleAdapter = new GenericSpinnerAdapter<>(activity,
                 CircleDataProvider.getInstance().getActiveCircleData());
         spinner.setAdapter(circleAdapter);
 
@@ -94,7 +94,7 @@ public class TrackGrievanceFragment extends Fragment {
             } else {
                 Intent intent = new Intent(activity, TrackGrievanceResultActivity.class);
                 intent.putExtra("Code", editText.getText().toString());
-                intent.putExtra("State", ((State) spinner.getSelectedItem()).getCode());
+                intent.putExtra("Circle", ((Circle) spinner.getSelectedItem()).getCode());
                 startActivity(intent);
             }
             editText.requestFocus();

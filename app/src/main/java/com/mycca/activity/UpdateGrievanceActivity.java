@@ -60,7 +60,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     int counterUpload = 0;
     int counterServerImages = 0;
     long status;
-    String TAG = "UpdateGrievance", message, grievanceString;
+    String message, grievanceString;
 
     TextView tvNumberType, textViewPensionerCode, textViewRefNo, textViewGrievanceString, textViewDateOfApplication, textViewAttachedFileCount;
     Spinner statusSpinner;
@@ -222,7 +222,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         hashMap.put("grievanceStatus", status);
         hashMap.put("message", message);
 
-        Task<Void> task = FireBaseHelper.getInstance().updateData(grievanceModel.getState(),
+        Task<Void> task = FireBaseHelper.getInstance().updateData(grievanceModel.getCircle(),
                 String.valueOf(grievanceModel.getGrievanceType()),
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,
@@ -232,7 +232,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                 uploadAllImagesToFirebase();
             } else {
                 progressDialog.dismiss();
-                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, grievanceModel.getState());
+                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, grievanceModel.getCircle());
                 CustomLogger.getInstance().logDebug("onComplete: " + task1.toString());
             }
         });
@@ -246,7 +246,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             counterUpload = 0;
 
             for (int i = 0; i < attachmentModelArrayList.size(); i++) {
-                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(grievanceModel.getState(),
+                final UploadTask uploadTask = FireBaseHelper.getInstance().uploadFiles(grievanceModel.getCircle(),
                         attachmentModelArrayList.get(i),
                         true,
                         i,
@@ -314,7 +314,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         hashMap.put("grievanceStatus", grievanceModel.getGrievanceStatus());
         hashMap.put("message", grievanceModel.getMessage());
 
-        FireBaseHelper.getInstance().updateData(grievanceModel.getState(),
+        FireBaseHelper.getInstance().updateData(grievanceModel.getCircle(),
                 String.valueOf(grievanceModel.getGrievanceType()),
                 hashMap,
                 FireBaseHelper.ROOT_GRIEVANCES,

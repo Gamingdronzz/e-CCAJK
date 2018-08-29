@@ -53,11 +53,11 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
         if (fragment != null) {
             filename = fragment.getString(R.string.file) + (position + 1);
-            Glide.with(fragment).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
+            Glide.with(fragment).load(selectedImageModel.getFile()).into(holder.selectedImage);
         }
         if (appCompatActivity != null) {
             filename = appCompatActivity.getString(R.string.file) + (position + 1);
-            Glide.with(appCompatActivity.getBaseContext()).load(selectedImageModel.getImageURI()).into(holder.selectedImage);
+            Glide.with(appCompatActivity.getBaseContext()).load(selectedImageModel.getFile()).into(holder.selectedImage);
         }
         holder.selectedImageTitle.setText(filename);
     }

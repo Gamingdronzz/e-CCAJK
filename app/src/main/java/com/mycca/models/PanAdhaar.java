@@ -6,7 +6,7 @@ public class PanAdhaar {
     private String identifierNumber;
     private String cardNumOrUserName;
     private String filename;
-    private String state;
+    private String circle;
 
     public PanAdhaar() {
     }
