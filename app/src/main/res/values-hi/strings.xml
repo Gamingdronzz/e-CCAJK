@@ -154,7 +154,7 @@
     <string name="pensioner">पेंशनभोगी</string>
     <string name="gpf_benificiary">जीपीएफ हितभागी</string>
     <string name="other">अन्य</string>
-    <string name="grievance_submission_success">संदर्भ संख्या %3$s के साथ %2$s के लिए %1$s शिकायत सफलतापूर्वक जमा कर दी गई है</string>
+    <string name="grievance_submission_success">संदर्भ संख्या\n %3$s \nके साथ<b> %2$s </b>के लिए %1$s शिकायत सफलतापूर्वक जमा कर दी गई है|</string>
     <string name="grievance_submission_fail">शिकायत जमा नहीं हो पाई\n फिर से कोशिश करें</string>
 
     <!--panAdhaar-->
@@ -308,11 +308,13 @@
     <string name="no_camera_permission">कैमरा की अनुमति नहीं दी गई। बारकोड नहीं पढ़ा जा सकता|</string>
     <string name="low_storage_error">कम डिवाइस भंडारण के कारण फेस डिटेक्टर निर्भरता डाउनलोड नहीं की जा सकती है</string>
 
-    <!--otp-->
-    <string name="sent_otp">एक चार अंक ओ.टी.पी आपके मोबाइल नंबर पर भेजा गया है। सबमिशन जारी रखने के लिए, कृपया ओ.टी.पी सत्यापित करें।</string>
-    <string name="otp_hint">ओ.टी.पी दर्ज करें</string>
-    <string name="enter_correct">सही ओ.टी.पी फिर से दर्ज करें</string>
-    <string name="wrong_otp">आपने गलत ओ.टी.पी दर्ज किया है</string>
+     <!-- MSG91 strings -->
+    <string name="sendotp_key">234505AfT6wD35Xez05b86d9ae</string>
+    <string name="sending_sms">एक चार अंक ओ.टी.पी आपके मोबाइल नंबर पर भेजा गया है। सबमिशन जारी रखने के लिए, कृपया ओ.टी.पी सत्यापित करें।</string>
+    <string name="entercode">आपको प्राप्त कोड दर्ज करें</string>
+    <string name="inprogress">जाँच हो रही है…</string>
+    <string name="verified">जाँच सफल</string>
+    <string name="failed">ओ.टी.पी की जाँच असफल</string>
 
     <!--others-->
     <string name="no_internet">कनेक्शन उपलब्ध नहीं है</string>
@@ -366,7 +368,5 @@
     <string name="data_deleted">डेटा हटा दिया गया है</string>
     <string name="data_not_deleted">डेटा हटाया नहीं जा सका</string>
     <string name="state_n_a">जिस क्षेत्र को आप प्रयोग करने का प्रयास कर रहे हैं वह अब उपलब्ध नहीं है। \nकृपया ऐप डेटा अपडेट करें।</string>
-
-
 
 </resources>

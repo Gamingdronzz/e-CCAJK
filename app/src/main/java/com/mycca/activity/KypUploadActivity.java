@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -38,12 +39,15 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
 
     ImageView imageView;
     SelectedImageModel imageModel;
+    TextInputEditText editTextMobileNum;
     Button add, submit;
     Spinner circles;
     ImagePicker imagePicker;
     ProgressDialog progressDialog;
     VolleyHelper volleyHelper;
     ArrayList<Uri> firebaseImageURLs = new ArrayList<>();
+    String mobile;
+    public static final int REQUEST_OTP = 8543;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
 
     private void bindViews() {
         imageView = findViewById(R.id.imageView_kyp);
+        editTextMobileNum = findViewById(R.id.et_kyp_mobile);
         add = findViewById(R.id.add_kyp);
         submit = findViewById(R.id.submit_kyp);
         circles = findViewById(R.id.spinner_kyp_circle);
@@ -71,16 +76,24 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         add.setOnClickListener(v -> showImageChooser());
 
         submit.setOnClickListener(v -> {
-            if (imageModel != null)
-                uploadImageOnFirebase();
-            else
-                Toast.makeText(this, getString(R.string.add_kyp_image), Toast.LENGTH_LONG).show();
+            mobile = editTextMobileNum.getText().toString().trim();
+            if (imageModel != null && mobile.length() == 10)
+                otp();
+            else {
+                if (imageModel == null)
+                    Toast.makeText(this, getString(R.string.add_kyp_image), Toast.LENGTH_LONG).show();
+                else
+                    editTextMobileNum.setError(getString(R.string.invalid_mobile));
+            }
         });
     }
 
     public void otp() {
-       // OTPManager otpManager = new OTPManager(mainActivity, mobile, this::doSubmissionOnInternetAvailable);
-        //otpManager.sendSMS();
+        Intent intent = new Intent(this, VerificationActivity.class)
+                .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
+                .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
+
+        startActivityForResult(intent, REQUEST_OTP);
     }
 
     private void uploadImageOnFirebase() {
@@ -195,6 +208,15 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(this, requestCode, resultCode, data);
+        if (requestCode == REQUEST_OTP) {
+            if (resultCode == RESULT_OK) {
+                CustomLogger.getInstance().logDebug("Verification complete");
+                uploadImageOnFirebase();
+            } else {
+                Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), this);
+            }
+
+        }
     }
 
     @Override

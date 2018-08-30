@@ -38,6 +38,7 @@ import com.google.firebase.storage.UploadTask;
 import com.google.gson.reflect.TypeToken;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
+import com.mycca.activity.VerificationActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.adapter.RecyclerViewAdapterSelectedImages;
 import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
@@ -60,7 +61,6 @@ import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
-import com.mycca.tools.OTPManager;
 import com.mycca.tools.Preferences;
 import com.mycca.tools.VolleyHelper;
 
@@ -73,6 +73,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
@@ -89,11 +91,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
 
-    boolean isUploadedToFirebase = false, isUploadedToServer = false;
+    boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
     int counterUpload = 0;
     int counterServerImages = 0;
     int counterFirebaseImages;
     int identifierHint = 0;
+    public static final int REQUEST_OTP = 8543;
     String TAG = "Grievance";
     String hint;
     String code, mobile, email, details, type, submittedBy, refNo, prefix, savedModel;
@@ -421,8 +424,9 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity)) {
                                 otp();
+                            }
                         }
 
                         @Override
@@ -443,8 +447,15 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     public void otp() {
-        OTPManager otpManager = new OTPManager(mainActivity, mobile, this::doSubmissionOnInternetAvailable);
-        otpManager.sendSMS();
+        if (isOTPVerified)
+            doSubmissionOnInternetAvailable();
+        else {
+            Intent intent = new Intent(mainActivity, VerificationActivity.class)
+                    .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
+                    .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
+
+            mainActivity.startActivityForResult(intent, REQUEST_OTP);
+        }
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -730,6 +741,16 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
+        if (requestCode == REQUEST_OTP) {
+            if (resultCode == RESULT_OK) {
+                CustomLogger.getInstance().logDebug("Verification complete");
+                isOTPVerified = true;
+                doSubmissionOnInternetAvailable();
+            } else {
+                Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), mainActivity);
+            }
+
+        }
     }
 
     @Override

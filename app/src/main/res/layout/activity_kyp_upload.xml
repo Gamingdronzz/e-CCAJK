@@ -37,7 +37,7 @@
             android:padding="@dimen/padding_small">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/et_pan_adhaar_mobile"
+                android:id="@+id/et_kyp_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/padding_large"

@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.R;
 import com.mycca.activity.MainActivity;
+import com.mycca.activity.VerificationActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
@@ -70,15 +71,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    private static final int RC_BARCODE = 9004;
+    private static final int RC_BARCODE = 9004, REQUEST_OTP = 8543;
     ImageView imageviewSelectedImage;
     TextView textViewFileName;
     Spinner spinnerCircle;
     TextInputLayout textInputLayoutIdentifier, textInputLayoutCardNumber;
-    TextInputEditText editTextIdentifier, editTextCardNumber;
+    TextInputEditText editTextIdentifier, editTextCardNumber, editTextMobileNumber;
     Button buttonUpload;
     FloatingActionButton fab;
     RadioGroup radioGroup;
@@ -87,8 +90,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     private static final String TAG = "PanAdhaarUpload";
     public static final String AADHAAR_DATA_TAG = "PrintLetterBarcodeData", AADHAR_UID_ATTR = "uid";
-    private String pensionerIdentifier, cardNumber, root, field2Hint, identifierHint;
-    private boolean isUploadedToFirebase = false, isUploadedToServer = false;
+    private String pensionerIdentifier, cardNumber, mobile, root, field2Hint, identifierHint;
+    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
     private ArrayList<FABMenuItem> items;
     SelectedImageModel imageModel;
     ImagePicker imagePicker;
@@ -122,6 +125,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         textInputLayoutCardNumber = view.findViewById(R.id.text_number);
         editTextIdentifier = view.findViewById(R.id.et_pan_adhaar_pcode);
         editTextCardNumber = view.findViewById(R.id.et_pan_adhaar_number);
+        editTextMobileNumber = view.findViewById(R.id.et_pan_adhaar_mobile);
         spinnerCircle = view.findViewById(R.id.spinner_pan_adhaar_circle);
         textViewFileName = view.findViewById(R.id.textview_filename);
         imageviewSelectedImage = view.findViewById(R.id.imageview_selected_image);
@@ -182,6 +186,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         textInputLayoutCardNumber.setHint(field2Hint);
         editTextIdentifier.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         editTextCardNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_card_black_24dp, 0, 0, 0);
+        editTextMobileNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
 
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu_pan_aadhar);
         try {
@@ -222,6 +227,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         pensionerIdentifier = editTextIdentifier.getText().toString();
         cardNumber = editTextCardNumber.getText().toString();
         circle = (Circle) spinnerCircle.getSelectedItem();
+        mobile = editTextMobileNumber.getText().toString();
+
         //If Pensioner code is empty
         if (pensionerIdentifier.trim().length() != 15 && identifierHint.equals(getString(R.string.p_code))) {
             editTextIdentifier.setError(getString(R.string.invalid_p_code));
@@ -247,6 +254,10 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             editTextCardNumber.setError(getString(R.string.invalid_name));
             editTextCardNumber.requestFocus();
             return false;
+        } else if (mobile.length() < 10) {
+            editTextMobileNumber.setError(getString(R.string.invalid_mobile));
+            editTextMobileNumber.requestFocus();
+            return false;
         }
         //if no file selected
         else if (imageModel == null) {
@@ -270,19 +281,19 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
         TextView pensionerHeading = v.findViewById(R.id.textview_confirm1);
         TextView pensionerValue = v.findViewById(R.id.textview_confirm1_value);
-        TextView heading = v.findViewById(R.id.textview_confirm2);
-        TextView value = v.findViewById(R.id.textview_confirm2_value);
+        TextView mobileNum = v.findViewById(R.id.textview_confirm2_value);
+        TextView heading = v.findViewById(R.id.textview_confirm3);
+        TextView value = v.findViewById(R.id.textview_confirm3_value);
         TextView circle = v.findViewById(R.id.textview_confirm4_value);
 
         pensionerHeading.setText(identifierHint);
         pensionerValue.setText(pensionerIdentifier);
+        mobileNum.setText(mobile);
         heading.setText(field2Hint);
         value.setText(cardNumber);
         circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
                 .equals("hi") ? this.circle.getHi() : this.circle.getEn());
 
-        v.findViewById(R.id.textview_confirm3).setVisibility(View.GONE);
-        v.findViewById(R.id.textview_confirm3_value).setVisibility(View.GONE);
         v.findViewById(R.id.textview_confirm5).setVisibility(View.GONE);
         v.findViewById(R.id.textview_confirm5_value).setVisibility(View.GONE);
         v.findViewById(R.id.textview_confirm6).setVisibility(View.GONE);
@@ -329,8 +340,15 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     public void otp() {
-        //OTPManager otpManager = new OTPManager(mainActivity, mobile, this::doSubmissionOnInternetAvailable);
-        //otpManager.sendSMS();
+        if (isOTPVerified)
+            doSubmissionOnInternetAvailable();
+        else {
+            Intent intent = new Intent(mainActivity, VerificationActivity.class)
+                    .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
+                    .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
+
+            mainActivity.startActivityForResult(intent, REQUEST_OTP);
+        }
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -565,6 +583,16 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 CustomLogger.getInstance().logDebug(String.format(getString(R.string.barcode_error),
                         CommonStatusCodes.getStatusCodeString(resultCode)));
             }
+        }
+        if (requestCode == REQUEST_OTP) {
+            if (resultCode == RESULT_OK) {
+                CustomLogger.getInstance().logDebug("Verification complete");
+                isOTPVerified = true;
+                doSubmissionOnInternetAvailable();
+            } else {
+                Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), mainActivity);
+            }
+
         } else if (imagePicker != null)
             imagePicker.onActivityResult(this.getActivity(), requestCode, resultCode, data);
 

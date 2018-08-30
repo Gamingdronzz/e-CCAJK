@@ -1,11 +1,13 @@
 package com.mycca.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +29,8 @@ public class VerificationActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback, VerificationListener {
 
     private static final String TAG = Verification.class.getSimpleName();
-    private static final String INTENT_PHONENUMBER = "intent_phonenumber";
-    private static final String INTENT_COUNTRY_CODE = "intent_countrycode";
+    public static final String INTENT_PHONENUMBER = "intent_phonenumber";
+    public static final String INTENT_COUNTRY_CODE = "intent_countrycode";
     private Verification mVerification;
     TextView resend_timer;
 
@@ -36,13 +38,8 @@ public class VerificationActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
-        resend_timer = (TextView) findViewById(R.id.resend_timer);
-        resend_timer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ResendCode();
-            }
-        });
+        resend_timer = findViewById(R.id.resend_timer);
+        resend_timer.setOnClickListener(v -> ResendCode());
         startTimer();
         enableInputField(true);
         initiateVerification();
@@ -64,7 +61,7 @@ public class VerificationActivity extends AppCompatActivity implements
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
         } else {
@@ -91,7 +88,7 @@ public class VerificationActivity extends AppCompatActivity implements
         if (intent != null) {
             String phoneNumber = intent.getStringExtra(VerificationActivity.INTENT_PHONENUMBER);
             String countryCode = intent.getStringExtra(VerificationActivity.INTENT_COUNTRY_CODE);
-            TextView phoneText = (TextView) findViewById(R.id.numberText);
+            TextView phoneText = findViewById(R.id.numberText);
             phoneText.setText("+" + countryCode + phoneNumber);
             createVerification(phoneNumber, skipPermissionCheck, countryCode);
         }
@@ -109,8 +106,8 @@ public class VerificationActivity extends AppCompatActivity implements
             if (mVerification != null) {
                 mVerification.verify(code);
                 showProgress();
-                TextView messageText = (TextView) findViewById(R.id.textView);
-                messageText.setText("Verification in progress");
+                TextView messageText = findViewById(R.id.textView);
+                messageText.setText(R.string.inprogress);
                 enableInputField(false);
             }
         }
@@ -120,35 +117,35 @@ public class VerificationActivity extends AppCompatActivity implements
         View container = findViewById(R.id.inputContainer);
         if (enable) {
             container.setVisibility(View.VISIBLE);
-            EditText input = (EditText) findViewById(R.id.inputCode);
+            EditText input = findViewById(R.id.inputCode);
             input.requestFocus();
         } else {
             container.setVisibility(View.GONE);
         }
-        TextView resend_timer = (TextView) findViewById(R.id.resend_timer);
+        TextView resend_timer = findViewById(R.id.resend_timer);
         resend_timer.setClickable(false);
     }
 
     void hideProgressBarAndShowMessage(int message) {
         hideProgressBar();
-        TextView messageText = (TextView) findViewById(R.id.textView);
+        TextView messageText = findViewById(R.id.textView);
         messageText.setText(message);
     }
 
     void hideProgressBar() {
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressIndicator);
+        ProgressBar progressBar = findViewById(R.id.progressIndicator);
         progressBar.setVisibility(View.INVISIBLE);
-        TextView progressText = (TextView) findViewById(R.id.progressText);
+        TextView progressText = findViewById(R.id.progressText);
         progressText.setVisibility(View.INVISIBLE);
     }
 
     void showProgress() {
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressIndicator);
+        ProgressBar progressBar = findViewById(R.id.progressIndicator);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     void showCompleted() {
-        ImageView checkMark = (ImageView) findViewById(R.id.checkmarkImage);
+        ImageView checkMark = findViewById(R.id.checkmarkImage);
         checkMark.setVisibility(View.VISIBLE);
     }
 
@@ -169,6 +166,8 @@ public class VerificationActivity extends AppCompatActivity implements
         hideKeypad();
         hideProgressBarAndShowMessage(R.string.verified);
         showCompleted();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
