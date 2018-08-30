@@ -28,6 +28,7 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.mycca.R;
@@ -38,7 +39,8 @@ public class BrowserFragment extends Fragment {
 
     String TAG = "browser";
     WebView webView;
-    ProgressBar progressBar;
+    //    ProgressBar progressBar;
+    FrameLayout frameLayoutProgress;
     String url;
     ActionBar actionBar;
     private boolean hasStopped = false;
@@ -65,23 +67,28 @@ public class BrowserFragment extends Fragment {
         if (getActivity() != null) {
             actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
-        progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setMax(1000);
-        progressBar.setProgress(0);
-        progressBar.setVisibility(View.GONE);
+        frameLayoutProgress = view.findViewById(R.id.fl_progress);
+        frameLayoutProgress.setVisibility(View.GONE);
+//        progressBar = view.findViewById(R.id.progressBar);
+//        progressBar.setMax(1000);
+//        progressBar.setProgress(0);
+//        progressBar.setVisibility(View.GONE);
         webView = view.findViewById(R.id.webview_cca);
         if (args != null) {
             url = args.getString("url");
         }
-        progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0);
+//        progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh_link:
-                if (progressBar.getVisibility() == View.GONE)
+                if (frameLayoutProgress.getVisibility() == View.GONE)
                     webView.reload();
+                else {
+
+                }
                 break;
             default:
                 break;
@@ -130,34 +137,36 @@ public class BrowserFragment extends Fragment {
 
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 setSubtitle(getString(R.string.some_error));
-                progressBar.setVisibility(View.GONE);
+                frameLayoutProgress.setVisibility(View.GONE);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 setSubtitle(getString(R.string.loading));
-                progressBar.setVisibility(View.VISIBLE);
-                progressAnimator.setIntValues(50, progressBar.getProgress());
-                progressAnimator.setDuration(300);
-                progressAnimator.setInterpolator(new LinearInterpolator());
-                progressAnimator.start();
-                previousProgress = 50;
+                frameLayoutProgress.setVisibility(View.VISIBLE);
+//                progressAnimator.setIntValues(50, progressBar.getProgress());
+//                progressAnimator.setDuration(300);
+//                progressAnimator.setInterpolator(new LinearInterpolator());
+//                progressAnimator.start();
+//                previousProgress = 50;
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 setSubtitle(view.getTitle());
-                progressAnimator.setIntValues(1000, previousProgress);
-                progressAnimator.setDuration(300);
-                progressAnimator.setInterpolator(new LinearInterpolator());
-                progressAnimator.start();
-                progressAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        progressBar.setVisibility(View.GONE);
-                        super.onAnimationEnd(animation);
-                    }
-                });
+                frameLayoutProgress.setVisibility(View.GONE);
+
+//                progressAnimator.setIntValues(1000, previousProgress);
+//                progressAnimator.setDuration(300);
+//                progressAnimator.setInterpolator(new LinearInterpolator());
+//                progressAnimator.start();
+//                progressAnimator.addListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        frameLayoutProgress.setVisibility(View.GONE);
+//                        super.onAnimationEnd(animation);
+//                    }
+//                });
             }
         });
 

@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -48,6 +48,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="47a89879c667dbd29e47d8494b60254be6efa616" />
+        <meta-data
+            android:name="sendotp.key"
+            android:value="@string/sendotp_key" />
 
         <activity
             android:name=".activity.SplashActivity"
@@ -81,7 +84,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activity.NewsActivity" />
         <activity android:name=".activity.IntroActivity" />
-        <activity android:name=".activity.KypUploadActivity"/>
+        <activity android:name=".activity.KypUploadActivity" />
         <activity
             android:name=".custom.barCode.BarcodeCaptureActivity"
             android:label="Read Barcode"
@@ -105,6 +108,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".activity.VerificationActivity"></activity>
     </application>
 
 </manifest>

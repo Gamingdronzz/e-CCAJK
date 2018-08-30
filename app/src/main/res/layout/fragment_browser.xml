@@ -5,20 +5,29 @@
     android:orientation="vertical"
     tools:context=".fragments.BrowserFragment">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:progressBackgroundTint="@color/colorPrimary"
-        android:progressTint="@color/colorAccentDark"
-        tools:targetApi="lollipop" />
 
     <WebView
         android:id="@+id/webview_cca"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fl_progress"
+        android:background="@color/colorTransparentBlack"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_gravity="center">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:targetApi="lollipop" />
+
+    </FrameLayout>
+
+
 
 </LinearLayout>
 

@@ -375,4 +375,12 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="data_not_deleted">Data could not be deleted</string>
     <string name="state_n_a">The circle you are trying to access is no longer supported.\nPlease update app data.</string>
 
+    <!-- MSG91 strings -->
+    <string name="sendotp_key">234505AfT6wD35Xez05b86d9ae</string>
+    <string name="sending_sms">We are sending an SMS to</string>
+    <string name="entercode">Enter the code you received</string>
+    <string name="inprogress">VERIFICATION IN PROGRESS</string>
+    <string name="verified">Verification Successful</string>
+    <string name="failed">Verification Failed</string>
+
 </resources>
