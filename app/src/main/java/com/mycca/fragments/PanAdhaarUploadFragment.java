@@ -303,20 +303,18 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmission() {
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.show();
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
                 if (Helper.versionChecked) {
-                    otp();
+                   doSubmissionOnInternetAvailable();
                 } else {
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
-                                otp();
+                              doSubmissionOnInternetAvailable();
                         }
 
                         @Override
@@ -332,40 +330,41 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
             @Override
             public void OnConnectionNotAvailable() {
-                progressDialog.dismiss();
                 Helper.getInstance().noInternetDialog(mainActivity);
             }
         });
         connectionUtility.checkConnectionAvailability();
     }
 
-    public void otp() {
-        if (isOTPVerified)
-            doSubmissionOnInternetAvailable();
-        else {
-            Intent intent = new Intent(mainActivity, VerificationActivity.class)
-                    .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
-                    .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
-
-            mainActivity.startActivityForResult(intent, REQUEST_OTP);
-        }
-    }
-
     private void doSubmissionOnInternetAvailable() {
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
-        if (isUploadedToFirebase) {
-            if (isUploadedToServer) {
-                sendFinalMail();
+        if (isOTPVerified) {
+            if (isUploadedToFirebase) {
+                if (isUploadedToServer) {
+                    sendFinalMail();
+                } else {
+                    uploadImagesToServer();
+                }
             } else {
-                uploadImagesToServer();
+                uploadDataToFirebase();
             }
-        } else {
-            uploadDataToFirebase();
-        }
+        } else
+            otp();
+    }
+
+    public void otp() {
+        Intent intent = new Intent(mainActivity, VerificationActivity.class)
+                .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
+                .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
+
+        mainActivity.startActivityForResult(intent, REQUEST_OTP);
+
     }
 
     private void uploadDataToFirebase() {
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber);
         PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
 
@@ -621,6 +620,5 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         }
 
     }
-
 
 }

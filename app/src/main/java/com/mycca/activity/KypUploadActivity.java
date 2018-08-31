@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.mycca.R;
 import com.mycca.adapter.GenericSpinnerAdapter;
@@ -21,9 +24,11 @@ import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Circle;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.providers.CircleDataProvider;
+import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
@@ -48,6 +53,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
     ArrayList<Uri> firebaseImageURLs = new ArrayList<>();
     String mobile;
     public static final int REQUEST_OTP = 8543;
+    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +84,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         submit.setOnClickListener(v -> {
             mobile = editTextMobileNum.getText().toString().trim();
             if (imageModel != null && mobile.length() == 10)
-                otp();
+                checkConnection();
             else {
                 if (imageModel == null)
                     Toast.makeText(this, getString(R.string.add_kyp_image), Toast.LENGTH_LONG).show();
@@ -88,7 +94,54 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         });
     }
 
-    public void otp() {
+    private void checkConnection() {
+        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+            @Override
+            public void OnConnectionAvailable() {
+                CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
+                if (Helper.versionChecked) {
+                    submit();
+                } else {
+                    ValueEventListener valueEventListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (Helper.getInstance().onLatestVersion(dataSnapshot, KypUploadActivity.this))
+                                submit();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Helper.getInstance().showMaintenanceDialog(KypUploadActivity.this, null);
+                        }
+                    };
+                    FireBaseHelper.getInstance().getDataFromFireBase(null,
+                            valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+                }
+
+            }
+
+            @Override
+            public void OnConnectionNotAvailable() {
+                Helper.getInstance().noInternetDialog(KypUploadActivity.this);
+            }
+        });
+        connectionUtility.checkConnectionAvailability();
+    }
+
+    private void submit() {
+        if (isOTPVerified) {
+            if (isUploadedToFirebase) {
+                if (isUploadedToServer)
+                    sendMail();
+                else
+                    uploadImageToServer();
+            } else
+                uploadImageOnFirebase();
+        } else
+            otp();
+    }
+
+    private void otp() {
         Intent intent = new Intent(this, VerificationActivity.class)
                 .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
                 .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
@@ -113,13 +166,16 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
                 Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error), this);
                 CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
             }).addOnSuccessListener(taskSnapshot ->
-                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(this::uploadImageToServer));
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                        firebaseImageURLs.add(uri);
+                        isUploadedToFirebase = true;
+                        submit();
+                    }));
         }
     }
 
-    private void uploadImageToServer(Uri uri) {
+    private void uploadImageToServer() {
 
-        firebaseImageURLs.add(uri);
         DataSubmissionAndMail.getInstance().uploadImagesToServer(firebaseImageURLs,
                 FireBaseHelper.getInstance().getAuth().getUid(),
                 DataSubmissionAndMail.SUBMIT,
@@ -166,6 +222,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
 
     @Override
     public void onError(VolleyError volleyError) {
+        progressDialog.dismiss();
         Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.some_error), this);
     }
 
@@ -177,7 +234,8 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
-                    sendMail();
+                    isUploadedToServer = true;
+                    submit();
                 } else {
                     CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
                     progressDialog.dismiss();
@@ -190,7 +248,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
                             getString(R.string.kyp_upload_success),
                             getString(R.string.success),
                             FancyAlertDialogType.SUCCESS);
-
+                    isUploadedToServer = isUploadedToFirebase = isOTPVerified = false;
                 } else {
                     Helper.getInstance().showErrorDialog(getString(R.string.kyp_upload_fail),
                             getString(R.string.failure),
@@ -199,6 +257,7 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
             }
         } catch (JSONException jse) {
             jse.printStackTrace();
+            progressDialog.dismiss();
             Helper.getInstance().showErrorDialog(getString(R.string.some_error), getString(R.string.try_again), this);
         }
     }
@@ -211,7 +270,8 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         if (requestCode == REQUEST_OTP) {
             if (resultCode == RESULT_OK) {
                 CustomLogger.getInstance().logDebug("Verification complete");
-                uploadImageOnFirebase();
+                isOTPVerified = true;
+                submit();
             } else {
                 Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), this);
             }
