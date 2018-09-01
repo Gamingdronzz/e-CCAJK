@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/crop_image_menu_crop"
         android:visibility="gone" />
 
     <LinearLayout
@@ -30,7 +30,7 @@
             android:gravity="center"
             android:text="@string/sending_sms"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
@@ -67,7 +67,7 @@
                     android:gravity="center"
                     android:text="@string/entercode"
                     android:textAllCaps="true"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <EditText
