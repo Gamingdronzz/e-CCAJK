@@ -1,5 +1,7 @@
 package com.mycca.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +48,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(getString(R.string.track_grievances));
         init();
+
     }
 
     private void init() {
@@ -84,7 +87,20 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                getGrievancesOnConnectionAvailable();
+                // ATTENTION: This was auto-generated to handle app links.
+                Intent appLinkIntent = getIntent();
+                String appLinkAction = appLinkIntent.getAction();
+                Uri appLinkData = appLinkIntent.getData();
+                if(appLinkData != null)
+                {
+                    String[] details = appLinkData.getLastPathSegment().split("-");
+                    pensionerCode = details[0];
+                    state = details[1];
+                    grievanceType = Long.parseLong(details[2]);
+                    getGrievances();
+                }else {
+                    getGrievancesOnConnectionAvailable();
+                }
             }
 
             @Override
@@ -142,7 +158,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                 try {
                     GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
                     if (model != null) {
-                        if (grievanceType != -1) {
+                            if (grievanceType != -1) {
                             if (model.getGrievanceType() == grievanceType) {
                                 model.setExpanded(true);
                                 model.setHighlighted(true);

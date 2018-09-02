@@ -49,7 +49,7 @@ import com.mycca.fragments.KYPFragment;
 import com.mycca.fragments.LatestNewsFragment;
 import com.mycca.fragments.LocatorFragment;
 import com.mycca.fragments.LoginFragment;
-import com.mycca.fragments.PanAdhaarUploadFragment;
+import com.mycca.fragments.PanAdhaarUploadSubmittableFragment;
 import com.mycca.fragments.SavedModelsListFragment;
 import com.mycca.fragments.SettingsFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.navmenu_aadhaar:
-                fragment = new PanAdhaarUploadFragment();
+                fragment = new PanAdhaarUploadSubmittableFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
                 title = getString(R.string.upload_aadhaar);
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.navmenu_pan:
-                fragment = new PanAdhaarUploadFragment();
+                fragment = new PanAdhaarUploadSubmittableFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_PAN);
                 title = getString(R.string.upload_pan);
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.navmenu_life_certificate:
-                fragment = new PanAdhaarUploadFragment();
+                fragment = new PanAdhaarUploadSubmittableFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
                 title = getString(R.string.upload_life_certificate);
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.navmenu_remarriage_certificate:
-                fragment = new PanAdhaarUploadFragment();
+                fragment = new PanAdhaarUploadSubmittableFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
                 title = getString(R.string.upload_re_marriage_certificate);
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.navmenu_reemployment:
-                fragment = new PanAdhaarUploadFragment();
+                fragment = new PanAdhaarUploadSubmittableFragment();
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
                 title = getString(R.string.upload_re_employment_certificate);

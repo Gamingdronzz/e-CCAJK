@@ -20,10 +20,12 @@ import com.google.firebase.storage.UploadTask;
 import com.mycca.R;
 import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.MySubmittableAppCompatActivity;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.enums.State;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Circle;
 import com.mycca.models.SelectedImageModel;
@@ -39,8 +41,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class KypUploadActivity extends AppCompatActivity implements VolleyHelper.VolleyResponse {
+public class KypUploadActivity extends MySubmittableAppCompatActivity implements VolleyHelper.VolleyResponse {
 
     ImageView imageView;
     SelectedImageModel imageModel;
@@ -184,6 +188,17 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
 
     private void sendMail() {
 
+
+        progressDialog.setMessage(getString(R.string.almost_done));
+        String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
+        Map<String, String> params = new HashMap<>();
+//TODO
+//        Add pensioner code here
+//            params.put("pensionerIdentifier", pensionerIdentifier);
+        params.put("folder", DataSubmissionAndMail.SUBMIT);
+
+//        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerIdentifier, volleyHelper, url);
+
     }
 
     private void showImageChooser() {
@@ -285,5 +300,10 @@ public class KypUploadActivity extends AppCompatActivity implements VolleyHelper
         if (imagePicker != null)
             imagePicker.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
 
+    }
+
+    @Override
+    public void updateState(State state) {
+        this.state = state;
     }
 }

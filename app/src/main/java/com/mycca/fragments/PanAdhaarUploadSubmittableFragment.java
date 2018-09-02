@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -41,11 +40,13 @@ import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.MySubmittableFragment;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.barCode.BarcodeCaptureActivity;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.enums.State;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Circle;
 import com.mycca.models.PanAdhaar;
@@ -74,7 +75,7 @@ import java.util.Map;
 import static android.app.Activity.RESULT_OK;
 
 
-public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
+public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
     private static final int RC_BARCODE = 9004, REQUEST_OTP = 8543;
     ImageView imageviewSelectedImage;
@@ -91,7 +92,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private static final String TAG = "PanAdhaarUpload";
     public static final String AADHAAR_DATA_TAG = "PrintLetterBarcodeData", AADHAR_UID_ATTR = "uid";
     private String pensionerIdentifier, cardNumber, mobile, root, field2Hint, identifierHint;
-    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
+//    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
     private ArrayList<FABMenuItem> items;
     SelectedImageModel imageModel;
     ImagePicker imagePicker;
@@ -103,7 +104,7 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     private static final int MY_CAMERA_REQUEST_CODE = 300;
 
 
-    public PanAdhaarUploadFragment() {
+    public PanAdhaarUploadSubmittableFragment() {
 
     }
 
@@ -207,11 +208,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         spinnerCircle.setAdapter(statesAdapter);
 
         buttonUpload.setOnClickListener(v -> {
-            if (isUploadedToFirebase || isUploadedToServer)
+            if(state == State.UPLOADED_TO_FIREBASE || state == State.UPLOADED_TO_SERVER)
+//            if (isUploadedToFirebase || isUploadedToServer)
                 doSubmission();
             else if (checkInputBeforeSubmission())
                 showConfirmSubmissionDialog();
         });
+        updateState(State.INIT);
     }
 
     private void initItems() {
@@ -308,13 +311,13 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
                 if (Helper.versionChecked) {
-                   doSubmissionOnInternetAvailable();
+                    doSubmissionOnInternetAvailable();
                 } else {
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
-                              doSubmissionOnInternetAvailable();
+                                doSubmissionOnInternetAvailable();
                         }
 
                         @Override
@@ -337,20 +340,44 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmissionOnInternetAvailable() {
-        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer);
-        if (isOTPVerified) {
-            if (isUploadedToFirebase) {
-                if (isUploadedToServer) {
-                    sendFinalMail();
-                } else {
-                    uploadImagesToServer();
-                }
-            } else {
-                uploadDataToFirebase();
+//        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+////                "Server = " + isUploadedToServer);
+
+        switch (state)
+        {
+            case INIT:
+            {
+                otp();
+                break;
             }
-        } else
-            otp();
+            case OTP_VERIFIED:
+            {
+                uploadDataToFirebase();
+                break;
+            }
+            case UPLOADED_TO_FIREBASE:
+            {
+                uploadImagesToServer();
+                break;
+            }
+            case UPLOADED_TO_SERVER:
+            {
+                sendFinalMail();
+                break;
+            }
+        }
+//        if (isOTPVerified) {
+//            if (isUploadedToFirebase) {
+//                if (isUploadedToServer) {
+//                    sendFinalMail();
+//                } else {
+//                    uploadImagesToServer();
+//                }
+//            } else {
+//                uploadDataToFirebase();
+//            }
+//        } else
+//            otp();
     }
 
     public void otp() {
@@ -397,7 +424,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
                 downloadUrl = uri;
                 CustomLogger.getInstance().logDebug("onSuccess: " + downloadUrl);
                 firebaseImageURLs.add(downloadUrl);
-                isUploadedToFirebase = true;
+                updateState(State.UPLOADED_TO_FIREBASE);
+//                isUploadedToFirebase = true;
                 doSubmission();
             }));
         }
@@ -534,7 +562,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
-                    isUploadedToServer = true;
+                    updateState(State.UPLOADED_TO_SERVER);
+//                    isUploadedToServer = true;
                     doSubmission();
                 } else {
                     CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
@@ -543,7 +572,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     progressDialog.dismiss();
-                    isUploadedToServer = isUploadedToFirebase = false;
+                    updateState( State.INIT);
+//                    isUploadedToServer = isUploadedToFirebase = false;
                     Helper.getInstance().showMessage(getActivity(),
                             String.format(getString(R.string.updation_success), pensionerIdentifier),
                             getString(R.string.success),
@@ -586,7 +616,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
         if (requestCode == REQUEST_OTP) {
             if (resultCode == RESULT_OK) {
                 CustomLogger.getInstance().logDebug("Verification complete");
-                isOTPVerified = true;
+                updateState(State.OTP_VERIFIED);
+//                isOTPVerified = true;
                 doSubmissionOnInternetAvailable();
             } else {
                 Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), mainActivity);
@@ -621,4 +652,8 @@ public class PanAdhaarUploadFragment extends Fragment implements VolleyHelper.Vo
 
     }
 
+    @Override
+    public void updateState(State state) {
+        this.state = state;
+    }
 }
