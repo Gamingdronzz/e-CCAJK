@@ -9,6 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -63,7 +64,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
-    //implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
+    implementation 'com.google.firebase:firebase-perf:16.1.0'
     implementation 'com.google.firebase:firebase-messaging:17.3.0'
     implementation 'com.google.firebase:firebase-invites:16.0.3'
     implementation 'com.google.firebase:firebase-config:16.0.0'
@@ -72,6 +73,7 @@ dependencies {
     //GLIDE
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+
     implementation "com.caverock:androidsvg:1.2.1"
     //VOLLEY
     implementation 'com.android.volley:volley:1.1.0'

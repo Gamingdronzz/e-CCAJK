@@ -51,6 +51,9 @@
         <meta-data
             android:name="sendotp.key"
             android:value="@string/sendotp_key" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
         <activity
             android:name=".activity.SplashActivity"
@@ -120,7 +123,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.VerificationActivity"></activity>
+        <activity android:name=".activity.VerificationActivity"/>
     </application>
 
 </manifest>

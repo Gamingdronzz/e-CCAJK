@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.perf.metrics.AddTrace;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mycca.listeners.DownloadCompleteListener;
@@ -39,6 +40,7 @@ public class CircleDataProvider {
         }
     }
 
+    @AddTrace(name="SetCircleDataTrace")
     public void setCircleData(Boolean fromFirebase, Context context, DownloadCompleteListener downloadCompleteListener) {
         if (fromFirebase) {
             getCircleDataFromFireBase(context, downloadCompleteListener);

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.mycca.R;
 import com.mycca.listeners.DownloadCompleteListener;
@@ -26,8 +27,6 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
-
-import junit.runner.Version;
 
 import java.util.Locale;
 
@@ -163,6 +162,7 @@ public class SplashActivity extends AppCompatActivity {
         return "";
     }
 
+    @AddTrace(name="NewVersionCheckTrace")
     private void checkForNewVersion() {
         versionCheckState = VersionCheckState.STARTED;
         CustomLogger.getInstance().logDebug(TAG + " Checking version");
@@ -181,6 +181,7 @@ public class SplashActivity extends AppCompatActivity {
         FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
     }
 
+    @AddTrace(name="CirclesCheckTrace")
     public void checkCircles() {
         CustomLogger.getInstance().logDebug(TAG + " Checking Circles");
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -210,6 +211,7 @@ public class SplashActivity extends AppCompatActivity {
         FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_CIRCLE_COUNT);
     }
 
+    @AddTrace(name="ActiveCirclesCheckTrace")
     private void checkActiveCircles() {
 
         CustomLogger.getInstance().logDebug(TAG + " Checking Active Circles");
@@ -240,6 +242,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
+    @AddTrace(name="OtherDataCheckTrace")
     private void checkOtherStateData() {
         if (Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_ADDRESS) == null ||
                 Preferences.getInstance().getStringPref(this, Preferences.PREF_WEBSITE) == null ||
@@ -253,6 +256,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    @AddTrace(name="GetOtherDataTrace")
     private void getOtherData() {
         FireBaseHelper.getInstance().getOtherStateData(this, new DownloadCompleteListener() {
             @Override

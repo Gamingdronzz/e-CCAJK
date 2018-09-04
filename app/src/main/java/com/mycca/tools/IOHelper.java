@@ -3,6 +3,7 @@ package com.mycca.tools;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.firebase.perf.metrics.AddTrace;
 import com.mycca.listeners.ReadFileCompletionListener;
 import com.mycca.listeners.WriteFileCompletionListener;
 
@@ -33,6 +34,7 @@ public class IOHelper {
         }
     }
 
+    @AddTrace(name="WriteToFileTrace")
     public void writeToFile(Context context, Object jsonObject, String filename, String folder, WriteFileCompletionListener writeFileCompletionListener) {
         new WriteFile().execute(context, filename, jsonObject, folder, writeFileCompletionListener);
     }
