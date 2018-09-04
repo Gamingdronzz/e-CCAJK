@@ -103,7 +103,7 @@ public class InfinitePagerAdapter extends PagerAdapter {
 
     private void debug(String message) {
         if (DEBUG) {
-            CustomLogger.getInstance().logDebug(TAG, message);
+            CustomLogger.getInstance().logDebug(TAG, message, CustomLogger.Mask.INFINITE_PAGER);
         }
     }
 }

@@ -309,7 +309,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                 if (Helper.versionChecked) {
                     doSubmissionOnInternetAvailable();
                 } else {
@@ -392,7 +392,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     private void uploadDataToFirebase() {
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
-        CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber);
+        CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
         PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
 
         Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(circle.getCode(), panAadharModel,
@@ -419,10 +419,10 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
         if (uploadTask != null) {
             uploadTask.addOnFailureListener(exception -> {
                 showError(getString(R.string.file_upload_error), getString(R.string.file_not_uploaded));
-                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
+                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage(), CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
             }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                 downloadUrl = uri;
-                CustomLogger.getInstance().logDebug("onSuccess: " + downloadUrl);
+                CustomLogger.getInstance().logDebug("onSuccess: " + downloadUrl, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                 firebaseImageURLs.add(downloadUrl);
                 updateState(State.UPLOADED_TO_FIREBASE);
 //                isUploadedToFirebase = true;
@@ -464,7 +464,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
 
     public void scanNow() {
 
-        CustomLogger.getInstance().logDebug("scanNow: ");
+        CustomLogger.getInstance().logDebug("scanNow: ", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
         Intent intent = new Intent(mainActivity, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
         intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
@@ -472,7 +472,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     }
 
     protected void processScannedData(String scanData) {
-        CustomLogger.getInstance().logDebug(scanData);
+        CustomLogger.getInstance().logDebug(scanData, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
 
         XmlPullParserFactory pullParserFactory;
         try {
@@ -484,17 +484,17 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
             int eventType = parser.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_DOCUMENT) {
-                    CustomLogger.getInstance().logDebug("AadharPan Start document");
+                    CustomLogger.getInstance().logDebug("AadharPan Start document", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                 } else if (eventType == XmlPullParser.START_TAG && AADHAAR_DATA_TAG.equals(parser.getName())) {
                     // extract data from tag
                     String uid = parser.getAttributeValue(null, AADHAR_UID_ATTR);
                     editTextCardNumber.setText(uid);
 
                 } else if (eventType == XmlPullParser.END_TAG) {
-                    CustomLogger.getInstance().logDebug("AadharPan End tag " + parser.getName());
+                    CustomLogger.getInstance().logDebug("AadharPan End tag " + parser.getName(), CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
 
                 } else if (eventType == XmlPullParser.TEXT) {
-                    CustomLogger.getInstance().logDebug("AadharPan Text " + parser.getText());
+                    CustomLogger.getInstance().logDebug("AadharPan Text " + parser.getText(), CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
 
                 }
                 eventType = parser.next();
@@ -533,7 +533,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
             }
         });
     }
@@ -557,16 +557,16 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        CustomLogger.getInstance().logDebug(jsonObject.toString());
+        CustomLogger.getInstance().logDebug(jsonObject.toString(), CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
-                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
+                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                     updateState(State.UPLOADED_TO_SERVER);
 //                    isUploadedToServer = true;
                     doSubmission();
                 } else {
-                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
+                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                     showError(getString(R.string.file_upload_error), getString(R.string.file_not_uploaded));
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
@@ -597,25 +597,25 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode);
+        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_BARCODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    CustomLogger.getInstance().logDebug("Barcode read: " + barcode.displayValue);
+                    CustomLogger.getInstance().logDebug("Barcode read: " + barcode.displayValue, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                     processScannedData(barcode.displayValue);
                 } else {
-                    CustomLogger.getInstance().logDebug("No barcode captured, intent data is null");
+                    CustomLogger.getInstance().logDebug("No barcode captured, intent data is null", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                 }
             } else {
                 CustomLogger.getInstance().logDebug(String.format(getString(R.string.barcode_error),
-                        CommonStatusCodes.getStatusCodeString(resultCode)));
+                        CommonStatusCodes.getStatusCodeString(resultCode)), CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
             }
         }
         if (requestCode == REQUEST_OTP) {
             if (resultCode == RESULT_OK) {
-                CustomLogger.getInstance().logDebug("Verification complete");
+                CustomLogger.getInstance().logDebug("Verification complete", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                 updateState(State.OTP_VERIFIED);
 //                isOTPVerified = true;
                 doSubmissionOnInternetAvailable();
@@ -632,14 +632,14 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + "PanAadhar " + requestCode);
+        CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + "PanAadhar " + requestCode, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
 
         switch (requestCode) {
             case (MY_CAMERA_REQUEST_CODE): {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     scanNow();
                 } else {
-                    CustomLogger.getInstance().logDebug("onRequestPermissionsResult: Permission Denied");
+                    CustomLogger.getInstance().logDebug("onRequestPermissionsResult: Permission Denied", CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
                 }
                 break;
             }

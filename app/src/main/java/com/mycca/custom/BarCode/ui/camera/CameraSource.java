@@ -407,7 +407,7 @@ public class CameraSource {
                     // quickly after stop).
                     mProcessingThread.join();
                 } catch (InterruptedException e) {
-                    CustomLogger.getInstance().logDebug("Frame processing thread interrupted on release.");
+                    CustomLogger.getInstance().logDebug("Frame processing thread interrupted on release.", CustomLogger.Mask.CAMERA_SOURCE);
                 }
                 mProcessingThread = null;
             }
@@ -431,7 +431,7 @@ public class CameraSource {
                         mCamera.setPreviewDisplay(null);
                     }
                 } catch (Exception e) {
-                    CustomLogger.getInstance().logError("Failed to clear camera preview: ", e);
+                    CustomLogger.getInstance().logError("Failed to clear camera preview: ", e, CustomLogger.Mask.BARCODE_CAPTURE_ACTIVITY);
                 }
                 mCamera.release();
                 mCamera = null;
@@ -463,7 +463,7 @@ public class CameraSource {
             int maxZoom;
             Camera.Parameters parameters = mCamera.getParameters();
             if (!parameters.isZoomSupported()) {
-                CustomLogger.getInstance().logWarn("Zoom is not supported on this device", null);
+                CustomLogger.getInstance().logWarn("Zoom is not supported on this device", null, CustomLogger.Mask.CAMERA_SOURCE);
                 return currentZoom;
             }
             maxZoom = parameters.getMaxZoom();
@@ -781,7 +781,7 @@ public class CameraSource {
                     mFocusMode)) {
                 parameters.setFocusMode(mFocusMode);
             } else {
-                CustomLogger.getInstance().logInfo("Camera focus mode: " + mFocusMode + " is not supported on this device.");
+                CustomLogger.getInstance().logInfo("Camera focus mode: " + mFocusMode + " is not supported on this device.", CustomLogger.Mask.CAMERA_SOURCE);
             }
         }
 
@@ -794,7 +794,7 @@ public class CameraSource {
                         mFlashMode)) {
                     parameters.setFlashMode(mFlashMode);
                 } else {
-                    CustomLogger.getInstance().logInfo("Camera flash mode: " + mFlashMode + " is not supported on this device.");
+                    CustomLogger.getInstance().logInfo("Camera flash mode: " + mFlashMode + " is not supported on this device.", CustomLogger.Mask.CAMERA_SOURCE);
                 }
             }
         }
@@ -933,7 +933,7 @@ public class CameraSource {
         // of the preview sizes and hope that the camera can handle it.  Probably unlikely, but we
         // still account for it.
         if (validPreviewSizes.size() == 0) {
-            CustomLogger.getInstance().logWarn("No preview sizes have a corresponding same-aspect-ratio picture size", null);
+            CustomLogger.getInstance().logWarn("No preview sizes have a corresponding same-aspect-ratio picture size", null, CustomLogger.Mask.CAMERA_SOURCE);
             for (android.hardware.Camera.Size previewSize : supportedPreviewSizes) {
                 // The null picture size will let us know that we shouldn't set a picture size.
                 validPreviewSizes.add(new SizePair(previewSize, null));
@@ -1002,7 +1002,7 @@ public class CameraSource {
                 degrees = 270;
                 break;
             default:
-                CustomLogger.getInstance().logError("Bad rotation value: " + rotation, null);
+                CustomLogger.getInstance().logError("Bad rotation value: " + rotation, null, CustomLogger.Mask.CAMERA_SOURCE);
         }
 
         CameraInfo cameraInfo = new CameraInfo();
@@ -1131,7 +1131,7 @@ public class CameraSource {
                 if (!mBytesToByteBuffer.containsKey(data)) {
                     CustomLogger.getInstance().logDebug(
                             "Skipping frame.  Could not find ByteBuffer associated with the image " +
-                                    "data from the camera.");
+                                    "data from the camera.", CustomLogger.Mask.CAMERA_SOURCE);
                     return;
                 }
 
@@ -1173,7 +1173,7 @@ public class CameraSource {
                             // don't have it yet.
                             mLock.wait();
                         } catch (InterruptedException e) {
-                            CustomLogger.getInstance().logError("Frame processing loop terminated.", e);
+                            CustomLogger.getInstance().logError("Frame processing loop terminated.", e, CustomLogger.Mask.CAMERA_SOURCE);
                             return;
                         }
                     }
@@ -1207,7 +1207,7 @@ public class CameraSource {
                 try {
                     mDetector.receiveFrame(outputFrame);
                 } catch (Throwable t) {
-                    CustomLogger.getInstance().logError("Exception thrown from receiver.", t);
+                    CustomLogger.getInstance().logError("Exception thrown from receiver.", t, CustomLogger.Mask.CAMERA_SOURCE);
                 } finally {
                     mCamera.addCallbackBuffer(data.array());
                 }

@@ -131,7 +131,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         @Override
         public void onClick(View v) {
             grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
-            CustomLogger.getInstance().logDebug( "onClick: " + position);
+            CustomLogger.getInstance().logDebug( "onClick: " + position, CustomLogger.Mask.RECYCLER_VIEW_GRIEVANCE_UPDATE);
             notifyItemChanged(position);
         }
     }

@@ -46,13 +46,13 @@ public class MyLocationManager {
 
     @SuppressLint("NewApi")
     public Task<LocationSettingsResponse> ManageLocation() {
-        CustomLogger.getInstance().logDebug("Checking for location permission");
+        CustomLogger.getInstance().logDebug("Checking for location permission", CustomLogger.Mask.MY_LOCATION_MANAGER);
         if (checkForLocationPermission()) {
-            CustomLogger.getInstance().logDebug("Permission Available\nChecking for location on or off");
+            CustomLogger.getInstance().logDebug("Permission Available\nChecking for location on or off", CustomLogger.Mask.MY_LOCATION_MANAGER);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             return createLocationRequest();
         } else {
-            CustomLogger.getInstance().logDebug("Permission not Available");
+            CustomLogger.getInstance().logDebug("Permission not Available", CustomLogger.Mask.MY_LOCATION_MANAGER);
             if (context.getParentFragment() != null)
                 requestLocationPermission(context.getParentFragment(), LOCATION_REQUEST_CODE);
             else
@@ -66,7 +66,7 @@ public class MyLocationManager {
             if (ContextCompat.checkSelfPermission(context.getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                CustomLogger.getInstance().logDebug("Permission Granted");
+                CustomLogger.getInstance().logDebug("Permission Granted", CustomLogger.Mask.MY_LOCATION_MANAGER);
                 return true;
             } else {
                 return false;
@@ -91,7 +91,7 @@ public class MyLocationManager {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
 
         SettingsClient client = LocationServices.getSettingsClient(context.getActivity());
-        CustomLogger.getInstance().logDebug("Location Request Created");
+        CustomLogger.getInstance().logDebug("Location Request Created", CustomLogger.Mask.MY_LOCATION_MANAGER);
 
         return client.checkLocationSettings(builder.build());
     }
@@ -114,7 +114,7 @@ public class MyLocationManager {
     }
 
     public void onLocationAcccessRequestFailure(Exception e) {
-        CustomLogger.getInstance().logDebug("Request Failure Further process");
+        CustomLogger.getInstance().logDebug("Request Failure Further process", CustomLogger.Mask.MY_LOCATION_MANAGER);
         try {
             // Show the dialog by calling startResolutionForResult(),
             // and check the result in onActivityResult().

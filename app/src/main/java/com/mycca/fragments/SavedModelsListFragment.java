@@ -57,24 +57,24 @@ public class SavedModelsListFragment<T> extends Fragment {
     private void getSavedModels(String filename) {
         IOHelper.getInstance().readFromFile(activity, filename, null, jsonObject -> {
             if (jsonObject != null) {
-                CustomLogger.getInstance().logDebug("File contents: " + jsonObject);
+                CustomLogger.getInstance().logDebug("File contents: " + jsonObject, CustomLogger.Mask.SAVED_MODELS_LIST_FRAGMENT);
                 if (filename.equals(IOHelper.GRIEVANCES)) {
                     Type collectionType = new TypeToken<ArrayList<GrievanceModel>>() {
                     }.getType();
                     grievanceArrayList = Helper.getInstance().getCollectionFromJson((String) jsonObject, collectionType);
-                    CustomLogger.getInstance().logDebug("arraylist=" + grievanceArrayList);
+                    CustomLogger.getInstance().logDebug("arraylist=" + grievanceArrayList, CustomLogger.Mask.SAVED_MODELS_LIST_FRAGMENT);
                     adapterSavedModels = new RecyclerViewAdapterSavedModels(grievanceArrayList, (AppCompatActivity) activity);
                 } else {
                     Type collectionType = new TypeToken<ArrayList<InspectionModel>>() {
                     }.getType();
                     inspectionArrayList = Helper.getInstance().getCollectionFromJson((String) jsonObject, collectionType);
-                    CustomLogger.getInstance().logDebug("arraylist=" + inspectionArrayList);
+                    CustomLogger.getInstance().logDebug("arraylist=" + inspectionArrayList, CustomLogger.Mask.SAVED_MODELS_LIST_FRAGMENT);
                     adapterSavedModels = new RecyclerViewAdapterSavedModels(inspectionArrayList, (AppCompatActivity) activity);
                 }
                 recyclerView.setAdapter(adapterSavedModels);
                 recyclerView.setLayoutManager(new LinearLayoutManager(activity));
             } else {
-                CustomLogger.getInstance().logDebug("No data in file");
+                CustomLogger.getInstance().logDebug("No data in file", CustomLogger.Mask.SAVED_MODELS_LIST_FRAGMENT);
                 //TODO
                 //show no models saved message
             }

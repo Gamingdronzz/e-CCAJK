@@ -96,7 +96,7 @@ public class LoginFragment extends Fragment {
                             StaffModel staffModel = dataSnapshot.getValue(StaffModel.class);
                             mainActivity.OnLoginSuccessful(staffModel);
                         } else {
-                            CustomLogger.getInstance().logDebug("password mismatch");
+                            CustomLogger.getInstance().logDebug("password mismatch", CustomLogger.Mask.LOGIN_FRAGMENT);
                             mainActivity.OnLoginFailure(getString(R.string.password_mismatch));
                         }
                     }
@@ -109,7 +109,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 progressDialog.dismiss();
-                CustomLogger.getInstance().logDebug(databaseError.getMessage());
+                CustomLogger.getInstance().logDebug(databaseError.getMessage(), CustomLogger.Mask.LOGIN_FRAGMENT);
             }
         }, true, FireBaseHelper.ROOT_STAFF, username);
 

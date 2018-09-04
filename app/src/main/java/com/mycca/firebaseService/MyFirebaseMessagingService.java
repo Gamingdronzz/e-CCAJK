@@ -31,7 +31,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-        CustomLogger.getInstance().logDebug("new token");
+        CustomLogger.getInstance().logDebug("new token", CustomLogger.Mask.FIREBASE);
         FireBaseHelper.getInstance().addTokenOnFireBase();
     }
 
@@ -39,9 +39,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         if (remoteMessage.getData().size() > 0) {
-            CustomLogger.getInstance().logDebug( "data: " + remoteMessage.getData());
+            CustomLogger.getInstance().logDebug( "data: " + remoteMessage.getData(), CustomLogger.Mask.FIREBASE);
             String title = remoteMessage.getData().get(Constants.KEY_TITLE);
-            CustomLogger.getInstance().logDebug( "title: " + title);
+            CustomLogger.getInstance().logDebug( "title: " + title, CustomLogger.Mask.FIREBASE);
 
             String message = remoteMessage.getData().get(Constants.KEY_BODY);
             if (message != null && Preferences.getInstance().getBooleanPref(getApplicationContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS)) {
@@ -63,7 +63,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType) {
 
-        CustomLogger.getInstance().logDebug( "sendUserNotification: ");
+        CustomLogger.getInstance().logDebug( "sendUserNotification: ", CustomLogger.Mask.FIREBASE);
         int notifyID = new Random().nextInt();
         Intent intent;
         NotificationChannel mChannel;

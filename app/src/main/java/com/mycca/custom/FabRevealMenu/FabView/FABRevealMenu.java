@@ -141,12 +141,12 @@ public class FABRevealMenu extends FrameLayout {
             //initialization
             if (mMenuRes != -1) {
                 {
-                    CustomLogger.getInstance().logDebug("FAB Menu - initView: not custom");
+                    CustomLogger.getInstance().logDebug("FAB Menu - initView: not custom", CustomLogger.Mask.FAB_REVEAL_MENU);
                     setMenu(mMenuRes);
                 }
             } else if (mCustomView != null) {
                 {
-                    CustomLogger.getInstance().logDebug("FAB Menu - initView: custom");
+                    CustomLogger.getInstance().logDebug("FAB Menu - initView: custom", CustomLogger.Mask.FAB_REVEAL_MENU);
                     setCustomView(mCustomView);
                 }
             }

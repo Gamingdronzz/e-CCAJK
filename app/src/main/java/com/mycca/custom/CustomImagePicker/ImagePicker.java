@@ -74,7 +74,7 @@ public class ImagePicker {
     public void startChooser(Fragment fragment, @NonNull Callback callback) {
         if(fragment == null || callback ==null)
         {
-            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null", CustomLogger.Mask.IMAGE_PICKER);
         }
         this.callback = callback;
         if (CropImage.isExplicitCameraPermissionRequired(fragment.getActivity())) {
@@ -94,7 +94,7 @@ public class ImagePicker {
     public void startCamera(Activity activity, @NonNull Callback callback) {
         if(activity == null || callback ==null)
         {
-            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null", CustomLogger.Mask.IMAGE_PICKER );
         }
         this.callback = callback;
         if (CropImage.isExplicitCameraPermissionRequired(activity)) {
@@ -113,7 +113,7 @@ public class ImagePicker {
     public void startCamera(Fragment fragment, @NonNull Callback callback) {
         if(fragment == null || callback ==null)
         {
-            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null", CustomLogger.Mask.IMAGE_PICKER );
         }
         this.callback = callback;
         if (CropImage.isExplicitCameraPermissionRequired(fragment.getActivity())) {
@@ -131,7 +131,7 @@ public class ImagePicker {
     public void startGallery(Activity activity, @NonNull Callback callback) {
         if(activity == null || callback ==null)
         {
-            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" );
+            CustomLogger.getInstance().logDebug( "startChooser: Fragment or callback Cannot be null" , CustomLogger.Mask.IMAGE_PICKER);
         }
         this.callback = callback;
         activity.startActivityForResult(getGalleryIntent(activity, false), CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE);
@@ -319,7 +319,7 @@ public class ImagePicker {
                 callback.onCropImage(handleUri(context, cropImageUri));
             }
         } else {
-            CustomLogger.getInstance().logError( "handleCropResult error", result.getError());
+            CustomLogger.getInstance().logError( "handleCropResult error", result.getError(), CustomLogger.Mask.IMAGE_PICKER);
         }
     }
 

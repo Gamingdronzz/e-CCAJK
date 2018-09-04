@@ -68,7 +68,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
         recyclerViewTrack.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerViewTrack, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                CustomLogger.getInstance().logDebug("onClick: " + position);
+                CustomLogger.getInstance().logDebug("onClick: " + position, CustomLogger.Mask.TRACK_GRIEVANCE_ACTIVITY);
                 grievanceModelArrayList.get(position).setExpanded(!grievanceModelArrayList.get(position).isExpanded());
                 if (grievanceModelArrayList.get(position).isHighlighted())
                     grievanceModelArrayList.get(position).setHighlighted(false);
@@ -148,13 +148,13 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     }
 
     private void getGrievances() {
-        CustomLogger.getInstance().logDebug("getGrievances for: " + pensionerCode);
+        CustomLogger.getInstance().logDebug("getGrievances for: " + pensionerCode, CustomLogger.Mask.TRACK_GRIEVANCE_ACTIVITY);
 
         FireBaseHelper.getInstance().getDataFromFireBase(state, new ChildEventListener() {
             int i = 0;
             @Override
             public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, String s) {
-                CustomLogger.getInstance().logDebug("grievance key:" + dataSnapshot.getKey());
+                CustomLogger.getInstance().logDebug("grievance key:" + dataSnapshot.getKey(), CustomLogger.Mask.TRACK_GRIEVANCE_ACTIVITY);
                 try {
                     GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
                     if (model != null) {
@@ -166,7 +166,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
                         }
                         if (model.isSubmissionSuccess()) {
                             grievanceModelArrayList.add(i, model);
-                            CustomLogger.getInstance().logDebug("arraylist size:" + grievanceModelArrayList.size());
+                            CustomLogger.getInstance().logDebug("arraylist size:" + grievanceModelArrayList.size(), CustomLogger.Mask.TRACK_GRIEVANCE_ACTIVITY);
                             adapterTracking.notifyItemInserted(i);
                             i++;
                         }
@@ -178,7 +178,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-                CustomLogger.getInstance().logDebug("ChildChanged\n" + dataSnapshot);
+                CustomLogger.getInstance().logDebug("ChildChanged\n" + dataSnapshot, CustomLogger.Mask.TRACK_GRIEVANCE_ACTIVITY);
                 GrievanceModel model = dataSnapshot.getValue(GrievanceModel.class);
                 int counter = 0;
                 if (model != null) {
@@ -206,7 +206,7 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
+                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage(), CustomLogger.Mask.TRACK_GRIEVANCE_ACTIVITY);
                 progressDialog.dismiss();
             }
         }, FireBaseHelper.ROOT_GRIEVANCES, pensionerCode);

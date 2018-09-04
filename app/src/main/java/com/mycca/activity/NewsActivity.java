@@ -29,7 +29,7 @@ public class NewsActivity extends AppCompatActivity {
         try {
 
             NewsModel newsModel = (NewsModel) Helper.getInstance().getObjectFromJson(json, NewsModel.class);
-            CustomLogger.getInstance().logDebug(json);
+            CustomLogger.getInstance().logDebug(json, CustomLogger.Mask.NEWS_ACTIVITY);
 
             headline.setText(newsModel.getHeadline());
             description.setText(newsModel.getDescription());

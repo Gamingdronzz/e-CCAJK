@@ -75,7 +75,7 @@ public class VolleyHelper {
             if (error != null) {
                 VolleyHelper.this.delegate.onError(error);
             } else {
-                CustomLogger.getInstance().logDebug("onErrorResponse: Null Error Object ");
+                CustomLogger.getInstance().logDebug("onErrorResponse: Null Error Object ", CustomLogger.Mask.VOLLEY);
             }
         }
     }
@@ -111,11 +111,11 @@ public class VolleyHelper {
     }
 
     public void makeStringRequest(String url, String TAG, Map<String, String> params) {
-        CustomLogger.getInstance().logDebug("makeStringRequest: " + url);
+        CustomLogger.getInstance().logDebug("makeStringRequest: " + url, CustomLogger.Mask.VOLLEY);
         final Map<String, String> map = params;
         StringRequest strReq = new StringRequest(Request.Method.POST, url, this.stringResponseListener, this.errorListener) {
             protected Map<String, String> getParams() {
-                CustomLogger.getInstance().logDebug("get Params: ");
+                CustomLogger.getInstance().logDebug("get Params: ", CustomLogger.Mask.VOLLEY);
                 return map;
             }
         };
@@ -124,7 +124,7 @@ public class VolleyHelper {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         setShouldCache(strReq, true);
-        CustomLogger.getInstance().logDebug("Adding to request Queue");
+        CustomLogger.getInstance().logDebug("Adding to request Queue", CustomLogger.Mask.VOLLEY);
         AppController.getInstance().addToRequestQueue(strReq, TAG);
     }
 
@@ -143,7 +143,7 @@ public class VolleyHelper {
 
     public void makeJsonRequest(String url, String TAG, JSONObject notification_data, Map<String, String> header) {
 
-        CustomLogger.getInstance().logDebug("makeStringRequest: " + url);
+        CustomLogger.getInstance().logDebug("makeStringRequest: " + url, CustomLogger.Mask.VOLLEY);
         final Map<String, String> headerMap = header;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, notification_data, this.jsonObjectResponseListener, this.errorListener) {
             @Override

@@ -198,12 +198,12 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private void doUpdateOnInternetAvailable() {
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFireBaseDatabase + "\n" +
-                "Server = " + isUploadedToServer);
+                "Server = " + isUploadedToServer, CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
         progressDialog.show();
 
         if (isUploadedToFireBase) {
             if (isUploadedToServer) {
-                CustomLogger.getInstance().logDebug("doUpdateOnInternetAvailable: Data uploaded on server");
+                CustomLogger.getInstance().logDebug("doUpdateOnInternetAvailable: Data uploaded on server", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
                 sendFinalMail();
             } else {
                 uploadImagesToServer();
@@ -233,7 +233,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             } else {
                 progressDialog.dismiss();
                 Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, grievanceModel.getCircle());
-                CustomLogger.getInstance().logDebug("onComplete: " + task1.toString());
+                CustomLogger.getInstance().logDebug("onComplete: " + task1.toString(), CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
             }
         });
 
@@ -242,7 +242,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void uploadAllImagesToFirebase() {
         if (attachmentModelArrayList.size() > 0) {
             progressDialog.setMessage(getString(R.string.uploading_files));
-            CustomLogger.getInstance().logDebug("uploadAllImagesToFirebase: uploading");
+            CustomLogger.getInstance().logDebug("uploadAllImagesToFirebase: uploading", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
             counterUpload = 0;
 
             for (int i = 0; i < attachmentModelArrayList.size(); i++) {
@@ -327,7 +327,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String fcmKey = (String) dataSnapshot.getValue();
-                CustomLogger.getInstance().logDebug("Notification : Key received");
+                CustomLogger.getInstance().logDebug("Notification : Key received", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
                 getTokenAndSendNotification(fcmKey);
 
             }
@@ -346,7 +346,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
                     String token = (String) dataSnapshot.getValue();
-                    CustomLogger.getInstance().logDebug("Notification : Token received");
+                    CustomLogger.getInstance().logDebug("Notification : Token received", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
                     sendNotification(fcmKey, token);
                 }
             }
@@ -432,18 +432,18 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, this, true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath(), CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
 
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath(), CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
                 int currentPosition = attachmentModelArrayList.size();
                 attachmentModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
                 adapterSelectedImages.notifyItemInserted(currentPosition);
                 adapterSelectedImages.notifyDataSetChanged();
-                CustomLogger.getInstance().logDebug("onCropImage: Item inserted at " + currentPosition);
+                CustomLogger.getInstance().logDebug("onCropImage: Item inserted at " + currentPosition, CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
                 setSelectedFileCount(currentPosition + 1);
             }
 
@@ -460,7 +460,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
             }
         });
 
@@ -494,13 +494,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        CustomLogger.getInstance().logDebug(jsonObject.toString());
+        CustomLogger.getInstance().logDebug(jsonObject.toString(), CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 counterServerImages++;
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == attachmentModelArrayList.size()) {
-                        CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
+                        CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
                         isUploadedToServer = true;
                         doUpdateOnInternetAvailable();
                     }
@@ -537,7 +537,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode);
+        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode, CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(this, requestCode, resultCode, data);

@@ -342,7 +342,7 @@ final class BitmapUtils {
                 }
             }
         } catch (Exception e) {
-            CustomLogger.getInstance().logWarn("Failed to resize cropped image, return bitmap before resize", e);
+            CustomLogger.getInstance().logWarn("Failed to resize cropped image, return bitmap before resize", e, CustomLogger.Mask.BITMAP_UTILS);
         }
         return bitmap;
     }

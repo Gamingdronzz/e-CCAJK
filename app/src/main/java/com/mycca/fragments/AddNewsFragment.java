@@ -92,7 +92,7 @@ public class AddNewsFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug("version checked= " + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug("version checked= " + Helper.versionChecked, CustomLogger.Mask.ADD_NEWS_FRAGMENT);
                 if (Helper.versionChecked) {
                     addNewsToFireBase();
                 } else{

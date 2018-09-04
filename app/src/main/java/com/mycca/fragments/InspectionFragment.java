@@ -220,7 +220,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         this.longitude = longitude;
         myLocationManager.cleanUp();
 
-        CustomLogger.getInstance().logDebug("getLocationCoordinates: " + latitude + "," + longitude);
+        CustomLogger.getInstance().logDebug("getLocationCoordinates: " + latitude + "," + longitude, CustomLogger.Mask.INSPECTION_FRAGMENT);
         //circularProgressButton.setProgress(0);
         //circularProgressButton.setIdleText(String.format(getString(R.string.current_location), String.valueOf(latitude), String.valueOf(longitude)));
         manageVisibility(true);
@@ -251,19 +251,19 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         if (task != null) {
             task.addOnCompleteListener(task1 -> {
                 if (task1.isSuccessful()) {
-                    CustomLogger.getInstance().logDebug("Task is Successful\nRequesting Location Update");
+                    CustomLogger.getInstance().logDebug("Task is Successful\nRequesting Location Update", CustomLogger.Mask.INSPECTION_FRAGMENT);
                     myLocationManager.requestLocationUpdates();
 
                 } else {
-                    CustomLogger.getInstance().logDebug("Task UnSuccessful");
+                    CustomLogger.getInstance().logDebug("Task UnSuccessful", CustomLogger.Mask.INSPECTION_FRAGMENT);
                     manageVisibility(true);
                     //circularProgressButton.setProgress(0);
                 }
             });
-            task.addOnSuccessListener(mainActivity, locationSettingsResponse -> CustomLogger.getInstance().logDebug("On Task Success"));
+            task.addOnSuccessListener(mainActivity, locationSettingsResponse -> CustomLogger.getInstance().logDebug("On Task Success", CustomLogger.Mask.INSPECTION_FRAGMENT));
 
             task.addOnFailureListener(mainActivity, e -> {
-                CustomLogger.getInstance().logDebug("On Task Failed");
+                CustomLogger.getInstance().logDebug("On Task Failed", CustomLogger.Mask.INSPECTION_FRAGMENT);
                 // circularProgressButton.setProgress(0);
                 // circularProgressButton.setIdleText(getString(R.string.location_not_found));
                 if (e instanceof ResolvableApiException) {
@@ -293,11 +293,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             fileList = Helper.getInstance().getStringFromList(selectedImageModelArrayList);
         else
             fileList = null;
-        CustomLogger.getInstance().logDebug(fileList);
+        CustomLogger.getInstance().logDebug(fileList, CustomLogger.Mask.INSPECTION_FRAGMENT);
         InspectionModel model = new InspectionModel(editTextLocationName.getText().toString(),
                 fileList, latitude, longitude, new Date());
         CustomLogger.getInstance().logDebug("Saving inspection data: " + model.getLocationName() + "," + model.getLatitude() + "," +
-                +model.getLongitude() + "," + model.getDate());
+                +model.getLongitude() + "," + model.getDate(), CustomLogger.Mask.INSPECTION_FRAGMENT);
         Type collectionType = new TypeToken<ArrayList<InspectionModel>>() {
         }.getType();
         Helper.getInstance().saveModelOffline(mainActivity, model, collectionType, IOHelper.INSPECTIONS);
@@ -311,7 +311,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked, CustomLogger.Mask.INSPECTION_FRAGMENT);
                 if (Helper.versionChecked) {
                     doSubmissionOnInternetAvailable();
                 } else {
@@ -344,7 +344,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     private void doSubmissionOnInternetAvailable() {
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer);
+                "Server = " + isUploadedToServer, CustomLogger.Mask.INSPECTION_FRAGMENT);
         if (isUploadedToFirebase) {
             if (isUploadedToServer) {
                 sendFinalMail();
@@ -398,7 +398,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             if (uploadTask != null) {
                 uploadTask.addOnFailureListener(exception -> {
                     showError(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error));
-                    CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
+                    CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage(), CustomLogger.Mask.INSPECTION_FRAGMENT);
 
                 }).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                     downloadUrl = uri;
@@ -457,18 +457,18 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, mainActivity, true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath(), CustomLogger.Mask.INSPECTION_FRAGMENT);
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath(), CustomLogger.Mask.INSPECTION_FRAGMENT);
                 int currentPosition = selectedImageModelArrayList.size();
                 selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
                 adapterSelectedImages.notifyItemInserted(currentPosition);
                 adapterSelectedImages.notifyDataSetChanged();
                 setSelectedFileCount(currentPosition + 1);
-                CustomLogger.getInstance().logDebug("onCropImage: Item inserted at " + currentPosition);
+                CustomLogger.getInstance().logDebug("onCropImage: Item inserted at " + currentPosition, CustomLogger.Mask.INSPECTION_FRAGMENT);
 
             }
 
@@ -484,7 +484,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage", CustomLogger.Mask.INSPECTION_FRAGMENT);
             }
         });
 
@@ -520,18 +520,18 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        CustomLogger.getInstance().logDebug(jsonObject.toString());
+        CustomLogger.getInstance().logDebug(jsonObject.toString(), CustomLogger.Mask.INSPECTION_FRAGMENT);
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 counterServerImages++;
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == selectedImageModelArrayList.size()) {
-                        CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
+                        CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.INSPECTION_FRAGMENT);
                         isUploadedToServer = true;
                         doSubmission();
                     }
                 } else {
-                    CustomLogger.getInstance().logDebug("onResponse: Image = " + counterServerImages + " failed");
+                    CustomLogger.getInstance().logDebug("onResponse: Image = " + counterServerImages + " failed", CustomLogger.Mask.INSPECTION_FRAGMENT);
                     showError(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error));
                 }
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
@@ -557,7 +557,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode);
+        CustomLogger.getInstance().logDebug("onActivityResult: " + requestCode + " ," + resultCode, CustomLogger.Mask.INSPECTION_FRAGMENT);
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(mainActivity, requestCode, resultCode, data);
@@ -567,17 +567,17 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             case CONNECTION_FAILURE_RESOLUTION_REQUEST: {
                 switch (resultCode) {
                     case Activity.RESULT_OK: {
-                        CustomLogger.getInstance().logDebug("Resolution success");
+                        CustomLogger.getInstance().logDebug("Resolution success", CustomLogger.Mask.INSPECTION_FRAGMENT);
                         myLocationManager.requestLocationUpdates();
                         break;
                     }
                     case Activity.RESULT_CANCELED: {
-                        CustomLogger.getInstance().logDebug("Resolution denied");
+                        CustomLogger.getInstance().logDebug("Resolution denied", CustomLogger.Mask.INSPECTION_FRAGMENT);
                         myLocationManager.ShowDialogOnLocationOff(getString(R.string.msg_no_location));
                         break;
                     }
                     default: {
-                        CustomLogger.getInstance().logDebug("User unable to do anything");
+                        CustomLogger.getInstance().logDebug("User unable to do anything", CustomLogger.Mask.INSPECTION_FRAGMENT);
                         break;
                     }
                 }
@@ -590,7 +590,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + "Inspection");
+        CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + "Inspection", CustomLogger.Mask.INSPECTION_FRAGMENT);
 
         switch (requestCode) {
 

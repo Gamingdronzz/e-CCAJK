@@ -97,7 +97,7 @@ public class ContactUsFragment extends Fragment {
 
             String location = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_COORDINATES);
             String label = Preferences.getInstance().getStringPref(activity, Preferences.PREF_OFFICE_LABEL);
-            CustomLogger.getInstance().logDebug("location: " + location + " label: " + label);
+            CustomLogger.getInstance().logDebug("location: " + location + " label: " + label, CustomLogger.Mask.CONTACT_US_FRAGMENT);
             if (label != null) {
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location + label);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -139,7 +139,7 @@ public class ContactUsFragment extends Fragment {
 
     private void setAdapter() {
         progressDialog.dismiss();
-        CustomLogger.getInstance().logDebug("Setting Adapter");
+        CustomLogger.getInstance().logDebug("Setting Adapter", CustomLogger.Mask.CONTACT_US_FRAGMENT);
         adapterContacts = new RecyclerViewAdapterContacts(contactArrayList, activity);
         recyclerView.setAdapter(adapterContacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -183,11 +183,11 @@ public class ContactUsFragment extends Fragment {
                         fileExists = true;
                         String json = String.valueOf(jsonObject);
                         try {
-                            CustomLogger.getInstance().logDebug(json);
+                            CustomLogger.getInstance().logDebug(json, CustomLogger.Mask.CONTACT_US_FRAGMENT);
                             Type collectionType = new TypeToken<ArrayList<Contact>>() {
                             }.getType();
                             contactArrayList = new Gson().fromJson(json, collectionType);
-                            CustomLogger.getInstance().logDebug(contactArrayList.toString());
+                            CustomLogger.getInstance().logDebug(contactArrayList.toString(), CustomLogger.Mask.CONTACT_US_FRAGMENT);
 
                         } catch (JsonParseException jpe) {
                             jpe.printStackTrace();
@@ -203,7 +203,7 @@ public class ContactUsFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue() != null) {
                     try {
-                        CustomLogger.getInstance().logDebug("onChildAdded: " + dataSnapshot.getKey());
+                        CustomLogger.getInstance().logDebug("onChildAdded: " + dataSnapshot.getKey(), CustomLogger.Mask.CONTACT_US_FRAGMENT);
                         Contact contact = dataSnapshot.getValue(Contact.class);
                         contactArrayList.add(contact);
                     } catch (DatabaseException dbe) {
@@ -235,7 +235,7 @@ public class ContactUsFragment extends Fragment {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CustomLogger.getInstance().logDebug("got contacts from firebase");
+                CustomLogger.getInstance().logDebug("got contacts from firebase", CustomLogger.Mask.CONTACT_US_FRAGMENT);
                 setAdapter();
                 if (contactArrayList.size() > 0) {
                     addContactsToLocalStorage(contactArrayList);
@@ -258,8 +258,8 @@ public class ContactUsFragment extends Fragment {
     private void addContactsToLocalStorage(ArrayList<Contact> contactArrayList) {
         try {
             String jsonObject = Helper.getInstance().getJsonFromObject(contactArrayList);
-            CustomLogger.getInstance().logDebug("Json: " + jsonObject);
-            CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: " + contactArrayList.size());
+            CustomLogger.getInstance().logDebug("Json: " + jsonObject, CustomLogger.Mask.CONTACT_US_FRAGMENT);
+            CustomLogger.getInstance().logDebug("adding ContactsToLocalStorage: " + contactArrayList.size(), CustomLogger.Mask.CONTACT_US_FRAGMENT);
             IOHelper.getInstance().writeToFile(activity, jsonObject, IOHelper.CONTACTS,
                     Preferences.getInstance().getCirclePref(activity).getCode(),
                     success -> {
@@ -276,10 +276,10 @@ public class ContactUsFragment extends Fragment {
                 try {
                     long firebaseCount = (long) dataSnapshot.getValue();
                     if (contactArrayList.size() == firebaseCount) {
-                        CustomLogger.getInstance().logDebug("no new contacts");
+                        CustomLogger.getInstance().logDebug("no new contacts", CustomLogger.Mask.CONTACT_US_FRAGMENT);
                         setAdapter();
                     } else {
-                        CustomLogger.getInstance().logDebug("new contacts found");
+                        CustomLogger.getInstance().logDebug("new contacts found", CustomLogger.Mask.CONTACT_US_FRAGMENT);
                         getContactsFromFirebase();
                     }
                 } catch (DatabaseException dbe) {
@@ -290,7 +290,7 @@ public class ContactUsFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
+                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage(), CustomLogger.Mask.CONTACT_US_FRAGMENT);
                 setAdapter();
             }
         };

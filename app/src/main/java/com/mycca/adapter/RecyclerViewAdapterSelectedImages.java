@@ -95,7 +95,7 @@ public class RecyclerViewAdapterSelectedImages extends RecyclerView.Adapter<Recy
 
         @Override
         public void onClick(View v) {
-            CustomLogger.getInstance().logDebug("onClick: Item removed at " + position);
+            CustomLogger.getInstance().logDebug("onClick: Item removed at " + position, CustomLogger.Mask.RECYCLER_VIEW_SELECTED_IMAGES);
             selectedImageModelArrayList.remove(position);
             notifyItemRemoved(position);
             notifyDataSetChanged();

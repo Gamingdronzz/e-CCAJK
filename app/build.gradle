@@ -59,6 +59,8 @@ dependencies {
     implementation 'com.android.support:support-vector-drawable:27.1.1'
     //Vision for barcode
     implementation 'com.google.android.gms:play-services-vision:15.0.2'
+
+
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
@@ -68,6 +70,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.0'
     implementation 'com.google.firebase:firebase-invites:16.0.3'
     implementation 'com.google.firebase:firebase-config:16.0.0'
+
+
     //GSON
     implementation 'com.google.code.gson:gson:2.8.4'
     //GLIDE

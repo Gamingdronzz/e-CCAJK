@@ -92,7 +92,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
             mobile.setOnClickListener(v -> {
                 String number = mobile.getText().toString();
-                CustomLogger.getInstance().logDebug("Contact = " + number);
+                CustomLogger.getInstance().logDebug("Contact = " + number, CustomLogger.Mask.RECYCLER_VIEW_CONTACTS);
                 if (number.equals(na)) {
                     Toast.makeText(context,context.getString(R.string.contact_na) , Toast.LENGTH_SHORT).show();
                 } else {
@@ -115,7 +115,7 @@ public class RecyclerViewAdapterContacts extends RecyclerView.Adapter<RecyclerVi
 
             email.setOnClickListener(v -> {
                 String mail = email.getText().toString();
-                CustomLogger.getInstance().logDebug("Contact = " + mail);
+                CustomLogger.getInstance().logDebug("Contact = " + mail, CustomLogger.Mask.RECYCLER_VIEW_CONTACTS);
                 if (mail.equals(na)) {
                     Toast.makeText(context, context.getString(R.string.email_na), Toast.LENGTH_SHORT).show();
                 } else {

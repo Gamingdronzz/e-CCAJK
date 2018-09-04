@@ -138,7 +138,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     NewsModel newsModel = dataSnapshot.getValue(NewsModel.class);
                     newsModelArrayList.add(0, newsModel);
                     adapterNews.notifyItemInserted(0);
-                    CustomLogger.getInstance().logDebug("onChildAdded: " + newsModel.getHeadline());
+                    CustomLogger.getInstance().logDebug("onChildAdded: " + newsModel.getHeadline(), CustomLogger.Mask.HOME_FRAGMENT);
                     recyclerView.smoothScrollToPosition(newsModelArrayList.size() - 1);
                 }
             }
@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                             adapterNews.notifyItemRemoved(i);
                             newsModelArrayList.add(i, newsModel);
                             adapterNews.notifyItemInserted(i);
-                            CustomLogger.getInstance().logDebug("onChildChanged: " + newsModel.getHeadline() + " pos - " + i);
+                            CustomLogger.getInstance().logDebug("onChildChanged: " + newsModel.getHeadline() + " pos - " + i, CustomLogger.Mask.HOME_FRAGMENT);
                             break;
                         }
                     }
@@ -199,15 +199,15 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     }
 
     private void getSliderData() {
-        CustomLogger.getInstance().logDebug("getting SliderData: ");
+        CustomLogger.getInstance().logDebug("getting SliderData: ", CustomLogger.Mask.HOME_FRAGMENT);
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                CustomLogger.getInstance().logDebug("ChildAdded: ");
+                CustomLogger.getInstance().logDebug("ChildAdded: ", CustomLogger.Mask.HOME_FRAGMENT);
                 SliderImageModel sliderImageModel = dataSnapshot.getValue(SliderImageModel.class);
                 if (sliderImageModel != null) {
-                    CustomLogger.getInstance().logDebug("Image: " + sliderImageModel.getImageName());
-                    CustomLogger.getInstance().logDebug("url: " + sliderImageModel.getImageUrl());
+                    CustomLogger.getInstance().logDebug("Image: " + sliderImageModel.getImageName(), CustomLogger.Mask.HOME_FRAGMENT);
+                    CustomLogger.getInstance().logDebug("url: " + sliderImageModel.getImageUrl(), CustomLogger.Mask.HOME_FRAGMENT);
                     addImageToSlider(sliderImageModel);
                 }
             }
@@ -284,7 +284,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageSelected(int position) {
-        CustomLogger.getInstance().logDebug("Slider Page Changed: " + position);
+        CustomLogger.getInstance().logDebug("Slider Page Changed: " + position, CustomLogger.Mask.HOME_FRAGMENT);
     }
 
     @Override

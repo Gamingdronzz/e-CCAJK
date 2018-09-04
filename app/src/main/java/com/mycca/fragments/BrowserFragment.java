@@ -120,7 +120,7 @@ public class BrowserFragment extends Fragment {
             @RequiresApi(Build.VERSION_CODES.O)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                CustomLogger.getInstance().logDebug("UrlO", url);
+                CustomLogger.getInstance().logDebug("UrlO", url, CustomLogger.Mask.BROWSER_FRAGMENT);
                 view.loadUrl(request.getUrl().toString());
                 return true;
 
@@ -129,7 +129,7 @@ public class BrowserFragment extends Fragment {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    CustomLogger.getInstance().logDebug("Url", url);
+                    CustomLogger.getInstance().logDebug("Url", url, CustomLogger.Mask.BROWSER_FRAGMENT);
                     view.loadUrl(url);
                 }
                 return true;
@@ -213,32 +213,32 @@ public class BrowserFragment extends Fragment {
 
     @Override
     public void onPause() {
-        CustomLogger.getInstance().logDebug(TAG, "onPause: ");
+        CustomLogger.getInstance().logDebug(TAG, "onPause: ", CustomLogger.Mask.BROWSER_FRAGMENT);
         super.onPause();
     }
 
     @Override
     public void onDetach() {
-        CustomLogger.getInstance().logDebug(TAG, "onDetach: ");
+        CustomLogger.getInstance().logDebug(TAG, "onDetach: ", CustomLogger.Mask.BROWSER_FRAGMENT);
         super.onDetach();
     }
 
     @Override
     public void onStop() {
-        CustomLogger.getInstance().logDebug(TAG, "onStop: ");
+        CustomLogger.getInstance().logDebug(TAG, "onStop: ", CustomLogger.Mask.BROWSER_FRAGMENT);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        CustomLogger.getInstance().logDebug(TAG, "onDestroy: ");
+        CustomLogger.getInstance().logDebug(TAG, "onDestroy: ", CustomLogger.Mask.BROWSER_FRAGMENT);
         stopLoading();
         super.onDestroy();
     }
 
     @Override
     public void onDestroyView() {
-        CustomLogger.getInstance().logDebug(TAG, "onDestroyView: ");
+        CustomLogger.getInstance().logDebug(TAG, "onDestroyView: ", CustomLogger.Mask.BROWSER_FRAGMENT);
         super.onDestroyView();
     }
 }

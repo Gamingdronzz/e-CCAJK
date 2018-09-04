@@ -63,7 +63,7 @@ public final class ViewAnimationUtils {
     public static Animator createCircularReveal(View view, int centerX, int centerY,
                                                 float startRadius, float endRadius, int layerType) {
 
-        CustomLogger.getInstance().logDebug("createCircularReveal: parent = " + view.toString() + "\n" + view.getParent() + "\n" + view.getParent().getParent() + "\n" + view.getParent().getParent().getParent() + "\n" + view.getRootView());
+        CustomLogger.getInstance().logDebug("createCircularReveal: parent = " + view.toString() + "\n" + view.getParent() + "\n" + view.getParent().getParent() + "\n" + view.getParent().getParent().getParent() + "\n" + view.getRootView(), CustomLogger.Mask.VIEW_ANIMATION_UTILS);
         if (!(view.getParent() instanceof RevealViewGroup))
             if (!(view.getParent().getParent() instanceof RevealViewGroup))
                 if (!(view.getParent().getParent().getParent() instanceof RevealViewGroup))

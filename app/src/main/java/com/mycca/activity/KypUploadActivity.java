@@ -102,7 +102,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug("version checked = " + Helper.versionChecked, CustomLogger.Mask.KYP_ACTIVITY);
                 if (Helper.versionChecked) {
                     submit();
                 } else {
@@ -168,7 +168,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
             uploadTask.addOnFailureListener(exception -> {
                 progressDialog.dismiss();
                 Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error), this);
-                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage());
+                CustomLogger.getInstance().logDebug("onFailure: " + exception.getMessage(), CustomLogger.Mask.KYP_ACTIVITY);
             }).addOnSuccessListener(taskSnapshot ->
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                         firebaseImageURLs.add(uri);
@@ -205,13 +205,13 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
         imagePicker = Helper.getInstance().showImageChooser(imagePicker, this, true, new ImagePicker.Callback() {
             @Override
             public void onPickImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug("onPickImage: " + imageUri.getPath(), CustomLogger.Mask.KYP_ACTIVITY);
 
             }
 
             @Override
             public void onCropImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath());
+                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath(), CustomLogger.Mask.KYP_ACTIVITY);
                 imageModel = new SelectedImageModel(imageUri);
                 Glide.with(KypUploadActivity.this).load(imageUri).into(imageView);
             }
@@ -229,7 +229,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
             @Override
             public void onPermissionDenied(int requestCode, String[] permissions,
                                            int[] grantResults) {
-                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage");
+                CustomLogger.getInstance().logDebug("onPermissionDenied: Permission not given to choose textViewMessage", CustomLogger.Mask.KYP_ACTIVITY);
             }
         });
 
@@ -244,15 +244,15 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
     @Override
     public void onResponse(String str) {
         JSONObject jsonObject = Helper.getInstance().getJson(str);
-        CustomLogger.getInstance().logDebug(jsonObject.toString());
+        CustomLogger.getInstance().logDebug(jsonObject.toString(), CustomLogger.Mask.KYP_ACTIVITY);
         try {
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
-                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
+                    CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.KYP_ACTIVITY);
                     isUploadedToServer = true;
                     submit();
                 } else {
-                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed");
+                    CustomLogger.getInstance().logDebug("onResponse: Image upload failed", CustomLogger.Mask.KYP_ACTIVITY);
                     progressDialog.dismiss();
                     Helper.getInstance().showErrorDialog(getString(R.string.file_not_uploaded), getString(R.string.file_upload_error), this);
                 }
@@ -284,7 +284,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
             imagePicker.onActivityResult(this, requestCode, resultCode, data);
         if (requestCode == REQUEST_OTP) {
             if (resultCode == RESULT_OK) {
-                CustomLogger.getInstance().logDebug("Verification complete");
+                CustomLogger.getInstance().logDebug("Verification complete", CustomLogger.Mask.KYP_ACTIVITY);
                 isOTPVerified = true;
                 submit();
             } else {

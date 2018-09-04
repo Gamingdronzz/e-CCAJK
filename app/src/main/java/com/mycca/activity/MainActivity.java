@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity
 
     @Shortcut(id = "hotspotNearby", icon = R.drawable.ic_wifi_black_24dp, shortLabel = "HotSpot Locations")
     public void ShowHotSpotLocations() {
-        CustomLogger.getInstance().logDebug("ShowHotSpotLocations");
+        CustomLogger.getInstance().logDebug("ShowHotSpotLocations", CustomLogger.Mask.MAIN_ACTIVITY);
         Bundle bundle = new Bundle();
         bundle.putString("Locator", FireBaseHelper.ROOT_WIFI);
         showFragment(getString(R.string.wifi), new LocatorFragment(), bundle);
@@ -492,13 +492,13 @@ public class MainActivity extends AppCompatActivity
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        CustomLogger.getInstance().logDebug("firebaseAuthWithGoogle: " + credential.getSignInMethod());
+        CustomLogger.getInstance().logDebug("firebaseAuthWithGoogle: " + credential.getSignInMethod(), CustomLogger.Mask.MAIN_ACTIVITY);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
 
-                        CustomLogger.getInstance().logDebug("signInWithCredential:success");
+                        CustomLogger.getInstance().logDebug("signInWithCredential:success", CustomLogger.Mask.MAIN_ACTIVITY);
                         FireBaseHelper.getInstance().addTokenOnFireBase();
                         Helper.getInstance().showFancyAlertDialog(MainActivity.this, "",
                                 getString(R.string.sign_in_success),
@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity
                             ((HomeFragment) f).setupWelcomeBar();
 
                     } else {
-                        CustomLogger.getInstance().logWarn("signInWithCredential:failure", task.getException());
+                        CustomLogger.getInstance().logWarn("signInWithCredential:failure", task.getException(), CustomLogger.Mask.MAIN_ACTIVITY);
                         if (task.getException().getClass() == FirebaseAuthInvalidUserException.class) {
                             Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again_different_account), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
                         } else {
@@ -710,7 +710,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CustomLogger.getInstance().logDebug(Integer.toString(resultCode));
+        CustomLogger.getInstance().logDebug(Integer.toString(resultCode), CustomLogger.Mask.MAIN_ACTIVITY);
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         if (requestCode == RC_SIGN_IN) {
@@ -719,10 +719,10 @@ public class MainActivity extends AppCompatActivity
                 progressDialog.setMessage(getString(R.string.signing_in));
                 progressDialog.show();
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                CustomLogger.getInstance().logDebug("signed in: " + account.getEmail());
+                CustomLogger.getInstance().logDebug("signed in: " + account.getEmail(), CustomLogger.Mask.MAIN_ACTIVITY);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                CustomLogger.getInstance().logWarn("Google sign in failed", e);
+                CustomLogger.getInstance().logWarn("Google sign in failed", e, CustomLogger.Mask.MAIN_ACTIVITY);
                 progressDialog.dismiss();
                 Helper.getInstance().showFancyAlertDialog(MainActivity.this, getString(R.string.try_again), getString(R.string.sign_in_fail), getString(R.string.ok), null, null, null, FancyAlertDialogType.ERROR);
             }
@@ -740,7 +740,7 @@ public class MainActivity extends AppCompatActivity
         List<Fragment> allFragments = getSupportFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString(), CustomLogger.Mask.MAIN_ACTIVITY);
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }

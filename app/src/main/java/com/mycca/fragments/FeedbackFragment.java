@@ -80,7 +80,7 @@ public class FeedbackFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug( "version checked= " + Helper.versionChecked);
+                CustomLogger.getInstance().logDebug( "version checked= " + Helper.versionChecked, CustomLogger.Mask.FEEDBACK_FRAGMENT);
                 if (Helper.versionChecked) {
                     submit();
                 } else{

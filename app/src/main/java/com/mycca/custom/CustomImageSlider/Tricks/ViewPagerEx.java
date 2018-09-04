@@ -644,13 +644,13 @@ public class ViewPagerEx extends ViewGroup {
                     mSetChildrenDrawingOrderEnabled = ViewGroup.class.getDeclaredMethod(
                             "setChildrenDrawingOrderEnabled", new Class[]{Boolean.TYPE});
                 } catch (NoSuchMethodException e) {
-                    CustomLogger.getInstance().logError(TAG, "Can't find setChildrenDrawingOrderEnabled", e);
+                    CustomLogger.getInstance().logError(TAG, "Can't find setChildrenDrawingOrderEnabled", e, CustomLogger.Mask.VIEW_ANIMATION_UTILS);
                 }
             }
             try {
                 mSetChildrenDrawingOrderEnabled.invoke(this, enable);
             } catch (Exception e) {
-                CustomLogger.getInstance().logError(TAG, "Error changing children drawing order", e);
+                CustomLogger.getInstance().logError(TAG, "Error changing children drawing order", e, CustomLogger.Mask.VIEW_PAGER_EX);
             }
         }
     }
@@ -705,7 +705,7 @@ public class ViewPagerEx extends ViewGroup {
     public void setOffscreenPageLimit(int limit) {
         if (limit < DEFAULT_OFFSCREEN_PAGES) {
             CustomLogger.getInstance().logWarn(TAG, "Requested offscreen page limit " + limit + " too small; defaulting to " +
-                    DEFAULT_OFFSCREEN_PAGES, null);
+                    DEFAULT_OFFSCREEN_PAGES, null, CustomLogger.Mask.VIEW_PAGER_EX);
             limit = DEFAULT_OFFSCREEN_PAGES;
         }
         if (limit != mOffscreenPageLimit) {
@@ -952,7 +952,7 @@ public class ViewPagerEx extends ViewGroup {
         // that position, avoiding glitches from happening at that point.
         if (mPopulatePending) {
             if (DEBUG)
-                CustomLogger.getInstance().logInfo(TAG, "populate is pending, skipping for now...");
+                CustomLogger.getInstance().logInfo(TAG, "populate is pending, skipping for now...", CustomLogger.Mask.VIEW_PAGER_EX);
             sortChildDrawingOrder();
             return;
         }
@@ -1021,7 +1021,7 @@ public class ViewPagerEx extends ViewGroup {
                         mAdapter.destroyItem(this, pos, ii.object);
                         if (DEBUG) {
                             CustomLogger.getInstance().logInfo(TAG, "populate() - destroyItem() with pos: " + pos +
-                                    " view: " + ((View) ii.object));
+                                    " view: " + ((View) ii.object), CustomLogger.Mask.VIEW_PAGER_EX);
                         }
                         itemIndex--;
                         curIndex--;
@@ -1055,7 +1055,7 @@ public class ViewPagerEx extends ViewGroup {
                             mAdapter.destroyItem(this, pos, ii.object);
                             if (DEBUG) {
                                 CustomLogger.getInstance().logInfo(TAG, "populate() - destroyItem() with pos: " + pos +
-                                        " view: " + ((View) ii.object));
+                                        " view: " + ((View) ii.object), CustomLogger.Mask.VIEW_PAGER_EX);
                             }
                             ii = itemIndex < mItems.size() ? mItems.get(itemIndex) : null;
                         }
@@ -1076,9 +1076,9 @@ public class ViewPagerEx extends ViewGroup {
         }
 
         if (DEBUG) {
-            CustomLogger.getInstance().logInfo(TAG, "Current page list:");
+            CustomLogger.getInstance().logInfo(TAG, "Current page list:", CustomLogger.Mask.VIEW_PAGER_EX);
             for (int i = 0; i < mItems.size(); i++) {
-                CustomLogger.getInstance().logInfo(TAG, "#" + i + ": page " + mItems.get(i).position);
+                CustomLogger.getInstance().logInfo(TAG, "#" + i + ": page " + mItems.get(i).position, CustomLogger.Mask.VIEW_PAGER_EX);
             }
         }
 
@@ -1463,7 +1463,7 @@ public class ViewPagerEx extends ViewGroup {
             if (child.getVisibility() != GONE) {
                 if (DEBUG)
                     CustomLogger.getInstance().logVerbose(TAG, "Measuring #" + i + " " + child
-                            + ": " + mChildWidthMeasureSpec);
+                            + ": " + mChildWidthMeasureSpec, CustomLogger.Mask.VIEW_PAGER_EX);
 
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 if (lp == null || !lp.isDecor) {
@@ -1607,7 +1607,7 @@ public class ViewPagerEx extends ViewGroup {
                     if (DEBUG)
                         CustomLogger.getInstance().logVerbose(TAG, "Positioning #" + i + " " + child + " f=" + ii.object
                                 + ":" + childLeft + "," + childTop + " " + child.getMeasuredWidth()
-                                + "x" + child.getMeasuredHeight());
+                                + "x" + child.getMeasuredHeight(), CustomLogger.Mask.VIEW_PAGER_EX);
                     child.layout(childLeft, childTop,
                             childLeft + child.getMeasuredWidth(),
                             childTop + child.getMeasuredHeight());
@@ -1812,7 +1812,7 @@ public class ViewPagerEx extends ViewGroup {
         // Always take care of the touch gesture being complete.
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
             // Release the drag.
-            if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept done!");
+            if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept done!", CustomLogger.Mask.VIEW_PAGER_EX);
             mIsBeingDragged = false;
             mIsUnableToDrag = false;
             mActivePointerId = INVALID_POINTER;
@@ -1827,11 +1827,11 @@ public class ViewPagerEx extends ViewGroup {
         // are dragging.
         if (action != MotionEvent.ACTION_DOWN) {
             if (mIsBeingDragged) {
-                if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept returning true!");
+                if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept returning true!", CustomLogger.Mask.VIEW_PAGER_EX);
                 return true;
             }
             if (mIsUnableToDrag) {
-                if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept returning false!");
+                if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Intercept returning false!", CustomLogger.Mask.VIEW_PAGER_EX);
                 return false;
             }
         }
@@ -1860,7 +1860,7 @@ public class ViewPagerEx extends ViewGroup {
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
                 final float yDiff = Math.abs(y - mInitialMotionY);
                 if (DEBUG)
-                    CustomLogger.getInstance().logVerbose(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+                    CustomLogger.getInstance().logVerbose(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff, CustomLogger.Mask.VIEW_PAGER_EX);
 
                 if (dx != 0 && !isGutterDrag(mLastMotionX, dx) &&
                         canScroll(this, false, (int) dx, (int) x, (int) y)) {
@@ -1871,7 +1871,7 @@ public class ViewPagerEx extends ViewGroup {
                     return false;
                 }
                 if (xDiff > mTouchSlop && xDiff * 0.5f > yDiff) {
-                    if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Starting drag!");
+                    if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Starting drag!", CustomLogger.Mask.VIEW_PAGER_EX);
                     mIsBeingDragged = true;
                     requestParentDisallowInterceptTouchEvent(true);
                     setScrollState(SCROLL_STATE_DRAGGING);
@@ -1885,7 +1885,7 @@ public class ViewPagerEx extends ViewGroup {
                     // any attempt to drag horizontally, to work correctly
                     // with children that have scrolling containers.
                     if (DEBUG)
-                        CustomLogger.getInstance().logVerbose(TAG, "Starting unable to drag!");
+                        CustomLogger.getInstance().logVerbose(TAG, "Starting unable to drag!", CustomLogger.Mask.VIEW_PAGER_EX);
                     mIsUnableToDrag = true;
                 }
                 if (mIsBeingDragged) {
@@ -1925,7 +1925,7 @@ public class ViewPagerEx extends ViewGroup {
                 if (DEBUG)
                     CustomLogger.getInstance().logVerbose(TAG, "Down at " + mLastMotionX + "," + mLastMotionY
                             + " mIsBeingDragged=" + mIsBeingDragged
-                            + "mIsUnableToDrag=" + mIsUnableToDrag);
+                            + "mIsUnableToDrag=" + mIsUnableToDrag, CustomLogger.Mask.VIEW_PAGER_EX);
                 break;
             }
 
@@ -1994,9 +1994,9 @@ public class ViewPagerEx extends ViewGroup {
                     final float y = MotionEventCompat.getY(ev, pointerIndex);
                     final float yDiff = Math.abs(y - mLastMotionY);
                     if (DEBUG)
-                        CustomLogger.getInstance().logVerbose(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+                        CustomLogger.getInstance().logVerbose(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff, CustomLogger.Mask.VIEW_PAGER_EX);
                     if (xDiff > mTouchSlop && xDiff > yDiff) {
-                        if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Starting drag!");
+                        if (DEBUG) CustomLogger.getInstance().logVerbose(TAG, "Starting drag!", CustomLogger.Mask.VIEW_PAGER_EX);
                         mIsBeingDragged = true;
                         requestParentDisallowInterceptTouchEvent(true);
                         mLastMotionX = x - mInitialMotionX > 0 ? mInitialMotionX + mTouchSlop :
@@ -2546,7 +2546,7 @@ public class ViewPagerEx extends ViewGroup {
                     sb.append(" => ").append(parent.getClass().getSimpleName());
                 }
                 CustomLogger.getInstance().logError(TAG, "arrowScroll tried to find focus based on non-child " +
-                        "current focused view " + sb.toString(),null);
+                        "current focused view " + sb.toString(),null, CustomLogger.Mask.VIEW_PAGER_EX);
                 currentFocused = null;
             }
         }

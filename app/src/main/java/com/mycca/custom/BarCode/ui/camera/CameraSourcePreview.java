@@ -112,9 +112,9 @@ public class CameraSourcePreview extends ViewGroup {
             try {
                 startIfReady();
             } catch (SecurityException se) {
-                CustomLogger.getInstance().logError(TAG, "Do not have permission to start the camera", se);
+                CustomLogger.getInstance().logError(TAG, "Do not have permission to start the camera", se, CustomLogger.Mask.CAMERA_SOURCE_PREVIEW);
             } catch (IOException e) {
-                CustomLogger.getInstance().logError(TAG, "Could not start camera source.", e);
+                CustomLogger.getInstance().logError(TAG, "Could not start camera source.", e, CustomLogger.Mask.CAMERA_SOURCE_PREVIEW);
             }
         }
 
@@ -168,9 +168,9 @@ public class CameraSourcePreview extends ViewGroup {
         try {
             startIfReady();
         } catch (SecurityException se) {
-            CustomLogger.getInstance().logError(TAG, "Do not have permission to start the camera", se);
+            CustomLogger.getInstance().logError(TAG, "Do not have permission to start the camera", se, CustomLogger.Mask.CAMERA_SOURCE_PREVIEW);
         } catch (IOException e) {
-            CustomLogger.getInstance().logError(TAG, "Could not start camera source.", e);
+            CustomLogger.getInstance().logError(TAG, "Could not start camera source.", e, CustomLogger.Mask.CAMERA_SOURCE_PREVIEW);
         }
     }
 
@@ -183,7 +183,7 @@ public class CameraSourcePreview extends ViewGroup {
             return true;
         }
 
-        CustomLogger.getInstance().logDebug(TAG, "isPortraitMode returning false by default");
+        CustomLogger.getInstance().logDebug(TAG, "isPortraitMode returning false by default", CustomLogger.Mask.CAMERA_SOURCE_PREVIEW);
         return false;
     }
 }

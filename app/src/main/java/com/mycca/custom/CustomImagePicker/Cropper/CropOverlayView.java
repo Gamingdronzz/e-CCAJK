@@ -991,7 +991,7 @@ public class CropOverlayView extends View {
                 mCropWindowChangeListener.onCropWindowChanged(inProgress);
             }
         } catch (Exception e) {
-            CustomLogger.getInstance().logError("AIC", "Exception in crop window changed", e);
+            CustomLogger.getInstance().logError("AIC", "Exception in crop window changed", e, CustomLogger.Mask.CROP_OVERLAY);
         }
     }
     //endregion

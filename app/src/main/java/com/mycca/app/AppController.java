@@ -68,7 +68,7 @@ public class AppController extends Application {
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
-        CustomLogger.getInstance().logDebug( "added To Request Queue");
+        CustomLogger.getInstance().logDebug( "added To Request Queue", CustomLogger.Mask.APP_CONTROLLER);
         if (TextUtils.isEmpty(tag)) {
             tag = TAG;
         }

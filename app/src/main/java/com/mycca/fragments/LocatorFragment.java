@@ -179,7 +179,7 @@ public class LocatorFragment extends Fragment {
                     if (locationModelArrayList.size() == firebaseCount) {
                         setTabLayout();
                     } else {
-                        CustomLogger.getInstance().logDebug("init: new locations in firebase");
+                        CustomLogger.getInstance().logDebug("init: new locations in firebase", CustomLogger.Mask.LOCATOR_FRAGMENT);
                         fetchLocationsFromFirebase();
                     }
                 } else {
@@ -189,7 +189,7 @@ public class LocatorFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage());
+                CustomLogger.getInstance().logDebug("onCancelled: " + databaseError.getMessage(), CustomLogger.Mask.LOCATOR_FRAGMENT);
                 setTabLayout();
             }
         };
@@ -205,7 +205,7 @@ public class LocatorFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue() != null) {
                     try {
-                        CustomLogger.getInstance().logDebug("onChildAdded: " + dataSnapshot.getKey());
+                        CustomLogger.getInstance().logDebug("onChildAdded: " + dataSnapshot.getKey(), CustomLogger.Mask.LOCATOR_FRAGMENT);
                         LocationModel location = dataSnapshot.getValue(LocationModel.class);
                         locationModelArrayList.add(location);
                     } catch (DatabaseException dbe) {
@@ -237,7 +237,7 @@ public class LocatorFragment extends Fragment {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CustomLogger.getInstance().logDebug("onDataChange: got locations from firebase");
+                CustomLogger.getInstance().logDebug("onDataChange: got locations from firebase", CustomLogger.Mask.LOCATOR_FRAGMENT);
                 setTabLayout();
                 if (locationModelArrayList != null)
                     addLocationsToLocalStorage();
@@ -258,8 +258,8 @@ public class LocatorFragment extends Fragment {
     private void addLocationsToLocalStorage() {
         try {
             String jsonObject = Helper.getInstance().getJsonFromObject(locationModelArrayList);
-            CustomLogger.getInstance().logDebug("Json: " + jsonObject);
-            CustomLogger.getInstance().logDebug("adding LocationsToLocalStorage: ");
+            CustomLogger.getInstance().logDebug("Json: " + jsonObject, CustomLogger.Mask.LOCATOR_FRAGMENT);
+            CustomLogger.getInstance().logDebug("adding LocationsToLocalStorage: ", CustomLogger.Mask.LOCATOR_FRAGMENT);
             IOHelper.getInstance().writeToFile(activity, jsonObject, locatorType,
                     Preferences.getInstance().getCirclePref(activity).getCode(),
                     success -> {
@@ -283,7 +283,7 @@ public class LocatorFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                CustomLogger.getInstance().logDebug("onPageSelected: selected = " + position);
+                CustomLogger.getInstance().logDebug("onPageSelected: selected = " + position, CustomLogger.Mask.LOCATOR_FRAGMENT);
 
                 Fragment fragment = adapter.getCurrentFragment();
                 if (fragment instanceof TabNearby) {
@@ -379,7 +379,7 @@ public class LocatorFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString(), CustomLogger.Mask.LOCATOR_FRAGMENT);
             frag.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
@@ -390,7 +390,7 @@ public class LocatorFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug("onActivityResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onActivityResult: " + frag.toString(), CustomLogger.Mask.LOCATOR_FRAGMENT);
             frag.onActivityResult(requestCode, resultCode, data);
         }
 

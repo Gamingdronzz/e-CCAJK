@@ -91,7 +91,7 @@ public class SplashActivity extends AppCompatActivity {
             text = currentVersionName;
         tvSplashVersion.setText(String.format(getString(R.string.version), text));
 
-        CustomLogger.getInstance().logDebug(TAG + " " + currentAppVersion + ": " + currentVersionName);
+        CustomLogger.getInstance().logDebug(TAG + " " + currentAppVersion + ": " + currentVersionName, CustomLogger.Mask.SPLASH_ACTIVITY);
     }
 
     private void StartAnimations() {
@@ -116,17 +116,17 @@ public class SplashActivity extends AppCompatActivity {
                 ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
                     @Override
                     public void OnConnectionAvailable() {
-                        CustomLogger.getInstance().logDebug(TAG + " Connection Available");
+                        CustomLogger.getInstance().logDebug(TAG + " Connection Available", CustomLogger.Mask.SPLASH_ACTIVITY);
                         checkForNewVersion();
                     }
 
                     @Override
                     public void OnConnectionNotAvailable() {
-                        CustomLogger.getInstance().logDebug(TAG + " Connection Not Available");
+                        CustomLogger.getInstance().logDebug(TAG + " Connection Not Available", CustomLogger.Mask.SPLASH_ACTIVITY);
                         if (Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES) != -1)
                             CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
                         else
-                            CustomLogger.getInstance().logDebug("Circle data not available");
+                            CustomLogger.getInstance().logDebug("Circle data not available", CustomLogger.Mask.SPLASH_ACTIVITY);
                         LoadNextActivity();
                     }
                 });
@@ -165,7 +165,7 @@ public class SplashActivity extends AppCompatActivity {
     @AddTrace(name="NewVersionCheckTrace")
     private void checkForNewVersion() {
         versionCheckState = VersionCheckState.STARTED;
-        CustomLogger.getInstance().logDebug(TAG + " Checking version");
+        CustomLogger.getInstance().logDebug(TAG + " Checking version", CustomLogger.Mask.SPLASH_ACTIVITY);
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -183,22 +183,22 @@ public class SplashActivity extends AppCompatActivity {
 
     @AddTrace(name="CirclesCheckTrace")
     public void checkCircles() {
-        CustomLogger.getInstance().logDebug(TAG + " Checking Circles");
+        CustomLogger.getInstance().logDebug(TAG + " Checking Circles", CustomLogger.Mask.SPLASH_ACTIVITY);
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
                     long circleCount = (long) dataSnapshot.getValue();
                     if (circleCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES)) {
-                        CustomLogger.getInstance().logDebug("No new data");
+                        CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
                         checkActiveCircles();
                     } else {
-                        CustomLogger.getInstance().logDebug("New data available");
+                        CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
                         CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
                         checkOtherStateData();
                     }
                 } else {
-                    CustomLogger.getInstance().logDebug("Data null...checking other state data");
+                    CustomLogger.getInstance().logDebug("Data null...checking other state data", CustomLogger.Mask.SPLASH_ACTIVITY);
                     checkOtherStateData();
                 }
             }
@@ -214,21 +214,21 @@ public class SplashActivity extends AppCompatActivity {
     @AddTrace(name="ActiveCirclesCheckTrace")
     private void checkActiveCircles() {
 
-        CustomLogger.getInstance().logDebug(TAG + " Checking Active Circles");
+        CustomLogger.getInstance().logDebug(TAG + " Checking Active Circles", CustomLogger.Mask.SPLASH_ACTIVITY);
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
                     long activeCount = (long) dataSnapshot.getValue();
                     if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
-                        CustomLogger.getInstance().logDebug("No new data");
+                        CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
                         CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
                     } else {
-                        CustomLogger.getInstance().logDebug("New data available");
+                        CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
                         CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
                     }
                 } else {
-                    CustomLogger.getInstance().logDebug("Data null...checking other state data");
+                    CustomLogger.getInstance().logDebug("Data null...checking other state data", CustomLogger.Mask.SPLASH_ACTIVITY);
                 }
                 checkOtherStateData();
             }
@@ -248,10 +248,10 @@ public class SplashActivity extends AppCompatActivity {
                 Preferences.getInstance().getStringPref(this, Preferences.PREF_WEBSITE) == null ||
                 Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_LABEL) == null) {
 
-            CustomLogger.getInstance().logDebug("Other state Preferences null");
+            CustomLogger.getInstance().logDebug("Other state Preferences null", CustomLogger.Mask.SPLASH_ACTIVITY);
             getOtherData();
         } else {
-            CustomLogger.getInstance().logDebug("Other state Preferences not null");
+            CustomLogger.getInstance().logDebug("Other state Preferences not null", CustomLogger.Mask.SPLASH_ACTIVITY);
             LoadNextActivity();
         }
     }
