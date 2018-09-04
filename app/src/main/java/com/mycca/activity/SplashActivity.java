@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.mycca.R;
 import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.listeners.OnConnectionAvailableListener;
@@ -25,6 +26,8 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
+
+import junit.runner.Version;
 
 import java.util.Locale;
 
@@ -38,6 +41,14 @@ public class SplashActivity extends AppCompatActivity {
     //boolean animDone = false;
     //boolean checksDone = false;
     Animation animationScale;
+
+    private enum VersionCheckState{
+        IDLE,
+        STARTED,
+        COMPLETE
+    }
+
+    private VersionCheckState versionCheckState = VersionCheckState.IDLE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +78,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void init() {
         Helper.versionChecked = false;
+        FirebaseRemoteConfig.getInstance();
 
         currentAppVersion = Helper.getInstance().getAppVersion(this);
         if (currentAppVersion == -1)
@@ -152,6 +164,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForNewVersion() {
+        versionCheckState = VersionCheckState.STARTED;
         CustomLogger.getInstance().logDebug(TAG + " Checking version");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
