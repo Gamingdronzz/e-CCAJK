@@ -478,6 +478,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        CustomLogger.getInstance().logVerbose("Logging with google", CustomLogger.Mask.MAIN_ACTIVITY);
     }
 
     public void signOutFromGoogle() {

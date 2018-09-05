@@ -82,9 +82,10 @@ public class CustomLogger {
             if (mMasks.contains(mask))
                 Log.v(TAG, message);
     }
+
     public void logVerbose(String message) {
         if (logEnabled)
-                Log.v(TAG, message);
+            Log.v(TAG, message);
     }
 
     public void logVerbose(String tag, String message, Mask mask) {
@@ -95,7 +96,7 @@ public class CustomLogger {
 
     public void logVerbose(String tag, String message) {
         if (logEnabled)
-                Log.v(tag, message);
+            Log.v(tag, message);
     }
 
     public void logDebug(String message, Mask mask) {
@@ -106,7 +107,7 @@ public class CustomLogger {
 
     public void logDebug(String message) {
         if (logEnabled)
-                Log.d(TAG, message);
+            Log.d(TAG, message);
     }
 
     public void logDebug(String tag, String message, Mask mask) {
@@ -117,7 +118,7 @@ public class CustomLogger {
 
     public void logDebug(String tag, String message) {
         if (logEnabled)
-                Log.d(tag, message);
+            Log.d(tag, message);
     }
 
     public void logInfo(String message, Mask mask) {
@@ -125,9 +126,10 @@ public class CustomLogger {
             if (mMasks.contains(mask))
                 Log.i(TAG, message);
     }
+
     public void logInfo(String message) {
         if (logEnabled)
-                Log.i(TAG, message);
+            Log.i(TAG, message);
     }
 
     public void logInfo(String tag, String message, Mask mask) {
@@ -141,9 +143,10 @@ public class CustomLogger {
             if (mMasks.contains(mask))
                 Log.w(TAG, "warning: " + message, e);
     }
+
     public void logWarn(String message, Throwable e) {
         if (logEnabled)
-                Log.w(TAG, "warning: " + message, e);
+            Log.w(TAG, "warning: " + message, e);
     }
 
     public void logWarn(String tag, String message, Throwable e, Mask mask) {
@@ -151,9 +154,10 @@ public class CustomLogger {
             if (mMasks.contains(mask))
                 Log.w(tag, "warning: " + message, e);
     }
+
     public void logWarn(String tag, String message, Throwable e) {
         if (logEnabled)
-                Log.w(tag, "warning: " + message, e);
+            Log.w(tag, "warning: " + message, e);
     }
 
     public void logError(String message, Throwable e, Mask mask) {
@@ -164,7 +168,7 @@ public class CustomLogger {
 
     public void logError(String message, Throwable e) {
         if (logEnabled)
-                Log.e(TAG, message, e);
+            Log.e(TAG, message, e);
     }
 
     public void logError(String tag, String message, Throwable e, Mask mask) {
@@ -175,7 +179,7 @@ public class CustomLogger {
 
     public void logError(String tag, String message, Throwable e) {
         if (logEnabled)
-                Log.e(tag, message, e);
+            Log.e(tag, message, e);
     }
 
     public void addMask(Mask inMask) {
@@ -186,5 +190,10 @@ public class CustomLogger {
         if (mMasks.contains(mask))
             mMasks.remove(mask);
 
+    }
+
+    public void removeAllMasks() {
+        if (mMasks != null)
+            mMasks.clear();
     }
 }

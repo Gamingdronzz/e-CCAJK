@@ -232,9 +232,9 @@
         android:id="@+id/button_upload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@drawable/custom_button"
-        android:layout_alignParentBottom="true"
         android:text="@string/submit"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_18" />
