@@ -240,7 +240,7 @@ public class FireBaseHelper {
         return getStorageReference(circleCode).child(path).getDownloadUrl();
     }
 
-    public void     getOtherStateData(Context context, DownloadCompleteListener downloadCompleteListener) {
+    public void getOtherStateData(Context context, DownloadCompleteListener downloadCompleteListener) {
 
         Circle circle = Preferences.getInstance().getCirclePref(context);
         CustomLogger.getInstance().logDebug("Getting other data");

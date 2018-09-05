@@ -3,7 +3,7 @@ package com.mycca.tools;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.FirebasePerformance;
 import com.mycca.listeners.ReadFileCompletionListener;
 import com.mycca.listeners.WriteFileCompletionListener;
 
@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class IOHelper {
 
+    private static com.google.firebase.perf.metrics.Trace mTrace;
     private static IOHelper _instance;
     private String TAG = "iohelper";
 
@@ -34,7 +35,6 @@ public class IOHelper {
         }
     }
 
-    @AddTrace(name="WriteToFileTrace")
     public void writeToFile(Context context, Object jsonObject, String filename, String folder, WriteFileCompletionListener writeFileCompletionListener) {
         new WriteFile().execute(context, filename, jsonObject, folder, writeFileCompletionListener);
     }
@@ -60,6 +60,10 @@ public class IOHelper {
 
         @Override
         protected Boolean doInBackground(Object... objects) {
+            String WRITE_TRACE = "WRITE_trace";
+            mTrace = FirebasePerformance.getInstance().newTrace(WRITE_TRACE);
+            mTrace.start();
+
             Context context = (Context) objects[0];
             String filename = (String) objects[1];
             String jsonObject = (String) objects[2];
@@ -84,6 +88,7 @@ public class IOHelper {
         @Override
         protected void onPostExecute(Boolean o) {
             super.onPostExecute(o);
+            mTrace.stop();
             writeFileCompletionListener.onFileWrite(o);
         }
     }
