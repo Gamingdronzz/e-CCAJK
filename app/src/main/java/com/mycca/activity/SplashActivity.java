@@ -12,13 +12,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.mycca.BuildConfig;
 import com.mycca.R;
 import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.listeners.OnConnectionAvailableListener;
@@ -44,6 +49,9 @@ public class SplashActivity extends AppCompatActivity {
     private String ACTIVE_CIRCLE_TRACE = "ACTIVE_trace";
     private String OTHER_TRACE = "OTHER_trace";
     Animation animationScale;
+
+    private String LATEST_VERSION = "latest_version";
+    private String WELCOME_MESSAGE = "welcome_message";
 
     private enum VersionCheckState {
         IDLE,
@@ -171,21 +179,55 @@ public class SplashActivity extends AppCompatActivity {
         mTrace = FirebasePerformance.getInstance().newTrace(VERSION_TRACE);
         mTrace.start();
 
-        versionCheckState = VersionCheckState.STARTED;
-        CustomLogger.getInstance().logDebug(TAG + " Checking version", CustomLogger.Mask.SPLASH_ACTIVITY);
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (Helper.getInstance().onLatestVersion(dataSnapshot, SplashActivity.this))
-                    checkCircles();
-            }
+        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                checkOtherStateData();
-            }
-        };
-        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+        long cacheExpiration = 3600; // 1 hour in seconds.
+        // If your app is using developer mode, cacheExpiration is set to 0, so each fetch will
+        // retrieve values from the service.
+        if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+
+        mFirebaseRemoteConfig.fetch(cacheExpiration)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SplashActivity.this, "Fetch Succeeded Latest Version = " + mFirebaseRemoteConfig.getString(LATEST_VERSION + "\nWelcome Message = " + WELCOME_MESSAGE),
+                                    Toast.LENGTH_SHORT).show();
+                            mTrace.stop();
+                            // After config data is successfully fetched, it must be activated before newly fetched
+                            // values are returned.
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            Toast.makeText(SplashActivity.this, "Fetch Failed",
+                                    Toast.LENGTH_SHORT).show();
+                            mTrace.stop();
+                        }
+                    }
+                });
+
+
+//        versionCheckState = VersionCheckState.STARTED;
+//        CustomLogger.getInstance().logDebug(TAG + " Checking version", CustomLogger.Mask.SPLASH_ACTIVITY);
+//        ValueEventListener valueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (Helper.getInstance().onLatestVersion(dataSnapshot, SplashActivity.this))
+//                    checkCircles();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                checkOtherStateData();
+//            }
+//        };
+//        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
     }
 
     public void checkCircles() {
