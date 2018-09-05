@@ -210,23 +210,8 @@ public class Helper {
         return new InputFilter[]{new InputFilter.LengthFilter(length)};
     }
 
-    public boolean onLatestVersion(DataSnapshot dataSnapshot, final Activity activity) {
-        long newVersion;
+    public boolean onLatestVersion(long newVersion, final Activity activity) {
         int version = getAppVersion(activity);
-
-        try {
-            newVersion = (long) dataSnapshot.getValue();
-            CustomLogger.getInstance().logDebug("Version: " + newVersion);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (activity instanceof SplashActivity)
-                ((SplashActivity) activity).checkCircles();
-            else
-                showMaintenanceDialog(activity, null);
-            return false;
-        }
-
         if (newVersion == version) {
             versionChecked = true;
             return true;

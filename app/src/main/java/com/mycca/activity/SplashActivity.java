@@ -12,18 +12,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.mycca.BuildConfig;
 import com.mycca.R;
 import com.mycca.listeners.DownloadCompleteListener;
 import com.mycca.listeners.OnConnectionAvailableListener;
@@ -41,13 +35,10 @@ public class SplashActivity extends AppCompatActivity {
     ImageView imageView;
     TextView tvSplashVersion;
     private Trace mTrace;
+    private DataSnapshot dataSnap;
     int currentAppVersion;
     String currentVersionName;
     private String TAG = "Splash";
-    private String VERSION_TRACE = "VERSION_trace";
-    private String CIRCLE_TRACE = "CIRCLE_trace";
-    private String ACTIVE_CIRCLE_TRACE = "ACTIVE_trace";
-    private String OTHER_TRACE = "OTHER_trace";
     Animation animationScale;
 
     private String LATEST_VERSION = "latest_version";
@@ -72,7 +63,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void setLocale() {
-
         String lang = Preferences.getInstance().getStringPref(this, Preferences.PREF_LANGUAGE);
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
@@ -89,7 +79,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void init() {
         Helper.versionChecked = false;
-        FirebaseRemoteConfig.getInstance();
+        //FirebaseRemoteConfig.getInstance();
 
         currentAppVersion = Helper.getInstance().getAppVersion(this);
         if (currentAppVersion == -1)
@@ -121,15 +111,11 @@ public class SplashActivity extends AppCompatActivity {
         animationScale.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                 ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
+                ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
                     @Override
                     public void OnConnectionAvailable() {
                         CustomLogger.getInstance().logDebug(TAG + " Connection Available", CustomLogger.Mask.SPLASH_ACTIVITY);
-                        checkForNewVersion();
+                        getInitialChecksData();
                     }
 
                     @Override
@@ -147,157 +133,135 @@ public class SplashActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onAnimationEnd(Animation animation) {
+                LoadNextActivity();
+            }
+
+            @Override
             public void onAnimationRepeat(Animation animation) {
 
             }
         });
     }
 
-    private void LoadNextActivity() {
-        mTrace.stop();
-        Intent intent = new Intent();
-        if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_HELP_ONBOARDER)) {
-            intent.setClass(getApplicationContext(), IntroActivity.class);
-        } else {
-            intent.setClass(getApplicationContext(), MainActivity.class);
-        }
-        startActivity(intent);
-        finish();
-    }
+    private void getInitialChecksData() {
+        String REQUEST_DATA_TRACE = "REQUEST_DATA_trace";
+        mTrace = FirebasePerformance.getInstance().newTrace(REQUEST_DATA_TRACE);
+        mTrace.start();
+        versionCheckState = VersionCheckState.STARTED;
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dataSnap = dataSnapshot;
+                checkForNewVersion();
+            }
 
-    private String getAppVersionName() {
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return "";
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                versionCheckState = VersionCheckState.COMPLETE;
+                LoadNextActivity();
+            }
+        };
+        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS);
     }
 
     private void checkForNewVersion() {
+        mTrace.stop();
+        String VERSION_TRACE = "VERSION_trace";
         mTrace = FirebasePerformance.getInstance().newTrace(VERSION_TRACE);
         mTrace.start();
 
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettings(configSettings);
-        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
-
-        long cacheExpiration = 3600; // 1 hour in seconds.
-        // If your app is using developer mode, cacheExpiration is set to 0, so each fetch will
-        // retrieve values from the service.
-        if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
-            cacheExpiration = 0;
-        }
-
-        mFirebaseRemoteConfig.fetch(cacheExpiration)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(SplashActivity.this, "Fetch Succeeded Latest Version = " + mFirebaseRemoteConfig.getString(LATEST_VERSION + "\nWelcome Message = " + WELCOME_MESSAGE),
-                                    Toast.LENGTH_SHORT).show();
-                            mTrace.stop();
-                            // After config data is successfully fetched, it must be activated before newly fetched
-                            // values are returned.
-                            mFirebaseRemoteConfig.activateFetched();
-                        } else {
-                            Toast.makeText(SplashActivity.this, "Fetch Failed",
-                                    Toast.LENGTH_SHORT).show();
-                            mTrace.stop();
-                        }
-                    }
-                });
-
-
-//        versionCheckState = VersionCheckState.STARTED;
-//        CustomLogger.getInstance().logDebug(TAG + " Checking version", CustomLogger.Mask.SPLASH_ACTIVITY);
-//        ValueEventListener valueEventListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (Helper.getInstance().onLatestVersion(dataSnapshot, SplashActivity.this))
-//                    checkCircles();
-//            }
+        //        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+//        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+//                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+//                .build();
+//        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+//        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 //
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                checkOtherStateData();
-//            }
-//        };
-//        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+//        long cacheExpiration = 3600; // 1 hour in seconds.
+//        // If your app is using developer mode, cacheExpiration is set to 0, so each fetch will
+//        // retrieve values from the service.
+//        if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+//            cacheExpiration = 0;
+//        }
+//
+//        mFirebaseRemoteConfig.fetch(cacheExpiration)
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(SplashActivity.this, "Fetch Succeeded Latest Version = " + mFirebaseRemoteConfig.getString(LATEST_VERSION + "\nWelcome Message = " + WELCOME_MESSAGE),
+//                                    Toast.LENGTH_SHORT).show();
+//                            mTrace.stop();
+//                            // After config data is successfully fetched, it must be activated before newly fetched
+//                            // values are returned.
+//                            mFirebaseRemoteConfig.activateFetched();
+//
+//                        } else {
+//                            Toast.makeText(SplashActivity.this, "Fetch Failed",
+//                                    Toast.LENGTH_SHORT).show();
+//                            mTrace.stop();
+//                        }
+//                    }
+//                });
+        try {
+            long value = (long) dataSnap.child(FireBaseHelper.ROOT_APP_VERSION).getValue();
+            if (Helper.getInstance().onLatestVersion(value, SplashActivity.this))
+                checkCircles();
+        } catch (Exception e) {
+            versionCheckState = VersionCheckState.COMPLETE;
+            LoadNextActivity();
+        }
     }
 
     public void checkCircles() {
         mTrace.stop();
+        String CIRCLE_TRACE = "CIRCLE_trace";
         mTrace = FirebasePerformance.getInstance().newTrace(CIRCLE_TRACE);
         mTrace.start();
 
-        CustomLogger.getInstance().logDebug(TAG + " Checking Circles", CustomLogger.Mask.SPLASH_ACTIVITY);
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    long circleCount = (long) dataSnapshot.getValue();
-                    if (circleCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES)) {
-                        CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
-                        checkActiveCircles();
-                    } else {
-                        CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
-                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
-                        checkOtherStateData();
-                    }
-                } else {
-                    CustomLogger.getInstance().logDebug("Data null...checking other state data", CustomLogger.Mask.SPLASH_ACTIVITY);
-                    checkOtherStateData();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+        try {
+            long circleCount = (long) dataSnap.child(FireBaseHelper.ROOT_CIRCLE_COUNT).getValue();
+            if (circleCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_CIRCLES)) {
+                CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
+                checkActiveCircles();
+            } else {
+                CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
+                CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
                 checkOtherStateData();
             }
-        };
-        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_CIRCLE_COUNT);
+        } catch (Exception e) {
+            versionCheckState = VersionCheckState.COMPLETE;
+            LoadNextActivity();
+        }
     }
 
     private void checkActiveCircles() {
         mTrace.stop();
+        String ACTIVE_CIRCLE_TRACE = "ACTIVE_trace";
         mTrace = FirebasePerformance.getInstance().newTrace(ACTIVE_CIRCLE_TRACE);
         mTrace.start();
 
         CustomLogger.getInstance().logDebug(TAG + " Checking Active Circles", CustomLogger.Mask.SPLASH_ACTIVITY);
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    long activeCount = (long) dataSnapshot.getValue();
-                    if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
-                        CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
-                        CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
-                    } else {
-                        CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
-                        CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
-                    }
-                } else {
-                    CustomLogger.getInstance().logDebug("Data null...checking other state data", CustomLogger.Mask.SPLASH_ACTIVITY);
-                }
-                checkOtherStateData();
+        try {
+            long activeCount = (long) dataSnap.child(FireBaseHelper.ROOT_ACTIVE_COUNT).getValue();
+            if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
+                CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
+                CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
+            } else {
+                CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
+                CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                checkOtherStateData();
-            }
-        };
-        FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_ACTIVE_COUNT);
-
+            checkOtherStateData();
+        } catch (Exception e) {
+            versionCheckState = VersionCheckState.COMPLETE;
+            LoadNextActivity();
+        }
     }
 
-     private void checkOtherStateData() {
+    private void checkOtherStateData() {
         mTrace.stop();
+        String OTHER_TRACE = "OTHER_trace";
         mTrace = FirebasePerformance.getInstance().newTrace(OTHER_TRACE);
         mTrace.start();
 
@@ -309,6 +273,7 @@ public class SplashActivity extends AppCompatActivity {
             getOtherData();
         } else {
             CustomLogger.getInstance().logDebug("Other state Preferences not null", CustomLogger.Mask.SPLASH_ACTIVITY);
+            versionCheckState = VersionCheckState.COMPLETE;
             LoadNextActivity();
         }
     }
@@ -317,14 +282,39 @@ public class SplashActivity extends AppCompatActivity {
         FireBaseHelper.getInstance().getOtherStateData(this, new DownloadCompleteListener() {
             @Override
             public void onDownloadSuccess() {
+                versionCheckState = VersionCheckState.COMPLETE;
                 LoadNextActivity();
             }
 
             @Override
             public void onDownloadFailure() {
+                versionCheckState = VersionCheckState.COMPLETE;
                 LoadNextActivity();
             }
         });
     }
 
+    private void LoadNextActivity() {
+        if (versionCheckState == VersionCheckState.COMPLETE) {
+            mTrace.stop();
+            Intent intent = new Intent();
+            if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_HELP_ONBOARDER)) {
+                intent.setClass(getApplicationContext(), IntroActivity.class);
+            } else {
+                intent.setClass(getApplicationContext(), MainActivity.class);
+            }
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private String getAppVersionName() {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

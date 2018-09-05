@@ -7,7 +7,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mycca.listeners.DownloadCompleteListener;
@@ -27,6 +28,7 @@ public class CircleDataProvider {
     private Circle[] activeCircles;
     private int activeCount;
     private int circleCount;
+    private Trace mTrace;
 
     private CircleDataProvider() {
         _instance = this;
@@ -40,8 +42,11 @@ public class CircleDataProvider {
         }
     }
 
-    @AddTrace(name="SetCircleDataTrace")
     public void setCircleData(Boolean fromFirebase, Context context, DownloadCompleteListener downloadCompleteListener) {
+        String SET_CIRCLES_TRACE = "SET_CIRCLES_trace";
+        mTrace = FirebasePerformance.getInstance().newTrace(SET_CIRCLES_TRACE);
+        mTrace.start();
+
         if (fromFirebase) {
             getCircleDataFromFireBase(context, downloadCompleteListener);
         } else {
@@ -127,12 +132,14 @@ public class CircleDataProvider {
                                     downloadCompleteListener.onDownloadFailure();
                             }
                         });
+                mTrace.stop();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 if (downloadCompleteListener != null)
                     downloadCompleteListener.onDownloadFailure();
+                mTrace.stop();
             }
         };
 

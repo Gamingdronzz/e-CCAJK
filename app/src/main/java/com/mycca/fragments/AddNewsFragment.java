@@ -99,8 +99,13 @@ public class AddNewsFragment extends Fragment {
                     ValueEventListener valueEventListener= new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
-                                addNewsToFireBase();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, getActivity()))
+                                    addNewsToFireBase();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(getActivity(), null);
+                            }
                         }
 
                         @Override
@@ -108,7 +113,7 @@ public class AddNewsFragment extends Fragment {
                             Helper.getInstance().showMaintenanceDialog(getActivity(),null);
                         }
                     };
-                    FireBaseHelper.getInstance().getDataFromFireBase(null,valueEventListener,true, FireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null,valueEventListener,true, FireBaseHelper.ROOT_INITIAL_CHECKS,FireBaseHelper.ROOT_APP_VERSION);
                 }
 
 

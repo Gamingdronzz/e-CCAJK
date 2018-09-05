@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -109,8 +108,13 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, KypUploadActivity.this))
-                                submit();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, KypUploadActivity.this))
+                                    submit();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(KypUploadActivity.this, null);
+                            }
                         }
 
                         @Override
@@ -119,7 +123,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null,
-                            valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+                            valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
@@ -188,16 +192,15 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
 
     private void sendMail() {
 
-
+        String identifier = FireBaseHelper.getInstance().getAuth().getUid();
         progressDialog.setMessage(getString(R.string.almost_done));
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
         Map<String, String> params = new HashMap<>();
-//TODO
-//        Add pensioner code here
-//            params.put("pensionerIdentifier", pensionerIdentifier);
+        params.put("pensionerIdentifier", identifier);
         params.put("folder", DataSubmissionAndMail.SUBMIT);
+        //params.put("updateType", "KYP");
 
-//        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerIdentifier, volleyHelper, url);
+        DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + identifier, volleyHelper, url);
 
     }
 

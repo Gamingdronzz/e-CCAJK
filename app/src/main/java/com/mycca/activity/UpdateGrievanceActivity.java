@@ -175,8 +175,13 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, UpdateGrievanceActivity.this))
-                                doUpdateOnInternetAvailable();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, UpdateGrievanceActivity.this))
+                                    doUpdateOnInternetAvailable();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, null);
+                            }
                         }
 
                         @Override
@@ -184,7 +189,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                             Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, null);
                         }
                     };
-                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS,FireBaseHelper.ROOT_APP_VERSION);
                 }
             }
 

@@ -54,6 +54,8 @@ public class FireBaseHelper {
     public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
     public final static String ROOT_KYP = "KYP";
     public final static String ROOT_INSPECTION = "Inspection";
+    public final static String ROOT_INITIAL_CHECKS = "Initial checks";
+    private final static String ROOT_OTHER_DATA = "Other Data";
     private final static String ROOT_WEBSITE = "Website";
     private final static String ROOT_OFFICE_ADDRESS = "Office Address";
     private final static String ROOT_OFFICE_COORDINATES = "Office Coordinates";
@@ -87,6 +89,10 @@ public class FireBaseHelper {
         }
     }
 
+
+
+    /*-------------------------FIREBASE REFERENCES------------------------*/
+
     public FirebaseAuth getAuth() {
         return FirebaseAuth.getInstance();
     }
@@ -112,6 +118,9 @@ public class FireBaseHelper {
         return storageReference;
     }
 
+
+
+    /*-------------------------FIREBASE CALLS------------------------------*/
 
     public void addTokenOnFireBase() {
 
@@ -245,35 +254,24 @@ public class FireBaseHelper {
         Circle circle = Preferences.getInstance().getCirclePref(context);
         CustomLogger.getInstance().logDebug("Getting other data");
 
-        ValueEventListener valueEventListener3 = new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
+
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_ADDRESS,
+                            (String) dataSnapshot.child(ROOT_OFFICE_ADDRESS).getValue());
+                    Preferences.getInstance().setStringPref(context, Preferences.PREF_WEBSITE,
+                            (String) dataSnapshot.child(ROOT_WEBSITE).getValue());
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_LABEL,
-                            (String) dataSnapshot.child("label").getValue());
+                            (String) dataSnapshot.child(ROOT_OFFICE_COORDINATES).child("label").getValue());
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_COORDINATES,
-                            dataSnapshot.child("latitude").getValue() + "," + dataSnapshot.child("longitude").getValue());
+                            dataSnapshot.child(ROOT_OFFICE_COORDINATES).child("latitude").getValue() + "," + dataSnapshot.child(ROOT_OFFICE_COORDINATES).child("longitude").getValue());
+
                     downloadCompleteListener.onDownloadSuccess();
+
                 } catch (DatabaseException | NullPointerException e) {
-                    CustomLogger.getInstance().logDebug(e.getMessage());
                     downloadCompleteListener.onDownloadFailure();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                downloadCompleteListener.onDownloadFailure();
-            }
-        };
-
-        ValueEventListener valueEventListener2 = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    getDataFromFireBase(circle.getCode(), valueEventListener3, true, ROOT_OFFICE_COORDINATES);
-                    Preferences.getInstance().setStringPref(context, Preferences.PREF_WEBSITE, (String) dataSnapshot.getValue());
-                } catch (DatabaseException | NullPointerException e) {
                     CustomLogger.getInstance().logDebug(e.getMessage());
                 }
             }
@@ -284,24 +282,7 @@ public class FireBaseHelper {
             }
         };
 
-        ValueEventListener valueEventListener1 = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    getDataFromFireBase(circle.getCode(), valueEventListener2, true, ROOT_WEBSITE);
-                    Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_ADDRESS, (String) dataSnapshot.getValue());
-                } catch (DatabaseException | NullPointerException e) {
-                    CustomLogger.getInstance().logDebug(e.getMessage());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                downloadCompleteListener.onDownloadFailure();
-            }
-        };
-
-        getDataFromFireBase(circle.getCode(), valueEventListener1, true, ROOT_OFFICE_ADDRESS);
+        getDataFromFireBase(circle.getCode(), valueEventListener, true, ROOT_OTHER_DATA);
     }
 
 }

@@ -92,7 +92,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     private static final String TAG = "PanAdhaarUpload";
     public static final String AADHAAR_DATA_TAG = "PrintLetterBarcodeData", AADHAR_UID_ATTR = "uid";
     private String pensionerIdentifier, cardNumber, mobile, root, field2Hint, identifierHint;
-//    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
+    //    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
     private ArrayList<FABMenuItem> items;
     SelectedImageModel imageModel;
     ImagePicker imagePicker;
@@ -208,7 +208,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
         spinnerCircle.setAdapter(statesAdapter);
 
         buttonUpload.setOnClickListener(v -> {
-            if(state == State.UPLOADED_TO_FIREBASE || state == State.UPLOADED_TO_SERVER)
+            if (state == State.UPLOADED_TO_FIREBASE || state == State.UPLOADED_TO_SERVER)
 //            if (isUploadedToFirebase || isUploadedToServer)
                 doSubmission();
             else if (checkInputBeforeSubmission())
@@ -316,8 +316,13 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, getActivity()))
-                                doSubmissionOnInternetAvailable();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, mainActivity))
+                                    doSubmissionOnInternetAvailable();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(mainActivity, null);
+                            }
                         }
 
                         @Override
@@ -326,7 +331,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null,
-                            valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+                            valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS,FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
@@ -343,25 +348,20 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
 //        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
 ////                "Server = " + isUploadedToServer);
 
-        switch (state)
-        {
-            case INIT:
-            {
+        switch (state) {
+            case INIT: {
                 otp();
                 break;
             }
-            case OTP_VERIFIED:
-            {
+            case OTP_VERIFIED: {
                 uploadDataToFirebase();
                 break;
             }
-            case UPLOADED_TO_FIREBASE:
-            {
+            case UPLOADED_TO_FIREBASE: {
                 uploadImagesToServer();
                 break;
             }
-            case UPLOADED_TO_SERVER:
-            {
+            case UPLOADED_TO_SERVER: {
                 sendFinalMail();
                 break;
             }
@@ -572,7 +572,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
             } else if (jsonObject.getString("action").equals("Sending Mail")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     progressDialog.dismiss();
-                    updateState( State.INIT);
+                    updateState(State.INIT);
 //                    isUploadedToServer = isUploadedToFirebase = false;
                     Helper.getInstance().showMessage(getActivity(),
                             String.format(getString(R.string.updation_success), pensionerIdentifier),

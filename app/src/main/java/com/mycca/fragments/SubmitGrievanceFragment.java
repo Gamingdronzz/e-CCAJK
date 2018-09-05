@@ -180,6 +180,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         mainActivity = (MainActivity) getActivity();
         progressDialog = new ProgressDialog(mainActivity != null ? mainActivity : getActivity());
         hint = getString(R.string.p_code);
+        selectedImageModelArrayList = new ArrayList<>();
         initItems();
 
         editTextPensionerIdentifier.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
@@ -251,7 +252,6 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 saveGrievanceOffline();
         });
         setSelectedFileCount(0);
-        selectedImageModelArrayList = new ArrayList<>();
 
         if (savedModel != null) {
             loadOfflineModelValues();
@@ -297,6 +297,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             setSelectedFileCount(selectedImageModelArrayList.size());
             CustomLogger.getInstance().logDebug("Files found = " + selectedImageModelArrayList.size());
         } else {
+            selectedImageModelArrayList=new ArrayList<>();
             CustomLogger.getInstance().logDebug("No File found");
         }
     }
@@ -424,8 +425,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity)) {
-                                otp();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, mainActivity))
+                                    otp();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(mainActivity, null);
                             }
                         }
 
@@ -434,7 +439,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             Helper.getInstance().showMaintenanceDialog(mainActivity, null);
                         }
                     };
-                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS, FireBaseHelper.ROOT_APP_VERSION);
                 }
             }
 

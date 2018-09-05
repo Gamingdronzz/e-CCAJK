@@ -69,15 +69,17 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
         CustomClickListener customClickListener;
         DeleteClickListener deleteClickListener;
 
-        MyViewHolder(View itemView, CustomClickListener clickListener, DeleteClickListener deleteClickListener) {
+        MyViewHolder(View itemView, CustomClickListener clickListener, DeleteClickListener deleteListener) {
             super(itemView);
             textView1 = itemView.findViewById(R.id.textview_value1);
             textView2 = itemView.findViewById(R.id.textview_value2);
             imageButton = itemView.findViewById(R.id.delete_saved_item);
-            this.deleteClickListener = deleteClickListener;
-            imageButton.setOnClickListener(deleteClickListener);
+
             customClickListener = clickListener;
+            deleteClickListener = deleteListener;
+
             itemView.setOnClickListener(customClickListener);
+            imageButton.setOnClickListener(deleteClickListener);
         }
     }
 

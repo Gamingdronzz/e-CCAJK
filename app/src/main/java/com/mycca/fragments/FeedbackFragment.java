@@ -80,22 +80,27 @@ public class FeedbackFragment extends Fragment {
         ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
             @Override
             public void OnConnectionAvailable() {
-                CustomLogger.getInstance().logDebug( "version checked= " + Helper.versionChecked, CustomLogger.Mask.FEEDBACK_FRAGMENT);
+                CustomLogger.getInstance().logDebug("version checked= " + Helper.versionChecked, CustomLogger.Mask.FEEDBACK_FRAGMENT);
                 if (Helper.versionChecked) {
                     submit();
-                } else{
-                    FireBaseHelper.getInstance().getDataFromFireBase(null,new ValueEventListener() {
+                } else {
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, activity))
-                                submit();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, getActivity()))
+                                    submit();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(getActivity(), null);
+                            }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Helper.getInstance().showMaintenanceDialog(activity,null);
+                            Helper.getInstance().showMaintenanceDialog(activity, null);
                         }
-                    },true, FireBaseHelper.ROOT_APP_VERSION);
+                    }, true, FireBaseHelper.ROOT_INITIAL_CHECKS,FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
@@ -117,7 +122,7 @@ public class FeedbackFragment extends Fragment {
             if (task1.isSuccessful()) {
                 Helper.getInstance().showMessage(getActivity(), "",
                         getString(R.string.thanks_for_feedback),
-                      FancyAlertDialogType.SUCCESS);
+                        FancyAlertDialogType.SUCCESS);
             } else {
                 if (FireBaseHelper.getInstance().getAuth().getCurrentUser() == null) {
                     Helper.getInstance().showFancyAlertDialog(activity, getString(R.string.suggestion_sign_in),
@@ -130,7 +135,7 @@ public class FeedbackFragment extends Fragment {
                             },
                             FancyAlertDialogType.ERROR);
                 } else {
-                    Helper.getInstance().showMaintenanceDialog(activity,null);
+                    Helper.getInstance().showMaintenanceDialog(activity, null);
                 }
 
             }

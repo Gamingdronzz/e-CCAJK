@@ -200,6 +200,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
             selectedImageModelArrayList = (ArrayList<SelectedImageModel>) Helper.getInstance().getImagesFromString(model.getFilePathList());
             if (selectedImageModelArrayList != null)
                 setSelectedFileCount(selectedImageModelArrayList.size());
+            else
+                selectedImageModelArrayList = new ArrayList<>();
         }
 
         adapterSelectedImages = new RecyclerViewAdapterSelectedImages(selectedImageModelArrayList, this);
@@ -318,8 +320,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (Helper.getInstance().onLatestVersion(dataSnapshot, mainActivity))
-                                doSubmissionOnInternetAvailable();
+                            try {
+                                long value = (long) dataSnapshot.getValue();
+                                if (Helper.getInstance().onLatestVersion(value, mainActivity))
+                                    doSubmissionOnInternetAvailable();
+                            } catch (Exception e) {
+                                Helper.getInstance().showMaintenanceDialog(mainActivity, null);
+                            }
                         }
 
                         @Override
@@ -327,7 +334,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                             Helper.getInstance().showMaintenanceDialog(mainActivity, null);
                         }
                     };
-                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }
