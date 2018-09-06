@@ -14,6 +14,7 @@ import com.mycca.adapter.GenericSpinnerAdapter;
 import com.mycca.models.Circle;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.Preferences;
 
 public class StateSelectionActivity extends AppCompatActivity {
@@ -58,6 +59,7 @@ public class StateSelectionActivity extends AppCompatActivity {
                 Preferences.getInstance().setModelPref(this, Preferences.PREF_CIRCLE_DATA, circleSpinner.getSelectedItem());
 
                 SplashActivity.setLocale(this);
+                Helper.resetInstance();
                 FireBaseHelper.getInstance().getOtherStateData(this,null);
 
                 startActivity(new Intent(StateSelectionActivity.this, IntroActivity.class));

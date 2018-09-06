@@ -94,7 +94,7 @@ public class Helper {
         }
     }
 
-    private static void resetInstance() {
+    public static void resetInstance() {
         _instance = null;
     }
 
