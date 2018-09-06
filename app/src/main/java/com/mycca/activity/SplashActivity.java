@@ -1,5 +1,6 @@
 package com.mycca.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -55,18 +56,18 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLocale();
+        setLocale(this);
         setContentView(R.layout.activity_splash);
         bindViews();
         init();
         StartAnimations();
     }
 
-    public void setLocale() {
-        String lang = Preferences.getInstance().getStringPref(this, Preferences.PREF_LANGUAGE);
+    public static void setLocale(Context context) {
+        String lang = Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE);
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
-        Resources resources = getApplicationContext().getResources();
+        Resources resources = context.getApplicationContext().getResources();
         Configuration configuration = resources.getConfiguration();
         configuration.locale = locale;
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
@@ -127,7 +128,7 @@ public class SplashActivity extends AppCompatActivity {
                             CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
                         else
                             CustomLogger.getInstance().logDebug("Circle data not available", CustomLogger.Mask.SPLASH_ACTIVITY);
-                        LoadNextActivity();
+                        updateState();
                     }
                 });
                 connectionUtility.checkConnectionAvailability();
@@ -136,7 +137,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                LoadNextActivity();
+                updateState();
             }
 
             @Override
@@ -146,11 +147,20 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    private void updateState() {
+        if (versionCheckState == VersionCheckState.IDLE)
+            versionCheckState = VersionCheckState.STARTED;
+        else if (versionCheckState == VersionCheckState.STARTED)
+            versionCheckState = VersionCheckState.COMPLETE;
+        CustomLogger.getInstance().logDebug("current state = " + versionCheckState);
+        LoadNextActivity();
+    }
+
+
     private void getInitialChecksData() {
-        String REQUEST_DATA_TRACE = "REQUEST_DATA_trace";
-        mTrace = FirebasePerformance.getInstance().newTrace(REQUEST_DATA_TRACE);
+        mTrace = FirebasePerformance.getInstance().newTrace("REQUEST_DATA_TRACE");
         mTrace.start();
-        versionCheckState = VersionCheckState.STARTED;
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -160,8 +170,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                versionCheckState = VersionCheckState.COMPLETE;
-                LoadNextActivity();
+                updateState();
             }
         };
         FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS);
@@ -169,8 +178,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkForNewVersion() {
         mTrace.stop();
-        String VERSION_TRACE = "VERSION_trace";
-        mTrace = FirebasePerformance.getInstance().newTrace(VERSION_TRACE);
+        mTrace = FirebasePerformance.getInstance().newTrace("VERSION_TRACE");
         mTrace.start();
 
         //        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -211,15 +219,13 @@ public class SplashActivity extends AppCompatActivity {
             if (Helper.getInstance().onLatestVersion(value, SplashActivity.this))
                 checkCircles();
         } catch (Exception e) {
-            versionCheckState = VersionCheckState.COMPLETE;
-            LoadNextActivity();
+            updateState();
         }
     }
 
     public void checkCircles() {
         mTrace.stop();
-        String CIRCLE_TRACE = "CIRCLE_trace";
-        mTrace = FirebasePerformance.getInstance().newTrace(CIRCLE_TRACE);
+        mTrace = FirebasePerformance.getInstance().newTrace("CIRCLE_TRACE");
         mTrace.start();
 
         try {
@@ -229,19 +235,27 @@ public class SplashActivity extends AppCompatActivity {
                 checkActiveCircles();
             } else {
                 CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
-                CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
-                checkOtherStateData();
+                CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), new DownloadCompleteListener() {
+                    @Override
+                    public void onDownloadSuccess() {
+                        updateState();
+                    }
+
+                    @Override
+                    public void onDownloadFailure() {
+                        updateState();
+                    }
+                });
+
             }
         } catch (Exception e) {
-            versionCheckState = VersionCheckState.COMPLETE;
-            LoadNextActivity();
+            updateState();
         }
     }
 
     private void checkActiveCircles() {
         mTrace.stop();
-        String ACTIVE_CIRCLE_TRACE = "ACTIVE_trace";
-        mTrace = FirebasePerformance.getInstance().newTrace(ACTIVE_CIRCLE_TRACE);
+        mTrace = FirebasePerformance.getInstance().newTrace("ACTIVE_CIRCLE_TRACE");
         mTrace.start();
 
         CustomLogger.getInstance().logDebug(TAG + " Checking Active Circles", CustomLogger.Mask.SPLASH_ACTIVITY);
@@ -250,57 +264,35 @@ public class SplashActivity extends AppCompatActivity {
             if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
                 CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
                 CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
+              updateState();
             } else {
                 CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
-                CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), null);
+                CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), new DownloadCompleteListener() {
+                    @Override
+                    public void onDownloadSuccess() {
+                        updateState();
+                    }
+
+                    @Override
+                    public void onDownloadFailure() {
+                        updateState();
+                    }
+                });
             }
-            checkOtherStateData();
+
         } catch (Exception e) {
-            versionCheckState = VersionCheckState.COMPLETE;
-            LoadNextActivity();
+            updateState();
         }
-    }
-
-    private void checkOtherStateData() {
-        mTrace.stop();
-        String OTHER_TRACE = "OTHER_trace";
-        mTrace = FirebasePerformance.getInstance().newTrace(OTHER_TRACE);
-        mTrace.start();
-
-        if (Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_ADDRESS) == null ||
-                Preferences.getInstance().getStringPref(this, Preferences.PREF_WEBSITE) == null ||
-                Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_LABEL) == null) {
-
-            CustomLogger.getInstance().logDebug("Other state Preferences null", CustomLogger.Mask.SPLASH_ACTIVITY);
-            getOtherData();
-        } else {
-            CustomLogger.getInstance().logDebug("Other state Preferences not null", CustomLogger.Mask.SPLASH_ACTIVITY);
-            versionCheckState = VersionCheckState.COMPLETE;
-            LoadNextActivity();
-        }
-    }
-
-    private void getOtherData() {
-        FireBaseHelper.getInstance().getOtherStateData(this, new DownloadCompleteListener() {
-            @Override
-            public void onDownloadSuccess() {
-                versionCheckState = VersionCheckState.COMPLETE;
-                LoadNextActivity();
-            }
-
-            @Override
-            public void onDownloadFailure() {
-                versionCheckState = VersionCheckState.COMPLETE;
-                LoadNextActivity();
-            }
-        });
     }
 
     private void LoadNextActivity() {
         if (versionCheckState == VersionCheckState.COMPLETE) {
-            mTrace.stop();
+            if (mTrace != null)
+                mTrace.stop();
             Intent intent = new Intent();
-            if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_HELP_ONBOARDER)) {
+            if (Preferences.getInstance().getCirclePref(this) == null) {
+                intent.setClass(getApplicationContext(), StateSelectionActivity.class);
+            } else if (Preferences.getInstance().getBooleanPref(this, Preferences.PREF_HELP_ONBOARDER)) {
                 intent.setClass(getApplicationContext(), IntroActivity.class);
             } else {
                 intent.setClass(getApplicationContext(), MainActivity.class);

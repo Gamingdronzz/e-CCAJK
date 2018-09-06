@@ -331,7 +331,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
                         }
                     };
                     FireBaseHelper.getInstance().getDataFromFireBase(null,
-                            valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS,FireBaseHelper.ROOT_APP_VERSION);
+                            valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS, FireBaseHelper.ROOT_APP_VERSION);
                 }
 
             }

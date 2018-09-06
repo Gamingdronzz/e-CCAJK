@@ -74,13 +74,17 @@ public class IntroActivity extends OnboarderActivity {
     }
 
     public void nextActions() {
-        startActivity(new Intent(IntroActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (!fromSettings)
+            intent.putExtra("First", true);
+        startActivity(intent);
         finish();
     }
 
     @Override
     public void onSkipButtonPressed() {
-        Preferences.getInstance().setTutorialPrefs(this);
+        Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
         nextActions();
     }
 
@@ -99,6 +103,6 @@ public class IntroActivity extends OnboarderActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if (fromSettings)
-            Preferences.getInstance().setTutorialPrefs(this);
+            Preferences.getInstance().setBooleanPref(this, Preferences.PREF_HELP_ONBOARDER, false);
     }
 }

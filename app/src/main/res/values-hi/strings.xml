@@ -183,7 +183,7 @@
     <string name="search">स्थान खोजें</string>
     <string name="sort">क्रम में लगाएं</string>
     <string name="search_locations">स्थान खोजें</string>
-    <string name="select_state">राज्य चुनें</string>
+    <string name="select_circle">क्षेत्र चुनें</string>
     <string name="select_district">जिला का चयन करें</string>
     <string name="sort_locations">इस माध्यम से स्थानों को क्रम में लगाएं</string>
     <string name="name">नाम</string>
@@ -312,6 +312,8 @@
     <string name="sendotp_key">234505AfT6wD35Xez05b86d9ae</string>
     <string name="sending_sms">एक चार अंक ओ.टी.पी आपके मोबाइल नंबर पर भेजा गया है। सबमिशन जारी रखने के लिए, कृपया ओ.टी.पी सत्यापित करें।</string>
     <string name="entercode">आपको प्राप्त कोड दर्ज करें</string>
+    <string name="enter">दर्ज करें</string>
+    <string name="resend_via_call">कॉल के माध्यम से पुनः भेजें ( %1$s )</string>
     <string name="inprogress">जाँच हो रही है…</string>
     <string name="verified">जाँच सफल</string>
     <string name="failed">ओ.टी.पी की जाँच असफल</string>
@@ -368,5 +370,8 @@
     <string name="data_deleted">डेटा हटा दिया गया है</string>
     <string name="data_not_deleted">डेटा हटाया नहीं जा सका</string>
     <string name="state_n_a">जिस क्षेत्र को आप प्रयोग करने का प्रयास कर रहे हैं वह अब उपलब्ध नहीं है। \nकृपया ऐप डेटा अपडेट करें।</string>
+    <string name="proceed">आगे जाएँ</string>
+    <string name="close">बंद करे</string>
+    <string name="no_circles">इंटरनेट कनेक्शन उपलब्ध नहीं है| कुछ डेटा डाउनलोड नहीं किया जा सका|\nऐप का उपयोग जारी रखने के लिए कृपया इंटरनेट चालू करें और ऐप को पुनरारंभ करें।</string>
 
 </resources>

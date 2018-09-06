@@ -184,7 +184,7 @@
     <string name="search">Search</string>
     <string name="sort">Sort</string>
     <string name="search_locations">Search Locations</string>
-    <string name="select_state">Select State</string>
+    <string name="select_circle">Select Circle</string>
     <string name="select_district">Select District</string>
     <string name="sort_locations">Sort locations by</string>
     <string name="name">Name</string>
@@ -320,6 +320,8 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="sendotp_key">234505AfT6wD35Xez05b86d9ae</string>
     <string name="sending_sms">A Four digit OTP has been sent to your mobile number. To continue submission, please verify the OTP.</string>
     <string name="entercode">Enter the code you received</string>
+    <string name="enter">Enter</string>
+    <string name="resend_via_call">Resend via call ( %1$s )</string>
     <string name="inprogress">Verification in progress…</string>
     <string name="verified">Verification Successful</string>
     <string name="failed">OTP Verification Failed</string>
@@ -365,16 +367,14 @@ The users of the app are therefore requested to contact CCA J&amp;K.</string>
     <string name="office_location_n_a">Office Location Data Not Available</string>
     <string name="office_address_n_a">Office Address Not Available</string>
     <string name="no_map_app">No Map Application Installed</string>
-    <string name="data_missing_message">To continue using this app feature please download the necessary data.</string>
-    <string name="data_missing_title">Some Data Unavailable!</string>
-    <string name="download">DOWNLOAD</string>
-    <string name="download_success_title">Data Downloaded Successfully</string>
-    <string name="download_success_message">You can continue using the app features.</string>
-    <string name="download_fail_title">Data downloading failed</string>
     <string name="data_save_success">Data Saved Successfully</string>
     <string name="data_save_fail">Error while saving data</string>
     <string name="data_deleted">Data deleted</string>
     <string name="data_not_deleted">Data could not be deleted</string>
     <string name="state_n_a">The circle you are trying to access is no longer supported.\nPlease update app data.</string>
+    <string name="proceed">PROCEED</string>
+    <string name="close">CLOSE</string>
+    <string name="no_circles">Internet connection not available. Some data could not be downloaded.\nPlease turn on internet and restart app to continue using application.</string>
+
 
 </resources>

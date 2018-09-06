@@ -86,9 +86,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="http"
                     android:host="ccajk.gov.in"
-                    android:pathPrefix="/android/trackgrievance/" />
+                    android:pathPrefix="/android/trackgrievance/"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity
@@ -123,7 +123,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.VerificationActivity"/>
+        <activity android:name=".activity.VerificationActivity" />
+        <activity android:name=".activity.StateSelectionActivity"/>
     </application>
 
 </manifest>

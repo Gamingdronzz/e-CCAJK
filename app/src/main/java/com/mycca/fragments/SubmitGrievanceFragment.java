@@ -297,7 +297,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             setSelectedFileCount(selectedImageModelArrayList.size());
             CustomLogger.getInstance().logDebug("Files found = " + selectedImageModelArrayList.size());
         } else {
-            selectedImageModelArrayList=new ArrayList<>();
+            selectedImageModelArrayList = new ArrayList<>();
             CustomLogger.getInstance().logDebug("No File found");
         }
     }
@@ -420,7 +420,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             public void OnConnectionAvailable() {
                 CustomLogger.getInstance().logDebug("version checked =" + Helper.versionChecked);
                 if (Helper.versionChecked) {
-                    otp();
+                    doSubmissionOnInternetAvailable();
                 } else {
                     ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
@@ -428,7 +428,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             try {
                                 long value = (long) dataSnapshot.getValue();
                                 if (Helper.getInstance().onLatestVersion(value, mainActivity))
-                                    otp();
+                                   doSubmissionOnInternetAvailable();
                             } catch (Exception e) {
                                 Helper.getInstance().showMaintenanceDialog(mainActivity, null);
                             }
@@ -452,15 +452,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     public void otp() {
-        if (isOTPVerified)
-            doSubmissionOnInternetAvailable();
-        else {
-            Intent intent = new Intent(mainActivity, VerificationActivity.class)
-                    .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
-                    .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
 
-            mainActivity.startActivityForResult(intent, REQUEST_OTP);
-        }
+        Intent intent = new Intent(mainActivity, VerificationActivity.class)
+                .putExtra(VerificationActivity.INTENT_PHONENUMBER, mobile)
+                .putExtra(VerificationActivity.INTENT_COUNTRY_CODE, "91");
+        mainActivity.startActivityForResult(intent, REQUEST_OTP);
     }
 
     private void doSubmissionOnInternetAvailable() {
@@ -468,15 +464,18 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         progressDialog.show();
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
-        if (isUploadedToFirebase) {
-            if (isUploadedToServer) {
-                sendFinalMail();
+        if (isOTPVerified) {
+            if (isUploadedToFirebase) {
+                if (isUploadedToServer) {
+                    sendFinalMail();
+                } else {
+                    uploadImagesToServer();
+                }
             } else {
-                uploadImagesToServer();
+                uploadDataToFirebase();
             }
-        } else {
-            uploadDataToFirebase();
-        }
+        } else
+            otp();
     }
 
     private void uploadDataToFirebase() {
@@ -728,7 +727,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             String.format(getString(R.string.grievance_submission_success), type, grievanceType.getName(), refNo),
                             getString(R.string.success),
                             FancyAlertDialogType.SUCCESS);
-                    isUploadedToServer = isUploadedToFirebase = false;
+                    isOTPVerified = isUploadedToServer = isUploadedToFirebase = false;
                     setSubmissionSuccessForGrievance();
                 } else {
                     showError(getString(R.string.failure), getString(R.string.grievance_submission_fail));

@@ -102,15 +102,15 @@ public class Preferences {
 
     public Circle getCirclePref(Context context) {
         String json = getSharedPreferences(context).getString(PREF_CIRCLE_DATA, null);
-        if (json == null) {
-            return new Circle("77144", "Jammu & Kashmir", "Jammu & Kashmir", "ccajk@nic.in", true);
-        }
         return (Circle) Helper.getInstance().getObjectFromJson(json, Circle.class);
     }
 
-    public void clearStaffPrefs(Context context) {
+
+    /* --------------------clear preferences---------------------- */
+
+    public void clearPrefs(Context context, String pref) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.remove(PREF_STAFF_DATA);
+        editor.remove(pref);
         editor.apply();
     }
 
@@ -123,27 +123,28 @@ public class Preferences {
         editor.apply();
     }
 
-    public void clearTutorialPrefs(Context context) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.remove(PREF_HELP_ONBOARDER);
-        //        editor.remove(PREF_HELP_HOME);
+    //    public void clearTutorialPrefs(Context context) {
+//        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+//        editor.remove(PREF_HELP_ONBOARDER);
+//        editor.remove(PREF_HELP_HOME);
 //        editor.remove(PREF_HELP_INSPECTION);
 //        editor.remove(PREF_HELP_UPDATE);
 //        editor.remove(PREF_HELP_GRIEVANCE);
 //        editor.remove(PREF_HELP_LOCATOR);
 //        editor.remove(PREF_HELP_CONTACT);
-        editor.apply();
-    }
-
-    public void setTutorialPrefs(Context context) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putBoolean(PREF_HELP_ONBOARDER, false);
-        //        editor.putBoolean(PREF_HELP_HOME, false);
+//        editor.apply();
+//    }
+//
+//    public void setTutorialPrefs(Context context) {
+//        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+//        editor.putBoolean(PREF_HELP_ONBOARDER, false);
+//                editor.putBoolean(PREF_HELP_HOME, false);
 //        editor.putBoolean(PREF_HELP_INSPECTION, false);
 //        editor.putBoolean(PREF_HELP_UPDATE, false);
 //        editor.putBoolean(PREF_HELP_GRIEVANCE, false);
 //        editor.putBoolean(PREF_HELP_LOCATOR, false);
 //        editor.putBoolean(PREF_HELP_CONTACT, false);
-        editor.apply();
-    }
+//        editor.apply();
+//    }
+
 }

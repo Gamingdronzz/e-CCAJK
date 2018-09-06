@@ -36,7 +36,6 @@ import com.mycca.R;
 import com.mycca.custom.CustomDrawer.CardDrawerLayout;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
-import com.mycca.custom.FancyShowCase.FancyShowCaseQueue;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.fragments.AboutUsFragment;
 import com.mycca.fragments.AddNewsFragment;
@@ -55,14 +54,10 @@ import com.mycca.fragments.SettingsFragment;
 import com.mycca.fragments.SubmitGrievanceFragment;
 import com.mycca.fragments.TrackGrievanceFragment;
 import com.mycca.fragments.UpdateGrievanceFragment;
-import com.mycca.listeners.DownloadCompleteListener;
-import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.StaffModel;
-import com.mycca.providers.CircleDataProvider;
-import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
 import com.mycca.tools.Preferences;
 
@@ -77,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     final int TYPE_ADMIN = 1;
     final int TYPE_STAFF = 2;
     private static final int RC_SIGN_IN = 420;
-    String TAG = "MainActivity";
+    boolean first;
     String title;
 
     FrameLayout frameLayout;
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity
     Fragment fragment;
     Bundle bundle;
 
-    FancyShowCaseQueue mQueue;
+    //FancyShowCaseQueue mQueue;
     FABRevealMenu fabRevealMenu;
     StaffModel staffModel;
     ProgressDialog progressDialog;
@@ -102,7 +97,18 @@ public class MainActivity extends AppCompatActivity
         setupToolbar();
         bindViews();
         init();
+        if (Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_ADDRESS) == null ||
+                Preferences.getInstance().getStringPref(this, Preferences.PREF_WEBSITE) == null ||
+                Preferences.getInstance().getStringPref(this, Preferences.PREF_OFFICE_LABEL) == null) {
+
+            CustomLogger.getInstance().logDebug("Other state Preferences null", CustomLogger.Mask.SPLASH_ACTIVITY);
+            FireBaseHelper.getInstance().getOtherStateData(this, null);
+        }
         showFragment(getString(R.string.home), new HomeFragment(), null);
+
+        first = getIntent().getBooleanExtra("First", false);
+        if (first)
+            showAuthDialog(false);
     }
 
     @Override
@@ -115,8 +121,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                if (checkCircleDataAvailable())
-                    showFragment(getString(R.string.settings), new SettingsFragment(), null);
+                showFragment(getString(R.string.settings), new SettingsFragment(), null);
                 break;
             case R.id.action_invite:
                 showInviteIntent();
@@ -156,10 +161,8 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Type", getString(R.string.pension));
                 title = getString(R.string.pension_grievance);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_gpf:
@@ -167,10 +170,8 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Type", getString(R.string.gpf));
                 title = getString(R.string.gpf_grievance);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_saved_grievances:
@@ -187,10 +188,8 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_ADHAAR);
                 title = getString(R.string.upload_aadhaar);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_pan:
@@ -198,10 +197,8 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_PAN);
                 title = getString(R.string.upload_pan);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_life_certificate:
@@ -209,10 +206,8 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_LIFE);
                 title = getString(R.string.upload_life_certificate);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_remarriage_certificate:
@@ -220,10 +215,8 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_RE_MARRIAGE);
                 title = getString(R.string.upload_re_marriage_certificate);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_reemployment:
@@ -231,25 +224,19 @@ public class MainActivity extends AppCompatActivity
                 bundle = new Bundle();
                 bundle.putString("Root", FireBaseHelper.ROOT_RE_EMPLOYMENT);
                 title = getString(R.string.upload_re_employment_certificate);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, bundle);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, bundle);
                 }
                 break;
             case R.id.navmenu_kyp:
                 fragment = new KYPFragment();
                 title = getString(R.string.kyp);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated()) {
-                        showFragment(title, fragment, null);
-                    }
+                if (checkUserAuthenticated()) {
+                    showFragment(title, fragment, null);
                 }
                 break;
             case R.id.navmenu_tracking:
-                if (checkCircleDataAvailable()) {
-                    showFragment(getString(R.string.track_grievances), new TrackGrievanceFragment(), null);
-                }
+                showFragment(getString(R.string.track_grievances), new TrackGrievanceFragment(), null);
                 break;
             case R.id.navmenu_contact_us:
                 showFragment(getString(R.string.contact_us), new ContactUsFragment(), null);
@@ -271,10 +258,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_login:
                 fragment = new LoginFragment();
                 title = getString(R.string.app_name);
-                if (checkCircleDataAvailable()) {
-                    if (checkUserAuthenticated())
-                        showFragment(title, fragment, null);
-                }
+                if (checkUserAuthenticated())
+                    showFragment(title, fragment, null);
                 break;
             case R.id.navmenu_update_grievances:
                 fragment = new UpdateGrievanceFragment();
@@ -385,71 +370,6 @@ public class MainActivity extends AppCompatActivity
             return true;
     }
 
-    private boolean checkCircleDataAvailable() {
-        if (Preferences.getInstance().getIntPref(this, Preferences.PREF_CIRCLES) == -1) {
-            Helper.getInstance().showFancyAlertDialog(this,
-                    getString(R.string.data_missing_message),
-                    getString(R.string.data_missing_title),
-                    getString(R.string.download), this::downloadData,
-                    getString(R.string.cancel), () -> {
-                    },
-                    FancyAlertDialogType.WARNING);
-            return false;
-        } else
-            return true;
-    }
-
-    private void downloadData() {
-        progressDialog.setMessage(getString(R.string.please_wait));
-
-        ConnectionUtility connectionUtility = new ConnectionUtility(new OnConnectionAvailableListener() {
-            @Override
-            public void OnConnectionAvailable() {
-
-                progressDialog.show();
-                CircleDataProvider.getInstance().getCircleDataFromFireBase(getApplicationContext(), new DownloadCompleteListener() {
-                    @Override
-                    public void onDownloadSuccess() {
-
-                        if (Preferences.getInstance().getStringPref(MainActivity.this, Preferences.PREF_OFFICE_LABEL) == null) {
-                            FireBaseHelper.getInstance().getOtherStateData(MainActivity.this, new DownloadCompleteListener() {
-                                @Override
-                                public void onDownloadSuccess() {
-                                    downloadComplete();
-                                }
-
-                                @Override
-                                public void onDownloadFailure() {
-                                    downloadComplete();
-                                }
-                            });
-                        } else
-                            downloadComplete();
-                    }
-
-                    @Override
-                    public void onDownloadFailure() {
-                        progressDialog.dismiss();
-                        Helper.getInstance().showMessage(MainActivity.this, getString(R.string.try_again),
-                                getString(R.string.download_fail_title), FancyAlertDialogType.ERROR);
-                    }
-                });
-            }
-
-            @Override
-            public void OnConnectionNotAvailable() {
-                Helper.getInstance().noInternetDialog(MainActivity.this);
-            }
-        });
-        connectionUtility.checkConnectionAvailability();
-    }
-
-    private void downloadComplete() {
-        progressDialog.dismiss();
-        Helper.getInstance().showMessage(MainActivity.this, getString(R.string.download_success_message),
-                getString(R.string.download_success_title), FancyAlertDialogType.SUCCESS);
-    }
-
     public void showAuthDialog(boolean skipped) {
         if (skipped) {
             Helper.getInstance().showFancyAlertDialog(this,
@@ -486,7 +406,7 @@ public class MainActivity extends AppCompatActivity
         mGoogleSignInClient.signOut();
 
         if (staffModel != null) {
-            Preferences.getInstance().clearStaffPrefs(MainActivity.this);
+            Preferences.getInstance().clearPrefs(MainActivity.this, Preferences.PREF_STAFF_DATA);
             ManageNavigationView(false, false);
         }
     }
@@ -536,7 +456,7 @@ public class MainActivity extends AppCompatActivity
                 getString(R.string.ok),
                 () -> {
                     showFragment(getString(R.string.home), new HomeFragment(), null);
-                    Preferences.getInstance().clearStaffPrefs(MainActivity.this);
+                    Preferences.getInstance().clearPrefs(MainActivity.this, Preferences.PREF_STAFF_DATA);
                     ManageNavigationView(false, false);
                     Helper.getInstance().showFancyAlertDialog(MainActivity.this, "", getString(R.string.logged_out), getString(R.string.ok), () -> {
                     }, null, null, FancyAlertDialogType.SUCCESS);
@@ -600,22 +520,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public FABRevealMenu getFabRevealMenu() {
-        return fabRevealMenu;
-    }
-
-    public void setFabRevealMenu(FABRevealMenu fabRevealMenu) {
-        this.fabRevealMenu = fabRevealMenu;
-    }
-
-    public FancyShowCaseQueue getmQueue() {
-        return mQueue;
-    }
-
-    public void setmQueue(FancyShowCaseQueue mQueue) {
-        this.mQueue = mQueue;
-    }
-
     private void showInviteIntent() {
 
         Resources resources = getResources();
@@ -670,27 +574,26 @@ public class MainActivity extends AppCompatActivity
         startActivity(openInChooser);
     }
 
+    public FABRevealMenu getFabRevealMenu() {
+        return fabRevealMenu;
+    }
+
+    public void setFabRevealMenu(FABRevealMenu fabRevealMenu) {
+        this.fabRevealMenu = fabRevealMenu;
+    }
+
+    //    public FancyShowCaseQueue getmQueue() {
+//        return mQueue;
+//    }
+//
+//    public void setmQueue(FancyShowCaseQueue mQueue) {
+//        this.mQueue = mQueue;
+//    }
+
     @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
-        if (mQueue != null) {
-            try {
-                Helper.getInstance().showFancyAlertDialog(this,
-                        "",
-                        getString(R.string.skip_tutorial),
-                        getString(R.string.skip), () -> {
-                            mQueue.cancel(true);
-                            Preferences.getInstance().setTutorialPrefs(MainActivity.this);
-                        },
-                        getString(R.string.cancel), () -> {
-
-                        },
-                        FancyAlertDialogType.WARNING);
-            } catch (Exception e) {
-                showFragment(getString(R.string.home), new HomeFragment(), null);
-                Preferences.getInstance().setTutorialPrefs(MainActivity.this);
-            }
-        } else if (fabRevealMenu != null && fabRevealMenu.isShowing()) {
+        if (fabRevealMenu != null && fabRevealMenu.isShowing()) {
             fabRevealMenu.closeMenu();
         } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);

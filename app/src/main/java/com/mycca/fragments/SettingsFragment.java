@@ -130,7 +130,7 @@ public class SettingsFragment extends Fragment {
         layoutChangeLang.setOnClickListener(v -> showLanguageDialog());
 
         tvHelp.setOnClickListener(v -> {
-            Preferences.getInstance().clearTutorialPrefs(getContext());
+            Preferences.getInstance().clearPrefs(getContext(),Preferences.PREF_HELP_ONBOARDER);
             startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings", true));
         });
 

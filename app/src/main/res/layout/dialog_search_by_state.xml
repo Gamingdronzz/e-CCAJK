@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_large"
         android:paddingStart="@dimen/padding_large"
-        android:text="@string/select_state"
+        android:text="@string/select_circle"
         android:textSize="@dimen/text_15"
         tools:ignore="RtlSymmetry" />
 

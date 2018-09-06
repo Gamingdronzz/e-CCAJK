@@ -268,10 +268,12 @@ public class FireBaseHelper {
                     Preferences.getInstance().setStringPref(context, Preferences.PREF_OFFICE_COORDINATES,
                             dataSnapshot.child(ROOT_OFFICE_COORDINATES).child("latitude").getValue() + "," + dataSnapshot.child(ROOT_OFFICE_COORDINATES).child("longitude").getValue());
 
-                    downloadCompleteListener.onDownloadSuccess();
+                    if (downloadCompleteListener != null)
+                        downloadCompleteListener.onDownloadSuccess();
 
                 } catch (DatabaseException | NullPointerException e) {
-                    downloadCompleteListener.onDownloadFailure();
+                    if (downloadCompleteListener != null)
+                        downloadCompleteListener.onDownloadFailure();
                     CustomLogger.getInstance().logDebug(e.getMessage());
                 }
             }

@@ -187,13 +187,13 @@ public class VerificationActivity extends AppCompatActivity implements
             public void onTick(long ms) {
                 if (Math.round((float) ms / 1000.0f) != secondsLeft) {
                     secondsLeft = Math.round((float) ms / 1000.0f);
-                    resend_timer.setText("Resend via call ( " + secondsLeft + " )");
+                    resend_timer.setText(String.format(getString(R.string.resend_via_call), String.valueOf(secondsLeft)));
                 }
             }
 
             public void onFinish() {
                 resend_timer.setClickable(true);
-                resend_timer.setText("Resend via call");
+                resend_timer.setText(R.string.resend_via_call);
                 resend_timer.setTextColor(ContextCompat.getColor(VerificationActivity.this, R.color.black));
             }
         }.start();
@@ -203,7 +203,9 @@ public class VerificationActivity extends AppCompatActivity implements
         View view = getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
     }
 }
