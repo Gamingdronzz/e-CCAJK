@@ -19,4 +19,5 @@ public class Constants {
     public static final String KEY_GTYPE = "grievanceType";
     public static final String KEY_FCM_TOKEN = "fcm_token";
     public static final String KEY_NOTIFICATION = "notification";
+    public static final String KEY_CIRCLE = "circle";
 }

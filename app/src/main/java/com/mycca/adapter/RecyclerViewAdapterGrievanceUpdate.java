@@ -18,6 +18,7 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<RecyclerViewAdapterGrievanceUpdate.GrievanceUpdateViewHolder> {
 
@@ -53,11 +54,11 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             holder.customClickListener.setPosition(position);
             holder.customUpdateClickListener.setPosition(position);
             holder.textViewPensionerCode.setText(grievanceModel.getIdentifierNumber());
-            holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
-            holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType()));
+            holder.textViewGrievanceType.setText(Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType(), Locale.getDefault()));
+            holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType(),Locale.getDefault()));
             holder.textViewPensionerMobile.setText(grievanceModel.getMobile());
             holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
-            holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
+            holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus(),Locale.getDefault()));
 
             if (grievanceModel.isExpanded()) {
                 holder.expandableArea.setVisibility(View.VISIBLE);

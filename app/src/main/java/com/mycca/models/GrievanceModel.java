@@ -23,21 +23,18 @@ public class GrievanceModel {
     private boolean highlighted = false;
     private boolean submissionSuccess;
 
-    public static final int PEN_NO = 0;
-    public static final int HR_NO = 1;
-    public static final int STAFF_NO = 2;
-
     public GrievanceModel() {
 
     }
 
-    public GrievanceModel(int identifierType, String identifierNumber, String email, String mobile, String details, String submittedBy, String uid, String referenceNo, Date date, long grievanceStatus, long grievanceType, long fileCount) {
+    public GrievanceModel(int identifierType, String identifierNumber, String email, String mobile, String details, String submittedBy, String circle, String uid, String referenceNo, Date date, long grievanceStatus, long grievanceType, long fileCount) {
         this.identifierType = identifierType;
         this.identifierNumber = identifierNumber;
         this.email = email;
         this.mobile = mobile;
         this.details = details;
         this.submittedBy = submittedBy;
+        this.circle=circle;
         this.uid = uid;
         this.referenceNo = referenceNo;
         this.date = date;

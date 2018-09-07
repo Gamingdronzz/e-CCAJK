@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -134,67 +135,106 @@ public class Helper {
         return null;
     }
 
-    public String getGrievanceString(long id) {
+    private Context getLocalisedContext(Locale desiredLocale) {
+        Configuration conf = AppController.getInstance().getResources().getConfiguration();
+        conf = new Configuration(conf);
+        conf.setLocale(desiredLocale);
+        return AppController.getInstance().createConfigurationContext(conf);
+    }
+
+    public String getGrievanceString(long id, Locale desiredLocale) {
+        Resources res;
+        if (desiredLocale == Locale.getDefault())
+            res = AppController.getResourses();
+        else {
+            Context localizedContext = getLocalisedContext(desiredLocale);
+            res = localizedContext.getResources();
+        }
+
         switch ((int) id) {
             case 0:
-                return AppController.getResourses().getString(R.string.change_of_pda);
+                return res.getString(R.string.change_of_pda);
             case 1:
-                return AppController.getResourses().getString(R.string.correction_in_ppo);
+                return res.getString(R.string.correction_in_ppo);
             case 2:
-                return AppController.getResourses().getString(R.string.wrong_fixation);
+                return res.getString(R.string.wrong_fixation);
             case 3:
-                return AppController.getResourses().getString(R.string.non_updation_da);
+                return res.getString(R.string.non_updation_da);
             case 4:
-                return AppController.getResourses().getString(R.string.non_payment_monthly);
+                return res.getString(R.string.non_payment_monthly);
             case 5:
-                return AppController.getResourses().getString(R.string.non_payment_medical);
+                return res.getString(R.string.non_payment_medical);
             case 6:
-                return AppController.getResourses().getString(R.string.non_starting_pension);
+                return res.getString(R.string.non_starting_pension);
             case 7:
-                return AppController.getResourses().getString(R.string.non_revision);
+                return res.getString(R.string.non_revision);
             case 8:
-                return AppController.getResourses().getString(R.string.request_cgies);
+                return res.getString(R.string.request_cgies);
             case 9:
-                return AppController.getResourses().getString(R.string.excess_short_payment);
+                return res.getString(R.string.excess_short_payment);
             case 10:
-                return AppController.getResourses().getString(R.string.enhancement_on_75_80);
+                return res.getString(R.string.enhancement_on_75_80);
             case 11:
-                return AppController.getResourses().getString(R.string.other_pension_gr);
+                return res.getString(R.string.other_pension_gr);
             case 100:
-                return AppController.getResourses().getString(R.string.gpf_final_not_received);
+                return res.getString(R.string.gpf_final_not_received);
             case 101:
-                return AppController.getResourses().getString(R.string.correction_name);
+                return res.getString(R.string.correction_name);
             case 102:
-                return AppController.getResourses().getString(R.string.change_nomination);
+                return res.getString(R.string.change_nomination);
             case 103:
-                return AppController.getResourses().getString(R.string.gpf_acc_not_transferred);
+                return res.getString(R.string.gpf_acc_not_transferred);
             case 104:
-                return AppController.getResourses().getString(R.string.details_of_gpf_deposit);
+                return res.getString(R.string.details_of_gpf_deposit);
             case 105:
-                return AppController.getResourses().getString(R.string.non_payment_gpf_withdrawal);
+                return res.getString(R.string.non_payment_gpf_withdrawal);
             case 106:
-                return AppController.getResourses().getString(R.string.other_gpf_gr);
+                return res.getString(R.string.other_gpf_gr);
         }
         return null;
     }
 
-    public String getGrievanceCategory(long id) {
+    public String getGrievanceCategory(long id, Locale desiredLocale) {
+        Resources res;
+        if (desiredLocale == Locale.getDefault())
+            res = AppController.getResourses();
+        else {
+            Context localizedContext = getLocalisedContext(desiredLocale);
+            res = localizedContext.getResources();
+        }
+
         if (id < 100)
-            return AppController.getResourses().getString(R.string.pension);
+            return res.getString(R.string.pension);
         else
-            return AppController.getResourses().getString(R.string.gpf);
+            return res.getString(R.string.gpf);
     }
 
-    public String getStatusString(long status) {
+    public String getStatusString(long status, Locale desiredLocale) {
+        Resources res;
+        if (desiredLocale == Locale.getDefault())
+            res = AppController.getResourses();
+        else {
+            Context localizedContext = getLocalisedContext(desiredLocale);
+            res = localizedContext.getResources();
+        }
+
         switch ((int) status) {
             case 0:
-                return AppController.getResourses().getString(R.string.submitted);
+                return res.getString(R.string.submitted);
             case 1:
-                return AppController.getResourses().getString(R.string.under_process);
+                return res.getString(R.string.under_process);
             case 2:
-                return AppController.getResourses().getString(R.string.resolved);
+                return res.getString(R.string.resolved);
         }
         return null;
+    }
+
+    public String getEnglishString(int resId) {
+        if (Locale.getDefault() != Locale.ENGLISH) {
+            Context localizedContext = getLocalisedContext(Locale.ENGLISH);
+            return localizedContext.getResources().getString(resId);
+        } else
+            return AppController.getResourses().getString(resId);
     }
 
     public String formatDate(Date date, String format) {

@@ -39,37 +39,42 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         if (remoteMessage.getData().size() > 0) {
-            CustomLogger.getInstance().logDebug( "data: " + remoteMessage.getData(), CustomLogger.Mask.FIREBASE);
+            CustomLogger.getInstance().logDebug("data: " + remoteMessage.getData(), CustomLogger.Mask.FIREBASE);
             String title = remoteMessage.getData().get(Constants.KEY_TITLE);
-            CustomLogger.getInstance().logDebug( "title: " + title, CustomLogger.Mask.FIREBASE);
+            CustomLogger.getInstance().logDebug("title: " + title, CustomLogger.Mask.FIREBASE);
 
             String message = remoteMessage.getData().get(Constants.KEY_BODY);
             if (message != null && Preferences.getInstance().getBooleanPref(getApplicationContext(), Preferences.PREF_RECEIVE_NOTIFICATIONS)) {
                 String pensionerCode = null;
                 String grievanceType = null;
+                String circle = null;
                 if (remoteMessage.getData().containsKey(Constants.KEY_CODE)) {
                     pensionerCode = remoteMessage.getData().get(Constants.KEY_CODE);
                 }
                 if (remoteMessage.getData().containsKey(Constants.KEY_GTYPE)) {
                     grievanceType = remoteMessage.getData().get(Constants.KEY_GTYPE);
                 }
-                if (pensionerCode != null && grievanceType != null) {
-                    sendUserNotification(title, message, pensionerCode, Long.parseLong(grievanceType));
+                if (remoteMessage.getData().containsKey(Constants.KEY_CIRCLE)) {
+                    circle = remoteMessage.getData().get(Constants.KEY_CIRCLE);
+                }
+                if (pensionerCode != null && grievanceType != null && circle != null) {
+                    sendUserNotification(title, message, pensionerCode, Long.parseLong(grievanceType), circle);
                 }
             }
         }
 
     }
 
-    private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType) {
+    private void sendUserNotification(String title, String mess, String pensionerCode, long grievanceType, String circle) {
 
-        CustomLogger.getInstance().logDebug( "sendUserNotification: ", CustomLogger.Mask.FIREBASE);
+        CustomLogger.getInstance().logDebug("sendUserNotification: ", CustomLogger.Mask.FIREBASE);
         int notifyID = new Random().nextInt();
         Intent intent;
         NotificationChannel mChannel;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         intent = new Intent(context, TrackGrievanceResultActivity.class);
         intent.putExtra("Code", pensionerCode);
+        intent.putExtra("Circle", circle);
         intent.putExtra("grievanceType", grievanceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

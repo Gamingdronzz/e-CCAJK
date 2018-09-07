@@ -49,9 +49,11 @@ import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
 import com.mycca.listeners.OnConnectionAvailableListener;
+import com.mycca.models.Circle;
 import com.mycca.models.InspectionModel;
 import com.mycca.models.SelectedImageModel;
 import com.mycca.models.StaffModel;
+import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
@@ -445,8 +447,11 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     private void sendFinalMail() {
         progressDialog.setMessage(getString(R.string.almost_done));
         String url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php/";
-
+        Circle circle= CircleDataProvider.getInstance().getCircleFromCode(staffModel.getCircle());
         Map<String, String> params = new HashMap<>();
+
+        //params.put("mailTo",circle.getMails());
+        //params.put("mailFrom",staffModel.getEmail());
         params.put("locationName", inspectionModel.getLocationName());
         params.put("staffID", staffModel.getId());
         params.put("folder", DataSubmissionAndMail.SUBMIT);

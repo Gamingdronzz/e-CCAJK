@@ -21,6 +21,7 @@ import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<RecyclerViewAdapterSavedModels.MyViewHolder> {
@@ -52,7 +53,7 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
             holder.textView2.setText(Helper.getInstance().formatDate(model.getDate(), Helper.DateFormat.DD_MM_YYYY));
         } else if (item instanceof GrievanceModel) {
             GrievanceModel model = (GrievanceModel) item;
-            holder.textView1.setText(Helper.getInstance().getGrievanceString(model.getGrievanceType()));
+            holder.textView1.setText(Helper.getInstance().getGrievanceString(model.getGrievanceType(), Locale.getDefault()));
             holder.textView2.setText(model.getIdentifierNumber());
         }
     }
@@ -103,10 +104,10 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
             } else if (item instanceof GrievanceModel) {
                 fragment = new SubmitGrievanceFragment();
                 if (((GrievanceModel) item).getGrievanceType() < 100) {
-                    bundle.putString("Type", appCompatActivity.getString(R.string.pension));
+                    bundle.putInt("Type", R.string.pension);
                     title = appCompatActivity.getString(R.string.pension_grievance);
                 } else {
-                    bundle.putString("Type", appCompatActivity.getString(R.string.gpf));
+                    bundle.putInt("Type", R.string.gpf);
                     title = appCompatActivity.getString(R.string.gpf_grievance);
                 }
             }

@@ -42,6 +42,22 @@ public class CircleDataProvider {
         }
     }
 
+    public Circle[] getActiveCircleData() {
+        return activeCircles;
+    }
+
+    public Circle[] getCircleData() {
+        return circles;
+    }
+
+    public Circle getCircleFromCode(String code) {
+        for (Circle activeCircle : activeCircles) {
+            if (activeCircle.getCode().equals(code))
+                return activeCircle;
+        }
+        return activeCircles[0];
+    }
+
     public void setCircleData(Boolean fromFirebase, Context context, DownloadCompleteListener downloadCompleteListener) {
         String SET_CIRCLES_TRACE = "SET_CIRCLES_trace";
         mTrace = FirebasePerformance.getInstance().newTrace(SET_CIRCLES_TRACE);
@@ -76,23 +92,7 @@ public class CircleDataProvider {
         }
     }
 
-    public Circle[] getActiveCircleData() {
-        return activeCircles;
-    }
-
-    public Circle[] getCircleData() {
-        return circles;
-    }
-
-    public Circle getCircleFromCode(String code) {
-        for (Circle activeCircle : activeCircles) {
-            if (activeCircle.getCode().equals(code))
-                return activeCircle;
-        }
-        return activeCircles[0];
-    }
-
-    public void getCircleDataFromFireBase(Context context, DownloadCompleteListener downloadCompleteListener) {
+    private void getCircleDataFromFireBase(Context context, DownloadCompleteListener downloadCompleteListener) {
 
         ArrayList<Circle> circleArrayList = new ArrayList<>();
 

@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_pension:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type", getString(R.string.pension));
+                bundle.putInt("Type", R.string.pension);
                 title = getString(R.string.pension_grievance);
                 if (checkUserAuthenticated()) {
                     showFragment(title, fragment, bundle);
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navmenu_gpf:
                 fragment = new SubmitGrievanceFragment();
                 bundle = new Bundle();
-                bundle.putString("Type", getString(R.string.gpf));
+                bundle.putInt("Type", R.string.gpf);
                 title = getString(R.string.gpf_grievance);
                 if (checkUserAuthenticated()) {
                     showFragment(title, fragment, bundle);

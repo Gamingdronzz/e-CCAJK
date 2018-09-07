@@ -196,8 +196,10 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
         progressDialog.setMessage(getString(R.string.almost_done));
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
         Map<String, String> params = new HashMap<>();
-        params.put("pensionerIdentifier", identifier);
+
+        params.put("Identifier", identifier);
         params.put("folder", DataSubmissionAndMail.SUBMIT);
+        //params.put("mailTo",circle.getMails());
         //params.put("updateType", "KYP");
 
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + identifier, volleyHelper, url);

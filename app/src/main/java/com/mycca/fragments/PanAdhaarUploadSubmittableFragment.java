@@ -91,7 +91,8 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
 
     private static final String TAG = "PanAdhaarUpload";
     public static final String AADHAAR_DATA_TAG = "PrintLetterBarcodeData", AADHAR_UID_ATTR = "uid";
-    private String pensionerIdentifier, cardNumber, mobile, root, field2Hint, identifierHint;
+    private String pensionerIdentifier, cardNumber, mobile, root;
+    private int field2Hint, identifierHint;
     //    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
     private ArrayList<FABMenuItem> items;
     SelectedImageModel imageModel;
@@ -137,32 +138,32 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     private void init(View view) {
         mainActivity = (MainActivity) getActivity();
         progressDialog = new ProgressDialog(mainActivity != null ? mainActivity : getActivity());
-        identifierHint = getString(R.string.p_code);
+        identifierHint = R.string.p_code;
         volleyHelper = new VolleyHelper(this, getContext());
         initItems();
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioButtonPensioner:
-                    identifierHint = getString(R.string.p_code);
+                    identifierHint = R.string.p_code;
                     editTextIdentifier.setFilters(Helper.getInstance().limitInputLength(15));
                     break;
 
                 case R.id.radioButtonHR:
-                    identifierHint = getString(R.string.hr_num);
+                    identifierHint = R.string.hr_num;
                     editTextIdentifier.setFilters(new InputFilter[]{});
                     break;
             }
             editTextIdentifier.setText("");
             editTextIdentifier.setError(null);
-            textInputLayoutIdentifier.setHint(identifierHint);
+            textInputLayoutIdentifier.setHint(getString(identifierHint));
         });
 
         switch (root) {
             case FireBaseHelper.ROOT_ADHAAR:
                 editTextCardNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editTextCardNumber.setFilters(Helper.getInstance().limitInputLength(12));
-                field2Hint = getString(R.string.aadhaar_no);
+                field2Hint = R.string.aadhaar_no;
                 break;
 
             case FireBaseHelper.ROOT_PAN:
@@ -175,16 +176,16 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
                     }
                     return "";
                 }});
-                field2Hint = getString(R.string.pan_no);
+                field2Hint = R.string.pan_no;
                 break;
 
             default:
                 linearLayout.setVisibility(View.GONE);
-                field2Hint = getString(R.string.applicant_name);
+                field2Hint = R.string.applicant_name;
                 break;
 
         }
-        textInputLayoutCardNumber.setHint(field2Hint);
+        textInputLayoutCardNumber.setHint(getString(field2Hint));
         editTextIdentifier.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_black_24dp, 0, 0, 0);
         editTextCardNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_card_black_24dp, 0, 0, 0);
         editTextMobileNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
@@ -233,11 +234,11 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
         mobile = editTextMobileNumber.getText().toString();
 
         //If Pensioner code is empty
-        if (pensionerIdentifier.trim().length() != 15 && identifierHint.equals(getString(R.string.p_code))) {
+        if (pensionerIdentifier.trim().length() != 15 && identifierHint == R.string.p_code) {
             editTextIdentifier.setError(getString(R.string.invalid_p_code));
             editTextIdentifier.requestFocus();
             return false;
-        } else if (pensionerIdentifier.trim().isEmpty() && identifierHint.equals(getString(R.string.hr_num))) {
+        } else if (pensionerIdentifier.trim().isEmpty() && identifierHint == R.string.hr_num) {
             editTextIdentifier.setError(getString(R.string.invalid_hr_num));
             editTextIdentifier.requestFocus();
             return false;
@@ -289,10 +290,10 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
         TextView value = v.findViewById(R.id.textview_confirm3_value);
         TextView circle = v.findViewById(R.id.textview_confirm4_value);
 
-        pensionerHeading.setText(identifierHint);
+        pensionerHeading.setText(getString(identifierHint));
         pensionerValue.setText(pensionerIdentifier);
         mobileNum.setText(mobile);
-        heading.setText(field2Hint);
+        heading.setText(getString(field2Hint));
         value.setText(cardNumber);
         circle.setText(Preferences.getInstance().getStringPref(mainActivity, Preferences.PREF_LANGUAGE)
                 .equals("hi") ? this.circle.getHi() : this.circle.getEn());
@@ -392,8 +393,7 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     private void uploadDataToFirebase() {
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
-        CustomLogger.getInstance().logDebug(identifierHint + ":" + pensionerIdentifier + " " + field2Hint + ":" + cardNumber, CustomLogger.Mask.PAN_AADHAR_FRAGMENT);
-        PanAdhaar panAadharModel = new PanAdhaar(identifierHint, pensionerIdentifier, cardNumber);
+        PanAdhaar panAadharModel = new PanAdhaar(getString(identifierHint), pensionerIdentifier, cardNumber);
 
         Task<Void> task = FireBaseHelper.getInstance().uploadDataToFireBase(circle.getCode(), panAadharModel,
                 root,
@@ -452,11 +452,16 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
         String url = Helper.getInstance().getAPIUrl() + "sendInfoUpdateEmail.php/";
         Map<String, String> params = new HashMap<>();
 
+        String hint1_en = Helper.getInstance().getEnglishString(identifierHint);
+        String hint2_en = Helper.getInstance().getEnglishString(field2Hint);
+        CustomLogger.getInstance().logDebug(hint1_en + ", " + hint2_en);
+
+        //params.put("mailTo",circle.getMails());
         params.put("pensionerIdentifier", pensionerIdentifier);
         params.put("folder", DataSubmissionAndMail.SUBMIT);
-        params.put("personType", identifierHint);
+        params.put("personType", hint1_en);
         params.put("updateType", root);
-        params.put("fieldName", field2Hint);
+        params.put("fieldName", hint2_en);
         params.put("value", cardNumber);
 
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerIdentifier, volleyHelper, url);

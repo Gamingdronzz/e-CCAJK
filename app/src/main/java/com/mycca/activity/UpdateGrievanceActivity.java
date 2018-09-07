@@ -43,8 +43,8 @@ import com.mycca.notification.FirebaseNotificationHelper;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
-import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
@@ -52,6 +52,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class UpdateGrievanceActivity extends AppCompatActivity implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
@@ -86,7 +87,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
         grievanceModel = (GrievanceModel) Helper.getInstance().getObjectFromJson(getIntent().getStringExtra("Model"), GrievanceModel.class);
-        grievanceString = Helper.getInstance().getGrievanceString((grievanceModel.getGrievanceType()));
+        grievanceString = Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType(), Locale.getDefault());
         bindViews();
         init();
         setLayoutData();
@@ -148,10 +149,10 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
     private void setLayoutData() {
         String identifierType;
         switch (grievanceModel.getIdentifierType()) {
-            case GrievanceModel.HR_NO:
+            case R.string.hr_num:
                 identifierType = getString(R.string.hr_num);
                 break;
-            case GrievanceModel.STAFF_NO:
+            case R.string.staff_num:
                 identifierType = getString(R.string.staff_num);
                 break;
             default:
@@ -189,7 +190,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
                             Helper.getInstance().showMaintenanceDialog(UpdateGrievanceActivity.this, null);
                         }
                     };
-                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS,FireBaseHelper.ROOT_APP_VERSION);
+                    FireBaseHelper.getInstance().getDataFromFireBase(null, valueEventListener, true, FireBaseHelper.ROOT_INITIAL_CHECKS, FireBaseHelper.ROOT_APP_VERSION);
                 }
             }
 
@@ -302,13 +303,16 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         Map<String, String> params = new HashMap<>();
         String pensionerCode = grievanceModel.getIdentifierNumber();
 
+//        String personType = Helper.getInstance().getEnglishString(grievanceModel.getIdentifierType());
+//        params.put("personType", personType);  //person type is pensioner/hr/staff
+
         params.put("pensionerCode", pensionerCode);
         params.put("folder", DataSubmissionAndMail.UPDATE);
         params.put("pensionerEmail", grievanceModel.getEmail());
-        params.put("status", Helper.getInstance().getStatusString(status));
+        params.put("status", Helper.getInstance().getStatusString(status, Locale.ENGLISH));
         params.put("refNo", grievanceModel.getReferenceNo());
-        params.put("grievanceType", Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType()));
-        params.put("grievanceSubType", grievanceString);
+        params.put("grievanceType", Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType(), Locale.ENGLISH));
+        params.put("grievanceSubType", Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType(), Locale.ENGLISH));
         params.put("message", message);
         params.put("fileCount", attachmentModelArrayList.size() + "");
         DataSubmissionAndMail.getInstance().sendMail(params, "send_mail-" + pensionerCode, volleyHelper, url);
@@ -389,14 +393,15 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
 
     private String getJsonBody() {
 
-        String newStatus = Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus());
+        String newStatus = Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus(), Locale.getDefault());
         String type = grievanceString;
         JSONObject jsonObjectData = new JSONObject();
         try {
             jsonObjectData.put(Constants.KEY_TITLE, getString(R.string.notification_title));
             jsonObjectData.put(Constants.KEY_BODY, String.format(getString(R.string.notification_body), type, newStatus));
-            jsonObjectData.put(Constants.KEY_CODE, textViewPensionerCode.getText());
+            jsonObjectData.put(Constants.KEY_CODE, grievanceModel.getIdentifierNumber());
             jsonObjectData.put(Constants.KEY_GTYPE, grievanceModel.getGrievanceType());
+            jsonObjectData.put(Constants.KEY_CIRCLE, grievanceModel.getCircle());
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -421,7 +426,7 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         String alertMessage = String.format(getString(R.string.grievance_updation_success),
                 grievanceModel.getIdentifierNumber(),
                 grievanceString,
-                Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()));
+                Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus(), Locale.getDefault()));
 
         progressDialog.dismiss();
         notifyPensioner();

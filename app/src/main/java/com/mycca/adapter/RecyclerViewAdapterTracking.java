@@ -15,6 +15,7 @@ import com.mycca.R;
 import com.mycca.tools.Helper;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerViewAdapterTracking.TrackViewHolder> {
@@ -40,10 +41,10 @@ public class RecyclerViewAdapterTracking extends RecyclerView.Adapter<RecyclerVi
         holder.textViewRefNo.setText("");
         holder.textViewRefNo.setText(grievanceModel.getReferenceNo());
         holder.textViewStatus.setText("");
-        holder.textViewStatus.setText(Html.fromHtml("<b>" + Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus()) + "</b>"));
+        holder.textViewStatus.setText(Html.fromHtml("<b>" + Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus(), Locale.getDefault()) + "</b>"));
 
-        String text = Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType())
-                + " - " + Helper.getInstance().getGrievanceString((int) grievanceModel.getGrievanceType());
+        String text = Helper.getInstance().getGrievanceCategory(grievanceModel.getGrievanceType(),Locale.getDefault())
+                + " - " + Helper.getInstance().getGrievanceString((int) grievanceModel.getGrievanceType(),Locale.getDefault());
         holder.textViewGrievanceType.setText(text);
 
         holder.textViewDate.setText("");
