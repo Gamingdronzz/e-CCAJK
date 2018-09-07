@@ -71,9 +71,7 @@ public class TabNearby extends Fragment implements GoogleMap.OnMyLocationButtonC
         @Override
         public void onLocationResult(LocationResult locationResult) {
             CustomLogger.getInstance().logVerbose( "Updating My Location");
-
             progressDialog.dismiss();
-
             for (Location location : locationResult.getLocations()) {
                 mLastLocation = location;
                 placeMarkerOnMyLocation(location);

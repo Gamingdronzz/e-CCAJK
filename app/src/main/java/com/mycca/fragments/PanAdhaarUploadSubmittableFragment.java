@@ -346,9 +346,6 @@ public class PanAdhaarUploadSubmittableFragment extends MySubmittableFragment im
     }
 
     private void doSubmissionOnInternetAvailable() {
-//        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-////                "Server = " + isUploadedToServer);
-
         switch (state) {
             case INIT: {
                 otp();

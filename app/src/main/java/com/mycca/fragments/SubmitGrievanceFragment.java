@@ -457,8 +457,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void doSubmissionOnInternetAvailable() {
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.show();
+
         CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
                 "Server = " + isUploadedToServer);
         if (isOTPVerified) {
@@ -476,7 +475,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void uploadDataToFirebase() {
-
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         Transaction.Handler handler = new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {

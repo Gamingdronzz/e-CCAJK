@@ -28,7 +28,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_confirm5"
+            android:id="@+id/textview_grievance_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/textview_pensioner"
@@ -61,6 +61,17 @@
         android:paddingTop="@dimen/padding_large">
 
         <TextView
+            android:id="@+id/textview_reference_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/padding_large"
+            android:drawableTint="@color/colorAccentDark"
+            android:padding="@dimen/padding_medium"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_15"
+            tools:targetApi="m" />
+
+        <TextView
             android:id="@+id/textview_pensioner_mobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,16 +93,6 @@
             android:textSize="@dimen/text_15"
             tools:targetApi="m" />
 
-        <TextView
-            android:id="@+id/textview_status_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/padding_large"
-            android:drawableTint="@color/colorAccentDark"
-            android:padding="@dimen/padding_medium"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_15"
-            tools:targetApi="m" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_update_grievance"

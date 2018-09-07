@@ -58,7 +58,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
             holder.textViewGrievanceSubtype.setText(Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType(),Locale.getDefault()));
             holder.textViewPensionerMobile.setText(grievanceModel.getMobile());
             holder.textViewDateOfGrievance.setText(Helper.getInstance().formatDate(grievanceModel.getDate(), Helper.DateFormat.DD_MM_YYYY));
-            holder.textViewStatus.setText(Helper.getInstance().getStatusString(grievanceModel.getGrievanceStatus(),Locale.getDefault()));
+            holder.textViewRefNo.setText(grievanceModel.getReferenceNo());
 
             if (grievanceModel.isExpanded()) {
                 holder.expandableArea.setVisibility(View.VISIBLE);
@@ -84,7 +84,7 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         TextView textViewGrievanceType;
         TextView textViewGrievanceSubtype;
         LinearLayout expandableArea;
-        TextView textViewStatus;
+        TextView textViewRefNo;
         TextView textViewPensionerMobile, textViewDateOfGrievance;
         AppCompatButton updateGrievance;
 
@@ -95,15 +95,14 @@ public class RecyclerViewAdapterGrievanceUpdate extends RecyclerView.Adapter<Rec
         GrievanceUpdateViewHolder(View itemView, CustomClickListener customClickListener, CustomUpdateClickListener customUpdateClickListener, boolean resolved) {
             super(itemView);
             textViewPensionerCode = itemView.findViewById(R.id.textview_pensioner);
-            textViewGrievanceType = itemView.findViewById(R.id.textview_confirm5);
+            textViewGrievanceType = itemView.findViewById(R.id.textview_grievance_type);
 
             textViewGrievanceSubtype = itemView.findViewById(R.id.textview_grievance_subtype);
             expandableArea = itemView.findViewById(R.id.expandable_layout_grievance);
-            textViewStatus = itemView.findViewById(R.id.textview_status_text);
-            textViewStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_inspection, 0, 0, 0);
+            textViewRefNo = itemView.findViewById(R.id.textview_reference_no);
+            textViewRefNo.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_inspection, 0, 0, 0);
             textViewPensionerMobile = itemView.findViewById(R.id.textview_pensioner_mobile);
             textViewPensionerMobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone_android_black_24dp, 0, 0, 0);
-
             textViewDateOfGrievance = itemView.findViewById(R.id.textview_date_of_grievance);
             textViewDateOfGrievance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar, 0, 0, 0);
 
