@@ -13,7 +13,8 @@
         android:layout_marginTop="@dimen/margin_xxxlarge"
         android:padding="@dimen/padding_large"
         android:text="@string/select_circle"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorBlack"
+        android:textAlignment="center"
         android:textSize="@dimen/text_20"
         android:textStyle="bold" />
 
@@ -33,7 +34,8 @@
         android:layout_marginTop="@dimen/margin_xxxlarge"
         android:padding="@dimen/padding_large"
         android:text="@string/choose_language"
-        android:textColor="@color/colorAccent"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_20"
         android:textStyle="bold" />
 

@@ -39,13 +39,13 @@ public class BrowserFragment extends Fragment {
 
     String TAG = "browser";
     WebView webView;
-    //    ProgressBar progressBar;
+    ProgressBar progressBar;
     FrameLayout frameLayoutProgress;
     String url;
     ActionBar actionBar;
     private boolean hasStopped = false;
     ObjectAnimator progressAnimator;
-    int previousProgress = 0;
+//    int previousProgress = 0;
 
     public BrowserFragment() {
     }
@@ -69,10 +69,10 @@ public class BrowserFragment extends Fragment {
         }
         frameLayoutProgress = view.findViewById(R.id.fl_progress);
         frameLayoutProgress.setVisibility(View.GONE);
-//        progressBar = view.findViewById(R.id.progressBar);
-//        progressBar.setMax(1000);
-//        progressBar.setProgress(0);
-//        progressBar.setVisibility(View.GONE);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setMax(1000);
+        progressBar.setProgress(0);
+        progressBar.setVisibility(View.GONE);
         webView = view.findViewById(R.id.webview_cca);
         if (args != null) {
             url = args.getString("url");
@@ -144,6 +144,7 @@ public class BrowserFragment extends Fragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 setSubtitle(getString(R.string.loading));
                 frameLayoutProgress.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
 //                progressAnimator.setIntValues(50, progressBar.getProgress());
 //                progressAnimator.setDuration(300);
 //                progressAnimator.setInterpolator(new LinearInterpolator());
@@ -155,7 +156,7 @@ public class BrowserFragment extends Fragment {
             public void onPageFinished(WebView view, String url) {
                 setSubtitle(view.getTitle());
                 frameLayoutProgress.setVisibility(View.GONE);
-
+                progressBar.setVisibility(View.GONE);
 //                progressAnimator.setIntValues(1000, previousProgress);
 //                progressAnimator.setDuration(300);
 //                progressAnimator.setInterpolator(new LinearInterpolator());
@@ -174,11 +175,12 @@ public class BrowserFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                progressAnimator.setIntValues(newProgress * 10, previousProgress);
-                progressAnimator.setDuration(100);
-                progressAnimator.setInterpolator(new LinearInterpolator());
-                progressAnimator.start();
-                previousProgress = newProgress * 10;
+//                progressAnimator.setIntValues(newProgress * 10, previousProgress);
+//                progressAnimator.setDuration(100);
+//                progressAnimator.setInterpolator(new LinearInterpolator());
+//                progressAnimator.start();
+//                previousProgress = newProgress * 10;
+                progressBar.setProgress(newProgress);
             }
 
             @Override
@@ -208,6 +210,7 @@ public class BrowserFragment extends Fragment {
 
     public void stopLoading() {
         webView.stopLoading();
+
         hasStopped = true;
     }
 

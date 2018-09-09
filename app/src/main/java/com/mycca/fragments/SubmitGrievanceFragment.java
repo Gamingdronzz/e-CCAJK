@@ -345,11 +345,12 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
             editTextEmail.setError(getString(R.string.invalid_email));
             editTextEmail.requestFocus();
             return false;
-        } else if (details.trim().isEmpty()) {
-            editTextDetails.setError(getString(R.string.empty_detail));
-            editTextDetails.requestFocus();
-            return false;
         }
+// else if (details.trim().isEmpty()) {
+//            editTextDetails.setError(getString(R.string.empty_detail));
+//            editTextDetails.requestFocus();
+//            return false;
+//        }
         return true;
     }
 
@@ -513,7 +514,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
     private void uploadData() {
-        grievanceModel = new GrievanceModel(hintResId, code, email, mobile, details, submittedBy,circle.getCode(),
+        grievanceModel = new GrievanceModel(hintResId, code, email, mobile, details, submittedBy, circle.getCode(),
                 FireBaseHelper.getInstance().getAuth().getUid(),
                 refNo, new Date(), 0,
                 grievanceType.getId(),
