@@ -1,7 +1,6 @@
 package com.mycca.models;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.File;
 
@@ -14,7 +13,6 @@ public class SelectedImageModel {
     public SelectedImageModel(Uri imageURI) {
         this.imageURI = imageURI;
         file = new File(imageURI.getPath());
-        Log.d("IMage", "SelectedImageModel: " + file.length() / 1024.0f);
     }
 
     public SelectedImageModel(File file) {

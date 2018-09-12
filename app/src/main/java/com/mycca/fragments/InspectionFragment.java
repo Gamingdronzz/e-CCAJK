@@ -447,7 +447,7 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     private void sendFinalMail() {
         progressDialog.setMessage(getString(R.string.almost_done));
         String url = Helper.getInstance().getAPIUrl() + "sendInspectionEmail.php/";
-        Circle circle= CircleDataProvider.getInstance().getCircleFromCode(staffModel.getCircle());
+        Circle circle = CircleDataProvider.getInstance().getCircleFromCode(staffModel.getCircle());
         Map<String, String> params = new HashMap<>();
 
         //params.put("mailTo",circle.getMails());
@@ -474,14 +474,13 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
 
             @Override
             public void onCropImage(Uri imageUri) {
-                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath(), CustomLogger.Mask.INSPECTION_FRAGMENT);
+                CustomLogger.getInstance().logDebug("onCropImage: " + imageUri.getPath());
                 int currentPosition = selectedImageModelArrayList.size();
                 selectedImageModelArrayList.add(currentPosition, new SelectedImageModel(imageUri));
                 adapterSelectedImages.notifyItemInserted(currentPosition);
                 adapterSelectedImages.notifyDataSetChanged();
                 setSelectedFileCount(currentPosition + 1);
                 CustomLogger.getInstance().logDebug("onCropImage: Item inserted at " + currentPosition, CustomLogger.Mask.INSPECTION_FRAGMENT);
-
             }
 
             @Override

@@ -119,6 +119,7 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
     class DeleteClickListener implements View.OnClickListener {
 
         private int position;
+        String filepathList;
 
         public void setPosition(int position) {
             this.position = position;
@@ -130,8 +131,10 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
             String filename = "";
             if (item instanceof InspectionModel) {
                 filename = IOHelper.INSPECTIONS;
+                filepathList = ((InspectionModel) item).getFilePathList();
             } else if (item instanceof GrievanceModel) {
                 filename = IOHelper.GRIEVANCES;
+                filepathList = ((GrievanceModel) item).getFilePathList();
             }
             Helper.getInstance().deleteOfflineModel(appCompatActivity, position, items, filename, success -> {
                 if (success) {
@@ -139,6 +142,7 @@ public class RecyclerViewAdapterSavedModels extends RecyclerView.Adapter<Recycle
                     notifyDataSetChanged();
                     Helper.getInstance().showMessage(appCompatActivity, "",
                             appCompatActivity.getString(R.string.data_deleted), FancyAlertDialogType.SUCCESS);
+                    Helper.getInstance().deleteFilesFromStorage(filepathList);
                 } else {
                     Helper.getInstance().showErrorDialog(appCompatActivity.getString(R.string.try_again),
                             appCompatActivity.getString(R.string.data_not_deleted), appCompatActivity);

@@ -42,8 +42,12 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -293,11 +297,46 @@ public class Helper {
         return gson.fromJson(json, collectionType);
     }
 
+    private File saveFileToStorage(SelectedImageModel imageModel) {
+
+        File file = new File(AppController.getInstance().getFilesDir(), imageModel.getFile().getName());
+
+        BufferedInputStream bis;
+        BufferedOutputStream bos;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(imageModel.getFile()));
+            bos = new BufferedOutputStream(new FileOutputStream(file, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+            bis.close();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    public void deleteFilesFromStorage(String filepaths) {
+        String[] intermediate = filepaths.split(",");
+        for (String path : intermediate) {
+            File file = new File(path);
+            boolean deleted = file.getAbsoluteFile().delete();
+            if (deleted)
+                CustomLogger.getInstance().logDebug("File deleted");
+            else
+                CustomLogger.getInstance().logDebug("File not deleted");
+        }
+    }
+
     public String getStringFromList(ArrayList<SelectedImageModel> list) {
         StringBuffer fileList = new StringBuffer();
         if (list.size() > 0) {
             for (SelectedImageModel imageModel : list) {
-                fileList = fileList.append(imageModel.getImageURI()).append(",");
+                File to = saveFileToStorage(imageModel);
+                fileList = fileList.append(Uri.parse("file://" + to.getPath())).append(",");
             }
             fileList.deleteCharAt(fileList.length() - 1);
         }
@@ -310,6 +349,7 @@ public class Helper {
         ArrayList<SelectedImageModel> arrayList = new ArrayList<>();
         String[] intermediate = cachedPath.split(",");
         for (String path : intermediate) {
+            CustomLogger.getInstance().logDebug(path);
             SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(path));
             arrayList.add(imageModel);
         }
