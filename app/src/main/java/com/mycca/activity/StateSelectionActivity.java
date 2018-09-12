@@ -15,7 +15,10 @@ import com.mycca.models.Circle;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
+
+import java.util.Locale;
 
 public class StateSelectionActivity extends AppCompatActivity {
 
@@ -58,9 +61,9 @@ public class StateSelectionActivity extends AppCompatActivity {
                     Preferences.getInstance().setStringPref(this, Preferences.PREF_LANGUAGE, "hi");
                 Preferences.getInstance().setModelPref(this, Preferences.PREF_CIRCLE_DATA, circleSpinner.getSelectedItem());
 
-                SplashActivity.setLocale(this);
+                LocaleHelper.getInstance().setLocale(this);
                 Helper.resetInstance();
-                FireBaseHelper.getInstance().getOtherStateData(this,null);
+                FireBaseHelper.getInstance().getOtherStateData(this, null);
 
                 startActivity(new Intent(StateSelectionActivity.this, IntroActivity.class));
                 finish();

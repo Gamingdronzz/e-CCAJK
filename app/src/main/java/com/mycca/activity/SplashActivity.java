@@ -27,6 +27,7 @@ import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.Locale;
@@ -56,21 +57,11 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLocale(this);
+        LocaleHelper.getInstance().setLocale(this);
         setContentView(R.layout.activity_splash);
         bindViews();
         init();
         StartAnimations();
-    }
-
-    public static void setLocale(Context context) {
-        String lang = Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE);
-        Locale locale = new Locale(lang);
-        Locale.setDefault(locale);
-        Resources resources = context.getApplicationContext().getResources();
-        Configuration configuration = resources.getConfiguration();
-        configuration.locale = locale;
-        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
     private void bindViews() {
@@ -264,7 +255,7 @@ public class SplashActivity extends AppCompatActivity {
             if (activeCount == Preferences.getInstance().getIntPref(SplashActivity.this, Preferences.PREF_ACTIVE_CIRCLES)) {
                 CustomLogger.getInstance().logDebug("No new data", CustomLogger.Mask.SPLASH_ACTIVITY);
                 CircleDataProvider.getInstance().setCircleData(false, getApplicationContext(), null);
-              updateState();
+                updateState();
             } else {
                 CustomLogger.getInstance().logDebug("New data available", CustomLogger.Mask.SPLASH_ACTIVITY);
                 CircleDataProvider.getInstance().setCircleData(true, getApplicationContext(), new DownloadCompleteListener() {
