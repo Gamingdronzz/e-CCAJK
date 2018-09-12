@@ -30,10 +30,12 @@ import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.MySubmittableAppCompatActivity;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.enums.State;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.GrievanceModel;
 import com.mycca.models.SelectedImageModel;
@@ -55,7 +57,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class UpdateGrievanceActivity extends AppCompatActivity implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
+public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
     boolean isUploadedToFireBaseDatabase = false, isUploadedToFireBase = false, isUploadedToServer = false;
     int counterUpload = 0;
@@ -551,6 +553,12 @@ public class UpdateGrievanceActivity extends AppCompatActivity implements Volley
         super.onActivityResult(requestCode, resultCode, data);
         if (imagePicker != null)
             imagePicker.onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    @Override
+    public void updateState(State state) {
+        this.state = state;
+
     }
 
     //    private void addImageDataToFirebaseDatabase() {

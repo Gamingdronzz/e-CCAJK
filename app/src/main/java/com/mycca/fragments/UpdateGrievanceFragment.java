@@ -159,7 +159,7 @@ public class UpdateGrievanceFragment extends Fragment {
         List<Fragment> allFragments = getChildFragmentManager().getFragments();
 
         for (Fragment frag : allFragments) {
-            CustomLogger.getInstance().logDebug( "onRequestPermissionsResult: " + frag.toString());
+            CustomLogger.getInstance().logDebug("onRequestPermissionsResult: " + frag.toString());
             frag.onActivityResult(requestCode, resultCode, data);
         }
     }

@@ -56,7 +56,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
     ArrayList<Uri> firebaseImageURLs = new ArrayList<>();
     String mobile;
     public static final int REQUEST_OTP = 8543;
-    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
+//    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,16 +137,35 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
     }
 
     private void submit() {
-        if (isOTPVerified) {
-            if (isUploadedToFirebase) {
-                if (isUploadedToServer)
-                    sendMail();
-                else
-                    uploadImageToServer();
-            } else
+//        if (isOTPVerified) {
+//            if (isUploadedToFirebase) {
+//                if (isUploadedToServer)
+//                    sendMail();
+//                else
+//                    uploadImageToServer();
+//            } else
+//                uploadImageOnFirebase();
+//        } else
+//            otp();
+
+        switch (state) {
+            case INIT: {
+                otp();
+                break;
+            }
+            case OTP_VERIFIED: {
                 uploadImageOnFirebase();
-        } else
-            otp();
+                break;
+            }
+            case UPLOADED_TO_FIREBASE: {
+                uploadImageToServer();
+                break;
+            }
+            case UPLOADED_TO_SERVER: {
+                sendMail();
+                break;
+            }
+        }
     }
 
     private void otp() {
@@ -176,7 +195,8 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
             }).addOnSuccessListener(taskSnapshot ->
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                         firebaseImageURLs.add(uri);
-                        isUploadedToFirebase = true;
+                        updateState(State.UPLOADED_TO_FIREBASE);
+//                        isUploadedToFirebase = true;
                         submit();
                     }));
         }
@@ -254,7 +274,8 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
             if (jsonObject.get("action").equals("Creating Image")) {
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.KYP_ACTIVITY);
-                    isUploadedToServer = true;
+                    updateState(State.UPLOADED_TO_SERVER);
+//                    isUploadedToServer = true;
                     submit();
                 } else {
                     CustomLogger.getInstance().logDebug("onResponse: Image upload failed", CustomLogger.Mask.KYP_ACTIVITY);
@@ -268,7 +289,8 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
                             getString(R.string.kyp_upload_success),
                             getString(R.string.success),
                             FancyAlertDialogType.SUCCESS);
-                    isUploadedToServer = isUploadedToFirebase = isOTPVerified = false;
+                    updateState(State.INIT);
+//                    isUploadedToServer = isUploadedToFirebase = isOTPVerified = false;
                 } else {
                     Helper.getInstance().showErrorDialog(getString(R.string.kyp_upload_fail),
                             getString(R.string.failure),
@@ -290,7 +312,8 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
         if (requestCode == REQUEST_OTP) {
             if (resultCode == RESULT_OK) {
                 CustomLogger.getInstance().logDebug("Verification complete", CustomLogger.Mask.KYP_ACTIVITY);
-                isOTPVerified = true;
+                updateState(State.OTP_VERIFIED);
+//                isOTPVerified = true;
                 submit();
             } else {
                 Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), this);

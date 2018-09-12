@@ -21,9 +21,11 @@ import android.widget.LinearLayout;
 
 import com.mycca.R;
 import com.mycca.activity.KypUploadActivity;
+import com.mycca.custom.MySubmittableFragment;
+import com.mycca.enums.State;
 
 
-public class KYPFragment extends Fragment {
+public class KYPFragment extends MySubmittableFragment {
 
     LinearLayout download, submit;
     Activity activity;
@@ -95,4 +97,8 @@ public class KYPFragment extends Fragment {
     }
 
 
+    @Override
+    public void updateState(State state) {
+        this.state = state;
+    }
 }

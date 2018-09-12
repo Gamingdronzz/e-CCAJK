@@ -44,10 +44,12 @@ import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.MySubmittableFragment;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.enums.State;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Circle;
 import com.mycca.models.InspectionModel;
@@ -76,11 +78,12 @@ import java.util.Map;
 import static com.mycca.tools.MyLocationManager.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.mycca.tools.MyLocationManager.LOCATION_REQUEST_CODE;
 
-public class InspectionFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
+public class InspectionFragment extends MySubmittableFragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
     private static final String TAG = "Inspection";
     String savedModel;
-    boolean isCurrentLocationFound = false, isUploadedToFirebase = false, isUploadedToServer = false;
+    boolean isCurrentLocationFound = false;
+    // , isUploadedToFirebase = false, isUploadedToServer = false;
     Double latitude, longitude;
     int counterFirebaseImages;
     int counterUpload = 0;
@@ -352,16 +355,35 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
     private void doSubmissionOnInternetAvailable() {
-        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer, CustomLogger.Mask.INSPECTION_FRAGMENT);
-        if (isUploadedToFirebase) {
-            if (isUploadedToServer) {
-                sendFinalMail();
-            } else {
-                uploadImagesToServer();
+//        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+//                "Server = " + isUploadedToServer, CustomLogger.Mask.INSPECTION_FRAGMENT);
+//        if (isUploadedToFirebase) {
+//            if (isUploadedToServer) {
+//                sendFinalMail();
+//            } else {
+//                uploadImagesToServer();
+//            }
+//        } else {
+//            uploadInspectionDataToFirebase();
+//        }
+
+        switch (state) {
+            case INIT: {
+                uploadInspectionDataToFirebase();
+                break;
             }
-        } else {
-            uploadInspectionDataToFirebase();
+            case OTP_VERIFIED: {
+//                uploadInspectionDataToFirebase();
+                break;
+            }
+            case UPLOADED_TO_FIREBASE: {
+                uploadImagesToServer();
+                break;
+            }
+            case UPLOADED_TO_SERVER: {
+                sendFinalMail();
+                break;
+            }
         }
     }
 
@@ -414,7 +436,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     firebaseImageURLs.add(downloadUrl);
                     progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(selectedImageModelArrayList.size())));
                     if (counterUpload == selectedImageModelArrayList.size()) {
-                        isUploadedToFirebase = true;
+                        updateState(State.UPLOADED_TO_FIREBASE);
+//                        isUploadedToFirebase = true;
                         doSubmission();
                     }
                 }));
@@ -439,7 +462,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                     DataSubmissionAndMail.SUBMIT,
                     volleyHelper);
         } else {
-            isUploadedToServer = true;
+            updateState(State.UPLOADED_TO_SERVER);
+//            isUploadedToServer = true;
             doSubmission();
         }
     }
@@ -538,7 +562,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == selectedImageModelArrayList.size()) {
                         CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.INSPECTION_FRAGMENT);
-                        isUploadedToServer = true;
+                        updateState(State.UPLOADED_TO_SERVER);
+//                        isUploadedToServer = true;
                         doSubmission();
                     }
                 } else {
@@ -554,7 +579,8 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
                             inspectionModel.getLocationName());
                     Helper.getInstance().showMessage(mainActivity, alertMessage, getString(R.string.success),
                             FancyAlertDialogType.SUCCESS);
-                    isUploadedToServer = isUploadedToFirebase = false;
+                    updateState(State.INIT);
+//                    isUploadedToServer = isUploadedToFirebase = false;
 
                 } else {
                     showError(getString(R.string.inspection_failed), getString(R.string.failure));
@@ -624,6 +650,10 @@ public class InspectionFragment extends Fragment implements VolleyHelper.VolleyR
     }
 
 
+    @Override
+    public void updateState(State state) {
+        this.state = state;
+    }
 }
 
 

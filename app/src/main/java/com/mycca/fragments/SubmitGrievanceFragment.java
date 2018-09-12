@@ -45,10 +45,12 @@ import com.mycca.custom.FabRevealMenu.FabListeners.OnFABMenuSelectedListener;
 import com.mycca.custom.FabRevealMenu.FabModel.FABMenuItem;
 import com.mycca.custom.FabRevealMenu.FabView.FABRevealMenu;
 import com.mycca.custom.FancyAlertDialog.FancyAlertDialogType;
+import com.mycca.custom.MySubmittableFragment;
 import com.mycca.custom.Progress.ProgressDialog;
 import com.mycca.custom.customImagePicker.ImagePicker;
 import com.mycca.custom.customImagePicker.cropper.CropImage;
 import com.mycca.custom.customImagePicker.cropper.CropImageView;
+import com.mycca.enums.State;
 import com.mycca.listeners.OnConnectionAvailableListener;
 import com.mycca.models.Circle;
 import com.mycca.models.GrievanceModel;
@@ -78,7 +80,7 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 
 
-public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
+public class SubmitGrievanceFragment extends MySubmittableFragment implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
     View view;
     TextInputEditText editTextPensionerIdentifier, editTextEmail, editTextMobile, editTextDetails;
@@ -92,7 +94,7 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     ProgressDialog progressDialog;
     ImagePicker imagePicker;
 
-    boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
+    //    boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
     int counterUpload = 0, counterServerImages = 0, counterFirebaseImages;
     int hintResId, typeResId;
     public static final int REQUEST_OTP = 8543;
@@ -238,7 +240,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         }
 
         submit.setOnClickListener(v -> {
-            if (isUploadedToFirebase || isUploadedToServer)
+//            if (isUploadedToFirebase || isUploadedToServer)
+            if (state != State.INIT)
                 doSubmission();
             else if (checkInputBeforeSubmission())
                 showConfirmSubmissionDialog();
@@ -459,20 +462,39 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
 
     private void doSubmissionOnInternetAvailable() {
 
-        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
-                "Server = " + isUploadedToServer);
-        if (isOTPVerified) {
-            if (isUploadedToFirebase) {
-                if (isUploadedToServer) {
-                    sendFinalMail();
-                } else {
-                    uploadImagesToServer();
-                }
-            } else {
-                uploadDataToFirebase();
+//        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFirebase + "\n" +
+//                "Server = " + isUploadedToServer);
+//        if (isOTPVerified) {
+//            if (isUploadedToFirebase) {
+//                if (isUploadedToServer) {
+//                    sendFinalMail();
+//                } else {
+//                    uploadImagesToServer();
+//                }
+//            } else {
+//                uploadDataToFirebase();
+//            }
+//        } else
+//            otp();
+
+        switch (state) {
+            case INIT: {
+                otp();
+                break;
             }
-        } else
-            otp();
+            case OTP_VERIFIED: {
+                uploadDataToFirebase();
+                break;
+            }
+            case UPLOADED_TO_FIREBASE: {
+                uploadImagesToServer();
+                break;
+            }
+            case UPLOADED_TO_SERVER: {
+                sendFinalMail();
+                break;
+            }
+        }
     }
 
     private void uploadDataToFirebase() {
@@ -570,7 +592,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                                             progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(selectedImageModelArrayList.size())));
                                             CustomLogger.getInstance().logDebug("onSuccess: counter = " + counterUpload + "size = " + selectedImageModelArrayList.size());
                                             if (counterUpload == selectedImageModelArrayList.size()) {
-                                                isUploadedToFirebase = true;
+                                                updateState(State.UPLOADED_TO_FIREBASE);
+//                                                isUploadedToFirebase = true;
                                                 doSubmission();
                                             }
                                         });
@@ -578,7 +601,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 }
             }
         } else {
-            isUploadedToFirebase = true;
+            updateState(State.UPLOADED_TO_FIREBASE);
+//            isUploadedToFirebase = true;
             doSubmission();
         }
     }
@@ -600,7 +624,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                     DataSubmissionAndMail.SUBMIT,
                     volleyHelper);
         } else {
-            isUploadedToServer = true;
+            updateState(State.UPLOADED_TO_SERVER);
+//            isUploadedToServer = true;
             doSubmission();
         }
     }
@@ -727,7 +752,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == selectedImageModelArrayList.size()) {
                         CustomLogger.getInstance().logDebug("onResponse: Files uploaded");
-                        isUploadedToServer = true;
+                        updateState(State.UPLOADED_TO_SERVER);
+//                        isUploadedToServer = true;
                         doSubmission();
                     }
                 } else {
@@ -742,7 +768,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
                             String.format(getString(R.string.grievance_submission_success), type, grievanceType.getName(), refNo),
                             getString(R.string.success),
                             FancyAlertDialogType.SUCCESS);
-                    isOTPVerified = isUploadedToServer = isUploadedToFirebase = false;
+                    updateState(State.INIT);
+//                    isOTPVerified = isUploadedToServer = isUploadedToFirebase = false;
                     setSubmissionSuccessForGrievance();
                 } else {
                     showError(getString(R.string.failure), getString(R.string.grievance_submission_fail));
@@ -763,7 +790,8 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
         if (requestCode == REQUEST_OTP) {
             if (resultCode == RESULT_OK) {
                 CustomLogger.getInstance().logDebug("Verification complete");
-                isOTPVerified = true;
+                updateState(State.OTP_VERIFIED);
+//                isOTPVerified = true;
                 doSubmissionOnInternetAvailable();
             } else {
                 Helper.getInstance().showErrorDialog(getString(R.string.try_again), getString(R.string.failed), mainActivity);
@@ -795,6 +823,11 @@ public class SubmitGrievanceFragment extends Fragment implements VolleyHelper.Vo
     }
 
 
+    @Override
+    public void updateState(State state) {
+        this.state = state;
+
+    }
 }
 
 //    private void showTutorial() {
