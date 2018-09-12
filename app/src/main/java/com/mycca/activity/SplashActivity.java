@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +28,6 @@ import com.mycca.tools.Helper;
 import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
-import java.util.Locale;
-
 public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
@@ -53,6 +49,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private VersionCheckState versionCheckState = VersionCheckState.IDLE;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.getInstance().setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,6 @@ public class SplashActivity extends AppCompatActivity {
         CustomLogger.getInstance().logDebug("current state = " + versionCheckState);
         LoadNextActivity();
     }
-
 
     private void getInitialChecksData() {
         mTrace = FirebasePerformance.getInstance().newTrace("REQUEST_DATA_TRACE");

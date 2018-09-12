@@ -1,6 +1,8 @@
 package com.mycca.app;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
@@ -11,6 +13,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.mycca.tools.CustomLogger;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.LruBitmapCache;
 
 import io.fabric.sdk.android.Fabric;
@@ -28,6 +31,17 @@ public class AppController extends Application {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.getInstance().setLocale(base));
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        LocaleHelper.getInstance().setLocale(this);
     }
 
     @Override

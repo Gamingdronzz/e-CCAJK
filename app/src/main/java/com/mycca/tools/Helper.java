@@ -320,14 +320,16 @@ public class Helper {
     }
 
     public void deleteFilesFromStorage(String filepaths) {
-        String[] intermediate = filepaths.split(",");
-        for (String path : intermediate) {
-            File file = new File(path);
-            boolean deleted = file.getAbsoluteFile().delete();
-            if (deleted)
-                CustomLogger.getInstance().logDebug("File deleted");
-            else
-                CustomLogger.getInstance().logDebug("File not deleted");
+        if (filepaths != null) {
+            String[] intermediate = filepaths.split(",");
+            for (String path : intermediate) {
+                File file = new File(path);
+                boolean deleted = file.delete();
+                if (deleted)
+                    CustomLogger.getInstance().logDebug("File deleted");
+                else
+                    CustomLogger.getInstance().logDebug("File not deleted");
+            }
         }
     }
 
@@ -336,7 +338,7 @@ public class Helper {
         if (list.size() > 0) {
             for (SelectedImageModel imageModel : list) {
                 File to = saveFileToStorage(imageModel);
-                fileList = fileList.append(Uri.parse("file://" + to.getPath())).append(",");
+                fileList = fileList.append(Uri.parse(to.getPath())).append(",");
             }
             fileList.deleteCharAt(fileList.length() - 1);
         }
@@ -350,7 +352,7 @@ public class Helper {
         String[] intermediate = cachedPath.split(",");
         for (String path : intermediate) {
             CustomLogger.getInstance().logDebug(path);
-            SelectedImageModel imageModel = new SelectedImageModel(Uri.parse(path));
+            SelectedImageModel imageModel = new SelectedImageModel(Uri.parse("file://" + path));
             arrayList.add(imageModel);
         }
         return arrayList;

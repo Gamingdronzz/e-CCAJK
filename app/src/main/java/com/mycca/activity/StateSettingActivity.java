@@ -6,14 +6,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.mycca.R;
 import com.mycca.adapter.RecyclerViewAdapterStates;
 import com.mycca.listeners.ClickListener;
 import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.Circle;
-import com.mycca.R;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Helper;
-import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
 public class StateSettingActivity extends AppCompatActivity {
@@ -49,7 +48,6 @@ public class StateSettingActivity extends AppCompatActivity {
         Circle circle = CircleDataProvider.getInstance().getCircleData()[position];
         Preferences.getInstance().setModelPref(this, Preferences.PREF_CIRCLE_DATA, circle);
         Preferences.getInstance().clearOtherStateDataPrefs(this);
-        LocaleHelper.getInstance().setLocale(this);
         Helper.getInstance().reloadApp(this);
     }
 }
