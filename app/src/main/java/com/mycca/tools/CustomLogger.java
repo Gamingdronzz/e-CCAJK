@@ -55,7 +55,7 @@ public class CustomLogger {
 
 
         BITMAP_UTILS,
-        MY_LOCATION_MANAGER,
+        MY_LOCATION_MANAGER, LOCALE_HELPER,
 
     }
 
@@ -65,6 +65,11 @@ public class CustomLogger {
         if (mMasks == null)
             mMasks = new ArrayList<>();
         _instance = this;
+        enableMasks();
+    }
+
+    private void enableMasks() {
+        mMasks.add(Mask.LOCALE_HELPER);
     }
 
 
