@@ -18,8 +18,6 @@ import com.mycca.tools.Helper;
 import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
-import java.util.Locale;
-
 public class StateSelectionActivity extends AppCompatActivity {
 
     Spinner circleSpinner;
@@ -61,7 +59,7 @@ public class StateSelectionActivity extends AppCompatActivity {
                     Preferences.getInstance().setStringPref(this, Preferences.PREF_LANGUAGE, "hi");
                 Preferences.getInstance().setModelPref(this, Preferences.PREF_CIRCLE_DATA, circleSpinner.getSelectedItem());
 
-                LocaleHelper.getInstance().setLocale(this);
+                LocaleHelper.setLocale(getApplicationContext());
                 Helper.resetInstance();
                 FireBaseHelper.getInstance().getOtherStateData(this, null);
 

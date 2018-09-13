@@ -1,6 +1,7 @@
 package com.mycca.activity;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
@@ -59,6 +60,7 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
 import com.mycca.tools.IOHelper;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -89,6 +91,11 @@ public class MainActivity extends AppCompatActivity
     FirebaseAuth mAuth;
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext( LocaleHelper.setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

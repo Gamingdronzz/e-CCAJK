@@ -3,9 +3,9 @@ package com.mycca.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.mycca.R;
 import com.mycca.custom.Onboarder.OnboarderActivity;
 import com.mycca.custom.Onboarder.OnboarderPage;
-import com.mycca.R;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;

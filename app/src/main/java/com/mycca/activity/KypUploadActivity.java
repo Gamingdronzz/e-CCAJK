@@ -1,5 +1,6 @@
 package com.mycca.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.DataSubmissionAndMail;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.VolleyHelper;
 
 import org.json.JSONException;
@@ -57,6 +59,11 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
     String mobile;
     public static final int REQUEST_OTP = 8543;
 //    private boolean isUploadedToFirebase = false, isUploadedToServer = false, isOTPVerified = false;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

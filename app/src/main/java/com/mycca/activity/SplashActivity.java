@@ -52,13 +52,12 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(LocaleHelper.getInstance().setLocale(newBase));
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocaleHelper.getInstance().setLocale(this);
         setContentView(R.layout.activity_splash);
         bindViews();
         init();

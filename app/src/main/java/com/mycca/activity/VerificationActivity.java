@@ -24,6 +24,7 @@ import com.msg91.sendotp.library.SendOtpVerification;
 import com.msg91.sendotp.library.Verification;
 import com.msg91.sendotp.library.VerificationListener;
 import com.mycca.R;
+import com.mycca.tools.LocaleHelper;
 
 public class VerificationActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback, VerificationListener {
@@ -33,6 +34,11 @@ public class VerificationActivity extends AppCompatActivity implements
     public static final String INTENT_COUNTRY_CODE = "intent_countrycode";
     private Verification mVerification;
     TextView resend_timer;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

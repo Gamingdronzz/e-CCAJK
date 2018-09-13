@@ -35,13 +35,13 @@ public class AppController extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleHelper.getInstance().setLocale(base));
+        super.attachBaseContext(LocaleHelper.setLocale(base));
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        LocaleHelper.getInstance().setLocale(this);
+        LocaleHelper.setLocale(this);
     }
 
     @Override

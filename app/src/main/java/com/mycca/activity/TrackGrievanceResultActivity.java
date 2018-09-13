@@ -1,5 +1,6 @@
 package com.mycca.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.LocaleHelper;
 
 import java.util.ArrayList;
 
@@ -40,6 +42,11 @@ public class TrackGrievanceResultActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     final String TAG = "Track";
     long grievanceType = -1;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

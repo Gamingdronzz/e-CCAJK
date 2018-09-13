@@ -1,5 +1,6 @@
 package com.mycca.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -10,9 +11,15 @@ import com.mycca.R;
 import com.mycca.models.NewsModel;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
+import com.mycca.tools.LocaleHelper;
 
 public class NewsActivity extends AppCompatActivity {
     TextView headline, date, description;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext( LocaleHelper.setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

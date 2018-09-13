@@ -1,5 +1,6 @@
 package com.mycca.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.Circle;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Helper;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
 public class StateSettingActivity extends AppCompatActivity {
@@ -20,9 +22,16 @@ public class StateSettingActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_state_setting);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.app_name);
 
         recyclerView = findViewById(R.id.recycler_view_state_setting);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
