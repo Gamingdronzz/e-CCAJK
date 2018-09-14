@@ -11,6 +11,29 @@ public class CustomLogger {
     private final String TAG = "Custom Logger";
     private static boolean logEnabled = true;
 
+    private void enableMasks() {
+        removeAllMasks();
+        mMasks.add(Mask.LOCALE_HELPER);
+        mMasks.add(Mask.SETTINGS_FRAGMENT);
+    }
+
+    private List<Mask> mMasks;
+
+    private CustomLogger() {
+        if (mMasks == null)
+            mMasks = new ArrayList<>();
+        _instance = this;
+        enableMasks();
+    }
+
+    public static CustomLogger getInstance() {
+        if (_instance == null) {
+            return new CustomLogger();
+        } else {
+            return _instance;
+        }
+    }
+
     public enum Mask {
         NONE,
         KYP_ACTIVITY,
@@ -55,29 +78,8 @@ public class CustomLogger {
 
 
         BITMAP_UTILS,
-        MY_LOCATION_MANAGER, LOCALE_HELPER,
+        MY_LOCATION_MANAGER, LOCALE_HELPER, SETTINGS_FRAGMENT,
 
-    }
-
-    private List<Mask> mMasks;
-
-    private CustomLogger() {
-        if (mMasks == null)
-            mMasks = new ArrayList<>();
-        _instance = this;
-        enableMasks();
-    }
-
-    public static CustomLogger getInstance() {
-        if (_instance == null) {
-            return new CustomLogger();
-        } else {
-            return _instance;
-        }
-    }
-
-    private void enableMasks() {
-        mMasks.add(Mask.LOCALE_HELPER);
     }
 
     public void addMask(Mask inMask) {

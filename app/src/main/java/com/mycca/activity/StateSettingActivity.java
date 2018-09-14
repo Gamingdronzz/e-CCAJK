@@ -40,7 +40,7 @@ public class StateSettingActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view_state_setting);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        RecyclerViewAdapterStates adapter = new RecyclerViewAdapterStates(this);
+        RecyclerViewAdapterStates adapter = new RecyclerViewAdapterStates(this, Preferences.getInstance().getStringPref(this, Preferences.PREF_LANGUAGE), CircleDataProvider.getInstance().getCircleData());
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListeners(this, recyclerView, new ClickListener() {

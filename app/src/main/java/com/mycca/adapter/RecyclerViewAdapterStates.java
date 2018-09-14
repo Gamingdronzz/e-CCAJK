@@ -9,16 +9,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mycca.R;
-import com.mycca.providers.CircleDataProvider;
-import com.mycca.tools.Preferences;
+import com.mycca.models.Circle;
 
 
 public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerViewAdapterStates.StatesViewHolder> {
 
     private Context context;
+    private String language;
+    private Circle[] circles;
 
-    public RecyclerViewAdapterStates(Context context) {
+    public RecyclerViewAdapterStates(Context context, String language, Circle[] circles) {
         this.context = context;
+        this.language = language;
+        this.circles = circles;
     }
 
     @NonNull
@@ -29,15 +32,15 @@ public class RecyclerViewAdapterStates extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull StatesViewHolder holder, int position) {
-        if (Preferences.getInstance().getStringPref(context, Preferences.PREF_LANGUAGE).equals("hi"))
-            holder.textView.setText(CircleDataProvider.getInstance().getCircleData()[position].getHi());
+        if (language.equals("hi"))
+            holder.textView.setText(circles[position].getHi());
         else
-            holder.textView.setText(CircleDataProvider.getInstance().getCircleData()[position].getEn());
+            holder.textView.setText(circles[position].getEn());
     }
 
     @Override
     public int getItemCount() {
-        return CircleDataProvider.getInstance().getCircleData().length;
+        return circles.length;
     }
 
     class StatesViewHolder extends RecyclerView.ViewHolder {

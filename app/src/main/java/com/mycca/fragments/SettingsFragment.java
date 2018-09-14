@@ -37,6 +37,7 @@ import com.mycca.models.StaffModel;
 import com.mycca.tools.CustomLogger;
 import com.mycca.tools.FireBaseHelper;
 import com.mycca.tools.Helper;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.HashMap;
@@ -130,7 +131,7 @@ public class SettingsFragment extends Fragment {
         layoutChangeLang.setOnClickListener(v -> showLanguageDialog());
 
         tvHelp.setOnClickListener(v -> {
-            Preferences.getInstance().clearPrefs(getContext(),Preferences.PREF_HELP_ONBOARDER);
+            Preferences.getInstance().clearPrefs(getContext(), Preferences.PREF_HELP_ONBOARDER);
             startActivity(new Intent(activity, IntroActivity.class).putExtra("FromSettings", true));
         });
 
@@ -166,12 +167,14 @@ public class SettingsFragment extends Fragment {
 
     private void showLanguageDialog() {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.dialog_select_language, (ViewGroup) getView(), false);
+        final RadioGroup rg = v.findViewById(R.id.radio_group_language);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setView(v)
                 .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.select), (dialog, which) -> {
-                    final RadioGroup rg = v.findViewById(R.id.radio_group_language);
+
+
                     Helper.getInstance().showReloadWarningDialog(activity, () -> {
                         if (rg.getCheckedRadioButtonId() == R.id.rBEnglish)
                             Preferences.getInstance().setStringPref(getContext(), Preferences.PREF_LANGUAGE, "en");
@@ -181,6 +184,13 @@ public class SettingsFragment extends Fragment {
                     });
                 });
         builder.show();
+        String currentLanguage = Preferences.getInstance().getStringPref(getContext(), Preferences.PREF_LANGUAGE);
+        CustomLogger.getInstance().logVerbose("Current Language = " + currentLanguage, CustomLogger.Mask.SETTINGS_FRAGMENT);
+        if (currentLanguage.equals(LocaleHelper.ENGLISH)) {
+            rg.check(R.id.rBEnglish);
+        } else if (currentLanguage.equals(LocaleHelper.HINDI)) {
+            rg.check(R.id.rBHindi);
+        }
     }
 
     public void manageSignOut() {
@@ -201,7 +211,7 @@ public class SettingsFragment extends Fragment {
     public void showChangePasswordWindow() {
 
         final EditText editTextOld, editTextNew, editTextConfirm;
-        View popupView = LayoutInflater.from(activity).inflate(R.layout.dialog_change_password, (ViewGroup) this.getView(),false);
+        View popupView = LayoutInflater.from(activity).inflate(R.layout.dialog_change_password, (ViewGroup) this.getView(), false);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         editTextOld = popupView.findViewById(R.id.edittext_old_pwd);
@@ -274,7 +284,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Helper.getInstance().showMaintenanceDialog(activity,staff.getCircle());
+                Helper.getInstance().showMaintenanceDialog(activity, staff.getCircle());
             }
         };
         FireBaseHelper.getInstance().getDataFromFireBase(staff.getCircle(), valueEventListener,

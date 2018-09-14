@@ -9,6 +9,8 @@ import android.os.LocaleList;
 import java.util.Locale;
 
 public class LocaleHelper {
+    public static final String ENGLISH = "en";
+    public static final String HINDI = "hi";
 
 //    private static LocaleHelper _instance;
 //
