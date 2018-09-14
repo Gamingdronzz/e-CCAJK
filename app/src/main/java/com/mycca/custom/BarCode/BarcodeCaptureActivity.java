@@ -50,6 +50,7 @@ import com.mycca.custom.barCode.ui.camera.CameraSource;
 import com.mycca.custom.barCode.ui.camera.CameraSourcePreview;
 import com.mycca.custom.barCode.ui.camera.GraphicOverlay;
 import com.mycca.tools.CustomLogger;
+import com.mycca.tools.LocaleHelper;
 
 import java.io.IOException;
 
@@ -83,6 +84,11 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     /**
      * Initializes the UI and creates the detector pipeline.
      */
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

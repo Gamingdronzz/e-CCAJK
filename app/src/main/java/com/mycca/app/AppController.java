@@ -36,12 +36,15 @@ public class AppController extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(LocaleHelper.setLocale(base));
+        res = getResources();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        CustomLogger.getInstance().logDebug("Config changed", CustomLogger.Mask.LOCALE_HELPER);
         LocaleHelper.setLocale(this);
+        res = getResources();
     }
 
     @Override
@@ -49,11 +52,10 @@ public class AppController extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         mInstance = this;
-        res = getResources();
         Shortbread.create(this);
     }
 
-    public static Resources getResourses(){
+    public static Resources getResourses() {
         return res;
     }
 
@@ -82,7 +84,7 @@ public class AppController extends Application {
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
-        CustomLogger.getInstance().logDebug( "added To Request Queue", CustomLogger.Mask.APP_CONTROLLER);
+        CustomLogger.getInstance().logDebug("added To Request Queue", CustomLogger.Mask.APP_CONTROLLER);
         if (TextUtils.isEmpty(tag)) {
             tag = TAG;
         }

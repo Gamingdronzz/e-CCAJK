@@ -148,12 +148,8 @@ public class Helper {
 
     public String getGrievanceString(long id, Locale desiredLocale) {
         Resources res;
-        if (desiredLocale == Locale.getDefault())
-            res = AppController.getResourses();
-        else {
-            Context localizedContext = getLocalisedContext(desiredLocale);
-            res = localizedContext.getResources();
-        }
+        Context localizedContext = getLocalisedContext(desiredLocale);
+        res = localizedContext.getResources();
 
         switch ((int) id) {
             case 0:
@@ -200,12 +196,8 @@ public class Helper {
 
     public String getGrievanceCategory(long id, Locale desiredLocale) {
         Resources res;
-        if (desiredLocale == Locale.getDefault())
-            res = AppController.getResourses();
-        else {
-            Context localizedContext = getLocalisedContext(desiredLocale);
-            res = localizedContext.getResources();
-        }
+        Context localizedContext = getLocalisedContext(desiredLocale);
+        res = localizedContext.getResources();
 
         if (id < 100)
             return res.getString(R.string.pension);
@@ -215,12 +207,8 @@ public class Helper {
 
     public String getStatusString(long status, Locale desiredLocale) {
         Resources res;
-        if (desiredLocale == Locale.getDefault())
-            res = AppController.getResourses();
-        else {
-            Context localizedContext = getLocalisedContext(desiredLocale);
-            res = localizedContext.getResources();
-        }
+        Context localizedContext = getLocalisedContext(desiredLocale);
+        res = localizedContext.getResources();
 
         switch ((int) status) {
             case 0:
@@ -454,7 +442,7 @@ public class Helper {
         if (imagePicker == null) {
             imagePicker = new ImagePicker();
         }
-        imagePicker.setTitle(AppController.getResourses().getString(R.string.pick_image_intent_chooser_title));
+        imagePicker.setTitle(activity.getString(R.string.pick_image_intent_chooser_title));
         imagePicker.setCropImage(cropimage);
         imagePicker.startChooser(activity, callback);
         return imagePicker;
@@ -475,7 +463,7 @@ public class Helper {
                                      String negativeButtonText, IFancyAlertDialogListener negativeButtonOnClickListener,
                                      FancyAlertDialogType fancyAlertDialogType) {
         if (title == null) {
-            title = AppController.getResourses().getString(R.string.app_name);
+            title = activity.getString(R.string.app_name);
         }
         if (message == null) {
             CustomLogger.getInstance().logDebug("showFancyAlertDialog: Message cant be null");
@@ -515,14 +503,14 @@ public class Helper {
 
     private void showUpdateDialog(final Activity activity) {
         showFancyAlertDialog(activity,
-                AppController.getResourses().getString(R.string.update_available),
-                AppController.getResourses().getString(R.string.app_name),
-                AppController.getResourses().getString(R.string.update),
+                activity.getString(R.string.update_available),
+                activity.getString(R.string.app_name),
+                activity.getString(R.string.update),
                 () -> {
                     showGooglePlayStore(activity);
                     activity.finish();
                 },
-                AppController.getResourses().getString(R.string.cancel),
+                activity.getString(R.string.cancel),
                 activity::finish,
                 FancyAlertDialogType.WARNING);
 
@@ -530,16 +518,16 @@ public class Helper {
 
     public void showMaintenanceDialog(Activity activity, String state) {
         if (state == null)
-            showDialog(activity, AppController.getResourses().getString(R.string.app_maintenance));
+            showDialog(activity, activity.getString(R.string.app_maintenance));
         else {
             FireBaseHelper.getInstance().getDataFromFireBase(state, new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String string;
                     if ((boolean) dataSnapshot.getValue())
-                        string = AppController.getResourses().getString(R.string.app_maintenance);
+                        string = activity.getString(R.string.app_maintenance);
                     else
-                        string = AppController.getResourses().getString(R.string.state_n_a);
+                        string = activity.getString(R.string.state_n_a);
                     showDialog(activity, string);
                 }
 
@@ -554,8 +542,8 @@ public class Helper {
     private void showDialog(Activity activity, String string) {
         showFancyAlertDialog(activity,
                 string,
-                AppController.getResourses().getString(R.string.app_name),
-                AppController.getResourses().getString(R.string.ok),
+                activity.getString(R.string.app_name),
+                activity.getString(R.string.ok),
                 () -> {
                 }, null, null,
                 FancyAlertDialogType.WARNING);
@@ -580,7 +568,7 @@ public class Helper {
         showFancyAlertDialog(activity,
                 message,
                 title,
-                AppController.getResourses().getString(R.string.ok),
+                activity.getString(R.string.ok),
                 null,
                 null,
                 null,
@@ -589,11 +577,11 @@ public class Helper {
 
     public void showReloadWarningDialog(Activity context, IFancyAlertDialogListener positiveButtonOnClickListener) {
         showFancyAlertDialog(context,
-                AppController.getResourses().getString(R.string.reload_req),
-                AppController.getResourses().getString(R.string.reload_app),
-                AppController.getResourses().getString(R.string.reload),
+                context.getString(R.string.reload_req),
+                context.getString(R.string.reload_app),
+                context.getString(R.string.reload),
                 positiveButtonOnClickListener,
-                AppController.getResourses().getString(R.string.cancel),
+                context.getString(R.string.cancel),
                 () -> {
                 },
                 FancyAlertDialogType.WARNING);
@@ -610,8 +598,8 @@ public class Helper {
     public void getConfirmationDialog(Activity context, View view, DialogInterface.OnClickListener yes) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
         confirmDialog.setView(view);
-        confirmDialog.setPositiveButton(AppController.getResourses().getString(R.string.confirm), yes);
-        confirmDialog.setNegativeButton(AppController.getResourses().getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
+        confirmDialog.setPositiveButton(context.getString(R.string.confirm), yes);
+        confirmDialog.setNegativeButton(context.getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
         confirmDialog.show();
     }
 

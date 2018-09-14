@@ -44,6 +44,8 @@ public class VerificationActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(getString(R.string.app_name));
         resend_timer = findViewById(R.id.resend_timer);
         resend_timer.setOnClickListener(v -> ResendCode());
         startTimer();

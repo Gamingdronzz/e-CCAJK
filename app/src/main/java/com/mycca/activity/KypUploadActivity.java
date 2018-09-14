@@ -69,6 +69,7 @@ public class KypUploadActivity extends MySubmittableAppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kyp_upload);
+        getSupportActionBar().setTitle(R.string.app_name);
         bindViews();
         init();
     }

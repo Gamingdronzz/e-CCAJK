@@ -70,9 +70,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void init() {
-        CustomLogger.getInstance().removeAllMasks();
-        CustomLogger.getInstance().addMask(CustomLogger.Mask.MAIN_ACTIVITY);
-        Helper.versionChecked = false;
+         Helper.versionChecked = false;
         //FirebaseRemoteConfig.getInstance();
 
         currentAppVersion = Helper.getInstance().getAppVersion(this);

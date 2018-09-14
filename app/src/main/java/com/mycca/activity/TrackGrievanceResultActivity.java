@@ -26,8 +26,8 @@ import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.GrievanceModel;
 import com.mycca.tools.ConnectionUtility;
 import com.mycca.tools.CustomLogger;
-import com.mycca.tools.Helper;
 import com.mycca.tools.FireBaseHelper;
+import com.mycca.tools.Helper;
 import com.mycca.tools.LocaleHelper;
 
 import java.util.ArrayList;

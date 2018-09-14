@@ -1,11 +1,13 @@
 package com.mycca.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.mycca.R;
 import com.mycca.custom.Onboarder.OnboarderActivity;
 import com.mycca.custom.Onboarder.OnboarderPage;
+import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
 
 import java.util.ArrayList;
@@ -16,6 +18,11 @@ public class IntroActivity extends OnboarderActivity {
 
     boolean fromSettings = false;
     List<OnboarderPage> onBoarderPages;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+      }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

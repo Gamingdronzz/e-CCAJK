@@ -93,6 +93,7 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
+        getSupportActionBar().setTitle(R.string.app_name);
         grievanceModel = (GrievanceModel) Helper.getInstance().getObjectFromJson(getIntent().getStringExtra("Model"), GrievanceModel.class);
         grievanceString = Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType(), Locale.getDefault());
         bindViews();

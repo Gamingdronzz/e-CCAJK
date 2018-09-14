@@ -1,7 +1,9 @@
 package com.mycca.custom.customImagePicker.cropper;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mycca.R;
+import com.mycca.tools.LocaleHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +30,7 @@ import java.io.IOException;
  * Use {@link CropImage#activity(Uri)} to create a builder to start this activity.
  */
 public class CropImageActivity extends AppCompatActivity
-    implements CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
+        implements CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
 
     /**
      * The crop image view library widget used in the activity
@@ -45,6 +48,11 @@ public class CropImageActivity extends AppCompatActivity
     private CropImageOptions mOptions;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
+
+    @Override
     @SuppressLint("NewApi")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +68,13 @@ public class CropImageActivity extends AppCompatActivity
             if (mCropImageUri == null || mCropImageUri.equals(Uri.EMPTY)) {
                 if (CropImage.isExplicitCameraPermissionRequired(this)) {
                     // request permissions and handle the result in onRequestPermissionsResult()
-                    requestPermissions(new String[]{ Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
                 } else {
                     CropImage.startPickImageActivity(this);
                 }
             } else if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
                 // request permissions and handle the result in onRequestPermissionsResult()
-                requestPermissions(new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
             } else {
                 // no permissions required or already grunted, can start crop image activity
                 mCropImageView.setImageUriAsync(mCropImageUri);
@@ -173,7 +181,7 @@ public class CropImageActivity extends AppCompatActivity
                 // For API >= 23 we need to check specifically that we have permissions to read external storage.
                 if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
                     // request permissions and handle the result in onRequestPermissionsResult()
-                    requestPermissions(new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
                 } else {
                     // no permissions required or already grunted, can start crop image activity
                     mCropImageView.setImageUriAsync(mCropImageUri);
@@ -184,7 +192,7 @@ public class CropImageActivity extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull
-        int[] grantResults) {
+            int[] grantResults) {
         if (requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE) {
             if (mCropImageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // required permissions granted, start crop image activity

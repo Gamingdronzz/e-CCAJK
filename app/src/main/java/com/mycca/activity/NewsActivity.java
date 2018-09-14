@@ -13,18 +13,21 @@ import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 import com.mycca.tools.LocaleHelper;
 
+import java.util.Locale;
+
 public class NewsActivity extends AppCompatActivity {
     TextView headline, date, description;
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext( LocaleHelper.setLocale(newBase));
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        CustomLogger.getInstance().logVerbose("Locale News = " + Locale.getDefault(), CustomLogger.Mask.LOCALE_HELPER);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(getString(R.string.latest_from_cca));
         bindViews();

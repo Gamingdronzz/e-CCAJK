@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.mycca.R;
 import com.mycca.activity.TrackGrievanceResultActivity;
 import com.mycca.adapter.GenericSpinnerAdapter;
-import com.mycca.app.AppController;
 import com.mycca.models.Circle;
 import com.mycca.providers.CircleDataProvider;
 import com.mycca.tools.Helper;
@@ -79,15 +78,15 @@ public class TrackGrievanceFragment extends Fragment {
 
         track.setOnClickListener(v -> {
             String code = editText.getText().toString().trim();
-            if (code.length() != 15 && hint.equals(AppController.getResourses().getString(R.string.p_code))) {
+            if (code.length() != 15 && hint.equals(activity.getString(R.string.p_code))) {
                 Toast.makeText(activity,
                         getString(R.string.invalid_p_code),
                         Toast.LENGTH_LONG).show();
-            } else if (code.trim().isEmpty() && hint.equals(AppController.getResourses().getString(R.string.hr_num))) {
+            } else if (code.trim().isEmpty() && hint.equals(activity.getString(R.string.hr_num))) {
                 Toast.makeText(activity,
                         getString(R.string.invalid_hr_num),
                         Toast.LENGTH_LONG).show();
-            } else if (code.trim().isEmpty() && hint.equals(AppController.getResourses().getString(R.string.staff_num))) {
+            } else if (code.trim().isEmpty() && hint.equals(activity.getString(R.string.staff_num))) {
                 Toast.makeText(activity,
                         getString(R.string.invalid_staff_num),
                         Toast.LENGTH_LONG).show();

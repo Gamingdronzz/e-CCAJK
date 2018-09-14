@@ -68,11 +68,6 @@ public class CustomLogger {
         enableMasks();
     }
 
-    private void enableMasks() {
-        mMasks.add(Mask.LOCALE_HELPER);
-    }
-
-
     public static CustomLogger getInstance() {
         if (_instance == null) {
             return new CustomLogger();
@@ -81,9 +76,27 @@ public class CustomLogger {
         }
     }
 
+    private void enableMasks() {
+        mMasks.add(Mask.LOCALE_HELPER);
+    }
+
+    public void addMask(Mask inMask) {
+        mMasks.add(inMask);
+    }
+
+    public void removeMask(Mask mask) {
+        if (mMasks.contains(mask))
+            mMasks.remove(mask);
+
+    }
+
+    public void removeAllMasks() {
+        if (mMasks != null)
+            mMasks.clear();
+    }
+
     public void logVerbose(String message, Mask mask) {
         if (logEnabled)
-
             if (mMasks.contains(mask))
                 Log.v(TAG, message);
     }
@@ -187,18 +200,4 @@ public class CustomLogger {
             Log.e(tag, message, e);
     }
 
-    public void addMask(Mask inMask) {
-        mMasks.add(inMask);
-    }
-
-    public void removeMask(Mask mask) {
-        if (mMasks.contains(mask))
-            mMasks.remove(mask);
-
-    }
-
-    public void removeAllMasks() {
-        if (mMasks != null)
-            mMasks.clear();
-    }
 }

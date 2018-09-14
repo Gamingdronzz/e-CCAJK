@@ -13,9 +13,12 @@ import com.mycca.listeners.ClickListener;
 import com.mycca.listeners.RecyclerViewTouchListeners;
 import com.mycca.models.Circle;
 import com.mycca.providers.CircleDataProvider;
+import com.mycca.tools.CustomLogger;
 import com.mycca.tools.Helper;
 import com.mycca.tools.LocaleHelper;
 import com.mycca.tools.Preferences;
+
+import java.util.Locale;
 
 public class StateSettingActivity extends AppCompatActivity {
 
@@ -32,6 +35,7 @@ public class StateSettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_state_setting);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.app_name);
+        CustomLogger.getInstance().logVerbose("Locale Setting = " + Locale.getDefault(), CustomLogger.Mask.LOCALE_HELPER);
 
         recyclerView = findViewById(R.id.recycler_view_state_setting);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

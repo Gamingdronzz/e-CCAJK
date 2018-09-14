@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext( LocaleHelper.setLocale(newBase));
+       super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
     @Override
