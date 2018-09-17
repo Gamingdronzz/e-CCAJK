@@ -60,7 +60,6 @@ import java.util.Map;
 
 public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity implements VolleyHelper.VolleyResponse, OnFABMenuSelectedListener {
 
-    boolean isUploadedToFireBaseDatabase = false, isUploadedToFireBase = false, isUploadedToServer = false;
     int counterUpload = 0;
     int counterServerImages = 0;
     long status;
@@ -93,7 +92,8 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_grievance);
-        getSupportActionBar().setTitle(R.string.app_name);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.app_name);
         grievanceModel = (GrievanceModel) Helper.getInstance().getObjectFromJson(getIntent().getStringExtra("Model"), GrievanceModel.class);
         grievanceString = Helper.getInstance().getGrievanceString(grievanceModel.getGrievanceType(), Locale.getDefault());
         bindViews();
@@ -211,25 +211,38 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
     }
 
     private void doUpdateOnInternetAvailable() {
-        CustomLogger.getInstance().logDebug("doSubmissionOnInternetAvailable: \n Firebase = " + isUploadedToFireBaseDatabase + "\n" +
-                "Server = " + isUploadedToServer, CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
-        progressDialog.show();
 
-        if (isUploadedToFireBase) {
-            if (isUploadedToServer) {
-                CustomLogger.getInstance().logDebug("doUpdateOnInternetAvailable: Data uploaded on server", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
-                sendFinalMail();
-            } else {
-                uploadImagesToServer();
+        switch (state) {
+            case INIT: {
+                updateGrievanceDataOnFirebase();
+                break;
             }
-        } else {
-            updateGrievanceDataOnFirebase();
+
+            case UPLOADED_TO_FIREBASE: {
+                uploadImagesToServer();
+                break;
+            }
+            case UPLOADED_TO_SERVER: {
+                sendFinalMail();
+                break;
+            }
         }
+        //        if (isUploadedToFireBase) {
+//            if (isUploadedToServer) {
+//                CustomLogger.getInstance().logDebug("doUpdateOnInternetAvailable: Data uploaded on server", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
+//                sendFinalMail();
+//            } else {
+//                uploadImagesToServer();
+//            }
+//        } else {
+//            updateGrievanceDataOnFirebase();
+//        }
 
     }
 
     private void updateGrievanceDataOnFirebase() {
         progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         status = ((StatusModel) statusSpinner.getSelectedItem()).getStatusCode();
         message = editTextMessage.getText().toString().trim();
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -275,14 +288,14 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
                                 fireBaseImageURLs.add(uri);
                                 progressDialog.setMessage(String.format(getString(R.string.uploaded_file), String.valueOf(++counterUpload), String.valueOf(attachmentModelArrayList.size())));
                                 if (counterUpload == attachmentModelArrayList.size()) {
-                                    isUploadedToFireBase = true;
+                                    updateState(State.UPLOADED_TO_FIREBASE);
                                     doUpdateOnInternetAvailable();
                                 }
                             }));
                 }
             }
         } else {
-            isUploadedToFireBase = true;
+            updateState(State.UPLOADED_TO_FIREBASE);
             doUpdateOnInternetAvailable();
         }
     }
@@ -299,7 +312,7 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
                     DataSubmissionAndMail.UPDATE,
                     volleyHelper);
         } else {
-            isUploadedToServer = true;
+            updateState(State.UPLOADED_TO_SERVER);
             doUpdateOnInternetAvailable();
         }
     }
@@ -429,7 +442,7 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
         grievanceModel.setGrievanceStatus(status);
         grievanceModel.setMessage(message);
         grievanceModel.setExpanded(true);
-        isUploadedToServer = isUploadedToFireBase = isUploadedToFireBaseDatabase = false;
+        updateState(State.INIT);
 
         String alertMessage = String.format(getString(R.string.grievance_updation_success),
                 grievanceModel.getIdentifierNumber(),
@@ -519,7 +532,7 @@ public class UpdateGrievanceActivity extends MySubmittableAppCompatActivity impl
                 if (jsonObject.get("result").equals(volleyHelper.SUCCESS)) {
                     if (counterServerImages == attachmentModelArrayList.size()) {
                         CustomLogger.getInstance().logDebug("onResponse: Files uploaded", CustomLogger.Mask.UPDATE_GRIEVANCE_ACTIVITY);
-                        isUploadedToServer = true;
+                        updateState(State.UPLOADED_TO_SERVER);
                         doUpdateOnInternetAvailable();
                     }
                 } else {
