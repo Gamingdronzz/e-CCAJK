@@ -1,8 +1,6 @@
 package com.mycca.fragments;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -22,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -157,6 +154,7 @@ public class BrowserFragment extends Fragment {
                 setSubtitle(view.getTitle());
                 frameLayoutProgress.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
+
 //                progressAnimator.setIntValues(1000, previousProgress);
 //                progressAnimator.setDuration(300);
 //                progressAnimator.setInterpolator(new LinearInterpolator());

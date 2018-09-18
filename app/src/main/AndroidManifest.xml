@@ -68,16 +68,20 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".custom.customImagePicker.cropper.CropImageActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
+
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".activity.TrackGrievanceResultActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -93,15 +97,26 @@
         </activity>
         <activity
             android:name=".activity.UpdateGrievanceActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.StateSettingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.NewsActivity" />
-        <activity android:name=".activity.IntroActivity" />
-        <activity android:name=".activity.KypUploadActivity" />
+        <activity
+            android:name=".activity.NewsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".activity.IntroActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".activity.KypUploadActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
             android:name=".custom.barCode.BarcodeCaptureActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="Read Barcode"
             android:screenOrientation="portrait" />
 
@@ -123,8 +138,12 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.VerificationActivity" />
-        <activity android:name=".activity.StateSelectionActivity"/>
+        <activity
+            android:name=".activity.VerificationActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity
+            android:name=".activity.StateSelectionActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
     </application>
 
 </manifest>
