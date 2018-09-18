@@ -54,6 +54,7 @@ public class FireBaseHelper {
     public final static String ROOT_RE_EMPLOYMENT = "Re-Employment Certificate";
     public final static String ROOT_KYP = "KYP";
     public final static String ROOT_INSPECTION = "Inspection";
+    public final static String ROOT_PENSION_STATUS = "Pension File Status";
     public final static String ROOT_INITIAL_CHECKS = "Initial checks";
     private final static String ROOT_OTHER_DATA = "Other Data";
     private final static String ROOT_WEBSITE = "Website";

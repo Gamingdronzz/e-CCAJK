@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorOffWhite"
     tools:context=".fragments.UpdatePensionFileFragment">
 
     <ScrollView
@@ -88,10 +89,10 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/p_code">
+                android:hint="@string/hr_num">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/et_update_pension_pcode"
+                    android:id="@+id/et_update_pension_hr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/padding_large"
@@ -124,6 +125,33 @@
                     android:drawablePadding="@dimen/padding_large"
                     android:drawableTint="@color/colorAccent"
                     android:hint="@string/mobile_num"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:singleLine="true"
+                    tools:targetApi="m" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:background="@color/colorLightGray" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@color/colorWhite"
+                android:padding="@dimen/padding_small">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/et_update_pension_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/padding_large"
+                    android:drawableTint="@color/colorAccent"
+                    android:hint="@string/email"
                     android:inputType="number"
                     android:maxLength="10"
                     android:singleLine="true"
